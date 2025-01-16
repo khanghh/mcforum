@@ -1,0 +1,29 @@
+{
+  "folders": [
+    {
+      "name": "bbs-go",
+      "path": "."
+    },
+    {
+      "name": "server",
+      "path": "server"
+    },
+    {
+      "name": "site",
+      "path": "site"
+    },
+    {
+      "name": "admin",
+      "path": "admin"
+    }
+  ],
+  "settings": {
+    "nuxt.isNuxtApp": false,
+    "i18n-ally.localesPaths": [
+      "admin/src/locale",
+      "admin/src/components/message-box/locale",
+      "admin/src/views/login/locale",
+      "admin/src/views/dashboard/workplace/locale"
+    ]
+  }
+}

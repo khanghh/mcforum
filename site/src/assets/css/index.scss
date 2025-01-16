@@ -1,0 +1,16 @@
+@charset "UTF-8";
+@import "../iconfont/iconfont.css";
+@import "./common";
+@import "./topic";
+@import "./link";
+@import "./highlightjs";
+@import "./nav";
+@import "./signin";
+@import "./bulma.scss";
+
+:root {
+    --animate-duration: .3s;
+    --animate-delay: 0;
+}
+
+@import 'animate.css/animate.min.css';

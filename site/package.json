@@ -1,0 +1,33 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build --dotenv .env.production",
+    "build:docker": "nuxt build --dotenv .env.docker",
+    "dev": "nuxt dev --dotenv .env.local",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview --dotenv .env.production",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "2.6.4",
+    "@element-plus/nuxt": "1.0.10",
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/color-mode": "3.4.2",
+    "@nuxtjs/eslint-module": "4.1.0",
+    "@vueuse/core": "10.11.0",
+    "@vueuse/nuxt": "10.11.0",
+    "bulma": "1.0.1",
+    "element-plus": "2.7.7",
+    "eslint": "8.56.0",
+    "nuxt": "3.12.3",
+    "sass": "1.70.0",
+    "typescript": "5.5.3"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "0.5.1",
+    "animate.css": "4.1.1",
+    "md-editor-v3": "4.17.3",
+    "nuxt-lazy-load": "3.0.4"
+  }
+}
