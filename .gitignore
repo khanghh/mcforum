@@ -5,3 +5,4 @@ dist
 node_modules
 .nuxt
 .docker-compose/mysql/data
+.pnpm-store
