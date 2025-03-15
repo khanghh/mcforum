@@ -1,0 +1,13 @@
+services:
+  dev:
+    image: bbsgo-dev:latest
+    container_name: bbsgo-dev
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    volumes:
+      - ./:/root/bbs-go
+    ports:
+      - 8082:8082
+      - 3000:3000
+    network_mode: bridge
