@@ -12,3 +12,11 @@ services:
       - 8082:8082
       - 3000:3000
     network_mode: bridge
+  
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - 8081:80
+    environment:
+      - PMA_ARBITRARY=1
