@@ -8,6 +8,7 @@ services:
     volumes:
       - ./:/root/bbs-go
     ports:
+      - 8080:8080
       - 8082:8082
       - 3000:3000
     network_mode: bridge

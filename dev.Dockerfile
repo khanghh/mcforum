@@ -18,7 +18,9 @@ RUN echo "alias l='ls --color=auto'" >> ~/.bashrc
 RUN echo "PS1='\\[\\e[1;32m\\]\\u@\\h:\\w\\$ \\[\\e[0m\\]'" >> ~/.bashrc
 
 # install pnpm
-RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+RUN npm install --global corepack@latest
+
+# RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 # Install Golang
 ENV GO_VERSION=1.23.0
@@ -32,6 +34,6 @@ RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
 WORKDIR /root/bbs-go
 
-EXPOSE 8082 3000
+EXPOSE 8080 8082 3000
 
 CMD ["sh", "-c", "trap 'exit 0' INT TERM; while true; do sleep 1; done"]
