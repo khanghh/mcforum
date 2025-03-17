@@ -3,23 +3,22 @@
     <div class="container">
       <article v-if="isNeedEmailVerify" class="message is-warning">
         <div class="message-header">
-          <p>请先验证邮箱</p>
+          <p>{{ $t('publish.verify_email_title') }}</p>
         </div>
         <div class="message-body">
-          发表话题前，请先前往
-          <strong
-            ><nuxt-link
+          {{ $t('publish.verify_email_prompt') }}
+          <strong>
+            <nuxt-link
               to="/user/profile/account"
-              style="color: var(--text-link-color)"
-              >个人中心 &gt; 账号设置</nuxt-link
-            ></strong
-          >
-          页面设置邮箱，并完成邮箱认证。
+              style="color: var(--text-link-color)"> {{ $t('navbar.profile') }} &gt; {{ $t('navbar.edit_profile')
+              }}</nuxt-link>
+          </strong>
+          {{ $t('publish.verify_email_action') }}
         </div>
       </article>
       <div v-else class="topic-create-form">
         <div class="topic-form-title">
-          {{ postForm.type === 0 ? "发帖子" : "发动态" }}
+          {{ postForm.type === 0 ? $t('page.create_topic') : $t('page.post_status') }}
         </div>
 
         <div class="field">
@@ -29,8 +28,7 @@
               :key="node.id"
               class="topic-tag"
               :class="{ selected: postForm.nodeId === node.id }"
-              @click="postForm.nodeId = node.id"
-            >
+              @click="postForm.nodeId = node.id">
               <span>{{ node.name }}</span>
             </div>
           </div>
@@ -42,8 +40,7 @@
               v-model="postForm.title"
               class="input topic-title"
               type="text"
-              placeholder="请输入帖子标题"
-            />
+              :placeholder="$t('publish.enter_title')" />
           </div>
         </div>
 
@@ -51,8 +48,7 @@
           <div class="control">
             <markdown-editor
               v-model="postForm.content"
-              placeholder="请输入你要发表的内容..."
-            />
+              :placeholder="$t('form.placeholder.enter_post_content')" />
           </div>
         </div>
 
@@ -61,8 +57,7 @@
             <markdown-editor
               v-model="postForm.hideContent"
               height="200px"
-              placeholder="请输入隐藏内容，隐藏内容，评论后可见"
-            />
+              :placeholder="$t('form.placeholder.enter_hidden_content')" />
           </div>
         </div>
 
@@ -71,8 +66,7 @@
             <simple-editor
               ref="simpleEditorComponent"
               v-model:content="postForm.content"
-              v-model:imageList="postForm.imageList"
-            />
+              v-model:imageList="postForm.imageList" />
           </div>
         </div>
 
@@ -88,11 +82,10 @@
               v-model="postForm.captchaCode"
               class="input"
               type="text"
-              placeholder="验证码"
-              style="max-width: 150px; margin-right: 20px"
-            />
+              :placeholder="$t('form.placeholder.enter_captcha')"
+              style="max-width: 150px; margin-right: 20px" />
             <span class="icon is-small is-left">
-              <i class="iconfont icon-captcha" />
+              <icon name="ShieldCheck" />
             </span>
           </div>
           <div class="field">
@@ -107,9 +100,8 @@
             <a
               :class="{ 'is-loading': publishing }"
               class="button is-success"
-              @click="createTopic"
-              >{{ postForm.type === 1 ? "发表动态" : "发表帖子" }}</a
-            >
+              @click="createTopic">{{ postForm.type === 1 ? $t('form.button.post_status') :
+                $t('form.button.post_topic') }}</a>
           </div>
         </div>
       </div>
@@ -118,6 +110,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 definePageMeta({
   middleware: "auth",
 });
@@ -184,7 +177,7 @@ onMounted(() => {
 function init() {
   postForm.value.type = Number.parseInt(route.query.type) || 0;
   useHead({
-    title: postForm.value.type === 0 ? "发帖子" : "发动态",
+    title: postForm.value.type === 0 ? i18n.t('page.create_topic') : i18n.t('page.post_status')
   });
 }
 

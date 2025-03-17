@@ -64,7 +64,7 @@ defineExpose({
   <div class="simple-editor">
     <div class="simple-editor-toolbar">
       <div class="act-btn">
-        <i class="iconfont icon-image" @click="switchImageUpload" />
+        <icon name="ImagePlus" class="upload-icon" @click="switchImageUpload" />
       </div>
       <div class="publish-container">
         <span class="tip">{{ wordCount }} / {{ maxWordCount }}</span>
@@ -73,21 +73,19 @@ defineExpose({
     <label class="simple-editor-input">
       <textarea
         v-model="post.content"
-        placeholder="请输入您要发表的内容 ..."
+        :placeholder="$t('publish.enter_post_content')"
         :style="{ 'min-height': height, 'height': height }"
         @update:model-value="onContentChange"
         @paste="handleParse"
         @drop="handleDrag"
         @keydown.ctrl.enter="doSubmit"
-        @keydown.meta.enter="doSubmit"
-      />
+        @keydown.meta.enter="doSubmit" />
     </label>
     <div v-show="showImageUpload" class="simple-editor-image-upload">
       <image-upload
         ref="imageUploaderComponent"
         v-model="post.imageList"
-        @update:model-value="onImageListChange"
-      />
+        @update:model-value="onImageListChange" />
     </div>
   </div>
 </template>
@@ -114,7 +112,7 @@ defineExpose({
       display: flex;
       padding: 0 10px;
 
-      i {
+      .upload-icon {
         cursor: pointer;
         margin-left: 20px;
         font-size: 24px;
@@ -128,7 +126,7 @@ defineExpose({
     .publish-container {
       margin-left: auto;
 
-      > .button-publish {
+      >.button-publish {
         margin-left: auto;
 
         ::v-deep span {
@@ -136,7 +134,7 @@ defineExpose({
         }
       }
 
-      > .tip {
+      >.tip {
         font-size: 14px;
         margin-right: 10px;
         color: var(--text-color4);

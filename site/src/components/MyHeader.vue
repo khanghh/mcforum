@@ -1,33 +1,20 @@
 <template>
-  <nav
-    class="navbar has-shadow is-fixed-top"
-    role="navigation"
-    aria-label="main navigation"
-  >
+  <nav class="navbar has-shadow is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="container">
       <div class="navbar-brand">
         <nuxt-link to="/" class="navbar-item">
           <img :alt="config.siteTitle" src="~/assets/images/logo.png" />
         </nuxt-link>
-        <a
-          :class="{ 'is-active': navbarActive }"
-          class="navbar-burger burger"
-          data-target="navbarBasic"
-          @click="toggleNav"
-        >
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
+        <a :class="{ 'is-active': navbarActive }" class="navbar-burger burger" data-target="navbarBasic"
+          @click="toggleNav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
         </a>
       </div>
       <div :class="{ 'is-active': navbarActive }" class="navbar-menu">
         <div class="navbar-start">
-          <nuxt-link
-            v-for="(nav, index) in config.siteNavs"
-            :key="index"
-            :to="nav.url"
-            class="navbar-item"
-          >
+          <nuxt-link v-for="(nav, index) in config.siteNavs" :key="index" :to="nav.url" class="navbar-item">
             {{ nav.title }}
           </nuxt-link>
         </div>
@@ -38,47 +25,42 @@
             <!-- <nuxt-link to="/search">xxxx</nuxt-link> -->
           </div>
 
-          <div class="navbar-item">
+          <div class="navbar-item" v-if="user">
             <create-topic-btn />
           </div>
 
-          <msg-notice v-if="user" />
+          <div class="navbar-item dropdown is-hoverable is-right msg-notice" v-if="user">
+            <msg-notice />
+          </div>
 
-          <div
-            v-if="user"
-            class="navbar-item has-dropdown is-hoverable user-menus"
-          >
+          <div v-if="user" class="navbar-item has-dropdown is-hoverable user-menus">
             <div class="navbar-link">
               <MyAvatar :user="user" :size="24" />
-              <span
-                :to="`/user/${user.id}`"
-                class="user-menus-nickname ellipsis"
-                >{{ user.nickname }}</span
-              >
+              <span :to="`/user/${user.id}`" class="user-menus-nickname ellipsis">{{ user.nickname }}</span>
             </div>
             <div class="navbar-dropdown">
               <nuxt-link class="navbar-item" :to="`/user/${user.id}`">
-                <i class="iconfont icon-username" />
-                <span>个人中心</span>
+                <icon name="UserRound" />
+                <span>{{ $t('navbar.profile') }}</span>
               </nuxt-link>
               <nuxt-link class="navbar-item" to="/user/favorites">
-                <i class="iconfont icon-favorite" />
-                <span>我的收藏</span>
+                <icon name="Star" />
+                <span>{{ $t('navbar.favorites') }}</span>
               </nuxt-link>
               <nuxt-link class="navbar-item" to="/user/profile">
-                <i class="iconfont icon-edit" />
-                <span>编辑资料</span>
+                <icon name="Pencil" />
+                <span>{{ $t('navbar.edit_profile') }}</span>
               </nuxt-link>
               <a class="navbar-item" @click="signout">
-                <i class="iconfont icon-log-out" />
-                <span>退出登录</span>
+                <icon name="LogOut" />
+                <span>{{ $t('navbar.logout') }}</span>
               </a>
             </div>
           </div>
           <div v-else class="navbar-item">
             <div class="buttons">
               <nuxt-link class="button login-btn" to="/user/signin">
-                登录
+                {{ $t('page.signin') }}
               </nuxt-link>
             </div>
           </div>
@@ -92,6 +74,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const userStore = useUserStore();
 const configStore = useConfigStore();
 
@@ -105,7 +88,7 @@ function toggleNav() {
 }
 
 async function signout() {
-  if (confirm("确定退出登录吗？")) {
+  if (confirm(i18n.t('dialog.message.sign_out_alert'))) {
     await userStore.signout();
     useLinkTo("/");
   }
@@ -126,6 +109,7 @@ async function signout() {
     color: var(--text-color);
     background-color: #3174dc;
     width: 100px;
+
     &:hover {
       color: var(--text-color);
       background-color: #4d91fa;
@@ -135,6 +119,7 @@ async function signout() {
   .login-btn {
     height: 32px;
     border-color: #000; // TODO
+
     &:hover {
       color: var(--text-color3);
       border-color: var(--text-color3);
@@ -158,17 +143,20 @@ async function signout() {
       text-overflow: ellipsis;
     }
   }
+
   .navbar-dropdown {
     border: 1px solid var(--border-color);
 
     a {
       display: flex;
       align-items: center;
+
       // padding: 8px 16px;
       img {
         width: 20px;
         height: 20px;
       }
+
       span {
         margin-left: 10px;
         width: 56px;

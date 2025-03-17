@@ -2,7 +2,7 @@
   <section class="main">
     <div v-if="isPending" class="container main-container">
       <div class="notification is-warning" style="width: 100%; margin: 20px 0">
-        文章正在审核中
+        {{ $t('publish.article_under_review') }}
       </div>
     </div>
     <div class="container main-container left-main size-320">
@@ -10,8 +10,7 @@
         <article
           class="article-item article-detail"
           itemscope
-          itemtype="http://schema.org/BlogPosting"
-        >
+          itemtype="http://schema.org/BlogPosting">
           <div class="main-content">
             <div class="article-header">
               <div class="article-title-wrapper">
@@ -24,22 +23,18 @@
               </div>
               <div class="article-meta">
                 <span class="article-meta-item">
-                  由
                   <nuxt-link
                     :to="'/user/' + article.user.id"
                     class="article-author"
                     itemprop="author"
                     itemscope
-                    itemtype="http://schema.org/Person"
-                    ><span itemprop="name">{{
-                      article.user.nickname
-                    }}</span></nuxt-link
-                  >发布于
+                    itemtype="http://schema.org/Person">
+                    <span itemprop="name">{{ article.user.nickname }}</span>
+                  </nuxt-link>
+                  {{ $t('feed.published_on') }}
                   <time
                     :datetime="useFormatDate(article.createTime)"
-                    itemprop="datePublished"
-                    >{{ usePrettyDate(article.createTime) }}</time
-                  >
+                    itemprop="datePublished">{{ usePrettyDate(article.createTime) }}</time>
                 </span>
               </div>
             </div>
@@ -47,8 +42,7 @@
             <div
               class="article-content content line-numbers"
               itemprop="articleBody"
-              v-html="article.content"
-            ></div>
+              v-html="article.content"></div>
 
             <!--节点、标签-->
             <div class="article-tags">
@@ -56,9 +50,7 @@
                 v-for="tag in article.tags"
                 :key="tag.id"
                 :to="'/articles/tag/' + tag.id"
-                class="article-tag"
-                >#{{ tag.name }}</nuxt-link
-              >
+                class="article-tag">#{{ tag.name }}</nuxt-link>
             </div>
           </div>
         </article>
@@ -67,8 +59,7 @@
         <comment
           :entity-id="article.id"
           :comment-count="article.commentCount"
-          entity-type="article"
-        />
+          entity-type="article" />
       </div>
       <div class="right-container">
         <user-info :user="article.user" />
@@ -78,6 +69,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const route = useRoute();
 const { data: article, error } = await useAsyncData(() =>
   useMyFetch(`/api/article/${route.params.id}`)
@@ -88,7 +80,7 @@ if (error.value) {
   // error.value.message
   throw createError({
     statusCode: 500,
-    message: error.value.message || "你访问的页面发生错误!",
+    message: error.value.message || i18n.t('alert.internal_server_error'),
   });
 }
 
@@ -110,7 +102,7 @@ const isPending = computed(() => {
     display: flex;
     position: relative;
     overflow: hidden;
-    transition: background 0.5s;
+    transition: background-color 0.5s;
     border-radius: 3px;
     background: var(--bg-color);
 
@@ -145,6 +137,7 @@ const isPending = computed(() => {
 
     .article-title-wrapper {
       display: flex;
+
       .article-title {
         width: 100%;
         color: var(--text-color);
@@ -154,6 +147,7 @@ const isPending = computed(() => {
         font-size: 18px;
         line-height: 30px;
       }
+
       .article-manage-menu {
         min-width: max-content;
       }
@@ -161,6 +155,7 @@ const isPending = computed(() => {
 
     .article-tags {
       margin-top: 10px;
+
       .article-tag {
         height: 25px;
         padding: 0 8px;
@@ -244,7 +239,7 @@ const isPending = computed(() => {
     margin-right: 5px;
     line-height: 32px;
 
-    & > span {
+    &>span {
       margin-left: 5px;
 
       a {

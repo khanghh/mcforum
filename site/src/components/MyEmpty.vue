@@ -1,16 +1,5 @@
-<script>
-export default {
-  props: {
-    showLogo: {
-      type: Boolean,
-      default: true,
-    },
-    description: {
-      type: String,
-      default: "暂无数据",
-    },
-  },
-};
+<script setup>
+const showLogo = true
 </script>
 
 <template>
@@ -19,22 +8,13 @@ export default {
       <g fill="none" fill-rule="evenodd" transform="translate(4 3)">
         <g fill="#F7F7F7">
           <path
-            d="M9 10h23.751v3.221H9zM9 16.494h41.083v4.026H9zM9 26.104h23.751v3.221H9zM9 42.208h23.751v3.221H9zM9 33.351h41.083v4.026H9zM9 49.455h41.083v4.026H9z"
-          />
+            d="M9 10h23.751v3.221H9zM9 16.494h41.083v4.026H9zM9 26.104h23.751v3.221H9zM9 42.208h23.751v3.221H9zM9 33.351h41.083v4.026H9zM9 49.455h41.083v4.026H9z" />
         </g>
-        <rect
-          width="56"
-          height="60"
-          x="1.139"
-          y="1.338"
-          stroke="#EBEBEB"
-          stroke-width="2"
-          rx="6"
-        />
+        <rect width="56" height="60" x="1.139" y="1.338" stroke="#EBEBEB" stroke-width="2" rx="6" />
       </g>
     </svg>
     <span>
-      {{ description }}
+      {{ $t('feed.no_data_available') }}
     </span>
   </div>
 </template>
@@ -55,6 +35,7 @@ export default {
   svg {
     height: 100px;
   }
+
   span {
     margin-top: 20px;
     font-size: 15px;

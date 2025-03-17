@@ -10,8 +10,7 @@
             <load-more-async
               v-slot="{ results }"
               url="/api/topic/topics"
-              :params="{ nodeId: nodeId }"
-            >
+              :params="{ nodeId: nodeId }">
               <topic-list :topics="results" show-sticky />
             </load-more-async>
           </div>
@@ -53,7 +52,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: useSiteTitle(nodeName, "话题"),
+  title: useSiteTitle(nodeName),
   meta: [
     {
       hid: "description",

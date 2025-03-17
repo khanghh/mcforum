@@ -3,17 +3,14 @@
   <el-dropdown
     v-if="menus && menus.length"
     trigger="click"
-    @command="handleCommand"
-  >
-    <span class="el-dropdown-link">管理</span>
+    @command="handleCommand">
+    <span class="el-dropdown-link">{{ $t('publish.manage') }}</span>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
           v-for="item in menus"
           :key="item.command"
-          :command="item.command"
-          >{{ item.label }}</el-dropdown-item
-        >
+          :command="item.command">{{ item.label }}</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -21,6 +18,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -43,37 +41,37 @@ const menus = computed(() => {
   if (isTopicOwner && topic.value.type === 0) {
     items.push({
       command: "edit",
-      label: "修改",
+      label: i18n.t('publish.action.edit'),
     });
   }
   if (isTopicOwner || isOwner || isAdmin) {
     items.push({
       command: "delete",
-      label: "删除",
+      label: i18n.t('publish.action.delete'),
     });
   }
   if (isOwner || isAdmin) {
     items.push({
       command: "recommend",
-      label: topic.value.recommend ? "取消推荐" : "推荐",
+      label: topic.value.recommend ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend'),
     });
   }
   if (isOwner || isAdmin) {
     items.push({
       command: "sticky",
-      label: topic.value.sticky ? "取消置顶" : "置顶",
+      label: topic.value.sticky ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin'),
     });
   }
   if (isOwner || isAdmin) {
     items.push({
       command: "forbidden7Days",
-      label: "禁言7天",
+      label: i18n.t('profile.actions.mute_7days')
     });
   }
   if (isOwner) {
     items.push({
       command: "forbiddenForever",
-      label: "永久禁言",
+      label: i18n.t('profile.actions.mute_permanent')
     });
   }
   return items;
@@ -104,24 +102,24 @@ async function forbidden(days) {
         days,
       },
     });
-    useMsgSuccess("禁言成功");
+    useMsgSuccess(i18n.t('alert.mute_user_success'));
   } catch (e) {
-    useMsgError("禁言失败");
+    useMsgError(i18n.t('alert.mute_user_failure'));
   }
 }
 function deleteTopic() {
-  useConfirm("是否确认删除该帖子？").then(function () {
+  useConfirm(i18n.t('dialog.message.confirm_delete_post')).then(function () {
     useHttpPost(`/api/topic/delete/${topic.value.id}`)
       .then(() => {
         useMsg({
-          message: "删除成功",
+          message: i18n.t('alert.delete_success'),
           onClose() {
             useLinkTo("/topics");
           },
         });
       })
       .catch((e) => {
-        useMsgError("删除失败：" + (e.message || e));
+        useMsgError(i18n.t('alert.delete_success', { error: (e.message || e) }));
       });
   });
 }
@@ -129,8 +127,8 @@ function editTopic() {
   useLinkTo(`/topic/edit/${topic.value.id}`);
 }
 function switchRecommend() {
-  const action = topic.value.recommend ? "取消推荐" : "推荐";
-  useConfirm(`是否确认${action}该帖子？`).then(function () {
+  const action = topic.value.recommend ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
+  useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
     const recommend = !topic.value.recommend;
     useHttpPostForm(`/api/topic/recommend/${topic.value.id}`, {
       body: {
@@ -150,8 +148,8 @@ function switchRecommend() {
   });
 }
 function switchSticky() {
-  const action = topic.value.sticky ? "取消置顶" : "置顶";
-  useConfirm(`是否确认${action}该帖子？`).then(function () {
+  const action = topic.value.sticky ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
+  useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
     const sticky = !topic.value.sticky;
     useHttpPostForm(`/api/topic/sticky/${topic.value.id}`, {
       body: {
@@ -178,6 +176,7 @@ function switchSticky() {
   color: var(--text-color3);
   font-size: 12px;
 }
+
 .el-dropdown-menu__item {
   font-size: 12px;
 }

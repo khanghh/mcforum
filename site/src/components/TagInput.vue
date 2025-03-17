@@ -3,18 +3,16 @@
     <input id="tags" v-model="tags" name="tags" type="hidden" />
     <div class="tags-selected">
       <div v-for="tag in tags" :key="tag" class="tag-item">
-        <span>{{ tag }}</span>
-        <i
-          :data-name="tag"
-          class="iconfont icon-close"
-          @click="clickRemoveTag"
-        />
+        <span style="display: inline-flex;">
+          {{ tag }}
+          <icon name="X" :data-name="tag" size="1em" @click="clickRemoveTag" />
+        </span>
       </div>
     </div>
     <input
       ref="tagInput"
       v-model="inputTag"
-      placeholder="标签"
+      :placeholder="$t('publish.add_some_tags')"
       class="input"
       type="text"
       @input="autocomplete"
@@ -27,8 +25,7 @@
       @keydown.esc="close"
       @focus="openRecommendTags"
       @blur="closeRecommendTags"
-      @click="openRecommendTags"
-    />
+      @click="openRecommendTags" />
     <transition name="el-zoom-in-bottom">
       <div v-show="autocompleteTags.length > 0" class="autocomplete-tags">
         <div class="tags-container">
@@ -39,8 +36,7 @@
               :class="{ active: index === selectIndex }"
               class="tag-item"
               @click="selectTag(index)"
-              v-text="item"
-            />
+              v-text="item" />
           </section>
         </div>
       </div>
@@ -49,18 +45,17 @@
       <div v-show="showRecommendTags" class="recommend-tags">
         <div class="tags-container">
           <div class="header">
-            <span>推荐标签</span>
-            <span class="close-recommend"
-              ><i class="iconfont icon-close" @click="closeRecommendTags"
-            /></span>
+            <span>{{ $t('publish.recommended_tags') }}</span>
+            <span class="close-recommend">
+              <icon name="X" @click="closeRecommendTags" />
+            </span>
           </div>
           <a
             v-for="tag in recommendTags"
             :key="tag"
             class="tag-item"
             @click="addRecommendTag(tag)"
-            v-text="tag"
-          />
+            v-text="tag" />
         </div>
       </div>
     </transition>
@@ -291,12 +286,7 @@ function close() {
       font-size: 12px;
       white-space: nowrap;
 
-      i {
-        font-size: 12px;
-        margin-left: 4px;
-      }
-
-      i:hover {
+      svg:hover {
         color: red;
         cursor: pointer;
       }
@@ -368,6 +358,7 @@ function close() {
         .close-recommend {
           float: right;
           cursor: pointer;
+
           &:hover {
             color: red;
           }

@@ -15,6 +15,7 @@
     "@nuxt/devtools": "latest",
     "@nuxtjs/color-mode": "3.4.2",
     "@nuxtjs/eslint-module": "4.1.0",
+    "@nuxtjs/i18n": "9.3.1",
     "@vueuse/core": "10.11.0",
     "@vueuse/nuxt": "10.11.0",
     "bulma": "1.0.1",
@@ -27,7 +28,9 @@
   "dependencies": {
     "@pinia/nuxt": "0.5.1",
     "animate.css": "4.1.1",
+    "lucide-vue-next": "0.482.0",
     "md-editor-v3": "4.17.3",
     "nuxt-lazy-load": "3.0.4"
-  }
+  },
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6"
 }

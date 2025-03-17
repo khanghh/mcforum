@@ -3,30 +3,26 @@
     <div
       class="dialog-mask"
       :class="{ visible: visible }"
-      :style="{ zIndex: zIndex }"
-    ></div>
+      :style="{ zIndex: zIndex }"></div>
     <transition
       appear
       enter-active-class="animate__animated animate__fadeIn"
       leave-active-class="animate__animated animate__fadeOut"
-      mode="out-in"
-    >
+      mode="out-in">
       <div
         v-if="visible"
         class="dialog-wrapper"
-        :style="{ zIndex: zIndex + 1 }"
-      >
+        :style="{ zIndex: zIndex + 1 }">
         <div
           class="dialog-content"
           :style="{
             width: dialogContentWidth,
             maxWidth: dialogContentMaxWidth,
-          }"
-        >
+          }">
           <div class="dialog-header">
             <div class="dialog-title">{{ title }}</div>
             <div class="dialog-close">
-              <img src="~/assets/images/close2.png" @click="close" />
+              <icon name="X" @click="close"></icon>
             </div>
           </div>
           <div class="dialog-main">
@@ -34,10 +30,9 @@
           </div>
           <div
             class="dialog-footer"
-            :style="{ justifyContent: btnsCenter ? 'center' : 'flex-end' }"
-          >
+            :style="{ justifyContent: btnsCenter ? 'center' : 'flex-end' }">
             <el-button v-if="cancelBtnVisible" @click="cancel">
-              取消
+              {{ $t('dialog.button.cancel') }}
             </el-button>
             <el-button v-if="okBtnVisible" type="primary" @click="ok">
               {{ okBtnText }}
@@ -50,6 +45,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const emits = defineEmits(["update:visible", "ok", "cancel"]);
 defineExpose({
   show,
@@ -93,9 +89,11 @@ const props = defineProps({
   },
   okBtnText: {
     type: String,
-    default: "确定",
+    default: "",
   },
 });
+
+const okBtnText = computed(() => props.okBtnText || i18n.t('dialog.button.confirm'))
 
 const dialogContentWidth = computed(() => {
   if (props.width > 0) {
@@ -143,6 +141,7 @@ function cancel() {
     display: block;
   }
 }
+
 .dialog-wrapper {
   // transition: all 2s;
   position: fixed;
@@ -163,27 +162,32 @@ function cancel() {
     border-radius: 8px;
 
     padding: 24px;
+
     .dialog-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       .dialog-title {
         font-size: 16px;
         font-weight: 500;
         color: var(--text-color);
       }
+
       .dialog-close {
         cursor: pointer;
         padding: 0 0 0 10px;
-        img {
-          width: 20px;
-          height: 20px;
+
+        svg:hover {
+          color: red;
         }
       }
     }
+
     .dialog-main {
       padding: 12px 0;
     }
+
     .dialog-footer {
       display: flex;
       align-items: center;

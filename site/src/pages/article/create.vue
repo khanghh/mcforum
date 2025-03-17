@@ -7,26 +7,21 @@
         </div>
         <div class="message-body">
           发表话题前，请先前往
-          <strong
-            ><nuxt-link
+          <strong><nuxt-link
               to="/user/profile/account"
-              style="color: var(--text-link-color)"
-              >个人中心 &gt; 账号设置</nuxt-link
-            ></strong
-          >
+              style="color: var(--text-link-color)">个人中心 &gt; 账号设置</nuxt-link></strong>
           页面设置邮箱，并完成邮箱认证。
         </div>
       </article>
       <div v-else class="article-create-form">
-        <div class="article-form-title">发文章</div>
+        <div class="article-form-title">{{ $t('page.create_article') }}</div>
         <div class="field">
           <div class="control">
             <input
               v-model="postForm.title"
               class="input"
               type="text"
-              placeholder="标题"
-            />
+              :placeholder="$t('publish.enter_title')" />
           </div>
         </div>
 
@@ -34,8 +29,7 @@
           <div class="control">
             <markdown-editor
               v-model="postForm.content"
-              placeholder="请输入内容，将图片复制或拖入编辑器可上传"
-            />
+              :placeholder="$t('publish.enter_content')" />
           </div>
         </div>
 
@@ -50,8 +44,8 @@
             <image-upload v-model="postForm.cover" :limit="1" size="120px">
               <template #add-image-button>
                 <div class="cover-add-btn">
-                  <i class="iconfont icon-add" />
-                  <span>封面</span>
+                  <icon name="Plus" color="#1c71d8" size="50px" />
+                  <span>{{ $t('publish.add_image') }}</span>
                 </div>
               </template>
             </image-upload>
@@ -60,20 +54,12 @@
 
         <div class="field is-grouped">
           <div class="control">
-            <a
-              v-if="publishing"
-              :class="{ 'is-loading': publishing }"
-              disabled
-              class="button is-success"
-              >发表</a
-            >
-            <a
-              v-else
-              :class="{ 'is-loading': publishing }"
-              class="button is-success"
-              @click="submitCreate"
-              >发表</a
-            >
+            <a v-if="publishing" :class="{ 'is-loading': publishing }" disabled class="button is-success">
+              {{ $t('form.button.post_article') }}
+            </a>
+            <a v-else :class="{ 'is-loading': publishing }" class="button is-success" @click="submitCreate">
+              {{ $t('form.button.post_article') }}
+            </a>
           </div>
         </div>
       </div>
@@ -82,6 +68,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const publishing = ref(false); // 当前是否正处于发布中...
 const postForm = ref({
   title: "",
@@ -99,7 +86,7 @@ const isNeedEmailVerify = computed(() => {
 });
 
 useHead({
-  title: useSiteTitle("发表文章"),
+  title: useSiteTitle(i18n.t('page.create_article')),
 });
 
 definePageMeta({
@@ -153,6 +140,7 @@ async function submitCreate() {
     font-weight: 500;
     margin-bottom: 10px;
   }
+
   .field {
     margin-bottom: 10px;
 

@@ -3,9 +3,8 @@
     <button
       class="button follow-btn"
       :class="{ 'is-followed': followed }"
-      @click="follow"
-    >
-      <i class="iconfont icon-add" />
+      @click="follow">
+      <icon name="Plus" />
       <span>{{ followed ? "已关注" : "关注" }}</span>
     </button>
   </div>
@@ -69,6 +68,7 @@ async function follow() {
     background-color: #7ba5f9; // TODO
     border-color: #7ba5f9;
   }
+
   i {
     font-size: 12px;
     margin-right: 5px;

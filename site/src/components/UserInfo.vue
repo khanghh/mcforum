@@ -25,19 +25,19 @@ export default {
     <div class="extra-info">
       <ul class="extra-data">
         <li>
-          <span>积分</span><br />
+          <span>{{ $t('profile.publish.points') }}</span><br />
           <b>{{ user.score }}</b>
         </li>
         <li>
-          <span>话题</span><br />
+          <span>{{ $t('profile.publish.topics') }}</span><br />
           <b>{{ user.topicCount }}</b>
         </li>
         <li>
-          <span>评论</span><br />
+          <span>{{ $t('profile.publish.comments') }}</span><br />
           <b>{{ user.commentCount }}</b>
         </li>
         <li>
-          <span>注册排名</span><br />
+          <span>{{ $t('profile.info.user_id') }}</span><br />
           <b>{{ user.id }}</b>
         </li>
       </ul>
@@ -67,6 +67,7 @@ export default {
       font-size: 15px;
       font-weight: 700;
       margin: 10px auto;
+
       a:hover {
         text-decoration: underline;
       }
@@ -89,11 +90,14 @@ export default {
     padding: 5px 0;
     background: rgba(0, 0, 0, 0.01);
     border-top: 1px solid var(--border-color);
+
     ul.extra-data {
       display: flex;
+
       li {
         width: 100%;
         text-align: center;
+
         span {
           font-size: 13px;
           font-weight: 400;

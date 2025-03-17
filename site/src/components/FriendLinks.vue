@@ -1,10 +1,8 @@
 <template>
   <div v-if="links && links.length" class="widget">
     <div class="widget-header">
-      <span>友情链接</span>
-      <span class="slot"
-        ><nuxt-link to="/links">查看更多&gt;&gt;</nuxt-link></span
-      >
+      <span>{{ $t('widget.links') }}</span>
+      <span class="slot"><nuxt-link to="/links">{{ $t('widget.view_more') }}</nuxt-link></span>
     </div>
     <div class="widget-content">
       <ul class="links">
@@ -18,9 +16,7 @@
               :href="link.url"
               :title="link.title"
               class="link-title"
-              target="_blank"
-              >{{ link.title }}</a
-            >
+              target="_blank">{{ link.title }}</a>
             <p class="link-summary">
               {{ link.summary }}
             </p>

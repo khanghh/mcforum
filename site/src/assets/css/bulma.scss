@@ -42,6 +42,7 @@
     --border-hover-color: #1878f3;
 
     --color-red: #fa5151;
+    --color-blue: #1c71d8;
 }
 
 @mixin useDarkMode() {
@@ -74,6 +75,7 @@
     --border-hover-color: findColorInvert(#1878f3);
 
     --color-red: #fa5151;
+    --color-blue: #1c71d8;
 
     .tag {
         background-color: #3a3a3a;

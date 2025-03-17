@@ -10,8 +10,7 @@
             <load-more-async
               v-slot="{ results }"
               url="/api/topic/tag/topics"
-              :params="{ tagId: tagId }"
-            >
+              :params="{ tagId: tagId }">
               <topic-list :topics="results" />
             </load-more-async>
           </div>
@@ -28,12 +27,13 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const route = useRoute();
 const tagId = route.params.id;
 const { data: tag } = await useAsyncData(() => useMyFetch(`/api/tag/${tagId}`));
 
 useHead({
-  title: useSiteTitle(tag.value.name, "话题"),
+  title: useSiteTitle(i18n.t('page.by_tag', { tag: tag.value.name })),
   meta: [
     {
       hid: "description",

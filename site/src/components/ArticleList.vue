@@ -3,12 +3,9 @@
     <div v-for="article in articles" :key="article.id" class="article-item">
       <div class="article-item-main">
         <div class="article-info">
-          <nuxt-link
-            class="article-title"
-            :to="'/article/' + article.id"
-            target="_blank"
-            >{{ article.title }}</nuxt-link
-          >
+          <nuxt-link class="article-title" :to="'/article/' + article.id">
+            {{ article.title }}
+          </nuxt-link>
 
           <div class="article-summary">
             {{ article.summary }}
@@ -18,27 +15,19 @@
         <div class="article-meta">
           <div class="article-meta-left">
             <span class="article-meta-item">
-              <nuxt-link
-                :to="'/user/' + article.user.id"
-                class="article-author"
-              >
+              <nuxt-link :to="'/user/' + article.user.id" class="article-author">
                 <span>{{ article.user.nickname }}</span>
               </nuxt-link>
-              <time :datetime="useFormatDate(article.createTime)"
-                >发布于 {{ usePrettyDate(article.createTime) }}</time
-              >
+              <time :datetime="useFormatDate(article.createTime)">
+                {{ $t('feed.published') }}
+                {{ usePrettyDate(article.createTime) }}</time>
             </span>
           </div>
 
           <div class="article-meta-right">
             <div v-if="article.tags && article.tags.length > 0">
-              <nuxt-link
-                v-for="tag in article.tags"
-                :key="tag.id"
-                class="article-tag"
-                :to="'/articles/tag/' + tag.id"
-                >{{ tag.name }}</nuxt-link
-              >
+              <nuxt-link v-for="tag in article.tags" :key="tag.id" class="article-tag"
+                :to="'/articles/tag/' + tag.id">{{ tag.name }}</nuxt-link>
             </div>
           </div>
         </div>
@@ -51,6 +40,7 @@
 </template>
 
 <script setup>
+
 const props = defineProps({
   articles: {
     type: Array,
@@ -68,7 +58,7 @@ const props = defineProps({
 
   .article-item {
     padding: 12px 12px;
-    transition: background 0.5s;
+    transition: background-color 0.5s;
     border-radius: 3px;
     background: var(--bg-color);
     line-height: 24px;
@@ -161,6 +151,7 @@ const props = defineProps({
     .article-item-cover {
       display: flex;
       margin-left: 6px;
+
       img {
         min-width: 140px;
         min-height: 90px;

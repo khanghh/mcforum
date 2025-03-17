@@ -4,9 +4,8 @@
       <div v-if="isPending" class="container main-container">
         <div
           class="notification is-warning"
-          style="width: 100%; margin: 20px 0"
-        >
-          帖子正在审核中
+          style="width: 100%; margin: 20px 0">
+          {{ $t('alert.post_under_review') }}
         </div>
       </div>
       <div class="container main-container left-main size-360">
@@ -15,8 +14,7 @@
             <article
               class="topic-detail"
               itemscope
-              itemtype="http://schema.org/BlogPosting"
-            >
+              itemtype="http://schema.org/BlogPosting">
               <div class="topic-header">
                 <div class="topic-header-left">
                   <my-avatar :user="topic.user" :size="45" />
@@ -27,23 +25,18 @@
                       itemprop="author"
                       itemscope
                       itemtype="http://schema.org/Person"
-                      :to="`/user/${topic.user.id}`"
-                    >
+                      :to="`/user/${topic.user.id}`">
                       {{ topic.user.nickname }}
                     </nuxt-link>
                   </div>
                   <div class="topic-meta">
                     <span class="meta-item">
-                      发布于
+                      {{ $t('feed.published_on') }}
                       <time
                         :datetime="usePrettyDate(topic.createTime)"
-                        itemprop="datePublished"
-                        >{{ usePrettyDate(topic.createTime) }}</time
-                      >
+                        itemprop="datePublished">{{ usePrettyDate(topic.createTime) }}</time>
                     </span>
-                    <span v-if="topic.ipLocation" class="meta-item"
-                      >IP属地{{ topic.ipLocation }}</span
-                    >
+                    <span v-if="topic.ipLocation" class="meta-item">{{ topic.ipLocation }}</span>
                   </div>
                 </div>
                 <div class="topic-header-right">
@@ -57,45 +50,35 @@
                 :class="{
                   'topic-tweet': topic.type === 1,
                 }"
-                itemprop="articleBody"
-              >
+                itemprop="articleBody">
                 <h1 v-if="topic.title" class="topic-title" itemprop="headline">
                   {{ topic.title }}
                 </h1>
-                <div
-                  class="topic-content-detail line-numbers"
-                  v-html="topic.content"
-                />
-                <ul
-                  v-if="topic.imageList && topic.imageList.length"
-                  class="topic-image-list"
-                >
+                <div class="topic-content-detail line-numbers" v-html="topic.content" />
+                <ul v-if="topic.imageList && topic.imageList.length" class="topic-image-list">
                   <li v-for="(image, index) in topic.imageList" :key="index">
                     <div class="image-item">
                       <el-image
                         :src="image.preview"
                         :preview-src-list="imageUrls"
-                        :initial-index="index"
-                      />
+                        :initial-index="index" />
                     </div>
                   </li>
                 </ul>
-                <div
-                  v-if="hideContent && hideContent.exists"
-                  class="topic-content-detail hide-content"
-                >
+
+                <div v-if="hideContent && hideContent.exists" class="topic-content-detail hide-content">
                   <div v-if="hideContent.show" class="widget has-border">
                     <div class="widget-header">
                       <span>
-                        <i class="iconfont icon-lock" />
-                        <span>隐藏内容</span>
+                        <icon name="LockOpen" />
+                        <span>{{ $t('publish.hidden_content_unlocked') }}</span>
                       </span>
                     </div>
                     <div class="widget-content" v-html="hideContent.content" />
                   </div>
                   <div v-else class="hide-content-tip">
-                    <i class="iconfont icon-lock" />
-                    <span>隐藏内容，请回复后查看</span>
+                    <icon name="Lock" />
+                    <span>{{ $t('publish.hidden_content_locked') }}</span>
                   </div>
                 </div>
               </div>
@@ -105,16 +88,14 @@
                 <nuxt-link
                   v-if="topic.node"
                   :to="`/topics/node/${topic.node.id}`"
-                  class="topic-tag"
-                >
+                  class="topic-tag">
                   {{ topic.node.name }}
                 </nuxt-link>
                 <nuxt-link
                   v-for="tag in topic.tags"
                   :key="tag.id"
                   :to="`/topics/tag/${tag.id}`"
-                  class="topic-tag"
-                >
+                  class="topic-tag">
                   #{{ tag.name }}
                 </nuxt-link>
               </div>
@@ -122,52 +103,40 @@
               <!-- 点赞用户列表 -->
               <div
                 v-if="likeUsers && likeUsers.length"
-                class="topic-like-users"
-              >
+                class="topic-like-users">
                 <my-avatar
                   v-for="likeUser in likeUsers"
                   :key="likeUser.id"
                   :user="likeUser"
                   :size="24"
-                  has-border
-                />
+                  has-border />
                 <span class="like-count">{{ topic.likeCount }}</span>
               </div>
 
               <!-- 功能按钮 -->
               <div class="topic-actions">
                 <div class="action disabled">
-                  <i class="action-icon iconfont icon-read" />
+                  <icon name="BookOpenText" size="1em" />
                   <div class="action-text">
-                    <span>浏览</span>
+                    <span>{{ $t('feed.view_count') }}</span>
                     <span v-if="topic.viewCount > 0" class="action-text">
                       ({{ topic.viewCount }})
                     </span>
                   </div>
                 </div>
                 <div class="action" @click="like(topic)">
-                  <i
-                    class="action-icon iconfont icon-like"
-                    :class="{ 'checked-icon': liked }"
-                  />
+                  <icon name="ThumbsUp" color="#1c71d8" :filled="liked" />
                   <div class="action-text">
-                    <span>点赞</span>
+                    <span>{{ $t('feed.like_count') }}</span>
                     <span v-if="topic.likeCount > 0">
                       ({{ topic.likeCount }})
                     </span>
                   </div>
                 </div>
                 <div class="action" @click="addFavorite(topic.id)">
-                  <i
-                    class="action-icon iconfont icon-favorite"
-                    :class="{
-                      'icon-has-favorite': topic.favorited,
-                      'icon-favorite': !topic.favorited,
-                      'checked-icon': topic.favorited,
-                    }"
-                  />
+                  <icon name="Star" color="#f6d32d" :filled="topic.favorited" />
                   <div class="action-text">
-                    <span>收藏</span>
+                    <span>{{ $t('feed.favorite') }}</span>
                   </div>
                 </div>
               </div>
@@ -178,8 +147,7 @@
               :entity-id="topic.id"
               :comment-count="topic.commentCount"
               entity-type="topic"
-              @created="commentCreated"
-            />
+              @created="commentCreated" />
           </div>
         </div>
         <div class="right-container">
@@ -191,6 +159,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const route = useRoute();
 const hideContent = ref(null);
 
@@ -245,7 +214,7 @@ async function like() {
       topic.value.likeCount =
         topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0;
 
-      useMsgSuccess("已取消点赞");
+      useMsgSuccess(i18n.t('alert.unliked_success'));
       await refreshLikeUsers();
     } else {
       await useHttpPostForm("/api/like/like", {
@@ -257,7 +226,7 @@ async function like() {
       liked.value = true;
       topic.value.likeCount++;
 
-      useMsgSuccess("点赞成功");
+      useMsgSuccess(i18n.t('alert.liked_success'));
       await refreshLikeUsers();
     }
   } catch (e) {
@@ -275,7 +244,7 @@ async function addFavorite(topicId) {
         },
       });
       topic.value.favorited = false;
-      useMsgSuccess("已取消收藏");
+      useMsgSuccess(i18n.t('alert.removed_from_favorite'));
     } else {
       await useHttpPostForm("/api/favorite/add", {
         body: {
@@ -284,7 +253,7 @@ async function addFavorite(topicId) {
         },
       });
       topic.value.favorited = true;
-      useMsgSuccess("收藏成功");
+      useMsgSuccess(i18n.t('alert.added_to_favorite'));
     }
   } catch (e) {
     useCatchError(e);

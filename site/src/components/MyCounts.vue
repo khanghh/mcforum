@@ -1,25 +1,21 @@
 <template>
   <div class="widget">
-    <div class="widget-header">个人成就</div>
+    <div class="widget-header">{{ $t("profile.publish.statistics") }}</div>
     <div class="widget-content extra-info">
       <ul>
         <li>
-          <span>积分</span><br />
+          <span>{{ $t("profile.publish.points") }}</span><br />
           <nuxt-link to="/user/scores">
             <b>{{ user.score }}</b>
           </nuxt-link>
         </li>
         <li>
-          <span>话题</span><br />
+          <span>{{ $t("profile.publish.topics") }}</span><br />
           <b>{{ user.topicCount }}</b>
         </li>
         <li>
-          <span>评论</span><br />
+          <span>{{ $t("profile.publish.comments") }}</span><br />
           <b>{{ user.commentCount }}</b>
-        </li>
-        <li>
-          <span>注册排名</span><br />
-          <b>{{ user.id }}</b>
         </li>
       </ul>
     </div>
@@ -41,14 +37,17 @@ export default {
 .extra-info {
   ul {
     display: flex;
+
     li {
       width: 100%;
       text-align: center;
+
       span {
         font-size: 13px;
         font-weight: 400;
         color: var(--text-color3);
       }
+
       a,
       b {
         color: var(--text-color);

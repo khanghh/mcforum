@@ -1,17 +1,12 @@
 <template>
   <ClientOnly>
     <el-dropdown v-if="hasPermission" trigger="click" @command="handleCommand">
-      <span class="el-dropdown-link">管理</span>
+      <span class="el-dropdown-link">{{ $t('publish.manage') }}</span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item command="edit">修改</el-dropdown-item>
-          <el-dropdown-item command="delete">删除</el-dropdown-item>
-          <el-dropdown-item v-if="isOwner || isAdmin" command="forbidden7Days"
-            >禁言7天</el-dropdown-item
-          >
-          <el-dropdown-item v-if="isOwner" command="forbiddenForever"
-            >永久禁言</el-dropdown-item
-          >
+          <el-dropdown-item command="edit">{{ $t('publish.action.edit') }}</el-dropdown-item>
+          <el-dropdown-item command="delete">{{ $t('publish.action.delete') }}</el-dropdown-item>
+          <el-dropdown-item command="pin">{{ $t('publish.action.pin') }}</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -19,6 +14,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const props = defineProps({
   article: {
     type: Object,
@@ -57,24 +53,24 @@ async function forbidden(days) {
         days,
       },
     });
-    useMsgSuccess("禁言成功");
+    useMsgSuccess(i18n.t('alert.mute_user_success'));
   } catch (e) {
-    useMsgError("禁言失败");
+    useMsgError(i18n.t('alert.mute_user_failure'));
   }
 }
 function deleteArticle() {
-  useConfirm("是否确认删除该文章？").then(function () {
+  useConfirm(i18n.t('dialog.message.confirm_delete_article')).then(function () {
     useHttpPost(`/api/article/delete/${props.article.id}`)
       .then(() => {
         useMsg({
-          message: "删除成功",
+          message: i18n.t('alert.delete_success'),
           onClose() {
             useLinkTo("/articles");
           },
         });
       })
       .catch((e) => {
-        useMsgError("删除失败：" + (e.message || e));
+        useMsgError(i18n.t('alert.delete_success', { error: (e.message || e) }));
       });
   });
 }
@@ -88,5 +84,13 @@ function editArticle() {
   cursor: pointer;
   color: var(--text-color3);
   font-size: 12px;
+}
+
+.action-menu {
+  ul {
+    li {
+      text-transform: capitalize;
+    }
+  }
 }
 </style>

@@ -3,61 +3,44 @@
     <div class="container">
       <div class="main-body no-bg">
         <div class="widget signin">
-          <div class="widget-header">登录</div>
+          <div class="widget-header">{{ $t('page.signin') }}</div>
           <div class="widget-content">
             <div class="field">
-              <label class="label">用户名/邮箱</label>
+              <label class="label">{{ $t('form.label.username_or_email') }}</label>
               <div class="control has-icons-left">
-                <input
-                  v-model="form.username"
-                  class="input is-success"
-                  type="text"
-                  placeholder="请输入用户名或邮箱"
-                  @keyup.enter="signin"
-                />
-                <span class="icon is-small is-left"
-                  ><i class="iconfont icon-username"
-                /></span>
+                <input v-model="form.username" class="input is-success" type="text"
+                  :placeholder="$t('form.placeholder.enter_email')" @keyup.enter="signin" />
+                <span class="icon is-small is-left">
+                  <icon name="UserRound" />
+                </span>
               </div>
             </div>
 
             <div class="field">
-              <label class="label">密码</label>
+              <label class="label">{{ $t('form.label.password') }}</label>
               <div class="control has-icons-left">
-                <input
-                  v-model="form.password"
-                  class="input"
-                  type="password"
-                  placeholder="请输入密码"
-                  @keyup.enter="signin"
-                />
-                <span class="icon is-small is-left"
-                  ><i class="iconfont icon-password"
-                /></span>
+                <input v-model="form.password" class="input" type="password"
+                  :placeholder="$t('form.placeholder.enter_password')"
+                  @keyup.enter="signin" />
+                <span class="icon is-small is-left">
+                  <icon name="Lock" />
+                </span>
               </div>
             </div>
 
             <div class="field">
-              <label class="label">验证码</label>
+              <label class="label">{{ $t('form.label.captcha') }}</label>
               <div class="control has-icons-left">
                 <div class="field is-horizontal">
                   <div class="field login-captcha-input">
-                    <input
-                      v-model="form.captchaCode"
-                      class="input"
-                      type="text"
-                      placeholder="验证码"
-                      @keyup.enter="signin"
-                    />
-                    <span class="icon is-small is-left"
-                      ><i class="iconfont icon-captcha"
-                    /></span>
+                    <input v-model="form.captchaCode" class="input" type="text"
+                      :placeholder="$t('form.placeholder.enter_captcha')"
+                      @keyup.enter="signin" />
+                    <span class="icon is-small is-left">
+                      <icon name="ShieldCheck" />
+                    </span>
                   </div>
-                  <div
-                    v-if="form.captchaUrl"
-                    class="field login-captcha-img"
-                    @click="refreshCaptcha"
-                  >
+                  <div v-if="form.captchaUrl" class="field login-captcha-img" @click="refreshCaptcha">
                     <img :src="form.captchaUrl" data-not-lazy />
                   </div>
                 </div>
@@ -65,9 +48,9 @@
             </div>
 
             <div class="field">
-              <button class="button is-link" @click="signin">登录</button>
+              <button class="button is-link" @click="signin">{{ $t('form.button.signin') }}</button>
               <a class="button is-text" @click="toSignup">
-                没有账号？点击这里去注册&gt;&gt;
+                {{ $t('form.link.dont_have_account') }}&gt;&gt;
               </a>
             </div>
           </div>
@@ -78,8 +61,10 @@
 </template>
 
 <script setup>
+const i18n = useI18n()
+
 useHead({
-  title: useSiteTitle("登录"),
+  title: useSiteTitle(i18n.t('page.signin')),
 });
 
 const route = useRoute();
@@ -114,15 +99,15 @@ async function refreshCaptcha() {
 async function signin() {
   try {
     if (!form.username) {
-      useMsgError("请输入用户名或邮箱");
+      useMsgError(i18n.t('alert.username_email_required'));
       return;
     }
     if (!form.password) {
-      useMsgError("请输入密码");
+      useMsgError(i18n.t('alert.password_required'));
       return;
     }
     if (!form.captchaCode) {
-      useMsgError("请输入验证码");
+      useMsgError(i18n.t('alert.captcha_required'));
       return;
     }
 

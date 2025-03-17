@@ -1,15 +1,15 @@
 <template>
   <!-- <client-only> -->
   <el-dropdown placement="bottom" trigger="click" @command="handlePostCommand">
-    <el-button type="primary" :icon="Plus"> 发表 </el-button>
+    <el-button type="primary" :icon="Plus"> {{ $t('navbar.publish') }} </el-button>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item
           v-for="(item, i) in modules"
           :key="i"
           :command="item.command"
-          :class="item.icon"
-        >
+          :class="item.icon">
+          <icon :name="item.icon" />&nbsp;
           {{ item.name }}
         </el-dropdown-item>
       </el-dropdown-menu>
@@ -19,23 +19,24 @@
 </template>
 
 <script setup>
+const i18n = useI18n()
 import { Plus } from "@element-plus/icons-vue";
 
 const modules = ref([
   {
     command: "tweet",
-    name: "发动态",
-    icon: "iconfont icon-tweet2",
+    name: i18n.t('navbar.post_status'),
+    icon: "SquarePen",
   },
   {
     command: "topic",
-    name: "发帖子",
-    icon: "iconfont icon-topic",
+    name: i18n.t('navbar.create_topic'),
+    icon: "MessageSquareText",
   },
   {
     command: "article",
-    name: "发文章",
-    icon: "iconfont icon-article",
+    name: i18n.t('navbar.create_article'),
+    icon: "FileText",
   },
 ]);
 

@@ -1,41 +1,35 @@
 <template>
-  <div
-    ref="searchForm"
+  <div ref="searchForm"
     class="searchFormDiv"
     v-click-outside="onBlur"
-    :class="{ 'input-focus': data.inputFocus, 'show-histories': showHistories }"
-  >
+    :class="{ 'input-focus': data.inputFocus, 'show-histories': showHistories }">
     <div class="search-input">
-      <input
-        v-model="data.keyword"
+      <input v-model="data.keyword"
         name="q"
         class="input"
         type="text"
         maxlength="30"
-        placeholder="输入你想查找的内容"
+        :placeholder="$t('search.placeholder')"
         autocomplete="off"
         aria-autocomplete="off"
         @focus="onFocus"
         @input="onInput"
         @keyup.down="changeSelect(1)"
         @keyup.up="changeSelect(-1)"
-        @keyup.enter="searchBoxOnEnter"
-      />
-      <span @click="submitSearch">
-        <i class="iconfont icon-search" />
+        @keyup.enter="searchBoxOnEnter" />
+      <span @click="submitSearch" class="search-icon">
+        <icon name="Search" />
       </span>
     </div>
     <div class="histories">
       <ul>
-        <li
-          v-for="(item, index) in histories"
+        <li v-for="(item, index) in histories"
           :key="index"
           :class="{ selected: index === data.selectedIndex }"
           @mouseover="historyItemMouseOver(index)"
-          @mouseout="historyItemMouseOut()"
-        >
+          @mouseout="historyItemMouseOut()">
           <span @click="historyItemClick(item)">{{ item }}</span>
-          <i class="iconfont icon-close" @click="deleteHistory(item)" />
+          <icon name="X" @click="deleteHistory(item)" />
         </li>
       </ul>
     </div>
@@ -180,7 +174,8 @@ const deleteHistory = (kw) => {
       background-color: var(--bg-color);
       border: 1px solid var(--border-color3);
     }
-    .icon-search {
+
+    .search-icon {
       color: $focus-color;
     }
   }
@@ -229,6 +224,11 @@ const deleteHistory = (kw) => {
         outline: none;
       }
     }
+
+    .search-icon {
+      display: inline-flex;
+      padding: 4px 0;
+    }
   }
 
   span {
@@ -250,20 +250,25 @@ const deleteHistory = (kw) => {
     z-index: 203;
 
     animation: showHistoriesAnimation 0.3s;
-    -moz-animation: showHistoriesAnimation 0.3s; /* Firefox */
-    -webkit-animation: showHistoriesAnimation 0.3s; /* Safari and Chrome */
-    -o-animation: showHistoriesAnimation 0.3s; /* Opera */
+    -moz-animation: showHistoriesAnimation 0.3s;
+    /* Firefox */
+    -webkit-animation: showHistoriesAnimation 0.3s;
+    /* Safari and Chrome */
+    -o-animation: showHistoriesAnimation 0.3s;
+    /* Opera */
 
     @keyframes showHistoriesAnimation {
       0% {
         opacity: 0;
         transform: translate(1px, 30px);
       }
+
       100% {
         opacity: 1;
         transform: translate(0, 0);
       }
     }
+
     ul {
       li {
         padding: 7px 16px;
@@ -274,25 +279,30 @@ const deleteHistory = (kw) => {
         box-sizing: border-box;
 
         display: flex;
+
         span {
           width: 100%;
           font-size: 13px;
           font-weight: 400;
           color: var(--text-color);
         }
+
         &:hover {
           i.iconfont {
             display: block;
           }
         }
+
         i.iconfont {
           display: none;
           font-size: 13px;
           padding: 0 6px;
+
           &:hover {
             color: #4e6ef2;
           }
         }
+
         &.selected {
           background-color: var(--bg-color2);
         }

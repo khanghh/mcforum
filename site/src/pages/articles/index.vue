@@ -17,8 +17,9 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 useHead({
-  title: useSiteTitle("文章"),
+  title: useSiteTitle(i18n.t('page.articles')),
   meta: [
     {
       hid: "description",

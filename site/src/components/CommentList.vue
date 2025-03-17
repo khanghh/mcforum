@@ -4,8 +4,7 @@
       ref="loadMore"
       v-slot="{ results }"
       :params="{ entityType, entityId }"
-      url="/api/comment/comments"
-    >
+      url="/api/comment/comments">
       <div v-for="comment in results" :key="comment.id" class="comment">
         <div class="comment-item-left">
           <my-avatar :user="comment.user" :size="40" has-border />
@@ -14,17 +13,14 @@
           <div class="comment-meta">
             <nuxt-link
               :to="`/user/${comment.user.id}`"
-              class="comment-nickname"
-            >
+              class="comment-nickname">
               {{ comment.user.nickname }}
             </nuxt-link>
             <div class="comment-meta-right">
               <time class="comment-time">{{
                 usePrettyDate(comment.createTime)
-              }}</time>
-              <span v-if="comment.ipLocation" class="comment-ip-area"
-                >IP属地{{ comment.ipLocation }}</span
-              >
+                }}</time>
+              <span v-if="comment.ipLocation" class="comment-ip-area">IP属地{{ comment.ipLocation }}</span>
             </div>
           </div>
           <div class="comment-content-wrapper">
@@ -32,64 +28,39 @@
               <div
                 v-if="comment.contentType === 'text'"
                 class="comment-content content"
-                v-text="comment.content"
-              />
+                v-text="comment.content" />
               <div
                 v-else
                 class="comment-content content"
-                v-html="comment.content"
-              />
+                v-html="comment.content" />
             </template>
-            <div
-              v-if="comment.imageList && comment.imageList.length"
-              class="comment-image-list"
-            >
-              <img
-                v-for="(image, imageIndex) in comment.imageList"
-                :key="imageIndex"
-                :src="image.url"
-              />
+            <div v-if="comment.imageList && comment.imageList.length" class="comment-image-list">
+              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url" />
             </div>
           </div>
           <div class="comment-actions">
-            <div
-              class="comment-action-item"
-              :class="{ active: comment.liked }"
-              @click="like(comment)"
-            >
-              <i class="iconfont icon-like" />
-              <span>{{ comment.liked ? "已赞" : "点赞" }}</span>
+            <div class="comment-action-item" :class="{ active: comment.liked }" @click="like(comment)">
+              <icon name="ThumbsUp" :filled="comment.liked" />
+              <span>&nbsp;{{ comment.liked ? $t('feed.liked') : $t('feed.like') }}&nbsp;</span>
               <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
             </div>
-            <div
-              class="comment-action-item"
-              :class="{ active: reply.commentId === comment.id }"
-              @click="switchShowReply(comment)"
-            >
-              <i class="iconfont icon-comment" />
-              <span>{{
-                reply.commentId === comment.id ? "取消评论" : "评论"
-              }}</span>
+            <div class="comment-action-item" :class="{ active: reply.commentId === comment.id }"
+              @click="switchShowReply(comment)">
+              <icon name="MessageSquareMore" />
+              <span>&nbsp;{{
+                reply.commentId === comment.id ? $t('feed.hide_reply') : $t('feed.reply')
+                }}</span>
             </div>
           </div>
           <div v-if="reply.commentId === comment.id" class="comment-reply-form">
-            <text-editor
-              :ref="`editor${comment.id}`"
-              v-model="reply.value"
-              :height="100"
-              @submit="submitReply(comment)"
-            />
+            <text-editor :ref="`editor${comment.id}`" v-model="reply.value" :height="100"
+              @submit="submitReply(comment)" />
           </div>
-          <CommentSubList
-            v-if="
-              comment.replies &&
-              comment.replies.results &&
-              comment.replies.results.length
-            "
-            :comment-id="comment.id"
-            :data="comment.replies"
-            @reply="onReply(comment, $event)"
-          />
+          <CommentSubList v-if="
+            comment.replies &&
+            comment.replies.results &&
+            comment.replies.results.length
+          " :comment-id="comment.id" :data="comment.replies" @reply="onReply(comment, $event)" />
         </div>
       </div>
     </load-more-async>
@@ -97,6 +68,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const props = defineProps({
   entityType: {
     type: String,
@@ -140,7 +112,7 @@ const like = async (comment) => {
       });
       comment.liked = false;
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0;
-      useMsgSuccess("已取消点赞");
+      useMsgSuccess(i18n.t('alert.unliked_success'));
     } else {
       await useHttpPostForm("/api/like/like", {
         body: {
@@ -150,7 +122,7 @@ const like = async (comment) => {
       });
       comment.liked = true;
       comment.likeCount = comment.likeCount + 1;
-      useMsgSuccess("点赞成功");
+      useMsgSuccess(i18n.t('alert.liked_success'));
     }
   } catch (e) {
     useCatchError(e);
@@ -195,7 +167,7 @@ const submitReply = async (parent) => {
     });
     hideReply();
     appendReply(parent, ret);
-    useMsgSuccess("发布成功");
+    useMsgSuccess(i18n.t('alert.comment_success'));
   } catch (e) {
     useCatchError(e);
   }
@@ -240,6 +212,7 @@ defineExpose({
       .comment-meta {
         display: flex;
         justify-content: space-between;
+
         .comment-nickname {
           font-size: 14px;
           font-weight: 600;
@@ -255,6 +228,7 @@ defineExpose({
             font-size: 13px;
             color: var(--text-color3);
           }
+
           .comment-ip-area {
             font-size: 13px;
             color: var(--text-color3);
@@ -270,6 +244,7 @@ defineExpose({
           color: var(--text-color);
           white-space: pre-wrap;
         }
+
         .comment-image-list {
           margin-top: 10px;
 
@@ -278,6 +253,7 @@ defineExpose({
             height: 72px;
             line-height: 72px;
             cursor: pointer;
+
             &:not(:last-child) {
               margin-right: 8px;
             }
@@ -299,6 +275,7 @@ defineExpose({
         align-items: center;
 
         .comment-action-item {
+          display: inline-flex;
           line-height: 22px;
           font-size: 13px;
           cursor: pointer;

@@ -4,8 +4,8 @@
   <footer class="footer">
     <div class="content container">
       <div>
-        <nuxt-link to="/about"> 关于 </nuxt-link>
-        <nuxt-link to="/links"> 友链 </nuxt-link>
+        <nuxt-link to="/about">{{ $t('footer.about') }}&nbsp;</nuxt-link>
+        <nuxt-link to="/links">{{ $t('footer.links') }}</nuxt-link>
       </div>
       <div>
         © 2022 Powered by
@@ -22,6 +22,7 @@
   background: none;
   text-align: left;
   margin: 0 10px;
+
   a {
     color: var(--text-color3);
     text-decoration: none;

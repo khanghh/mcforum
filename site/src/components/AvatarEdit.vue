@@ -2,17 +2,12 @@
   <div class="avatar-edit">
     <div class="avatar-view" :style="{ backgroundImage: 'url(' + value + ')' }">
       <div class="upload-view" @click="pickImage">
-        <i class="iconfont icon-upload" />
+        <icon name="CloudUpload"/>
         <span>点击修改</span>
       </div>
     </div>
 
-    <input
-      ref="uploadImage"
-      accept="image/*"
-      type="file"
-      @input="uploadAvatar"
-    />
+    <input ref="uploadImage" accept="image/*" type="file" @input="uploadAvatar" />
   </div>
 </template>
 

@@ -12,12 +12,11 @@
         <button
           class="button is-primary is-small"
           :disabled="disabled"
-          @click="loadMore"
-        >
+          @click="loadMore">
           <span v-if="loading" class="icon">
-            <i class="iconfont icon-loading" />
+            <icon name="LoaderCircle" class="icon-loading" />
           </span>
-          <span>{{ pageData.hasMore ? "查看更多" : "到底啦" }}</span>
+          <span>{{ pageData.hasMore ? $t('feed.load_more') : $t('feed.no_more_content') }}</span>
         </button>
       </div>
     </template>
@@ -116,9 +115,11 @@ function unshiftResults(item) {
     background-color: var(--bg-color);
     padding: 10px;
   }
+
   .has-more {
     text-align: center;
     padding: 20px;
+
     button {
       width: 150px;
     }

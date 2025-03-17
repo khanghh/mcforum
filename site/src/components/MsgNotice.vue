@@ -1,17 +1,13 @@
 <template>
-  <div class="navbar-item dropdown is-hoverable is-right msg-notice">
-    <div class="dropdown-trigger">
-      <nuxt-link
-        :class="{ 'msg-flicker': msgcount > 0 }"
-        to="/user/messages"
-        class="msgicon"
-        title="消息"
-      >
-        <i class="iconfont icon-message"></i>
-        <span>消息</span>
-        <sup v-if="msgcount > 0">{{ msgcount > 9 ? "9+" : msgcount }}</sup>
-      </nuxt-link>
-    </div>
+  <div class="dropdown-trigger">
+    <nuxt-link
+      :class="{ 'msg-flicker': msgcount > 0 }"
+      to="/user/messages"
+      class="msgicon"
+      :title="$t('page.messages')">
+      <icon name="Mail" size="1.5rem" />
+      <sup v-if="msgcount > 0">{{ msgcount > 9 ? "9+" : msgcount }}</sup>
+    </nuxt-link>
   </div>
 </template>
 

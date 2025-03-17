@@ -1,4 +1,5 @@
 <script setup>
+const i18n = useI18n();
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -122,9 +123,9 @@ function uploadFiles(promiseList) {
   );
 }
 function removeItem(index) {
-  ElMessageBox.confirm("确定删除此内容吗？", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
+  ElMessageBox.confirm(i18n.t('dialog.message.confirm_action_post'), i18n.t('dialog.title.prompt'), {
+    confirmButtonText: i18n.t('dialog.button.confirm'),
+    cancelButtonText: i18n.t('dialog.button.cancel'),
     type: "warning",
   }).then(
     () => {
@@ -133,10 +134,10 @@ function removeItem(index) {
       emits("update:modelValue", fileList.value); // 避免和回显冲突，先修改 fileList
       setTimeout(() => {
         previewFiles.value.splice(index, 1);
-        useMsgSuccess("删除成功");
+        useMsgSuccess(i18n.t('alert.delete_success'));
       }, 900);
     },
-    () => console.log("取消删除")
+    () => console.log("canceled delete")
   );
 }
 function checkSizeLimit(files) {
@@ -147,12 +148,12 @@ function checkSizeLimit(files) {
     }
   }
   if (!pass)
-    useMsgError(`图片大小不可超过 ${props.sizeLimit / 1024 / 1024} MB`);
+    useMsgError(i18n.t('alert.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }));
   return pass;
 }
 function checkLengthLimit(files) {
   if (previewFiles.value.length + files.length > props.limit) {
-    useMsgWarning(`图片最多上传${props.limit}张`);
+    useMsgWarning(i18n.t('alert.image_upload_limit', { limit: props.limit }));
     return false;
   } else {
     return true;
@@ -191,46 +192,38 @@ defineExpose({
       :key="index"
       class="preview-item"
       :class="{ deleted: image.deleted }"
-      :style="{ width: size, height: size }"
-    >
+      :style="{ width: size, height: size }">
       <img :src="image.url" class="image-item" />
       <el-progress
         v-show="image.progress < 100"
         :percentage="image.progress"
         color="#25A9F6"
         :show-text="false"
-        class="progress"
-      />
+        class="progress" />
       <div v-show="image.progress < 100" class="cover">上传中...</div>
       <div
         class="upload-delete"
         :class="{
           'show-delete': image.progress === 100,
         }"
-        @click="removeItem(index)"
-      >
-        <i class="iconfont icon-delete" />
+        @click="removeItem(index)">
+        <icon name="Trash2" />
       </div>
     </div>
     <div
       v-show="previewFiles.length < limit"
       class="add-image-btn"
       :style="{ width: size, height: size }"
-      @click="onClick($event)"
-    >
+      @click="onClick($event)">
       <input
         ref="currentInput"
         :accept="accept"
         type="file"
         multiple
-        @input="onInput"
-      />
+        @input="onInput" />
       <div class="add-image-btn-wrapper">
         <slot name="add-image-button">
-          <i
-            class="iconfont icon-add"
-            style="font-size: 30px; color: #1878f3"
-          />
+          <icon name="Plus" color="#1c71d8" size="30px" />
         </slot>
       </div>
     </div>

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     // https://color-mode.nuxtjs.org/#configuration
     '@nuxtjs/color-mode',
+    '@nuxtjs/i18n',
     '@element-plus/nuxt',
     ['nuxt-lazy-load', {
       images: true,
@@ -81,6 +82,10 @@ export default defineNuxtConfig({
         proxy: `${import.meta.env.SERVER_URL}/admin/**`,
       },
     },
+  },
+
+  i18n: {
+    vueI18n: './i18n.config.ts'
   },
 
   compatibilityDate: '2024-09-15',

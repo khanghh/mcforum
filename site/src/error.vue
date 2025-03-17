@@ -44,7 +44,7 @@ const handleError = () => {
             </template>
           </div>
           <div class="report">
-            <a @click="handleError">返回首页</a>
+            <a @click="handleError">{{ $t('links.return_home') }}</a>
           </div>
         </div>
       </div>
@@ -61,6 +61,7 @@ const handleError = () => {
 
   .description {
     margin-top: 30px;
+
     div {
       font-size: 18px;
       font-weight: bold;
@@ -71,6 +72,7 @@ const handleError = () => {
 
   .report {
     margin-top: 20px;
+
     a {
       font-size: 15px;
       font-weight: 700;

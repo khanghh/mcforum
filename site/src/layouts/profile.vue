@@ -8,14 +8,14 @@
           <div class="profile-edit-tabs-pc">
             <div class="profile-edit-tab-item">
               <nuxt-link to="/user/profile">
-                <i class="iconfont icon-username" />
-                <span>个人资料</span>
+                <icon name="UserRound" />
+                <span>{{ $t('profile.info.title') }}</span>
               </nuxt-link>
             </div>
             <div class="profile-edit-tab-item">
               <nuxt-link to="/user/profile/account">
-                <i class="iconfont icon-username" />
-                <span>账号设置</span>
+                <icon name="UserRound" />
+                <span>{{ $t('page.account_settings') }}</span>
               </nuxt-link>
             </div>
           </div>
@@ -24,14 +24,14 @@
           <div class="profile-edit-tabs-mobile tabs">
             <ul>
               <li :class="{ 'is-active': active === 'profile' }">
-                <nuxt-link to="/user/profile">个人资料</nuxt-link>
+                <nuxt-link to="/user/profile">{{ $t('profile.info.title') }}</nuxt-link>
               </li>
               <li :class="{ 'is-active': active === 'account' }">
-                <nuxt-link to="/user/profile/account">账号设置</nuxt-link>
+                <nuxt-link to="/user/profile/account">{{ $t('page.account_settings') }}</nuxt-link>
               </li>
             </ul>
           </div>
-          <slot />
+          <slot></slot>
           <!-- <NuxtPage /> -->
         </div>
       </div>
@@ -75,6 +75,7 @@ const active = computed(() => {
     }
   }
 }
+
 .profile-edit-tabs-mobile {
   background-color: var(--bg-color);
   margin-bottom: 10px !important;

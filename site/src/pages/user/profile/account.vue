@@ -2,60 +2,52 @@
   <div v-if="user" class="widget no-margin">
     <div class="widget-header">
       <div class="account">
-        <i class="iconfont icon-setting" />
-        <span>账号设置</span>
+        <icon name="Settings" />
+        <span>{{ $t('page.account_settings') }}</span>
       </div>
       <nuxt-link :to="'/user/' + user.id">
-        <i class="iconfont icon-return" />
-        <span>返回个人主页</span>
+        <icon name="Undo2" />
+        <span>{{ $t('links.back_to_profile') }}</span>
       </nuxt-link>
     </div>
     <div class="widget-content">
       <div class="settings">
         <div class="settings-item">
-          <div class="settings-item-title">用户名</div>
+          <div class="settings-item-title">{{ $t('form.label.username') }}</div>
           <div class="settings-item-input">
             <div class="input-value">{{ user.username }}</div>
             <div class="action-box">
-              <a v-if="!user.username" @click="showUsernameDialog">设置</a>
+              <a v-if="!user.username" @click="showUsernameDialog">{{ $t('form.button.set') }}</a>
             </div>
           </div>
         </div>
 
         <div class="settings-item">
-          <div class="settings-item-title">邮箱</div>
+          <div class="settings-item-title">{{ $t('form.label.email') }}</div>
           <div class="settings-item-input">
             <div class="input-value">
               <span>{{ user.email }}</span>
               <span
                 v-if="user.emailVerified"
-                style="margin-left: 4px; font-size: 80%"
-                >(已验证)</span
-              >
+                style="margin-left: 4px; font-size: 80%">({{ $t('settings.email_verified') }})</span>
             </div>
             <div class="action-box">
-              <a v-if="user.email" @click="showEmailDialog">修改</a>
-              <a
-                v-if="user.email && !user.emailVerified"
-                @click="requestEmailVerify"
-                >验证</a
-              >
-              <a v-if="!user.email">设置</a>
+              <a @click="showEmailDialog"> {{ $t('form.button.change') }} </a>
+              <a v-if="user.email && !user.emailVerified"
+                @click="requestEmailVerify">{{ $t('form.button.verify') }}</a>
             </div>
           </div>
         </div>
 
         <div class="settings-item">
-          <div class="settings-item-title">密码</div>
+          <div class="settings-item-title">{{ $t('form.label.password') }}</div>
           <div class="settings-item-input">
             <div class="input-value">
-              {{ user.passwordSet ? "已设置" : "未设置" }}
+              {{ user.passwordSet ? $t('settings.password_set') : $t('profile.settings.password_not_set') }}
             </div>
             <div class="action-box">
-              <a v-if="user.passwordSet" @click="showUpdatePasswordDialog"
-                >修改</a
-              >
-              <a v-else @click="showSetPasswordDialog">设置</a>
+              <a v-if="user.passwordSet" @click="showUpdatePasswordDialog">{{ $t('form.button.change') }}</a>
+              <a v-else @click="showSetPasswordDialog">{{ $t('form.button.set') }}</a>
             </div>
           </div>
         </div>
@@ -65,55 +57,49 @@
     <my-dialog
       ref="usernameDialog"
       v-model:visible="usernameDialogVisible"
-      title="设置用户名"
+      :title="$t('dialog.title.setup_username')"
       :width="320"
-      @ok="setUsername"
-    >
+      @ok="setUsername">
       <div style="padding: 30px 0">
         <input
           v-model="usernameForm.username"
           class="input is-small"
           type="text"
-          placeholder="用户名"
-        />
+          :placeholder="$t('form.placeholder.enter_username')" />
       </div>
     </my-dialog>
 
     <my-dialog
       ref="emailDialog"
       v-model:visible="emailDialogVisible"
-      title="设置邮箱"
+      :title="$t('dialog.title.setup_email')"
       :width="320"
-      @ok="setEmail"
-    >
+      @ok="setEmail">
       <div style="padding: 30px 0">
         <input
           v-model="emailForm.email"
           class="input is-small"
           type="text"
-          placeholder="用户名"
-        />
+          :placeholder="$t('form.placeholder.enter_email')" />
       </div>
     </my-dialog>
 
     <my-dialog
       ref="updatePasswordDialog"
       v-model:visible="updatePasswordDialogVisible"
-      title="修改密码"
+      :title="$t('dialog.title.change_password')"
       :width="320"
-      @ok="updatePassword"
-    >
+      @ok="updatePassword">
       <div class="field">
         <div class="control has-icons-left">
           <input
             v-model="updatePasswordForm.oldPassword"
             class="input is-small"
             type="password"
-            placeholder="请输入当前密码"
-            @keydown.enter="updatePassword"
-          />
+            :placeholder="$t('form.placeholder.enter_password')"
+            @keydown.enter="updatePassword" />
           <span class="icon is-small is-left">
-            <i class="iconfont icon-password" />
+            <icon name="Lock" />
           </span>
         </div>
       </div>
@@ -123,11 +109,10 @@
             v-model="updatePasswordForm.password"
             class="input is-small"
             type="password"
-            placeholder="请输入密码"
-            @keydown.enter="updatePassword"
-          />
+            :placeholder="$t('form.placeholder.enter_new_password')"
+            @keydown.enter="updatePassword" />
           <span class="icon is-small is-left">
-            <i class="iconfont icon-password" />
+            <icon name="Lock" />
           </span>
         </div>
       </div>
@@ -137,11 +122,10 @@
             v-model="updatePasswordForm.rePassword"
             class="input is-small"
             type="password"
-            placeholder="请再次确认密码"
-            @keydown.enter="updatePassword"
-          />
+            :placeholder="$t('form.placeholder.confirm_password')"
+            @keydown.enter="updatePassword" />
           <span class="icon is-small is-left">
-            <i class="iconfont icon-password" />
+            <icon name="Lock" />
           </span>
         </div>
       </div>
@@ -150,21 +134,19 @@
     <my-dialog
       ref="setPasswordDialog"
       v-model:visible="setPasswordDialogVisible"
-      title="设置密码"
+      :title="$t('dialog.title.set_new_password')"
       :width="320"
-      @ok="setPassword"
-    >
+      @ok="setPassword">
       <div class="field">
         <div class="control has-icons-left">
           <input
             v-model="setPasswordForm.password"
             class="input is-small"
             type="password"
-            placeholder="请输入密码"
-            @keydown.enter="setPassword"
-          />
+            :placeholder="$t('form.placeholder.enter_new_password')"
+            @keydown.enter="setPassword" />
           <span class="icon is-small is-left">
-            <i class="iconfont icon-password" />
+            <icon name="Lock" />
           </span>
         </div>
       </div>
@@ -174,11 +156,10 @@
             v-model="setPasswordForm.rePassword"
             class="input is-small"
             type="password"
-            placeholder="请再次确认密码"
-            @keydown.enter="setPassword"
-          />
+            :placeholder="$t('form.placeholder.confirm_password')"
+            @keydown.enter="setPassword" />
           <span class="icon is-small is-left">
-            <i class="iconfont icon-password" />
+            <icon name="Lock" />
           </span>
         </div>
       </div>
@@ -187,13 +168,14 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 definePageMeta({
   middleware: ["auth"],
   layout: "profile",
 });
 
 useHead({
-  title: useSiteTitle("账号设置"),
+  title: useSiteTitle(i18n.t('page.account_settings')),
 });
 
 const { data: user, refresh: userRefresh } = await useAsyncData("user", () =>
@@ -216,10 +198,10 @@ async function setUsername() {
       },
     });
     await userRefresh();
-    useMsgSuccess("用户名设置成功");
+    useMsgSuccess(i18n.t('alert.set_username_success'));
     usernameDialog.value.close();
   } catch (err) {
-    useMsgError("用户名设置失败：" + (err.message || err));
+    useMsgError(i18n.t('alert.set_username_failure', { error: (err.message || err) }));
   }
 }
 
@@ -239,10 +221,10 @@ async function setEmail() {
       },
     });
     await userRefresh();
-    useMsgSuccess("邮箱设置成功");
+    useMsgSuccess(i18n.t('alert.email_update_success'));
     emailDialog.value.close();
   } catch (err) {
-    useMsgError("邮箱设置失败：" + (err.message || err));
+    useMsgError(i18n.t('alert.email_update_failure', { error: (err.message || err) }));
   }
 }
 
@@ -251,10 +233,10 @@ async function requestEmailVerify() {
   try {
     await useHttpPost("/api/user/send_verify_email");
     useMsgSuccess(
-      "邮件已经发送到你的邮箱：" + user.value.email + "，请注意查收。"
+      i18n.t('alert.verify_email_sent')
     );
   } catch (err) {
-    useMsgError("请求验证失败：" + (err.message || err));
+    useMsgError(i18n.t('alert.verify_email_failure', { error: (err.message || err) }));
   } finally {
     loading.close();
   }
@@ -275,10 +257,10 @@ async function updatePassword() {
       body: updatePasswordForm,
     });
     await userRefresh();
-    useMsgSuccess("密码修改成功");
+    useMsgSuccess(i18n.t('alert.password_update_success'));
     updatePasswordDialog.value.close();
   } catch (err) {
-    useMsgError("密码修改失败：" + (err.message || err));
+    useMsgError(i18n.t('alert.password_update_failure', { error: (err.message || err) }));
   }
 }
 
@@ -297,10 +279,10 @@ async function setPassword() {
       body: setPasswordForm,
     });
     await userRefresh();
-    useMsgSuccess("密码修改成功");
+    useMsgSuccess(i18n.t('alert.password_update_success'));
     setPasswordDialog.value.close();
   } catch (err) {
-    useMsgError("密码修改失败：" + (err.message || err));
+    useMsgError(i18n.t('alert.password_update_failure', { error: (err.message || err) }));
   }
 }
 </script>
@@ -314,27 +296,31 @@ async function setPassword() {
     }
   }
 }
+
 .widget-header {
   padding: 18px 0;
 
-  & > div {
+  &>div {
     display: flex;
     align-items: center;
+
     span {
       margin-left: 6px;
     }
   }
 
-  & > a {
+  &>a {
     display: flex;
     align-items: center;
     font-weight: 500;
     font-size: 12px;
+
     span {
       margin-left: 6px;
     }
   }
 }
+
 .settings {
   .settings-item {
     display: flex;
@@ -354,6 +340,7 @@ async function setPassword() {
     &:not(:last-child) {
       border-bottom: 1px solid var(--border-color);
     }
+
     .settings-item-title {
       width: 100px;
       color: var(--text-color2);
@@ -367,14 +354,17 @@ async function setPassword() {
       justify-content: space-between;
       width: 100%;
       font-size: 14px;
+
       .input-value {
         flex: 1;
         color: var(--text-color3);
       }
+
       .action-box {
         display: flex;
         align-items: center;
         column-gap: 10px;
+
         a {
           color: var(--text-link-color);
           font-size: 12px;

@@ -1,117 +1,3 @@
-<script>
-export default {
-  props: {
-    commentId: {
-      type: Number,
-      required: true,
-    },
-    data: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      replies: this.data,
-      reply: {
-        quoteId: 0,
-        value: {
-          content: "",
-          imageList: [],
-        },
-      },
-    };
-  },
-  computed: {
-    user() {
-      const userStore = useUserStore();
-      return userStore.user;
-    },
-  },
-  methods: {
-    async loadMore() {
-      const ret = await useHttpGet("/api/comment/replies", {
-        params: {
-          commentId: this.commentId,
-          cursor: this.replies.cursor,
-        },
-      });
-      this.replies.cursor = ret.cursor;
-      this.replies.hasMore = ret.hasMore;
-      this.replies.results.push(...ret.results);
-    },
-    async like(comment) {
-      try {
-        if (comment.liked) {
-          await useHttpPostForm("/api/like/unlike", {
-            body: {
-              entityType: "comment",
-              entityId: comment.id,
-            },
-          });
-          comment.liked = false;
-          comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0;
-          useMsgSuccess("已取消点赞");
-        } else {
-          await useHttpPostForm("/api/like/like", {
-            body: {
-              entityType: "comment",
-              entityId: comment.id,
-            },
-          });
-          comment.liked = true;
-          comment.likeCount = comment.likeCount + 1;
-          useMsgSuccess("点赞成功");
-        }
-      } catch (e) {
-        useCatchError(e);
-      }
-    },
-    switchShowReply(comment) {
-      if (!this.user) {
-        useMsgSignIn();
-        return;
-      }
-
-      if (this.reply.quoteId === comment.id) {
-        this.hideReply(comment);
-      } else {
-        this.reply.quoteId = comment.id;
-        setTimeout(() => {
-          this.$refs[`editor${comment.id}`][0].focus();
-        }, 0);
-      }
-    },
-    hideReply(comment) {
-      this.reply.quoteId = 0;
-      this.reply.value.content = "";
-      this.reply.value.imageList = [];
-    },
-    async submitReply(parent) {
-      try {
-        const ret = await useHttpPostForm("/api/comment/create", {
-          body: {
-            entityType: "comment",
-            entityId: this.commentId,
-            quoteId: this.reply.quoteId,
-            content: this.reply.value.content,
-            imageList:
-              this.reply.value.imageList && this.reply.value.imageList.length
-                ? JSON.stringify(this.reply.value.imageList)
-                : "",
-          },
-        });
-        this.hideReply();
-        this.$emit("reply", ret);
-        useMsgSuccess("发布成功");
-      } catch (e) {
-        useCatchError(e);
-      }
-    },
-  },
-};
-</script>
-
 <template>
   <div class="replies">
     <div v-for="comment in replies.results" :key="comment.id" class="comment">
@@ -123,16 +9,14 @@ export default {
           <div>
             <nuxt-link
               :to="`/user/${comment.user.id}`"
-              class="comment-nickname"
-            >
+              class="comment-nickname">
               {{ comment.user.nickname }}
             </nuxt-link>
             <template v-if="comment.quote">
-              <span>回复</span>
+              <span>&nbsp;{{ $t('feed.replied_to') }}&nbsp;</span>
               <nuxt-link
                 :to="`/user/${comment.quote.user.id}`"
-                class="comment-nickname"
-              >
+                class="comment-nickname">
                 {{ comment.quote.user.nickname }}
               </nuxt-link>
             </template>
@@ -145,70 +29,155 @@ export default {
           <div v-if="comment.content" class="comment-content content">
             <div v-text="comment.content" />
           </div>
-          <div
-            v-if="comment.imageList && comment.imageList.length"
-            class="comment-image-list"
-          >
-            <img
-              v-for="(image, imageIndex) in comment.imageList"
-              :key="imageIndex"
-              :src="image.url"
-            />
+          <div v-if="comment.imageList && comment.imageList.length" class="comment-image-list">
+            <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url" />
           </div>
 
           <div v-if="comment.quote" class="comment-quote">
-            <div
-              class="comment-quote-content content"
-              v-html="comment.quote.content"
-            />
-            <div
-              v-if="comment.quote.imageList && comment.quote.imageList.length"
-              class="comment-quote-image-list"
-            >
-              <img
-                v-for="(image, imageIndex) in comment.imageList"
-                :key="imageIndex"
-                :src="image.url"
-              />
+            <div class="comment-quote-content content" v-html="comment.quote.content" />
+            <div v-if="comment.quote.imageList && comment.quote.imageList.length" class="comment-quote-image-list">
+              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url" />
             </div>
           </div>
         </div>
         <div class="comment-actions">
-          <div
-            class="comment-action-item"
-            :class="{ active: comment.liked }"
-            @click="like(comment)"
-          >
-            <i class="iconfont icon-like" />
-            <span>{{ comment.liked ? "已赞" : "点赞" }}</span>
+          <div class="comment-action-item" :class="{ active: comment.liked }" @click="like(comment)">
+            <icon name="ThumbsUp" :filled="comment.liked" />
+            <span>&nbsp;{{ comment.liked ? $t('feed.liked') : $t('feed.like') }}&nbsp;</span>
             <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
           </div>
-          <div
-            class="comment-action-item"
-            :class="{ active: reply.quoteId === comment.id }"
-            @click="switchShowReply(comment)"
-          >
-            <i class="iconfont icon-comment" />
-            <span>{{
-              reply.quoteId === comment.id ? "取消评论" : "评论"
+          <div class="comment-action-item" :class="{ active: reply.quoteId === comment.id }"
+            @click="switchShowReply(comment)">
+            <icon name="MessageSquareMore" />
+            <span>&nbsp;{{
+              reply.quoteId === comment.id ? $t('feed.hide_reply') : $t('feed.reply')
             }}</span>
           </div>
         </div>
         <div v-if="reply.quoteId === comment.id" class="comment-reply-form">
-          <text-editor
-            :ref="`editor${comment.id}`"
-            v-model="reply.value"
-            :height="80"
-            @submit="submitReply()"
-          />
+          <text-editor :ref="`editor${comment.id}`" v-model="reply.value" :height="80" @submit="submitReply()" />
         </div>
       </div>
     </div>
     <div v-if="replies.hasMore === true" class="comment-more">
-      <a @click="loadMore">查看更多回复...</a>
+      <a @click="loadMore">{{ $t('feed.view_more_replies') }}</a>
     </div>
   </div>
 </template>
+
+<script setup>
+const i18n = useI18n();
+
+const props = defineProps({
+  commentId: {
+    type: Number,
+    required: true,
+  },
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['reply']);
+
+const replies = ref(props.data);
+const reply = ref({
+  quoteId: 0,
+  value: {
+    content: "",
+    imageList: [],
+  },
+});
+
+const user = computed(() => {
+  const userStore = useUserStore();
+  return userStore.user;
+});
+
+async function loadMore() {
+  const ret = await useHttpGet("/api/comment/replies", {
+    params: {
+      commentId: props.commentId,
+      cursor: replies.value.cursor,
+    },
+  });
+  replies.value.cursor = ret.cursor;
+  replies.value.hasMore = ret.hasMore;
+  replies.value.results.push(...ret.results);
+}
+
+async function like(comment) {
+  try {
+    if (comment.liked) {
+      await useHttpPostForm("/api/like/unlike", {
+        body: {
+          entityType: "comment",
+          entityId: comment.id,
+        },
+      });
+      comment.liked = false;
+      comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0;
+      useMsgSuccess(i18n.t('alert.unliked_success'));
+    } else {
+      await useHttpPostForm("/api/like/like", {
+        body: {
+          entityType: "comment",
+          entityId: comment.id,
+        },
+      });
+      comment.liked = true;
+      comment.likeCount = comment.likeCount + 1;
+      useMsgSuccess(i18n.t('alert.liked_success'));
+    }
+  } catch (e) {
+    useCatchError(e);
+  }
+}
+
+function switchShowReply(comment) {
+  if (!user.value) {
+    useMsgSignIn();
+    return;
+  }
+
+  if (reply.value.quoteId === comment.id) {
+    hideReply(comment);
+  } else {
+    reply.value.quoteId = comment.id;
+    setTimeout(() => {
+      $refs[`editor${comment.id}`][0].focus();
+    }, 0);
+  }
+}
+
+function hideReply() {
+  reply.value.quoteId = 0;
+  reply.value.value.content = "";
+  reply.value.value.imageList = [];
+}
+
+async function submitReply(parent) {
+  try {
+    const ret = await useHttpPostForm("/api/comment/create", {
+      body: {
+        entityType: "comment",
+        entityId: props.commentId,
+        quoteId: reply.value.quoteId,
+        content: reply.value.value.content,
+        imageList: reply.value.value.imageList && reply.value.value.imageList.length
+          ? JSON.stringify(reply.value.value.imageList)
+          : "",
+      },
+    });
+    hideReply();
+    emit("reply", ret);
+    useMsgSuccess(i18n.t('alert.comment_success'));
+  } catch (e) {
+    useCatchError(e);
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .replies {
@@ -232,6 +201,7 @@ export default {
       .comment-meta {
         display: flex;
         justify-content: space-between;
+
         .comment-nickname {
           font-size: 12px;
           font-weight: 600;
@@ -255,6 +225,7 @@ export default {
           color: var(--text-color2);
           white-space: pre-wrap;
         }
+
         .comment-image-list {
           margin-top: 5px;
 
@@ -263,6 +234,7 @@ export default {
             height: 62px;
             line-height: 72px;
             cursor: pointer;
+
             &:not(:last-child) {
               margin-right: 8px;
             }
@@ -311,6 +283,7 @@ export default {
               height: 50px;
               line-height: 50px;
               cursor: pointer;
+
               &:not(:last-child) {
                 margin-right: 4px;
               }
@@ -333,6 +306,7 @@ export default {
         align-items: center;
 
         .comment-action-item {
+          display: inline-flex;
           line-height: 22px;
           font-size: 11px;
           cursor: pointer;

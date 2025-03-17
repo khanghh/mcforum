@@ -12,17 +12,17 @@
                 <li :class="{ 'is-active': activeTab === 'fans' }">
                   <nuxt-link :to="`/user/${user.id}/fans`">
                     <span class="icon is-small">
-                      <i class="iconfont icon-topic" aria-hidden="true" />
+                      <icon name="MessageSquareText" />
                     </span>
-                    <span>粉丝</span>
+                    <span>{{ $t('profile.followers.title') }}</span>
                   </nuxt-link>
                 </li>
                 <li :class="{ 'is-active': activeTab === 'followed' }">
                   <nuxt-link :to="`/user/${user.id}/followed`">
                     <span class="icon is-small">
-                      <i class="iconfont icon-article" aria-hidden="true" />
+                      <icon name="FileText" />
                     </span>
-                    <span>关注</span>
+                    <span>{{ $t('profile.following.title') }}</span>
                   </nuxt-link>
                 </li>
               </ul>
@@ -32,8 +32,7 @@
               <load-more-async
                 v-slot="{ results }"
                 url="/api/fans/fans"
-                :params="{ userId: user.id }"
-              >
+                :params="{ userId: user.id }">
                 <user-follow-list :users="results" />
               </load-more-async>
             </div>
@@ -45,12 +44,13 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const route = useRoute();
 const user = await useHttpGet(`/api/user/${route.params.userId}`);
 const activeTab = ref("fans");
 
 useHead({
-  title: useSiteTitle("粉丝", user.nickname),
+  title: useSiteTitle(i18n.t("profile.followers.title"), user.nickname),
 });
 </script>
 

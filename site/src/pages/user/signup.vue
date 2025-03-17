@@ -3,102 +3,79 @@
     <div class="container">
       <div class="main-body no-bg">
         <div class="widget signin">
-          <div class="widget-header">注册</div>
+          <div class="widget-header">{{ $t('page.signup') }}</div>
           <div class="widget-content">
             <div class="field">
-              <label class="label">昵称</label>
+              <label class="label">{{ $t('form.label.username') }}</label>
               <div class="control has-icons-left">
-                <input
-                  v-model="form.nickname"
-                  class="input is-success"
-                  type="text"
-                  placeholder="请输入昵称"
-                  @keyup.enter="signup"
-                />
+                <input v-model="form.nickname" class="input is-success" type="text"
+                  :placeholder="$t('form.placeholder.enter_username')" @keyup.enter="signup" />
                 <span class="icon is-small is-left">
-                  <i class="iconfont icon-username" />
+                  <icon name="UserRound" />
                 </span>
               </div>
             </div>
 
             <div class="field">
-              <label class="label">邮箱</label>
+              <label class="label">{{ $t('form.label.email') }}</label>
               <div class="control has-icons-left">
-                <input
-                  v-model="form.email"
-                  class="input is-success"
-                  type="text"
-                  placeholder="请输入邮箱"
-                  @keyup.enter="signup"
-                />
+                <input v-model="form.email" class="input is-success" type="text"
+                  :placeholder="$t('form.placeholder.enter_email')"
+                  @keyup.enter="signup" />
                 <span class="icon is-small is-left">
-                  <i class="iconfont icon-email" />
+                  <icon name="Mail" />
                 </span>
               </div>
             </div>
 
             <div class="field">
-              <label class="label">密码</label>
+              <label class="label">{{ $t('form.label.password') }}</label>
               <div class="control has-icons-left">
-                <input
-                  v-model="form.password"
-                  class="input"
-                  type="password"
-                  placeholder="请输入密码"
-                  @keyup.enter="signup"
-                />
+                <input v-model="form.password" class="input" type="password"
+                  :placeholder="$t('form.placeholder.enter_password')"
+                  @keyup.enter="signup" />
                 <span class="icon is-small is-left">
-                  <i class="iconfont icon-password" />
+                  <icon name="Lock" />
                 </span>
               </div>
             </div>
 
             <div class="field">
-              <label class="label">确认密码</label>
+              <label class="label">{{ $t('form.label.confirm_password') }}</label>
               <div class="control has-icons-left">
-                <input
-                  v-model="form.rePassword"
-                  class="input"
-                  type="password"
-                  placeholder="请再次输入密码"
-                  @keyup.enter="signup"
-                />
+                <input v-model="form.rePassword" class="input" type="password"
+                  :placeholder="$t('form.placeholder.confirm_password')" @keyup.enter="signup" />
                 <span class="icon is-small is-left">
-                  <i class="iconfont icon-password" />
+                  <icon name="Lock" />
                 </span>
               </div>
             </div>
 
             <div class="field">
-              <label class="label">验证码</label>
+              <label class="label">{{ $t('form.label.captcha') }}</label>
               <div class="control has-icons-left">
                 <div class="field is-horizontal">
                   <div class="field login-captcha-input">
-                    <input
-                      v-model="form.captchaCode"
-                      class="input"
-                      type="text"
-                      placeholder="验证码"
-                      @keyup.enter="signup"
-                    />
-                    <span class="icon is-small is-left"
-                      ><i class="iconfont icon-captcha"
-                    /></span>
+                    <input v-model="form.captchaCode" class="input" type="text"
+                      :placeholder="$t('form.placeholder.enter_captcha')"
+                      @keyup.enter="signup" />
+                    <span class="icon is-small is-left">
+                      <icon name="ShieldCheck" />
+                    </span>
                   </div>
                   <div v-if="form.captchaUrl" class="field login-captcha-img">
-                    <a @click="refreshCaptcha"
-                      ><img :src="form.captchaUrl"
-                    /></a>
+                    <a @click="refreshCaptcha"><img :src="form.captchaUrl" /></a>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="field">
+
               <div class="control">
-                <button class="button is-link" @click="signup">注册</button>
+                <button class="button is-link" @click="signup">{{ $t('form.button.signup') }}</button>
                 <a class="button is-text" @click="toSignin">
-                  已有账号，前往登录&gt;&gt;
+                  {{ $t('form.link.already_have_account') }}&gt;&gt;
                 </a>
               </div>
             </div>
@@ -110,8 +87,10 @@
 </template>
 
 <script setup>
+const i18n = useI18n()
+
 useHead({
-  title: useSiteTitle("注册"),
+  title: useSiteTitle(i18n.t('page.signup')),
 });
 
 const route = useRoute();

@@ -99,37 +99,34 @@ export default {
     <textarea
       ref="textarea"
       v-model="post.content"
-      placeholder="请输入您要发表的内容 ..."
+      :placeholder="$t('publish.enter_post_content')"
       :style="{ 'min-height': `${height}px`, 'height': `${height}px` }"
       @input="onInput"
       @paste="handleParse"
       @drop="handleDrag"
       @keydown.ctrl.enter="doSubmit"
-      @keydown.meta.enter="doSubmit"
-    />
+      @keydown.meta.enter="doSubmit" />
     <div v-show="showImageUpload" class="text-editor-image-uploader">
       <image-upload
         ref="imageUploader"
         v-model="post.imageList"
         v-model:on-upload="imageUploading"
-        @input="onInput"
-      />
+        @input="onInput" />
     </div>
     <div class="text-editor-bar">
       <div class="text-editor-actions">
         <div
           class="text-editor-action-item"
           :class="{ active: showImageUpload }"
-          @click="switchImageUpload"
-        >
-          <i class="iconfont icon-image" />
-          <span>图片</span>
+          @click="switchImageUpload">
+          <icon name="ImagePlus" />
+          <span>&nbsp;{{ $t('publish.add_image') }}</span>
         </div>
       </div>
       <div class="text-editor-btn">
         <span>Ctrl/⌘ + Enter</span>
         <button class="button is-success is-small" @click="doSubmit">
-          发布
+          {{ $t('form.button.send') }}
         </button>
       </div>
     </div>
@@ -139,6 +136,7 @@ export default {
 <style lang="scss" scoped>
 .text-editor {
   border: 1px solid var(--border-color);
+
   textarea {
     width: 100%;
     font-family: inherit;
@@ -189,9 +187,11 @@ export default {
         }
       }
     }
+
     .text-editor-btn {
       display: flex;
       align-items: center;
+
       span {
         font-size: 12px;
         color: var(--text-color3);

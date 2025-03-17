@@ -10,33 +10,28 @@
             <my-avatar
               class="topic-inline-avatar"
               :user="topic.user"
-              :size="20"
-            />
+              :size="20" />
             <nuxt-link :to="`/user/${topic.user.id}`" class="topic-nickname">
               {{ topic.user.nickname }}
             </nuxt-link>
           </div>
           <div class="icons">
-            <span v-if="showSticky && topic.sticky" class="topic-sticky-icon"
-              >置顶</span
-            >
+            <span v-if="showSticky && topic.sticky" class="topic-sticky-icon">{{ $t('feed.pinned') }}</span>
           </div>
         </div>
         <div class="topic-time">
-          发布于{{ usePrettyDate(topic.createTime) }}
+          {{ $t('feed.published_on') }} {{ usePrettyDate(topic.createTime) }}
         </div>
         <div class="topic-content" :class="{ 'topic-tweet': topic.type === 1 }">
           <template v-if="topic.type === 0">
             <h1 class="topic-title">
-              <nuxt-link :to="`/topic/${topic.id}`" target="_blank">
+              <nuxt-link :to="`/topic/${topic.id}`">
                 {{ topic.title }}
               </nuxt-link>
             </h1>
             <nuxt-link
               :to="`/topic/${topic.id}`"
-              class="topic-summary"
-              target="_blank"
-            >
+              class="topic-summary">
               {{ topic.summary }}
             </nuxt-link>
           </template>
@@ -44,21 +39,16 @@
             <nuxt-link
               v-if="topic.content"
               :to="`/topic/${topic.id}`"
-              class="topic-summary"
-              target="_blank"
-            >
+              class="topic-summary">
               {{ topic.content }}
             </nuxt-link>
             <ul
               v-if="topic.imageList && topic.imageList.length"
-              class="topic-image-list"
-            >
+              class="topic-image-list">
               <li v-for="(image, index) in topic.imageList" :key="index">
                 <nuxt-link
                   :to="`/topic/${topic.id}`"
-                  class="image-item"
-                  target="_blank"
-                >
+                  class="image-item">
                   <img :src="image.preview" />
                 </nuxt-link>
               </li>
@@ -67,33 +57,26 @@
         </div>
         <div class="topic-bottom">
           <div class="topic-handlers">
-            <div
-              class="btn"
-              :class="{ liked: topic.liked }"
-              @click="like(topic)"
-            >
-              <i class="iconfont icon-like" />{{ topic.liked ? "已赞" : "赞" }}
+            <div class="btn" :class="{ liked: topic.liked }" @click="like(topic)">
+              <icon name="ThumbsUp" :filled="topic.liked" />
+              {{ topic.liked ? $t('feed.liked') : $t('feed.like') }}
               <span v-if="topic.likeCount > 0">{{ topic.likeCount }}</span>
             </div>
             <div class="btn" @click="toTopicDetail(topic.id)">
-              <i class="iconfont icon-comment" />评论
+              <icon name="MessageSquareMore" size="1em" />
+              {{ $t('feed.comment') }}
               <span v-if="topic.commentCount > 0">{{
                 topic.commentCount
-              }}</span>
+                }}</span>
             </div>
             <div class="btn" @click="toTopicDetail(topic.id)">
-              <i class="iconfont icon-read" />浏览
+              <icon name="BookOpenText" size="1em" />
+              {{ $t('feed.view') }}
               <span v-if="topic.viewCount > 0">{{ topic.viewCount }}</span>
             </div>
           </div>
           <div class="topic-tags">
-            <nuxt-link
-              v-if="topic.node"
-              class="topic-tag"
-              target="_blank"
-              :to="`/topics/node/${topic.node.id}`"
-              :alt="topic.node.name"
-            >
+            <nuxt-link v-if="topic.node" class="topic-tag" :to="`/topics/node/${topic.node.id}`" :alt="topic.node.name">
               {{ topic.node.name }}
             </nuxt-link>
           </div>
@@ -102,58 +85,55 @@
     </li>
   </ul>
 </template>
-<script>
-export default {
-  props: {
-    topics: {
-      type: Array,
-      default() {
-        return [];
-      },
-      required: false,
-    },
-    showAvatar: {
-      type: Boolean,
-      default: true,
-    },
-    showSticky: {
-      type: Boolean,
-      default: false,
-    },
+<script setup>
+const i18n = useI18n();
+const props = defineProps({
+  topics: {
+    type: Array,
+    default: () => [],
+    required: false,
   },
-  methods: {
-    async like(topic) {
-      try {
-        if (topic.liked) {
-          await useHttpPostForm("/api/like/unlike", {
-            body: {
-              entityType: "topic",
-              entityId: topic.id,
-            },
-          });
-          topic.liked = false;
-          topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0;
-          useMsgSuccess("已取消点赞");
-        } else {
-          await useHttpPostForm("/api/like/like", {
-            body: {
-              entityType: "topic",
-              entityId: topic.id,
-            },
-          });
-          topic.liked = true;
-          topic.likeCount++;
-          useMsgSuccess("点赞成功");
-        }
-      } catch (e) {
-        useCatchError(e);
-      }
-    },
-    toTopicDetail(topicId) {
-      useLinkTo(`/topic/${topicId}`);
-    },
+  showAvatar: {
+    type: Boolean,
+    default: true,
   },
-};
+  showSticky: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+async function like(topic) {
+  try {
+    if (topic.liked) {
+      await useHttpPostForm("/api/like/unlike", {
+        body: {
+          entityType: "topic",
+          entityId: topic.id,
+        },
+      });
+      topic.liked = false;
+      topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0;
+      useMsgSuccess(i18n.t('alert.unliked_success'));
+    } else {
+      await useHttpPostForm("/api/like/like", {
+        body: {
+          entityType: "topic",
+          entityId: topic.id,
+        },
+      });
+      topic.liked = true;
+      topic.likeCount++;
+      useMsgSuccess(i18n.t('alert.liked_success'));
+    }
+  } catch (e) {
+    useCatchError(e);
+  }
+}
+
+async function toTopicDetail(topicId) {
+  useLinkTo(`/topic/${topicId}`);
+}
 </script>
 <style lang="scss" scoped>
 .topic-list {
@@ -162,7 +142,7 @@ export default {
     display: flex;
     position: relative;
     overflow: hidden;
-    transition: background 0.5s;
+    transition: background-color 0.5s;
     border-radius: 3px;
     background: var(--bg-color);
 
@@ -237,6 +217,7 @@ export default {
         .infos {
           flex: 1;
           display: flex;
+
           .topic-nickname {
             font-size: 15px;
             color: var(--text-color);
@@ -253,6 +234,7 @@ export default {
 
         .icons {
           display: flex;
+
           .topic-sticky-icon {
             color: var(--color-red);
             border: 1px solid var(--color-red);
@@ -273,6 +255,7 @@ export default {
 
       .topic-content {
         margin-top: 6px;
+
         .topic-title {
           display: inline-block;
           margin-bottom: 6px;
@@ -338,7 +321,7 @@ export default {
               overflow: hidden;
               transform-style: preserve-3d;
 
-              & > img {
+              &>img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
@@ -365,7 +348,7 @@ export default {
 
             /* 只有两个图片时 */
             &:first-child:nth-last-child(2),
-            &:first-child:nth-last-child(2) ~ li {
+            &:first-child:nth-last-child(2)~li {
               width: 180px;
               height: 180px;
               line-height: 180px;
@@ -378,7 +361,7 @@ export default {
 
             /*大于两个图片时*/
             &:first-child:nth-last-child(n + 3),
-            &:first-child:nth-last-child(n + 3) ~ li {
+            &:first-child:nth-last-child(n + 3)~li {
               width: 120px;
               height: 120px;
               line-height: 120px;
@@ -444,7 +427,7 @@ export default {
       }
 
       .liked {
-        color: var(--color-red) !important;
+        color: var(--color-blue) !important;
       }
     }
 

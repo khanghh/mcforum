@@ -2,8 +2,8 @@
   <div class="widget no-margin">
     <div class="widget-header">
       <span>
-        <i class="iconfont icon-message" />
-        <span>消息</span>
+        <icon name="Mail" />
+        <span>&nbsp;{{ $t('page.messages') }}</span>
       </span>
     </div>
 
@@ -13,8 +13,7 @@
           <li
             v-for="message in results"
             :key="message.messageId"
-            class="message-item"
-          >
+            class="message-item">
             <div class="message-item-left">
               <my-avatar :user="message.from" :size="40" />
             </div>
@@ -23,16 +22,16 @@
                 <span v-if="message.from.id > 0" class="msg-nickname">
                   <nuxt-link :to="'/user/' + message.from.id" target="_blank">{{
                     message.from.nickname
-                  }}</nuxt-link>
+                    }}</nuxt-link>
                 </span>
                 <span v-else class="msg-nickname">
                   <a href="javascript:void(0)" target="_blank">{{
                     message.from.nickname
-                  }}</a>
+                    }}</a>
                 </span>
                 <span class="msg-time">{{
                   usePrettyDate(message.createTime)
-                }}</span>
+                  }}</span>
                 <span v-if="message.title" class="msg-title">
                   {{ message.title }}
                 </span>
@@ -46,11 +45,8 @@
                 </div>
                 <div
                   v-if="message.detailUrl"
-                  class="msg-attr message-show-more"
-                >
-                  <a :href="message.detailUrl" target="_blank"
-                    >点击查看详情&gt;&gt;</a
-                  >
+                  class="msg-attr message-show-more">
+                  <a :href="message.detailUrl" target="_blank">{{ $t('feed.view_details') }}&gt;&gt;</a>
                 </div>
               </div>
             </div>
@@ -62,13 +58,14 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 definePageMeta({
   layout: "ucenter",
   middleware: ["auth"],
 });
 
 useHead({
-  title: useSiteTitle("消息"),
+  title: useSiteTitle(i18n.t('page.messages')),
 });
 </script>
 
@@ -103,6 +100,7 @@ useHead({
         display: flex;
         column-gap: 10px;
         align-items: center;
+
         span.msg-nickname {
           a {
             font-size: 16px;
@@ -153,8 +151,7 @@ useHead({
             top: -7px;
             border-width: 0 7px 7px 7px;
             border-style: solid;
-            border-color: transparent transparent var(--border-color)
-              transparent;
+            border-color: transparent transparent var(--border-color) transparent;
             z-index: 1;
           }
         }

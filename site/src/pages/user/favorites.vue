@@ -2,8 +2,8 @@
   <div class="widget no-margin">
     <div class="widget-header">
       <span>
-        <i class="iconfont icon-favorite" />
-        <span>收藏列表</span>
+        <icon name="Star" />
+        <span>&nbsp;{{ $t('profile.favorites.title') }}</span>
       </span>
     </div>
 
@@ -13,27 +13,22 @@
           <li
             v-for="item in results"
             :key="item.favoriteId"
-            class="favorite-item"
-          >
+            class="favorite-item">
             <div v-if="item.deleted" class="favorite-item">
-              <div class="favorite-summary">收藏内容失效</div>
+              <div class="favorite-summary">{{ $t('profile.favorites.content_invalid') }}</div>
             </div>
             <div v-else>
               <div class="favorite-title">
-                <a :href="item.url" target="_blank">{{ item.title }}</a>
+                <a :href="item.url">{{ item.title }}</a>
               </div>
               <div class="favorite-summary">
                 {{ item.content }}
               </div>
               <div class="favorite-meta">
-                <span class="favorite-meta-item"
-                  ><nuxt-link :to="'/user/' + item.user.id">{{
-                    item.user.nickname
-                  }}</nuxt-link></span
-                >
-                <span class="favorite-meta-item"
-                  ><time>{{ usePrettyDate(item.createTime) }}</time></span
-                >
+                <span class="favorite-meta-item"><nuxt-link :to="'/user/' + item.user.id">{{
+                  item.user.nickname
+                    }}</nuxt-link></span>
+                <span class="favorite-meta-item"><time>{{ usePrettyDate(item.createTime) }}</time></span>
               </div>
             </div>
           </li>
@@ -44,13 +39,14 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 definePageMeta({
   layout: "ucenter",
   middleware: ["auth"],
 });
 
 useHead({
-  title: useSiteTitle("收藏"),
+  title: useSiteTitle(i18n.t('page.favorites')),
 });
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div v-if="scoreRank && scoreRank.length" class="widget">
     <div class="widget-header">
-      <span class="widget-title">积分排行</span>
+      <span class="widget-title">{{ $t('widget.leaderboard.title') }}</span>
     </div>
     <div class="widget-content">
       <ul class="score-rank">
@@ -12,12 +12,14 @@
               user.nickname
             }}</nuxt-link>
             <p class="score-desc">
-              {{ user.topicCount }} 帖子 • {{ user.commentCount }} 评论
+              {{ $t('widget.leaderboard.topic_count', user.topicCount) }},
+              {{ $t('widget.leaderboard.comment_count', user.commentCount) }}
             </p>
           </div>
           <div class="score-rank-info">
             <span class="score-user-score">
-              <i class="iconfont icon-score" /><span>{{ user.score }}</span>
+              <icon name="Trophy" />
+              <span>&nbsp;{{ user.score }}</span>
             </span>
           </div>
         </li>
@@ -52,6 +54,7 @@ const { data: scoreRank } = useAsyncData(() =>
       margin-left: 9px;
       line-height: 1.4;
       font-size: 12px;
+
       .score-nickname {
         font-size: 14px;
         color: var(--text-color);
@@ -61,6 +64,7 @@ const { data: scoreRank } = useAsyncData(() =>
           color: rgba(0, 166, 244, 0.8);
         }
       }
+
       .score-desc {
         font-size: 11px;
         color: var(--text-color3);
@@ -71,7 +75,9 @@ const { data: scoreRank } = useAsyncData(() =>
 
     .score-rank-info {
       width: 120px;
+
       .score-user-score {
+        display: inline-flex;
         float: right;
         border-radius: 12px;
         color: var(--text-color3);
@@ -82,6 +88,7 @@ const { data: scoreRank } = useAsyncData(() =>
         background-color: var(--bg-color2);
         font-size: 0.75rem;
         align-items: center;
+
         i {
           margin-right: 3px;
         }

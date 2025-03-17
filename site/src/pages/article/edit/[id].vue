@@ -2,7 +2,7 @@
   <section class="main">
     <div class="container" v-if="postForm">
       <div class="article-create-form">
-        <h1 class="title">修改文章</h1>
+        <h1 class="title">{{ $t('page.edit_article') }}</h1>
 
         <div class="field">
           <div class="control">
@@ -11,8 +11,7 @@
               :key="node.id"
               class="article-tag"
               :class="{ selected: postForm.nodeId === node.id }"
-              @click="postForm.nodeId = node.id"
-            >
+              @click="postForm.nodeId = node.id">
               <span>{{ node.name }}</span>
             </div>
           </div>
@@ -24,8 +23,7 @@
               v-model="postForm.title"
               class="input article-title"
               type="text"
-              placeholder="请输入文章标题"
-            />
+              :placeholder="$t('form.placeholder.enter_post_title')" />
           </div>
         </div>
 
@@ -33,8 +31,7 @@
           <div class="control">
             <markdown-editor
               v-model="postForm.content"
-              placeholder="可空，将图片复制或拖入编辑器可上传"
-            />
+              :placeholder="$t('form.placeholder.enter_post_content')" />
           </div>
         </div>
 
@@ -44,8 +41,7 @@
               ref="mdEditor"
               v-model="postForm.hideContent"
               height="200px"
-              placeholder="隐藏内容，评论后可见"
-            />
+              placeholder="隐藏内容，评论后可见" />
           </div>
         </div>
 
@@ -57,20 +53,13 @@
 
         <div class="field is-grouped">
           <div class="control">
-            <a
-              v-if="publishing"
-              :class="{ 'is-loading': publishing }"
-              disabled
+            <button
               class="button is-success"
-              >提交更改</a
-            >
-            <a
-              v-else
               :class="{ 'is-loading': publishing }"
-              class="button is-success"
-              @click="submitCreate"
-              >提交更改</a
-            >
+              :disabled="publishing"
+              @click="submitCreate">
+              {{ $t('form.button.submmit_changes') }}
+            </button>
           </div>
         </div>
       </div>
@@ -79,15 +68,18 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 definePageMeta({
   middleware: "auth",
 });
 useHead({
-  title: useSiteTitle("修改文章"),
+  title: useSiteTitle(i18n.t('page.edit_article')),
 });
 
 const route = useRoute();
 const configStore = useConfigStore();
+
+const publishing = ref(false);
 
 const isEnableHideContent = computed(() => {
   return configStore.config.enableHideContent;
@@ -96,10 +88,11 @@ const isEnableHideContent = computed(() => {
 const { data: nodes } = useAsyncData("nodes", () =>
   useMyFetch("/api/article/nodes")
 );
-const { data: postForm } = useAsyncData(() =>
-  useMyFetch(`/api/article/edit/${route.params.id}`)
-);
-const publishing = ref(false);
+
+const { data: postForm } = useAsyncData(() => {
+  publishing.value = false;
+  return useMyFetch(`/api/article/edit/${route.params.id}`)
+});
 
 async function submitCreate() {
   if (publishing.value) {
@@ -117,14 +110,14 @@ async function submitCreate() {
       },
     });
     useMsg({
-      message: "修改成功",
+      message: i18n.t('alert.edit_post_success'),
       onClose() {
         useLinkTo(`/article/${postForm.value.id}`);
       },
     });
   } catch (e) {
     publishing.value = false;
-    useMsgError("提交失败：" + (e.message || e));
+    useMsgError(i18n.t('alert.edit_post_success', { error: (e.message || e) }));
   }
 }
 </script>
@@ -139,6 +132,7 @@ async function submitCreate() {
     font-weight: 500;
     margin-bottom: 10px;
   }
+
   .field {
     margin-bottom: 10px;
 

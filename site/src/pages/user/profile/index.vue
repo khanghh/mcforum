@@ -2,19 +2,19 @@
   <div v-if="user" class="widget no-margin">
     <div class="widget-header">
       <div>
-        <i class="iconfont icon-setting" />
-        <span>个人资料</span>
+        <icon name="Settings" />
+        <span>{{ $t('profile.info.title') }}</span>
       </div>
       <nuxt-link :to="'/user/' + user.id">
-        <i class="iconfont icon-return" />
-        <span>返回个人主页</span>
+        <icon name="Undo2" />
+        <span>{{ $t('links.back_to_profile') }}</span>
       </nuxt-link>
     </div>
     <div class="widget-content">
       <!-- 头像 -->
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">头像</label>
+          <label class="label">{{ $t('form.label.avatar') }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -28,7 +28,7 @@
       <!-- 昵称 -->
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">昵称</label>
+          <label class="label">{{ $t('form.label.nickname') }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -38,8 +38,7 @@
                 class="input"
                 type="text"
                 autocomplete="off"
-                placeholder="请输入昵称"
-              />
+                :placeholder="$t('form.placeholder.enter_nickname')" />
             </div>
           </div>
         </div>
@@ -48,7 +47,7 @@
       <!-- 个性签名 -->
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">个性签名</label>
+          <label class="label">{{ $t('form.label.bio') }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -57,8 +56,7 @@
                 v-model="form.description"
                 class="textarea"
                 rows="2"
-                placeholder="一句话介绍你自己"
-              />
+                :placeholder="$t('form.placeholder.write_bio')" />
             </div>
           </div>
         </div>
@@ -67,7 +65,7 @@
       <!-- 个人主页 -->
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <label class="label">个人主页</label>
+          <label class="label">{{ $t('form.label.website') }}</label>
         </div>
         <div class="field-body">
           <div class="field">
@@ -77,19 +75,18 @@
                 class="input"
                 type="text"
                 autocomplete="off"
-                placeholder="请输入个人主页"
-              />
+                :placeholder="$t('form.placeholder.enter_website')" />
             </div>
           </div>
         </div>
       </div>
 
       <div class="field is-horizontal">
-        <div class="field-label is-normal" />
+        <div class="field-label is-normal"></div>
         <div class="field-body">
           <div class="field">
             <div class="control">
-              <a class="button is-success" @click="submitForm">保存</a>
+              <a class="button is-success" @click="submitForm">{{ $t('form.button.save') }}</a>
             </div>
           </div>
         </div>
@@ -99,13 +96,14 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 definePageMeta({
   middleware: ["auth"],
   layout: "profile",
 });
 
 useHead({
-  title: useSiteTitle("个人资料"),
+  title: useSiteTitle(i18n.t('page.personal_info')),
 });
 
 const userStore = useUserStore();
@@ -133,10 +131,10 @@ async function submitForm() {
       body: form.value,
     });
     await reload();
-    useMsgSuccess("资料修改成功");
+    useMsgSuccess(i18n.t('alert.profile_update_success'));
   } catch (e) {
     console.error(e);
-    useMsgError("资料修改失败：" + (e.message || e));
+    useMsgError(i18n.t('alert.profile_update_failure', { error: (e.message || e) }));
   }
 }
 async function reload() {
@@ -148,19 +146,21 @@ async function reload() {
 .widget-header {
   padding: 18px 0;
 
-  & > div {
+  &>div {
     display: flex;
     align-items: center;
+
     span {
       margin-left: 6px;
     }
   }
 
-  & > a {
+  &>a {
     display: flex;
     align-items: center;
     font-weight: 500;
     font-size: 12px;
+
     span {
       margin-left: 6px;
     }

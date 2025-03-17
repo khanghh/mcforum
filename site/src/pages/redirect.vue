@@ -6,9 +6,12 @@
           <img src="~/assets/images/logo.png" style="max-width: 100px" />
         </div>
         <div style="margin: 20px 0">
-          <a :href="url" rel="nofollow"
-            >即将跳往站外地址，点击该链接继续跳转&nbsp;&gt;&gt;</a
-          >
+          <h2>
+            {{ $t('alert.redirecting_message') }}
+          </h2>
+          <i18n-t keypath="alert.external_redirect" tag="label">
+            <a :href="url">{{ $t('alert.click_to_redirect') }}</a>
+          </i18n-t>
         </div>
       </div>
     </div>
@@ -16,16 +19,23 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 const route = useRoute();
 const url = route.query.url || "";
 const temp = url.toLowerCase();
+const autoRedirectTime = 5000;
 
 if (!temp.startsWith("http://") && !temp.startsWith("https://")) {
   throw createError({
     statusCode: 500,
-    message: "你访问的页面发生错误!",
+    message: i18n.t('alert.internal_server_error')
   });
 }
+onMounted(() => {
+  setTimeout(() => {
+    window.location.href = url;
+  }, autoRedirectTime);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -33,5 +43,10 @@ if (!temp.startsWith("http://") && !temp.startsWith("https://")) {
   text-align: center;
   vertical-align: center;
   padding: 100px 0;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 </style>

@@ -1,16 +1,15 @@
 <template>
   <div
     class="profile"
-    :style="{ backgroundImage: 'url(' + backgroundImage + ')' }"
-  >
+    :style="{ backgroundImage: 'url(' + backgroundImage + ')' }">
     <div v-if="isOwner" class="file is-light is-small change-bg">
       <label class="file-label">
         <input class="file-input" type="file" @change="uploadBackground" />
         <span class="file-cta">
           <span class="file-icon">
-            <i class="iconfont icon-upload" />
+            <icon name="CloudUpload" />
           </span>
-          <span class="file-label">设置背景</span>
+          <span class="file-label">{{ $t('profile.actions.upload_cover_photo') }}</span>
         </span>
       </label>
     </div>
@@ -18,8 +17,7 @@
       :user="localUser"
       :round="true"
       :size="100"
-      class="profile-avatar"
-    />
+      class="profile-avatar" />
     <div class="profile-info">
       <div class="metas">
         <h1 class="nickname">
@@ -34,14 +32,14 @@
       <div class="action-btns">
         <follow-btn
           v-if="!currentUser || currentUser.id !== localUser.id"
-          :user-id="localUser.id"
-        />
+          :user-id="localUser.id" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+const i18n = useI18n();
 import defaultUserBg from "~/assets/images/default-user-bg.jpg";
 const props = defineProps({
   user: {
@@ -90,7 +88,7 @@ async function uploadBackground(e) {
     // 重新加载数据
     localUser.value = await userStore.fetchCurrent();
 
-    useMsgSuccess("背景设置成功");
+    useMsgSuccess(i18n.t('alert.set_cover_photo_success'));
   } catch (e) {
     useMsgError(e.message || e);
     console.error(e);
@@ -123,6 +121,7 @@ async function uploadBackground(e) {
     top: 10px;
     right: 10px;
     opacity: 0.5;
+
     &:hover {
       opacity: 1;
     }
@@ -135,12 +134,10 @@ async function uploadBackground(e) {
     width: 100%;
     margin-top: 150px;
     padding: 10px 10px 10px 120px;
-    background-image: linear-gradient(
-      90deg,
-      #ffffffff,
-      rgba(255, 255, 255, 0.5),
-      #dce9f200
-    );
+    background-image: linear-gradient(90deg,
+        #ffffffff,
+        rgba(255, 255, 255, 0.5),
+        #dce9f200);
 
     .metas {
       display: flex;
@@ -151,8 +148,10 @@ async function uploadBackground(e) {
       .nickname {
         font-size: 18px;
         font-weight: 700;
+
         a {
           color: var(--text-color);
+
           &:hover {
             color: var(--text-color);
             text-decoration: underline;
@@ -167,8 +166,10 @@ async function uploadBackground(e) {
 
       .homepage {
         font-size: 14px;
+
         a {
           color: var(--color2);
+
           &:hover {
             color: var(--text-link-color);
             text-decoration: underline;
@@ -176,6 +177,7 @@ async function uploadBackground(e) {
         }
       }
     }
+
     .action-btns {
       margin-left: 10px;
     }
@@ -186,12 +188,10 @@ async function uploadBackground(e) {
 .theme-dark,
 .dark-mode {
   .profile-info {
-    background-image: linear-gradient(
-      90deg,
-      #000000dd,
-      rgba(255, 255, 255, 0.5),
-      #dce9f200
-    );
+    background-image: linear-gradient(90deg,
+        #000000dd,
+        rgba(255, 255, 255, 0.5),
+        #dce9f200);
   }
 }
 </style>

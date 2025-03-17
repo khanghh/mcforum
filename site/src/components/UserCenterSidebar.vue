@@ -6,21 +6,21 @@
     <follow-widget :user="localUser" />
 
     <div v-if="isAdmin" class="widget">
-      <div class="widget-header">操作</div>
+      <div class="widget-header">{{ $t('profile.actions.title') }}</div>
       <div class="widget-content">
         <ul class="operations">
           <li v-if="localUser.forbidden">
-            <i class="iconfont icon-forbidden" />
-            <a @click="removeForbidden">&nbsp;取消禁言</a>
+            <icon name="Ban" />
+            <a @click="removeForbidden">&nbsp;{{ $t('profile.actions.unmute') }}</a>
           </li>
           <template v-else>
             <li>
-              <i class="iconfont icon-forbidden" />
-              <a @click="forbidden(7)">&nbsp;禁言7天</a>
+              <icon name="Ban" />
+              <a @click="forbidden(7)">&nbsp;{{ $t("profile.actions.mute_7days") }}</a>
             </li>
-            <li>
-              <i v-if="isSiteOwner" class="iconfont icon-forbidden" />
-              <a @click="forbidden(-1)">&nbsp;永久禁言</a>
+            <li v-if="isSiteOwner">
+              <icon name="Ban" />
+              <a @click="forbidden(-1)">&nbsp;{{ $t("profile.actions.mute_permanent") }}</a>
             </li>
           </template>
         </ul>
@@ -30,6 +30,7 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 import { ElMessageBox } from "element-plus";
 const userStore = useUserStore();
 const props = defineProps({
@@ -49,16 +50,16 @@ const isAdmin = computed(() => {
 });
 
 function forbidden(days) {
-  const msg = days > 0 ? "是否禁言该用户？" : "是否永久禁言该用户？";
-  ElMessageBox.confirm(msg, "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
+  const msg = days > 0 ? i18n.t('dialog.message.mute_user') : i18n.t('dialog.message.mute_user_permanent');
+  ElMessageBox.confirm(msg, i18n.t('dialog.title.prompt'), {
+    confirmButtonText: i18n.t('dialog.button.confirm'),
+    cancelButtonText: i18n.t('dialog.button.cancel'),
     type: "warning",
   })
     .then(() => {
       doForbidden(days);
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 async function doForbidden(days) {
@@ -70,9 +71,9 @@ async function doForbidden(days) {
       },
     });
     localUser.value.forbidden = true;
-    useMsgSuccess("禁言成功");
+    useMsgSuccess(i18n.t('alert.mute_user_success'));
   } catch (e) {
-    useMsgError("禁言失败");
+    useMsgError(i18n.t('alert.mute_user_failure'));
   }
 }
 
@@ -85,9 +86,9 @@ async function removeForbidden() {
       },
     });
     localUser.value.forbidden = false;
-    useMsgSuccess("取消禁言成功");
+    useMsgSuccess(i18n.t('alert.unumute_user_success'));
   } catch (e) {
-    useMsgError("取消禁言失败");
+    useMsgError(i18n.t('alert.unumute_user_failure'));
   }
 }
 </script>
@@ -106,6 +107,7 @@ async function removeForbidden() {
     padding-left: 3px;
 
     font-size: 13px;
+
     &:hover {
       cursor: pointer;
       background-color: #fcf8e3;

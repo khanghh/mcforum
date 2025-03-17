@@ -1,4 +1,5 @@
 <script setup>
+const i18n = useI18n();
 const props = defineProps({
   entityType: {
     type: String,
@@ -54,7 +55,7 @@ async function create() {
     value.value.imageList = [];
     quote.value = null;
     simpleEditor.value.clear();
-    useMsgSuccess("发布成功");
+    useMsgSuccess(i18n.t('alert.comment_success'));
   } catch (e) {
     console.error(e);
     useMsgError(e.message || e);
@@ -79,9 +80,9 @@ function cancelReply() {
     <div class="comment-create">
       <div ref="commentEditor" class="comment-input-wrapper">
         <div v-if="quote" class="comment-quote-info">
-          回复：
+          {{ $t('feed.replied_to') }}：
           <label v-text="quote.user.nickname" />
-          <i class="iconfont icon-close" alt="取消回复" @click="cancelReply" />
+          <icon name="X" @click="cancelReply" />
         </div>
         <text-editor ref="simpleEditor" v-model="value" @submit="create" />
       </div>

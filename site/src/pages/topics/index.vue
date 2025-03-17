@@ -24,8 +24,9 @@
 </template>
 
 <script setup>
+const i18n = useI18n();
 useHead({
-  title: useSiteTitle("话题"),
+  title: useSiteTitle(i18n.t('page.topics')),
 });
 </script>
 
