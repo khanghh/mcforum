@@ -98,7 +98,7 @@ func (s *userLikeService) IsLiked(userId int64, entityType string, entityIds []i
 // TopicLike 话题点赞
 func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 	topic := repositories.TopicRepository.Get(sqls.DB(), topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return errors.New("话题不存在")
 	}
 
@@ -124,7 +124,7 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 
 func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
 	topic := repositories.TopicRepository.Get(sqls.DB(), topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return errors.New("话题不存在")
 	}
 
@@ -150,7 +150,7 @@ func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
 
 func (s *userLikeService) ArticleLike(userId int64, articleId int64) error {
 	article := repositories.ArticleRepository.Get(sqls.DB(), articleId)
-	if article == nil || article.Status != constants.StatusOk {
+	if article == nil || article.Status != constants.StatusOK {
 		return errors.New("文章不存在")
 	}
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
@@ -174,7 +174,7 @@ func (s *userLikeService) ArticleLike(userId int64, articleId int64) error {
 
 func (s *userLikeService) ArticleUnLike(userId int64, articleId int64) error {
 	article := repositories.ArticleRepository.Get(sqls.DB(), articleId)
-	if article == nil || article.Status != constants.StatusOk {
+	if article == nil || article.Status != constants.StatusOK {
 		return errors.New("文章不存在")
 	}
 
@@ -201,7 +201,7 @@ func (s *userLikeService) ArticleUnLike(userId int64, articleId int64) error {
 // CommentLike 话题点赞
 func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	comment := repositories.CommentRepository.Get(sqls.DB(), commentId)
-	if comment == nil || comment.Status != constants.StatusOk {
+	if comment == nil || comment.Status != constants.StatusOK {
 		return errors.New("评论不存在")
 	}
 
@@ -228,7 +228,7 @@ func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 // CommentLike 话题点赞
 func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 	comment := repositories.CommentRepository.Get(sqls.DB(), commentId)
-	if comment == nil || comment.Status != constants.StatusOk {
+	if comment == nil || comment.Status != constants.StatusOK {
 		return errors.New("评论不存在")
 	}
 

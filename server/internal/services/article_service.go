@@ -102,7 +102,7 @@ func (s *articleService) GetArticleTags(articleId int64) []models.Tag {
 // 文章列表
 func (s *articleService) GetArticles(cursor int64) (articles []models.Article, nextCursor int64, hasMore bool) {
 	limit := 20
-	cnd := sqls.NewCnd().Eq("status", constants.StatusOk).Desc("id").Limit(limit)
+	cnd := sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
@@ -119,7 +119,7 @@ func (s *articleService) GetArticles(cursor int64) (articles []models.Article, n
 // 标签文章列表
 func (s *articleService) GetTagArticles(tagId int64, cursor int64) (articles []models.Article, nextCursor int64, hasMore bool) {
 	limit := 20
-	cnd := sqls.NewCnd().Eq("tag_id", tagId).Eq("status", constants.StatusOk).Desc("id").Limit(limit)
+	cnd := sqls.NewCnd().Eq("tag_id", tagId).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
@@ -151,7 +151,7 @@ func (s *articleService) Publish(userId int64, form models.CreateArticleForm) (a
 	}
 
 	// 获取后台配置 否是开启发表文章审核
-	status := constants.StatusOk
+	status := constants.StatusOK
 	if SysConfigService.IsArticlePending() {
 		status = constants.StatusReview
 	}
@@ -275,7 +275,7 @@ func (s *articleService) GetUserArticles(userId, cursor int64) (articles []model
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
-	cnd.Eq("status", constants.StatusOk).Desc("id").Limit(limit)
+	cnd.Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	articles = repositories.ArticleRepository.Find(sqls.DB(), cnd)
 	if len(articles) > 0 {
 		nextCursor = articles[len(articles)-1].Id

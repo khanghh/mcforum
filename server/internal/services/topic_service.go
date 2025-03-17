@@ -102,7 +102,7 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 
 // Undelete 取消删除
 func (s *topicService) Undelete(id int64) error {
-	err := repositories.TopicRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusOk)
+	err := repositories.TopicRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusOK)
 	if err == nil {
 		// 删掉标签文章
 		TopicTagService.UndeleteByTopicId(id)
@@ -123,7 +123,7 @@ func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content
 	}
 
 	node := repositories.TopicNodeRepository.Get(sqls.DB(), nodeId)
-	if node == nil || node.Status != constants.StatusOk {
+	if node == nil || node.Status != constants.StatusOK {
 		return errors.New("节点不存在")
 	}
 
@@ -160,7 +160,7 @@ func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content
 // 推荐
 func (s *topicService) SetRecommend(topicId int64, recommend bool) error {
 	topic := s.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return errors.New("帖子不存在")
 	}
 	if topic.Recommend == recommend { // 推荐状态没变更
@@ -227,7 +227,7 @@ func (s *topicService) _GetNodeTopics(nodeId, cursor int64, limit int) (topics [
 	if cursor > 0 {
 		cnd.Lt("last_comment_time", cursor)
 	}
-	cnd.Eq("status", constants.StatusOk).Desc("last_comment_time").Limit(limit)
+	cnd.Eq("status", constants.StatusOK).Desc("last_comment_time").Limit(limit)
 	topics = repositories.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
 		nextCursor = topics[len(topics)-1].LastCommentTime
@@ -270,7 +270,7 @@ func (s *topicService) GetTagTopics(tagId, cursor int64) (topics []models.Topic,
 	limit := 20
 	topicTags := repositories.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
 		Eq("tag_id", tagId).
-		Eq("status", constants.StatusOk).
+		Eq("status", constants.StatusOK).
 		Desc("last_comment_time").Limit(limit))
 	if len(topicTags) > 0 {
 		nextCursor = topicTags[len(topicTags)-1].LastCommentTime
@@ -406,7 +406,7 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []models.Topi
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
-	cnd.Eq("status", constants.StatusOk).Desc("id").Limit(limit)
+	cnd.Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	topics = repositories.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
 		nextCursor = topics[len(topics)-1].Id
@@ -420,16 +420,16 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []models.Topi
 func (s *topicService) GetStickyTopics(nodeId int64, limit int) []models.Topic {
 	if nodeId > 0 {
 		return s.Find(sqls.NewCnd().Where("node_id = ? and sticky = true and status = ?",
-			nodeId, constants.StatusOk).Desc("sticky_time").Limit(limit))
+			nodeId, constants.StatusOK).Desc("sticky_time").Limit(limit))
 	} else {
 		return s.Find(sqls.NewCnd().Where("sticky = true and status = ?",
-			constants.StatusOk).Desc("sticky_time").Limit(limit))
+			constants.StatusOK).Desc("sticky_time").Limit(limit))
 	}
 }
 
 func (s *topicService) SetSticky(topicId int64, sticky bool) error {
 	topic := s.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return errors.New("话题不存在")
 	}
 	if topic.Sticky == sticky {

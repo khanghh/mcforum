@@ -64,5 +64,5 @@ func (s *topicNodeService) Delete(id int64) {
 }
 
 func (s *topicNodeService) GetNodes() []models.TopicNode {
-	return repositories.TopicNodeRepository.Find(sqls.DB(), sqls.NewCnd().Eq("status", constants.StatusOk).Asc("sort_no").Desc("id"))
+	return repositories.TopicNodeRepository.Find(sqls.DB(), sqls.NewCnd().Eq("status", constants.StatusOK).Asc("sort_no").Desc("id"))
 }

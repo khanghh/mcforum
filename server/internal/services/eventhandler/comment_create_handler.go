@@ -138,7 +138,7 @@ func handleQuoteMsg(comment *models.Comment, commentMsg *CommentMsg) {
 func getCommentMsg(comment *models.Comment) *CommentMsg {
 	if comment.EntityType == constants.EntityTopic { // 帖子
 		topic := services.TopicService.Get(comment.EntityId)
-		if topic != nil && topic.Status == constants.StatusOk {
+		if topic != nil && topic.Status == constants.StatusOK {
 			return &CommentMsg{
 				Comment:    comment,
 				EntityType: comment.EntityType,
@@ -148,7 +148,7 @@ func getCommentMsg(comment *models.Comment) *CommentMsg {
 		}
 	} else if comment.EntityType == constants.EntityArticle { // 文章
 		article := services.ArticleService.Get(comment.EntityId)
-		if article != nil && article.Status == constants.StatusOk {
+		if article != nil && article.Status == constants.StatusOK {
 			return &CommentMsg{
 				Comment:    comment,
 				EntityType: comment.EntityType,
@@ -158,7 +158,7 @@ func getCommentMsg(comment *models.Comment) *CommentMsg {
 		}
 	} else if comment.EntityType == constants.EntityComment { // 二级评论
 		parentComment := services.CommentService.Get(comment.EntityId)
-		if parentComment == nil || parentComment.Status != constants.StatusOk {
+		if parentComment == nil || parentComment.Status != constants.StatusOK {
 			return nil
 		}
 
@@ -171,12 +171,12 @@ func getCommentMsg(comment *models.Comment) *CommentMsg {
 
 		if parentComment.EntityType == constants.EntityTopic {
 			topic := services.TopicService.Get(parentComment.EntityId)
-			if topic != nil && topic.Status == constants.StatusOk {
+			if topic != nil && topic.Status == constants.StatusOK {
 				ret.Entity = topic
 			}
 		} else if parentComment.EntityType == constants.EntityArticle {
 			article := services.ArticleService.Get(parentComment.EntityId)
-			if article != nil && article.Status == constants.StatusOk {
+			if article != nil && article.Status == constants.StatusOK {
 				ret.Entity = article
 			}
 		} else {
@@ -185,7 +185,7 @@ func getCommentMsg(comment *models.Comment) *CommentMsg {
 
 		if comment.QuoteId > 0 { // 三级评论
 			quoteComment := services.CommentService.Get(comment.QuoteId)
-			if quoteComment != nil && quoteComment.Status == constants.StatusOk {
+			if quoteComment != nil && quoteComment.Status == constants.StatusOK {
 				ret.QuoteComment = quoteComment
 			}
 		}

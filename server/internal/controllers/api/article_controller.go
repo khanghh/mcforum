@@ -204,7 +204,7 @@ func (c *ArticleController) PostFavoriteBy(articleId int64) *web.JsonResult {
 // 文章跳转链接
 func (c *ArticleController) GetRedirectBy(articleId int64) *web.JsonResult {
 	article := services.ArticleService.Get(articleId)
-	if article == nil || article.Status != constants.StatusOk {
+	if article == nil || article.Status != constants.StatusOK {
 		return web.JsonErrorMsg("文章不存在")
 	}
 	return web.NewEmptyRspBuilder().Put("url", bbsurls.ArticleUrl(articleId)).JsonResult()

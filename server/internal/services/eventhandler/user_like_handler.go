@@ -33,7 +33,7 @@ func handleUserUnLike(i interface{}) {
 // sendTopicLikeMsg 话题收到点赞
 func sendTopicLikeMsg(topicId, likeUserId int64) {
 	topic := services.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return
 	}
 	if topic.UserId == likeUserId {

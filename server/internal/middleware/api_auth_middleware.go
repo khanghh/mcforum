@@ -5,6 +5,7 @@ import (
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/urls"
 	"bbs-go/internal/services"
+	"fmt"
 
 	"github.com/kataras/iris/v12"
 	"github.com/mlogclub/simple/web"
@@ -39,6 +40,7 @@ func AdminAuth(ctx iris.Context) {
 		return
 	}
 	if !user.HasAnyRole(roles...) {
+		fmt.Println("noPermission")
 		noPermission(ctx)
 		return
 	}

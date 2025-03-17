@@ -37,8 +37,9 @@ func (u *User) HasAnyRole(roles ...string) bool {
 	if len(roles) == 0 {
 		return false
 	}
-	for _, role := range roles {
-		if u.HasRole(role) {
+	userRoles := strings.Split(u.Roles, ",")
+	for _, role := range userRoles {
+		if arrays.Contains(role, roles) {
 			return true
 		}
 	}

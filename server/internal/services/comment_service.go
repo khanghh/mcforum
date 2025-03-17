@@ -98,7 +98,7 @@ func (s *commentService) Publish(userId int64, form models.CreateCommentForm) (*
 		Content:     form.Content,
 		ContentType: constants.ContentTypeText,
 		QuoteId:     form.QuoteId,
-		Status:      constants.StatusOk,
+		Status:      constants.StatusOK,
 		UserAgent:   form.UserAgent,
 		Ip:          form.Ip,
 		IpLocation:  iplocator.IpLocation(form.Ip),
@@ -163,7 +163,7 @@ func (s *commentService) onComment(tx *gorm.DB, comment *models.Comment) error {
 // GetComments 列表
 func (s *commentService) GetComments(entityType string, entityId int64, cursor int64) (comments []models.Comment, nextCursor int64, hasMore bool) {
 	limit := 20
-	cnd := sqls.NewCnd().Eq("entity_type", entityType).Eq("entity_id", entityId).Eq("status", constants.StatusOk).Desc("id").Limit(limit)
+	cnd := sqls.NewCnd().Eq("entity_type", entityType).Eq("entity_id", entityId).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
@@ -179,7 +179,7 @@ func (s *commentService) GetComments(entityType string, entityId int64, cursor i
 
 // GetReplies 二级回复列表
 func (s *commentService) GetReplies(commentId int64, cursor int64, limit int) (comments []models.Comment, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("entity_type", constants.EntityComment).Eq("entity_id", commentId).Eq("status", constants.StatusOk).Asc("id").Limit(limit)
+	cnd := sqls.NewCnd().Eq("entity_type", constants.EntityComment).Eq("entity_id", commentId).Eq("status", constants.StatusOK).Asc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Gt("id", cursor)
 	}
@@ -223,5 +223,5 @@ func (s *commentService) Scan(callback func(comments []models.Comment)) {
 }
 
 func (s *commentService) IsCommented(userId int64, entityType string, entityId int64) bool {
-	return s.FindOne(sqls.NewCnd().Where("user_id = ? and entity_id = ? and entity_type = ? and status = ?", userId, entityId, entityType, constants.StatusOk)) != nil
+	return s.FindOne(sqls.NewCnd().Where("user_id = ? and entity_id = ? and entity_type = ? and status = ?", userId, entityId, entityType, constants.StatusOK)) != nil
 }

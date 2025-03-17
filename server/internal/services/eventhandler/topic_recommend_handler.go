@@ -23,7 +23,7 @@ func handleTopicRecommend(i interface{}) {
 // sendTopicRecommendMsg 话题被设为推荐
 func sendTopicRecommendMsg(topicId int64) {
 	topic := services.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return
 	}
 	var (

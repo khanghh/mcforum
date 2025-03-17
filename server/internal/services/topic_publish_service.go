@@ -36,7 +36,7 @@ func (s *topicPublishService) Publish(userId int64, form models.CreateTopicForm)
 		Title:           form.Title,
 		Content:         form.Content,
 		HideContent:     form.HideContent,
-		Status:          constants.StatusOk,
+		Status:          constants.StatusOK,
 		UserAgent:       form.UserAgent,
 		Ip:              form.Ip,
 		IpLocation:      iplocator.IpLocation(form.Ip),
@@ -143,7 +143,7 @@ func (s topicPublishService) _CheckParams(userId int64, form models.CreateTopicF
 		}
 	}
 	node := repositories.TopicNodeRepository.Get(sqls.DB(), form.NodeId)
-	if node == nil || node.Status != constants.StatusOk {
+	if node == nil || node.Status != constants.StatusOK {
 		return errors.New("节点不存在")
 	}
 

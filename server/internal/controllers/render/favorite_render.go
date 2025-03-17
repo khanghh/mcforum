@@ -20,7 +20,7 @@ func BuildFavorite(favorite *models.Favorite) *models.FavoriteResponse {
 
 	if favorite.EntityType == constants.EntityArticle {
 		article := services.ArticleService.Get(favorite.EntityId)
-		if article == nil || article.Status != constants.StatusOk {
+		if article == nil || article.Status != constants.StatusOK {
 			rsp.Deleted = true
 		} else {
 			rsp.Url = bbsurls.ArticleUrl(article.Id)
@@ -37,7 +37,7 @@ func BuildFavorite(favorite *models.Favorite) *models.FavoriteResponse {
 		}
 	} else {
 		topic := services.TopicService.Get(favorite.EntityId)
-		if topic == nil || topic.Status != constants.StatusOk {
+		if topic == nil || topic.Status != constants.StatusOK {
 			rsp.Deleted = true
 		} else {
 			rsp.Url = bbsurls.TopicUrl(topic.Id)

@@ -83,7 +83,7 @@ func Generate() {
 
 	services.ArticleService.ScanDesc(func(articles []models.Article) {
 		for _, article := range articles {
-			if article.Status == constants.StatusOk {
+			if article.Status == constants.StatusOK {
 				articleUrl := bbsurls.ArticleUrl(article.Id)
 				sm.Add(stm.URL{
 					{"loc", articleUrl},
@@ -97,7 +97,7 @@ func Generate() {
 
 	services.TopicService.ScanDesc(func(topics []models.Topic) {
 		for _, topic := range topics {
-			if topic.Status == constants.StatusOk {
+			if topic.Status == constants.StatusOK {
 				topicUrl := bbsurls.TopicUrl(topic.Id)
 				sm.Add(stm.URL{
 					{"loc", topicUrl},

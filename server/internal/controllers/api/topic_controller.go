@@ -86,7 +86,7 @@ func (c *TopicController) GetEditBy(topicId int64) *web.JsonResult {
 	}
 
 	topic := services.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return web.JsonErrorMsg("话题不存在或已被删除")
 	}
 	if topic.Type != constants.TopicTypeTopic {
@@ -124,7 +124,7 @@ func (c *TopicController) PostEditBy(topicId int64) *web.JsonResult {
 	}
 
 	topic := services.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return web.JsonErrorMsg("话题不存在或已被删除")
 	}
 
@@ -159,7 +159,7 @@ func (c *TopicController) PostDeleteBy(topicId int64) *web.JsonResult {
 	}
 
 	topic := services.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOk {
+	if topic == nil || topic.Status != constants.StatusOK {
 		return web.JsonSuccess()
 	}
 
@@ -234,7 +234,7 @@ func (c *TopicController) GetRecentlikesBy(topicId int64) *web.JsonResult {
 // 最新帖子
 func (c *TopicController) GetRecent() *web.JsonResult {
 	user := services.UserTokenService.GetCurrent(c.Ctx)
-	topics := services.TopicService.Find(sqls.NewCnd().Where("status = ?", constants.StatusOk).Desc("id").Limit(10))
+	topics := services.TopicService.Find(sqls.NewCnd().Where("status = ?", constants.StatusOK).Desc("id").Limit(10))
 	return web.JsonData(render.BuildSimpleTopics(topics, user))
 }
 
@@ -326,7 +326,7 @@ func (c *TopicController) GetRecommend() *web.JsonResult {
 
 // 最新话题
 func (c *TopicController) GetNewest() *web.JsonResult {
-	topics := services.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOk).Desc("id").Limit(6))
+	topics := services.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
 	return web.JsonData(render.BuildSimpleTopics(topics, nil))
 }
 
@@ -357,7 +357,7 @@ func (c *TopicController) GetHide_content() *web.JsonResult {
 		hideContent = ""    // 隐藏内容
 	)
 	topic := services.TopicService.Get(topicId)
-	if topic != nil && topic.Status == constants.StatusOk && strs.IsNotBlank(topic.HideContent) {
+	if topic != nil && topic.Status == constants.StatusOK && strs.IsNotBlank(topic.HideContent) {
 		exists = true
 		if user := services.UserTokenService.GetCurrent(c.Ctx); user != nil {
 			if user.Id == topic.UserId || services.CommentService.IsCommented(user.Id, constants.EntityTopic, topic.Id) {

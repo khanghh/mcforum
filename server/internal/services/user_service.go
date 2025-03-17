@@ -230,7 +230,7 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 		Email:      sqls.SqlNullString(email),
 		Nickname:   nickname,
 		Password:   passwd.EncodePassword(password),
-		Status:     constants.StatusOk,
+		Status:     constants.StatusOK,
 		CreateTime: dates.NowTimestamp(),
 		UpdateTime: dates.NowTimestamp(),
 	}
@@ -259,7 +259,7 @@ func (s *userService) SignIn(username, password string) (*models.User, error) {
 	} else {
 		user = s.GetByUsername(username)
 	}
-	if user == nil || user.Status != constants.StatusOk {
+	if user == nil || user.Status != constants.StatusOK {
 		return nil, errors.New("用户名或密码错误")
 	}
 	if !passwd.ValidatePassword(user.Password, password) {
@@ -426,8 +426,8 @@ func (s *userService) IncrCommentCount(userId int64) int {
 func (s *userService) SyncUserCount() {
 	s.Scan(func(users []models.User) {
 		for _, user := range users {
-			topicCount := repositories.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusOk))
-			commentCount := repositories.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusOk))
+			topicCount := repositories.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusOK))
+			commentCount := repositories.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusOK))
 			_ = repositories.UserRepository.UpdateColumn(sqls.DB(), user.Id, "topic_count", topicCount)
 			_ = repositories.UserRepository.UpdateColumn(sqls.DB(), user.Id, "comment_count", commentCount)
 			cache.UserCache.Invalidate(user.Id)
@@ -524,7 +524,7 @@ func (s *userService) CheckPostStatus(user *models.User) error {
 	if user == nil {
 		return errs.NotLogin
 	}
-	if user.Status != constants.StatusOk {
+	if user.Status != constants.StatusOK {
 		return errs.UserDisabled
 	}
 	if user.IsForbidden() {
