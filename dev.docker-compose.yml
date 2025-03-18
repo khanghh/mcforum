@@ -5,8 +5,11 @@ services:
     build:
       context: .
       dockerfile: ./dev.Dockerfile
+    user: 1000:1000
     volumes:
-      - ./:/root/bbs-go
+      - ./:/bbs-go
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
     ports:
       - 8080:8080
       - 8082:8082
@@ -20,3 +23,6 @@ services:
       - 8081:80
     environment:
       - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb-galera
+      - PMA_USER=bbsgo
+      - PMA_PASSWORD=123456

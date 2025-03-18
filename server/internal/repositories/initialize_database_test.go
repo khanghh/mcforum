@@ -4,9 +4,7 @@ import (
 	"bbs-go/internal/models"
 	"bbs-go/internal/models/constants"
 	"encoding/json"
-	"fmt"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/mlogclub/simple/common/dates"
@@ -58,7 +56,12 @@ var topicNodes = []models.TopicNode{
 	},
 }
 
-var siteNavs, _ = json.Marshal([]models.ActionLink{
+func jsonMarshal(val any) string {
+	data, _ := json.Marshal(val)
+	return string(data)
+}
+
+var siteNavs = jsonMarshal([]models.ActionLink{
 	{
 		Title: "Homepage",
 		Url:   "/",
@@ -71,12 +74,6 @@ var siteNavs, _ = json.Marshal([]models.ActionLink{
 		Title: "Articles",
 		Url:   "/articles",
 	},
-})
-
-var scoreConfig, _ = json.Marshal(models.ScoreConfig{
-	PostTopicScore:   1,
-	PostCommentScore: 1,
-	CheckInScore:     1,
 })
 
 var sysConfigs = []models.SysConfig{
@@ -94,13 +91,13 @@ var sysConfigs = []models.SysConfig{
 	},
 	{
 		Key:         constants.SysConfigSiteKeywords,
-		Value:       fmt.Sprintf("[%s]", strings.Join([]string{"mineviet"}, ",")),
+		Value:       jsonMarshal([]string{"mineviet"}),
 		Name:        "Site Keywords",
 		Description: "A list of keywords for search engine optimization (SEO).",
 	},
 	{
 		Key:         constants.SysConfigSiteNavs,
-		Value:       string(siteNavs),
+		Value:       siteNavs,
 		Name:        "Navigation Menu",
 		Description: "JSON configuration for the site's main navigation menu.",
 	},
@@ -118,7 +115,7 @@ var sysConfigs = []models.SysConfig{
 	},
 	{
 		Key:         constants.SysConfigScoreConfig,
-		Value:       string(scoreConfig),
+		Value:       jsonMarshal(models.ScoreConfig{1, 1, 1}),
 		Name:        "Points System Configuration",
 		Description: "Defines the point rewards for various user actions, such as posting topics, commenting, and daily check-ins.",
 	},

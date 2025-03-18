@@ -32,7 +32,9 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
-WORKDIR /root/bbs-go
+USER node
+
+WORKDIR /bbs-go
 
 EXPOSE 8080 8082 3000
 
