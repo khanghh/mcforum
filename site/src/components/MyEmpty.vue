@@ -14,7 +14,7 @@ const showLogo = true
       </g>
     </svg>
     <span>
-      {{ $t('feed.no_data_available') }}
+      {{ $t('message.no_data_available') }}
     </span>
   </div>
 </template>

@@ -3,6 +3,6 @@ import vi from './vi-VN'
 
 export default defineI18nConfig(() => ({
   legacy: false,
-  locale: 'en',
+  locale: 'vi',
   messages: { en, vi },
 }));

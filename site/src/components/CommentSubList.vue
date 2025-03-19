@@ -43,14 +43,14 @@
         <div class="comment-actions">
           <div class="comment-action-item" :class="{ active: comment.liked }" @click="like(comment)">
             <icon name="ThumbsUp" :filled="comment.liked" />
-            <span>&nbsp;{{ comment.liked ? $t('feed.liked') : $t('feed.like') }}&nbsp;</span>
+            <span>&nbsp;{{ comment.liked ? $t('feed.actions.liked') : $t('feed.actions.like') }}&nbsp;</span>
             <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
           </div>
           <div class="comment-action-item" :class="{ active: reply.quoteId === comment.id }"
             @click="switchShowReply(comment)">
             <icon name="MessageSquareMore" />
             <span>&nbsp;{{
-              reply.quoteId === comment.id ? $t('feed.hide_reply') : $t('feed.reply')
+              reply.quoteId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply')
             }}</span>
           </div>
         </div>
@@ -118,7 +118,7 @@ async function like(comment) {
       });
       comment.liked = false;
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0;
-      useMsgSuccess(i18n.t('alert.unliked_success'));
+      useMsgSuccess(i18n.t('message.unliked_success'));
     } else {
       await useHttpPostForm("/api/like/like", {
         body: {
@@ -128,7 +128,7 @@ async function like(comment) {
       });
       comment.liked = true;
       comment.likeCount = comment.likeCount + 1;
-      useMsgSuccess(i18n.t('alert.liked_success'));
+      useMsgSuccess(i18n.t('message.liked_success'));
     }
   } catch (e) {
     useCatchError(e);
@@ -172,7 +172,7 @@ async function submitReply(parent) {
     });
     hideReply();
     emit("reply", ret);
-    useMsgSuccess(i18n.t('alert.comment_success'));
+    useMsgSuccess(i18n.t('message.comment_success'));
   } catch (e) {
     useCatchError(e);
   }

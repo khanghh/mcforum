@@ -102,9 +102,9 @@ async function forbidden(days) {
         days,
       },
     });
-    useMsgSuccess(i18n.t('alert.mute_user_success'));
+    useMsgSuccess(i18n.t('message.mute_user_success'));
   } catch (e) {
-    useMsgError(i18n.t('alert.mute_user_failure'));
+    useMsgError(i18n.t('message.mute_user_failure'));
   }
 }
 function deleteTopic() {
@@ -112,14 +112,14 @@ function deleteTopic() {
     useHttpPost(`/api/topic/delete/${topic.value.id}`)
       .then(() => {
         useMsg({
-          message: i18n.t('alert.delete_success'),
+          message: i18n.t('message.delete_success'),
           onClose() {
             useLinkTo("/topics");
           },
         });
       })
       .catch((e) => {
-        useMsgError(i18n.t('alert.delete_success', { error: (e.message || e) }));
+        useMsgError(i18n.t('message.delete_success', { error: (e.message || e) }));
       });
   });
 }

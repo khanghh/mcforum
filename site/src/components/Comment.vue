@@ -54,7 +54,7 @@ function reply(quote) {
   <div class="comment-component">
     <div class="comment-header">
       <span v-if="commentCount > 0">{{ commentCount }} {{ $t('feed.comment_count') }}</span>
-      <span v-else>{{ $t('feed.comment') }}</span>
+      <span v-else>{{ $t('feed.actions.comment') }}</span>
     </div>
 
     <template v-if="isLogin">
@@ -75,7 +75,7 @@ function reply(quote) {
     </template>
     <div v-else class="comment-not-login">
       <div class="comment-login-div">
-        <i18n-t keypath="alert.please_login_to_comment" tag="label" for="page.signin">
+        <i18n-t keypath="message.please_login_to_comment" tag="label" for="page.signin">
           <a style="font-weight: 700" @click="useToSignIn()">{{ $t('page.signin') }}</a>
         </i18n-t>
       </div>

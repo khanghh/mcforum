@@ -50,7 +50,7 @@
             <div class="field">
               <button class="button is-link" @click="signin">{{ $t('form.button.signin') }}</button>
               <a class="button is-text" @click="toSignup">
-                {{ $t('form.link.dont_have_account') }}&gt;&gt;
+                {{ $t('links.dont_have_account') }}
               </a>
             </div>
           </div>
@@ -99,15 +99,15 @@ async function refreshCaptcha() {
 async function signin() {
   try {
     if (!form.username) {
-      useMsgError(i18n.t('alert.username_email_required'));
+      useMsgError(i18n.t('message.username_email_required'));
       return;
     }
     if (!form.password) {
-      useMsgError(i18n.t('alert.password_required'));
+      useMsgError(i18n.t('message.password_required'));
       return;
     }
     if (!form.captchaCode) {
-      useMsgError(i18n.t('alert.captcha_required'));
+      useMsgError(i18n.t('message.captcha_required'));
       return;
     }
 

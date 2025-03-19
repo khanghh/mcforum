@@ -73,7 +73,7 @@ defineExpose({
     <label class="simple-editor-input">
       <textarea
         v-model="post.content"
-        :placeholder="$t('publish.enter_post_content')"
+        :placeholder="$t('form.placeholder.enter_post_content')"
         :style="{ 'min-height': height, 'height': height }"
         @update:model-value="onContentChange"
         @paste="handleParse"

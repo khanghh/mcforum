@@ -1,8 +1,8 @@
 <template>
   <div v-if="links && links.length" class="widget">
     <div class="widget-header">
-      <span>{{ $t('widget.links') }}</span>
-      <span class="slot"><nuxt-link to="/links">{{ $t('widget.view_more') }}</nuxt-link></span>
+      <span>{{ $t('widget.title.links') }}</span>
+      <span class="slot"><nuxt-link to="/links">{{ $t('widget.actions.view_more') }}</nuxt-link></span>
     </div>
     <div class="widget-content">
       <ul class="links">

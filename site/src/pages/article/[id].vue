@@ -80,7 +80,7 @@ if (error.value) {
   // error.value.message
   throw createError({
     statusCode: 500,
-    message: error.value.message || i18n.t('alert.internal_server_error'),
+    message: error.value.message || i18n.t('message.internal_server_error'),
   });
 }
 

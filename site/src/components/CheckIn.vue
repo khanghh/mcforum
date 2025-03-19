@@ -1,6 +1,6 @@
 <template>
   <div class="widget">
-    <div class="widget-header">{{ $t('widget.check_in.title') }}</div>
+    <div class="widget-header">{{ $t('widget.title.check_in') }}</div>
     <div class="widget-content checkin">
       <div class="checkedin">
         <div class="gold-icon-box">

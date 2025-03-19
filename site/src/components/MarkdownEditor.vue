@@ -1,6 +1,7 @@
 <template>
   <client-only>
     <MdEditor
+      language="en-US"
       v-model="value"
       :theme="$colorMode.preference"
       @onChange="change"
@@ -8,8 +9,7 @@
       :toolbars="toolbars"
       :style="{ height: height }"
       :placeholder="placeholder"
-      :preview="false"
-    />
+      :preview="false" />
   </client-only>
 </template>
 
@@ -28,7 +28,7 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: "请输入...",
+    default: "",
   },
 });
 

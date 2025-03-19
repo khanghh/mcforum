@@ -6,7 +6,7 @@
     <follow-widget :user="localUser" />
 
     <div v-if="isAdmin" class="widget">
-      <div class="widget-header">{{ $t('profile.actions.title') }}</div>
+      <div class="widget-header">{{ $t('widget.title.actions') }}</div>
       <div class="widget-content">
         <ul class="operations">
           <li v-if="localUser.forbidden">
@@ -71,9 +71,9 @@ async function doForbidden(days) {
       },
     });
     localUser.value.forbidden = true;
-    useMsgSuccess(i18n.t('alert.mute_user_success'));
+    useMsgSuccess(i18n.t('message.mute_user_success'));
   } catch (e) {
-    useMsgError(i18n.t('alert.mute_user_failure'));
+    useMsgError(i18n.t('message.mute_user_failure'));
   }
 }
 
@@ -86,9 +86,9 @@ async function removeForbidden() {
       },
     });
     localUser.value.forbidden = false;
-    useMsgSuccess(i18n.t('alert.unumute_user_success'));
+    useMsgSuccess(i18n.t('message.unumute_user_success'));
   } catch (e) {
-    useMsgError(i18n.t('alert.unumute_user_failure'));
+    useMsgError(i18n.t('message.unumute_user_failure'));
   }
 }
 </script>

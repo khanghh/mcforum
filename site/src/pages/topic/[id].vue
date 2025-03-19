@@ -5,7 +5,7 @@
         <div
           class="notification is-warning"
           style="width: 100%; margin: 20px 0">
-          {{ $t('alert.post_under_review') }}
+          {{ $t('message.post_under_review') }}
         </div>
       </div>
       <div class="container main-container left-main size-360">
@@ -136,7 +136,7 @@
                 <div class="action" @click="addFavorite(topic.id)">
                   <icon name="Star" color="#f6d32d" :filled="topic.favorited" />
                   <div class="action-text">
-                    <span>{{ $t('feed.favorite') }}</span>
+                    <span>{{ $t('feed.actions.favorite') }}</span>
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ async function like() {
       topic.value.likeCount =
         topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0;
 
-      useMsgSuccess(i18n.t('alert.unliked_success'));
+      useMsgSuccess(i18n.t('message.unliked_success'));
       await refreshLikeUsers();
     } else {
       await useHttpPostForm("/api/like/like", {
@@ -226,7 +226,7 @@ async function like() {
       liked.value = true;
       topic.value.likeCount++;
 
-      useMsgSuccess(i18n.t('alert.liked_success'));
+      useMsgSuccess(i18n.t('message.liked_success'));
       await refreshLikeUsers();
     }
   } catch (e) {
@@ -244,7 +244,7 @@ async function addFavorite(topicId) {
         },
       });
       topic.value.favorited = false;
-      useMsgSuccess(i18n.t('alert.removed_from_favorite'));
+      useMsgSuccess(i18n.t('message.removed_from_favorite'));
     } else {
       await useHttpPostForm("/api/favorite/add", {
         body: {
@@ -253,7 +253,7 @@ async function addFavorite(topicId) {
         },
       });
       topic.value.favorited = true;
-      useMsgSuccess(i18n.t('alert.added_to_favorite'));
+      useMsgSuccess(i18n.t('message.added_to_favorite'));
     }
   } catch (e) {
     useCatchError(e);

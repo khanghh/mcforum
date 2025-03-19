@@ -48,8 +48,8 @@
                 <span>{{ $t('navbar.favorites') }}</span>
               </nuxt-link>
               <nuxt-link class="navbar-item" to="/user/profile">
-                <icon name="Pencil" />
-                <span>{{ $t('navbar.edit_profile') }}</span>
+                <icon name="Settings" />
+                <span>{{ $t('navbar.settings') }}</span>
               </nuxt-link>
               <a class="navbar-item" @click="signout">
                 <icon name="LogOut" />

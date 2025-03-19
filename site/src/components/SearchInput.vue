@@ -9,7 +9,7 @@
         class="input"
         type="text"
         maxlength="30"
-        :placeholder="$t('search.placeholder')"
+        :placeholder="$t('form.placeholder.enter_search_content')"
         autocomplete="off"
         aria-autocomplete="off"
         @focus="onFocus"

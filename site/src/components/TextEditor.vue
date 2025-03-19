@@ -99,7 +99,7 @@ export default {
     <textarea
       ref="textarea"
       v-model="post.content"
-      :placeholder="$t('publish.enter_post_content')"
+      :placeholder="$t('form.placeholder.enter_post_content')"
       :style="{ 'min-height': `${height}px`, 'height': `${height}px` }"
       @input="onInput"
       @paste="handleParse"

@@ -21,7 +21,7 @@
               v-model="postForm.title"
               class="input"
               type="text"
-              :placeholder="$t('publish.enter_title')" />
+              :placeholder="$t('form.placeholder.enter_post_content')" />
           </div>
         </div>
 
@@ -29,7 +29,7 @@
           <div class="control">
             <markdown-editor
               v-model="postForm.content"
-              :placeholder="$t('publish.enter_content')" />
+              :placeholder="$t('form.placeholder.enter_post_content')" />
           </div>
         </div>
 

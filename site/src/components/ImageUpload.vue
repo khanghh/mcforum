@@ -134,7 +134,7 @@ function removeItem(index) {
       emits("update:modelValue", fileList.value); // 避免和回显冲突，先修改 fileList
       setTimeout(() => {
         previewFiles.value.splice(index, 1);
-        useMsgSuccess(i18n.t('alert.delete_success'));
+        useMsgSuccess(i18n.t('message.delete_success'));
       }, 900);
     },
     () => console.log("canceled delete")
@@ -148,12 +148,12 @@ function checkSizeLimit(files) {
     }
   }
   if (!pass)
-    useMsgError(i18n.t('alert.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }));
+    useMsgError(i18n.t('message.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }));
   return pass;
 }
 function checkLengthLimit(files) {
   if (previewFiles.value.length + files.length > props.limit) {
-    useMsgWarning(i18n.t('alert.image_upload_limit', { limit: props.limit }));
+    useMsgWarning(i18n.t('message.image_upload_limit', { limit: props.limit }));
     return false;
   } else {
     return true;

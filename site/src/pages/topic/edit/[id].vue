@@ -2,7 +2,7 @@
   <section class="main">
     <div class="container">
       <div class="topic-create-form" v-if="postForm">
-        <div class="topic-form-title">{{ $t('publish.edit_topic') }}</div>
+        <div class="topic-form-title">{{ $t('page.edit_topic') }}</div>
 
         <div class="field">
           <div class="control">
@@ -73,7 +73,7 @@ definePageMeta({
 });
 
 useHead({
-  title: useSiteTitle(i18n.t('publish.edit_topic')),
+  title: useSiteTitle(i18n.t('page.edit_topic')),
 });
 
 const route = useRoute();

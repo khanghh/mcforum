@@ -59,19 +59,19 @@
           <div class="topic-handlers">
             <div class="btn" :class="{ liked: topic.liked }" @click="like(topic)">
               <icon name="ThumbsUp" :filled="topic.liked" />
-              {{ topic.liked ? $t('feed.liked') : $t('feed.like') }}
+              {{ topic.liked ? $t('feed.actions.liked') : $t('feed.actions.like') }}
               <span v-if="topic.likeCount > 0">{{ topic.likeCount }}</span>
             </div>
             <div class="btn" @click="toTopicDetail(topic.id)">
               <icon name="MessageSquareMore" size="1em" />
-              {{ $t('feed.comment') }}
+              {{ $t('feed.actions.comment') }}
               <span v-if="topic.commentCount > 0">{{
                 topic.commentCount
-                }}</span>
+              }}</span>
             </div>
             <div class="btn" @click="toTopicDetail(topic.id)">
               <icon name="BookOpenText" size="1em" />
-              {{ $t('feed.view') }}
+              {{ $t('feed.actions.view') }}
               <span v-if="topic.viewCount > 0">{{ topic.viewCount }}</span>
             </div>
           </div>
@@ -114,7 +114,7 @@ async function like(topic) {
       });
       topic.liked = false;
       topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0;
-      useMsgSuccess(i18n.t('alert.unliked_success'));
+      useMsgSuccess(i18n.t('message.unliked_success'));
     } else {
       await useHttpPostForm("/api/like/like", {
         body: {
@@ -124,7 +124,7 @@ async function like(topic) {
       });
       topic.liked = true;
       topic.likeCount++;
-      useMsgSuccess(i18n.t('alert.liked_success'));
+      useMsgSuccess(i18n.t('message.liked_success'));
     }
   } catch (e) {
     useCatchError(e);

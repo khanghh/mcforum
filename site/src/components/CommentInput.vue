@@ -55,7 +55,7 @@ async function create() {
     value.value.imageList = [];
     quote.value = null;
     simpleEditor.value.clear();
-    useMsgSuccess(i18n.t('alert.comment_success'));
+    useMsgSuccess(i18n.t('message.comment_success'));
   } catch (e) {
     console.error(e);
     useMsgError(e.message || e);

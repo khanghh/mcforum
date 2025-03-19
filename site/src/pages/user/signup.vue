@@ -75,7 +75,7 @@
               <div class="control">
                 <button class="button is-link" @click="signup">{{ $t('form.button.signup') }}</button>
                 <a class="button is-text" @click="toSignin">
-                  {{ $t('form.link.already_have_account') }}&gt;&gt;
+                  {{ $t('links.already_have_account') }}
                 </a>
               </div>
             </div>

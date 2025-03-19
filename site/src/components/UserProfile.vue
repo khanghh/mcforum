@@ -23,7 +23,7 @@
         <h1 class="nickname">
           <nuxt-link :to="'/user/' + localUser.id">{{
             localUser.nickname
-          }}</nuxt-link>
+            }}</nuxt-link>
         </h1>
         <div v-if="localUser.description" class="description">
           <p>{{ localUser.description }}</p>
@@ -88,7 +88,7 @@ async function uploadBackground(e) {
     // 重新加载数据
     localUser.value = await userStore.fetchCurrent();
 
-    useMsgSuccess(i18n.t('alert.set_cover_photo_success'));
+    useMsgSuccess(i18n.t('message.set_cover_photo_success'));
   } catch (e) {
     useMsgError(e.message || e);
     console.error(e);

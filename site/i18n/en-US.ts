@@ -1,23 +1,9 @@
-import Favorites from "~/pages/user/favorites.vue";
-
 export default {
   feed: {
-    no_data_available: "No data available",
-    load_more: "Load more",
-    no_more_content: "No more content",
-    liked: "Liked",
-    like: "Like",
-    comment: "Comment",
-    view: "View",
-    favorite: "Favorite",
     like_count: "Likes",
     comment_count: "Comments",
     view_count: "Views",
     pinned: "Pinned",
-    reply: "Reply",
-    hide_reply: "Hide",
-    view_more_replies: "View more replies...",
-    view_details: "View details",
     replied_to: "replied to",
     published: "published",
     published_on: "Published on",
@@ -26,21 +12,54 @@ export default {
       minutes_ago: "{time} minutes ago",
       hours_ago: "{time} hours ago",
       days_ago: "{time} days ago",
-    }
+    },
+    actions: {
+      liked: "Liked",
+      like: "Like",
+      comment: "Comment",
+      view: "View",
+      favorite: "Favorite",
+      load_more: "Load more",
+      reply: "Reply",
+      hide_reply: "Hide",
+      view_more_replies: "View more replies...",
+      view_details: "View details",
+    },
+  },
+  publish: {
+    action: {
+      edit: "edit",
+      delete: "delete",
+      recommend: "recommend",
+      unrecommend: "unrecommend",
+      pin: "pin",
+      unpin: "unpin",
+    },
+    manage: "Manage",
+    add_image: "Add Image",
+    enter_title: "Enter a title",
+    article_under_review: "The article is under review",
+    verify_email_title: "Please verify your email first",
+    verify_email_prompt: "",
+    verify_email_action: "Before creating a topic, please go to {} and set up your email to complete verification.",
+    enter_post_content: "Enter the content you wish to post ...",
+    add_some_tags: "Add some tags",
+    recommended_tags: "Recommended tags",
+    hidden_content_unlocked: "Unlocked content",
+    hidden_content_locked: "This content is hidden. Please reply to unlock."
   },
   navbar: {
     profile: "Profile",
     favorites: "My Favorites",
-    edit_profile: "Edit Profile",
+    settings: "Settings",
     logout: "Log Out",
-    publish: 'Publish',
+    publish: "Publish",
     post_status: "Post Status",
     create_topic: "Create Topic",
     create_article: "Create Article",
   },
   search: {
     all: "All",
-    placeholder: "Enter content your want to search",
     recommended: "Recommended",
     no_time_limit: "No time limit",
     within_one_day: "Within one day",
@@ -49,11 +68,19 @@ export default {
     within_one_year: "Within one year"
   },
   widget: {
-    links: "Links",
-    site_notice: "Announcement",
-    view_more: "View more",
+    title: {
+      check_in: "Check In",
+      links: "Links",
+      personal_info: "Personal Info",
+      site_notice: "Announcement",
+      followers: "Followers",
+      following: "Following",
+      leaderboard: "Leaderboard",
+      favorites: "Favorites",
+      actions: "Actions",
+      statistics: "Statistics",
+    },
     check_in: {
-      title: "Check In",
       checked_today: "Checked in today",
       check_now: "Check in now",
       streak: "You have checked in for {count} consecutive days!",
@@ -62,9 +89,11 @@ export default {
       success: "Check-in successful"
     },
     leaderboard: {
-      title: "Leaderboard",
       topic_count: "{count} posts",
       comment_count: "{count} comments",
+    },
+    actions: {
+      view_more: "View more",
     }
   },
   page: {
@@ -90,8 +119,10 @@ export default {
     return_home: "Return Homepage",
     login: "Login",
     click_here: "click here",
+    already_have_account: "Already have an account? Sign In",
+    dont_have_account: "Don't have an account? Click here to sign up.",
   },
-  alert: {
+  message: {
     username_email_required: "Please enter your username or email.",
     password_required: "Please enter your password.",
     captcha_required: "Please enter the security code.",
@@ -104,7 +135,7 @@ export default {
     email_update_failure: "Failed to update email. {error}",
     verify_email_sent: "A confirmation email has been sent. Please check your inbox.",
     verify_email_failure: "Failed to request email verification. {error}",
-    please_login_to_comment: "Please {0} before posting an opinion",
+    please_login_to_comment: "Please {0} before posting comments",
     password_update_success: "Password updated successfully.",
     password_update_failure: "Failed to update password. {error}",
     added_to_favorite: "Added to Favorites",
@@ -128,6 +159,10 @@ export default {
     redirecting_message: "You are being redirected",
     click_to_redirect: "click here to redirect",
     external_redirect: "You will be redirected shortly. If you don’t want to wait, {0}",
+    no_follower_yet: "No followers yet",
+    content_deleted: "The collected content is no longer valid.",
+    no_data_available: "No data available",
+    no_more_content: "No more content",
   },
   form: {
     button: {
@@ -135,12 +170,12 @@ export default {
       signup: "Sign Up",
       save: "Save",
       set: "Set",
+      send: "Send",
       change: "Change",
       verify: "Verify",
       post_status: "Post Status",
       post_topic: "Post Topic",
       post_article: "Post Article",
-      send: "Send",
       submmit_changes: "Submit changes",
     },
     label: {
@@ -153,12 +188,6 @@ export default {
       username_or_email: "Username/Email",
       password: "Password",
       captcha: "Security Code",
-      confirm_password: "Confirm Password",
-      enter_password_again: "Please confirm your password",
-    },
-    link: {
-      already_have_account: "Already have an account? Sign In",
-      dont_have_account: "Don't have an account? Click here to sign up.",
     },
     placeholder: {
       enter_username_email: "Enter your username or email",
@@ -174,7 +203,8 @@ export default {
       write_bio: "Tell us about yourself",
       enter_post_title: "Please enter the post title",
       enter_post_content: "Write your content here. Drag or browse images to upload.",
-      enter_hidden_content: "This content is hidden. It will be visible after you comment."
+      enter_hidden_content: "This content is hidden. It will be visible after you comment.",
+      enter_search_content: "Enter content your want to search",
     },
   },
   dialog: {
@@ -199,76 +229,30 @@ export default {
       confirm: 'Confirm',
     },
   },
-  settings: {
-    email_verified: "Verified",
-    password_set: "Already set",
-    password_not_set: "Not set",
-  },
   profile: {
-    publish: {
-      statistics: "Statistics",
+    info: {
       points: "Points",
       topics: "Topics",
       articles: "Articles",
       comments: "Comments",
-    },
-    info: {
-      title: "Personal Info",
       user_id: "User Id",
-      edit: "Edit",
-      nickname: "Nickname",
-      username: "Username",
-      email: "Email",
-      bio: "About me",
-      avatar: "Avatar",
-      website: "Website",
-    },
-    followers: {
-      title: "Followers",
-      no_data: "No followers yet",
-    },
-    following: {
-      title: "Following",
-    },
-    favorites: {
-      title: "Favorites",
-      content_invalid: "The collected content is no longer valid.",
+      points_earned: "Points Earned",
+      points_deducted: "Points Deducted"
     },
     actions: {
+      edit: "Edit",
       upload_cover_photo: "Upload photo",
-      title: "Actions",
       unmute: "Unmute",
-      mute_7days: "Ban 7 days",
-      mute_permanent: "Permanently ban",
+      mute_7days: "Mune 7 days",
+      mute_permanent: "Permanently Mute",
+      follow: "Follow",
+      unfollow: "Unfollow",
     },
-  },
-  publish: {
-    action: {
-      edit: "edit",
-      delete: "delete",
-      recommend: "recommend",
-      unrecommend: "unrecommend",
-      pin: "pin",
-      unpin: "unpin",
+    settings: {
+      email_verified: "Verified",
+      password_set: "Already set",
+      password_not_set: "Not set",
     },
-    manage: "Manage",
-    add_image: "Add Image",
-    edit_topic: "Edit Topic",
-    edit_article: "Edit Articles",
-    enter_title: "Enter a title",
-    article_under_review: "The article is under review",
-    verify_email_title: "Please verify your email first",
-    verify_email_prompt: "Before creating a topic, please go to",
-    verify_email_action: "and set up your email to complete verification.",
-    enter_post_content: "Enter the content you wish to post ...",
-    add_some_tags: "Add some tags",
-    recommended_tags: "Recommended tags",
-    hidden_content_unlocked: "Unlocked content",
-    hidden_content_locked: "This content is hidden. Please reply to unlock."
-  },
-  points_history: {
-    points_earned: "Points Earned",
-    points_deducted: "Points Deducted"
   },
   footer: {
     about: "About",

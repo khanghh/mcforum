@@ -2,18 +2,18 @@
   <div class="widget">
     <div class="widget-header">
       <div>
-        <span>{{ $t('profile.followers.title') }}</span>
+        <span>{{ $t('widget.title.followers') }}</span>
         <span class="count">{{ user.fansCount }}</span>
       </div>
       <div class="slot">
-        <nuxt-link :to="`/user/${user.id}/fans`">{{ $t('widget.view_more') }}</nuxt-link>
+        <nuxt-link :to="`/user/${user.id}/fans`">{{ $t('widget.actions.view_more') }}</nuxt-link>
       </div>
     </div>
     <div class="widget-content">
       <div v-if="fansList && fansList.length">
         <user-follow-list :users="fansList" @onFollowed="onFollowed" />
       </div>
-      <div v-else class="widget-tips">{{ $t('profile.followers.no_data') }}</div>
+      <div v-else class="widget-tips">{{ $t('message.no_follower_yet') }}</div>
     </div>
   </div>
 </template>

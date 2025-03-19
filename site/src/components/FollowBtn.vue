@@ -5,7 +5,7 @@
       :class="{ 'is-followed': followed }"
       @click="follow">
       <icon name="Plus" />
-      <span>{{ followed ? "已关注" : "关注" }}</span>
+      <span>{{ followed ? $t('profile.actions.unfollow') : $t('profile.actions.follow') }}</span>
     </button>
   </div>
 </template>

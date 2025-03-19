@@ -22,16 +22,16 @@
                 <span v-if="message.from.id > 0" class="msg-nickname">
                   <nuxt-link :to="'/user/' + message.from.id" target="_blank">{{
                     message.from.nickname
-                    }}</nuxt-link>
+                  }}</nuxt-link>
                 </span>
                 <span v-else class="msg-nickname">
                   <a href="javascript:void(0)" target="_blank">{{
                     message.from.nickname
-                    }}</a>
+                  }}</a>
                 </span>
                 <span class="msg-time">{{
                   usePrettyDate(message.createTime)
-                  }}</span>
+                }}</span>
                 <span v-if="message.title" class="msg-title">
                   {{ message.title }}
                 </span>
@@ -46,7 +46,7 @@
                 <div
                   v-if="message.detailUrl"
                   class="msg-attr message-show-more">
-                  <a :href="message.detailUrl" target="_blank">{{ $t('feed.view_details') }}&gt;&gt;</a>
+                  <a :href="message.detailUrl" target="_blank">{{ $t('feed.actions.view_details') }}&gt;&gt;</a>
                 </div>
               </div>
             </div>

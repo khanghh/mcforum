@@ -9,8 +9,8 @@
             :key="scoreLog.id"
             :class="{ plus: scoreLog.type === 0 }">
             <span class="score-type">{{
-              scoreLog.type === 0 ? $t('points_history.points_earned') : $t('points_history.points_deducted')
-              }}</span>
+              scoreLog.type === 0 ? $t('profile.info.points_earned') : $t('profile.info.points_deducted')
+            }}</span>
             <span class="score-score">
               <icon name="Trophy" />
               <span>{{ scoreLog.score }}</span>

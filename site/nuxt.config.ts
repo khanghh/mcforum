@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   ],
 
   elementPlus: {
-    defaultLocale: 'zh-cn',
+    defaultLocale: 'vi',
   },
 
   colorMode: {

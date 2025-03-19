@@ -3,7 +3,7 @@
     <div class="widget-header">
       <div>
         <icon name="Settings" />
-        <span>{{ $t('profile.info.title') }}</span>
+        <span>{{ $t('page.personal_info') }}</span>
       </div>
       <nuxt-link :to="'/user/' + user.id">
         <icon name="Undo2" />
@@ -131,10 +131,10 @@ async function submitForm() {
       body: form.value,
     });
     await reload();
-    useMsgSuccess(i18n.t('alert.profile_update_success'));
+    useMsgSuccess(i18n.t('message.profile_update_success'));
   } catch (e) {
     console.error(e);
-    useMsgError(i18n.t('alert.profile_update_failure', { error: (e.message || e) }));
+    useMsgError(i18n.t('message.profile_update_failure', { error: (e.message || e) }));
   }
 }
 async function reload() {

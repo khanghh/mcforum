@@ -14,7 +14,7 @@
                     <span class="icon is-small">
                       <icon name="MessageSquareText" />
                     </span>
-                    <span>{{ $t('profile.followers.title') }}</span>
+                    <span>{{ $t('widget.title.followers') }}</span>
                   </nuxt-link>
                 </li>
                 <li :class="{ 'is-active': activeTab === 'followed' }">
@@ -22,7 +22,7 @@
                     <span class="icon is-small">
                       <icon name="FileText" />
                     </span>
-                    <span>{{ $t('profile.following.title') }}</span>
+                    <span>{{ $t('widget.title.following') }}</span>
                   </nuxt-link>
                 </li>
               </ul>
@@ -50,7 +50,7 @@ const user = await useHttpGet(`/api/user/${route.params.userId}`);
 const activeTab = ref("fans");
 
 useHead({
-  title: useSiteTitle(i18n.t("profile.followers.title"), user.nickname),
+  title: useSiteTitle(i18n.t('widget.title.followers'), user.nickname),
 });
 </script>
 

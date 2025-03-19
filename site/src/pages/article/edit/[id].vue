@@ -41,7 +41,7 @@
               ref="mdEditor"
               v-model="postForm.hideContent"
               height="200px"
-              placeholder="隐藏内容，评论后可见" />
+              :placeholder="$t('publish.hidden_content_locked')" />
           </div>
         </div>
 
@@ -110,14 +110,14 @@ async function submitCreate() {
       },
     });
     useMsg({
-      message: i18n.t('alert.edit_post_success'),
+      message: i18n.t('message.edit_post_success'),
       onClose() {
         useLinkTo(`/article/${postForm.value.id}`);
       },
     });
   } catch (e) {
     publishing.value = false;
-    useMsgError(i18n.t('alert.edit_post_success', { error: (e.message || e) }));
+    useMsgError(i18n.t('message.edit_post_success', { error: (e.message || e) }));
   }
 }
 </script>

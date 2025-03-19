@@ -1,7 +1,7 @@
 <template>
   <div v-if="scoreRank && scoreRank.length" class="widget">
     <div class="widget-header">
-      <span class="widget-title">{{ $t('widget.leaderboard.title') }}</span>
+      <span class="widget-title">{{ $t('widget.title.leaderboard') }}</span>
     </div>
     <div class="widget-content">
       <ul class="score-rank">
@@ -10,7 +10,7 @@
           <div class="score-user-info">
             <nuxt-link :to="'/user/' + user.id" class="score-nickname">{{
               user.nickname
-            }}</nuxt-link>
+              }}</nuxt-link>
             <p class="score-desc">
               {{ $t('widget.leaderboard.topic_count', user.topicCount) }},
               {{ $t('widget.leaderboard.comment_count', user.commentCount) }}

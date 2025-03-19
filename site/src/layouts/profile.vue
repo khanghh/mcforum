@@ -9,7 +9,7 @@
             <div class="profile-edit-tab-item">
               <nuxt-link to="/user/profile">
                 <icon name="UserRound" />
-                <span>{{ $t('profile.info.title') }}</span>
+                <span>{{ $t('widget.title.personal_info') }}</span>
               </nuxt-link>
             </div>
             <div class="profile-edit-tab-item">
@@ -24,7 +24,7 @@
           <div class="profile-edit-tabs-mobile tabs">
             <ul>
               <li :class="{ 'is-active': active === 'profile' }">
-                <nuxt-link to="/user/profile">{{ $t('profile.info.title') }}</nuxt-link>
+                <nuxt-link to="/user/profile">{{ $t('page.personal_info') }}</nuxt-link>
               </li>
               <li :class="{ 'is-active': active === 'account' }">
                 <nuxt-link to="/user/profile/account">{{ $t('page.account_settings') }}</nuxt-link>

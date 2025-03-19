@@ -25,15 +25,15 @@ export default {
     <div class="extra-info">
       <ul class="extra-data">
         <li>
-          <span>{{ $t('profile.publish.points') }}</span><br />
+          <span>{{ $t('profile.info.points') }}</span><br />
           <b>{{ user.score }}</b>
         </li>
         <li>
-          <span>{{ $t('profile.publish.topics') }}</span><br />
+          <span>{{ $t('profile.info.topics') }}</span><br />
           <b>{{ user.topicCount }}</b>
         </li>
         <li>
-          <span>{{ $t('profile.publish.comments') }}</span><br />
+          <span>{{ $t('profile.info.comments') }}</span><br />
           <b>{{ user.commentCount }}</b>
         </li>
         <li>

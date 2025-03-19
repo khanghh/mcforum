@@ -1,19 +1,19 @@
 <template>
   <section class="main">
     <div class="container">
-      <article v-if="isNeedEmailVerify" class="message is-warning">
+      <article v-if="!isNeedEmailVerify" class="message is-warning">
         <div class="message-header">
           <p>{{ $t('publish.verify_email_title') }}</p>
         </div>
         <div class="message-body">
-          {{ $t('publish.verify_email_prompt') }}
-          <strong>
-            <nuxt-link
-              to="/user/profile/account"
-              style="color: var(--text-link-color)"> {{ $t('navbar.profile') }} &gt; {{ $t('navbar.edit_profile')
-              }}</nuxt-link>
-          </strong>
-          {{ $t('publish.verify_email_action') }}
+          <i18n-t keypath="publish.verify_email_action" tag="p">
+            <strong>
+              <nuxt-link
+                to="/user/profile/account"
+                style="color: var(--text-link-color)"> {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings')
+                }}</nuxt-link>
+            </strong>
+          </i18n-t>
         </div>
       </article>
       <div v-else class="topic-create-form">
@@ -40,7 +40,7 @@
               v-model="postForm.title"
               class="input topic-title"
               type="text"
-              :placeholder="$t('publish.enter_title')" />
+              :placeholder="$t('form.placeholder.enter_post_content')" />
           </div>
         </div>
 

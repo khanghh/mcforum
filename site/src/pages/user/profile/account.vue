@@ -43,7 +43,7 @@
           <div class="settings-item-title">{{ $t('form.label.password') }}</div>
           <div class="settings-item-input">
             <div class="input-value">
-              {{ user.passwordSet ? $t('settings.password_set') : $t('profile.settings.password_not_set') }}
+              {{ user.passwordSet ? $t('profile.settings.password_set') : $t('profile.settings.password_not_set') }}
             </div>
             <div class="action-box">
               <a v-if="user.passwordSet" @click="showUpdatePasswordDialog">{{ $t('form.button.change') }}</a>
@@ -198,10 +198,10 @@ async function setUsername() {
       },
     });
     await userRefresh();
-    useMsgSuccess(i18n.t('alert.set_username_success'));
+    useMsgSuccess(i18n.t('message.set_username_success'));
     usernameDialog.value.close();
   } catch (err) {
-    useMsgError(i18n.t('alert.set_username_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.set_username_failure', { error: (err.message || err) }));
   }
 }
 
@@ -221,10 +221,10 @@ async function setEmail() {
       },
     });
     await userRefresh();
-    useMsgSuccess(i18n.t('alert.email_update_success'));
+    useMsgSuccess(i18n.t('message.email_update_success'));
     emailDialog.value.close();
   } catch (err) {
-    useMsgError(i18n.t('alert.email_update_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.email_update_failure', { error: (err.message || err) }));
   }
 }
 
@@ -233,10 +233,10 @@ async function requestEmailVerify() {
   try {
     await useHttpPost("/api/user/send_verify_email");
     useMsgSuccess(
-      i18n.t('alert.verify_email_sent')
+      i18n.t('message.verify_email_sent')
     );
   } catch (err) {
-    useMsgError(i18n.t('alert.verify_email_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.verify_email_failure', { error: (err.message || err) }));
   } finally {
     loading.close();
   }
@@ -257,10 +257,10 @@ async function updatePassword() {
       body: updatePasswordForm,
     });
     await userRefresh();
-    useMsgSuccess(i18n.t('alert.password_update_success'));
+    useMsgSuccess(i18n.t('message.password_update_success'));
     updatePasswordDialog.value.close();
   } catch (err) {
-    useMsgError(i18n.t('alert.password_update_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }));
   }
 }
 
@@ -279,10 +279,10 @@ async function setPassword() {
       body: setPasswordForm,
     });
     await userRefresh();
-    useMsgSuccess(i18n.t('alert.password_update_success'));
+    useMsgSuccess(i18n.t('message.password_update_success'));
     setPasswordDialog.value.close();
   } catch (err) {
-    useMsgError(i18n.t('alert.password_update_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }));
   }
 }
 </script>

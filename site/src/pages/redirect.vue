@@ -7,10 +7,10 @@
         </div>
         <div style="margin: 20px 0">
           <h2>
-            {{ $t('alert.redirecting_message') }}
+            {{ $t('message.redirecting_message') }}
           </h2>
-          <i18n-t keypath="alert.external_redirect" tag="label">
-            <a :href="url">{{ $t('alert.click_to_redirect') }}</a>
+          <i18n-t keypath="message.external_redirect" tag="label">
+            <a :href="url">{{ $t('message.click_to_redirect') }}</a>
           </i18n-t>
         </div>
       </div>
@@ -28,7 +28,7 @@ const autoRedirectTime = 5000;
 if (!temp.startsWith("http://") && !temp.startsWith("https://")) {
   throw createError({
     statusCode: 500,
-    message: i18n.t('alert.internal_server_error')
+    message: i18n.t('message.internal_server_error')
   });
 }
 onMounted(() => {

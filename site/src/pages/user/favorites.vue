@@ -3,7 +3,7 @@
     <div class="widget-header">
       <span>
         <icon name="Star" />
-        <span>&nbsp;{{ $t('profile.favorites.title') }}</span>
+        <span>&nbsp;{{ $t('widget.title.favorites') }}</span>
       </span>
     </div>
 
@@ -15,7 +15,7 @@
             :key="item.favoriteId"
             class="favorite-item">
             <div v-if="item.deleted" class="favorite-item">
-              <div class="favorite-summary">{{ $t('profile.favorites.content_invalid') }}</div>
+              <div class="favorite-summary">{{ $t('message.content_deleted') }}</div>
             </div>
             <div v-else>
               <div class="favorite-title">

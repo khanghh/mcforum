@@ -14,7 +14,7 @@
                     <span class="icon is-small">
                       <icon name="MessageSquareText" />
                     </span>
-                    <span>{{ $t('profile.publish.topics') }}</span>
+                    <span>{{ $t('page.topics') }}</span>
                   </nuxt-link>
                 </li>
                 <li :class="{ 'is-active': activeTab === 'articles' }">
@@ -22,7 +22,7 @@
                     <span class="icon is-small">
                       <icon name="FileText" />
                     </span>
-                    <span>{{ $t('profile.publish.articles') }}</span>
+                    <span>{{ $t('page.articles') }}</span>
                   </nuxt-link>
                 </li>
               </ul>
