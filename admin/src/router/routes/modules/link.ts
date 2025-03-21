@@ -5,7 +5,7 @@ export default {
   path: '/link',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '友情链接',
+    title: 'Links',
     requiresAuth: true,
     icon: 'icon-apps',
     order: 6,
@@ -17,7 +17,7 @@ export default {
       name: 'Link',
       component: () => import('@/views/pages/link/index.vue'),
       meta: {
-        title: '友情链接',
+        title: 'Links',
         requiresAuth: true,
         roles: ['*'],
       },

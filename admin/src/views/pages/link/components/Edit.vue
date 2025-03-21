@@ -7,22 +7,22 @@
     @before-ok="handleBeforeOk"
   >
     <a-form ref="formRef" :model="form" :rules="rules">
-      <a-form-item field="title" label="标题">
+      <a-form-item field="title" label="Title">
         <a-input v-model="form.title" />
       </a-form-item>
-      <a-form-item field="url" label="链接">
+      <a-form-item field="url" label="Url">
         <a-input v-model="form.url" />
       </a-form-item>
-      <a-form-item field="logo" label="LOGO">
+      <a-form-item field="logo" label="Logo">
         <image-upload v-model="form.logo" />
       </a-form-item>
-      <a-form-item field="summary" label="描述">
+      <a-form-item field="summary" label="Summary">
         <a-textarea v-model="form.summary" allow-clear />
       </a-form-item>
-      <a-form-item field="status" label="状态">
+      <a-form-item field="status" label="Status">
         <a-select v-model="form.status">
-          <a-option :value="0">正常</a-option>
-          <a-option :value="1">删除</a-option>
+          <a-option :value="0">Enabled</a-option>
+          <a-option :value="1">Disabled</a-option>
         </a-select>
       </a-form-item>
     </a-form>
@@ -51,15 +51,15 @@
     status: 0,
   });
   const rules = {
-    title: [{ required: true, message: '请填写标题' }],
-    url: [{ required: true, message: '请填写链接' }],
+    title: [{ required: true, message: 'Please fill in the title' }],
+    url: [{ required: true, message: 'Please fill in the link' }],
   };
 
   const show = () => {
     formRef.value.resetFields();
 
     config.isCreate = true;
-    config.title = '新增';
+    config.title = 'Added';
     config.visible = true;
   };
 
@@ -67,7 +67,7 @@
     formRef.value.resetFields();
 
     config.isCreate = false;
-    config.title = '编辑';
+    config.title = 'Edit';
 
     try {
       form.value = await axios.get(`/api/admin/link/${id}`);
@@ -92,7 +92,7 @@
         ? '/api/admin/link/create'
         : '/api/admin/link/update';
       await axios.postForm<any>(url, jsonToFormData(form.value));
-      useNotificationSuccess('提交成功');
+      useNotificationSuccess('Submit successfully');
       emit('ok');
       done(true);
     } catch (e: any) {

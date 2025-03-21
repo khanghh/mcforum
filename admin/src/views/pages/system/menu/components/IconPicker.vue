@@ -140,6 +140,7 @@
     'icon-wifi',
     'icon-woman',
     'icon-live-broadcast',
+    'icon-topic',
   ];
 
   const visible = ref(false);

@@ -5,7 +5,7 @@ export default {
   path: '/settings',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '系统设置',
+    title: 'System Settings',
     requiresAuth: true,
     icon: 'icon-settings',
     order: 7,

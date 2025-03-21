@@ -5,21 +5,20 @@
         <a-form-item>
           <a-select
             v-model="filters.type"
-            placeholder="类型"
+            placeholder="Type"
             clearable
-            @change="list"
-          >
-            <a-option label="词组" value="word" />
-            <a-option label="正则表达式" value="regex" />
+            @change="list">
+            <a-option label="Word" value="word" />
+            <a-option label="Regex" value="regex" />
           </a-select>
         </a-form-item>
         <a-form-item>
-          <a-input v-model="filters.word" placeholder="违禁词"></a-input>
+          <a-input v-model="filters.word" placeholder="Prohibited Words"></a-input>
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit" @click="list">
             <template #icon> <icon-search /> </template>
-            查询
+            Search
           </a-button>
         </a-form-item>
       </a-form>
@@ -29,47 +28,36 @@
           <template #icon>
             <icon-plus />
           </template>
-          新增
+          Add
         </a-button>
       </div>
     </div>
 
     <div class="container-main">
-      <a-table
-        :loading="loading"
-        :data="data.results"
-        :size="appStore.table.size"
-        :bordered="appStore.table.bordered"
-        :pagination="pagination"
-        :sticky-header="true"
-        style="height: 100%"
-        column-resizable
-        @page-change="onPageChange"
-        @page-size-change="onPageSizeChange"
-      >
+      <a-table :loading="loading" :data="data.results" :size="appStore.table.size" :bordered="appStore.table.bordered"
+        :pagination="pagination" :sticky-header="true" style="height: 100%" column-resizable @page-change="onPageChange"
+        @page-size-change="onPageSizeChange">
         <template #columns>
-          <a-table-column title="编号" data-index="id" />
+          <a-table-column title="ID" data-index="id" />
 
-          <a-table-column title="类型" data-index="type" />
+          <a-table-column title="Type" data-index="type" />
 
-          <a-table-column title="违禁词" data-index="word" />
+          <a-table-column title="Match Word" data-index="word" />
 
-          <a-table-column title="备注" data-index="remark" />
+          <a-table-column title="Remark" data-index="remark" />
 
-          <a-table-column title="创建时间" data-index="createTime">
+          <a-table-column title="Created At" data-index="createTime">
             <template #cell="{ record }">
               {{ useFormatDate(record.createTime) }}
             </template>
           </a-table-column>
 
-          <a-table-column title="操作">
+          <a-table-column title="Actions">
             <template #cell="{ record }">
               <a-button
                 type="primary"
                 :size="appStore.table.size"
-                @click="showEdit(record.id)"
-                >编辑</a-button
-              >
+                @click="showEdit(record.id)">Edit</a-button>
             </template>
           </a-table-column>
         </template>
@@ -81,77 +69,77 @@
 </template>
 
 <script setup lang="ts">
-  import Edit from './components/Edit.vue';
+import Edit from './components/Edit.vue';
 
-  const appStore = useAppStore();
-  const loading = ref(false);
-  const edit = ref();
-  const filters = reactive({
-    limit: 20,
+const appStore = useAppStore();
+const loading = ref(false);
+const edit = ref();
+const filters = reactive({
+  limit: 20,
+  page: 1,
+
+  type: undefined,
+  word: undefined,
+});
+
+const data = reactive({
+  page: {
     page: 1,
+    limit: 20,
+    total: 0,
+  },
+  results: [],
+});
 
-    type: undefined,
-    word: undefined,
-  });
-
-  const data = reactive({
-    page: {
-      page: 1,
-      limit: 20,
-      total: 0,
-    },
-    results: [],
-  });
-
-  const pagination = computed(() => {
-    return {
-      total: data.page.total,
-      current: data.page.page,
-      pageSize: data.page.limit,
-      showTotal: true,
-      showJumper: true,
-      showPageSize: true,
-      pageSizeOptions: [20, 50, 100, 200, 300, 500],
-    };
-  });
-
-  onMounted(() => {
-    useTableHeight();
-  });
-
-  const list = async () => {
-    loading.value = true;
-    try {
-      const ret = await axios.postForm<any>(
-        '/api/admin/forbidden-word/list',
-        jsonToFormData(filters)
-      );
-      data.page = ret.page;
-      data.results = ret.results;
-    } finally {
-      loading.value = false;
-    }
+const pagination = computed(() => {
+  return {
+    total: data.page.total,
+    current: data.page.page,
+    pageSize: data.page.limit,
+    showTotal: true,
+    showJumper: true,
+    showPageSize: true,
+    pageSizeOptions: [20, 50, 100, 200, 300, 500],
   };
+});
 
+onMounted(() => {
+  useTableHeight();
+});
+
+const list = async () => {
+  loading.value = true;
+  try {
+    const ret = await axios.postForm<any>(
+      '/api/admin/forbidden-word/list',
+      jsonToFormData(filters)
+    );
+    data.page = ret.page;
+    data.results = ret.results;
+  } finally {
+    loading.value = false;
+  }
+};
+
+list();
+
+const showAdd = () => {
+  edit.value.show();
+};
+
+const showEdit = (id: any) => {
+  edit.value.showEdit(id);
+};
+
+const onPageChange = (page: number) => {
+  filters.page = page;
   list();
+};
 
-  const showAdd = () => {
-    edit.value.show();
-  };
-
-  const showEdit = (id: any) => {
-    edit.value.showEdit(id);
-  };
-
-  const onPageChange = (page: number) => {
-    filters.page = page;
-    list();
-  };
-
-  const onPageSizeChange = (pageSize: number) => {
-    filters.limit = pageSize;
-    list();
-  };
+const onPageSizeChange = (pageSize: number) => {
+  filters.limit = pageSize;
+  list();
+};
 </script>
 
 <style scoped lang="less"></style>

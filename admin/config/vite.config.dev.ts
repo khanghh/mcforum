@@ -8,7 +8,7 @@ export default mergeConfig(
     base: '/',
     server: {
       port: 8080,
-      open: true,
+      open: false,
       fs: {
         strict: true,
       },

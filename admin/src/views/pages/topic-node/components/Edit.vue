@@ -7,26 +7,26 @@
     @before-ok="handleBeforeOk"
   >
     <a-form ref="formRef" :model="form" :rules="rules">
-      <a-form-item label="名称" field="name">
+      <a-form-item label="Name" field="name">
         <a-input v-model="form.name" />
       </a-form-item>
 
-      <a-form-item label="描述" field="description">
+      <a-form-item label="Description" field="description">
         <a-input v-model="form.description" />
       </a-form-item>
 
-      <a-form-item label="LOGO" field="logo">
+      <a-form-item label="Logo" field="logo">
         <image-upload v-model="form.logo" />
       </a-form-item>
 
-      <a-form-item label="排序" field="sortNo">
+      <a-form-item label="SortNo" field="sortNo">
         <a-input v-model="form.sortNo" />
       </a-form-item>
 
-      <a-form-item field="status" label="状态">
+      <a-form-item field="status" label="Status">
         <a-select v-model="form.status">
-          <a-option :value="0">正常</a-option>
-          <a-option :value="1">删除</a-option>
+          <a-option :value="0">Normal</a-option>
+          <a-option :value="1">Deleted</a-option>
         </a-select>
       </a-form-item>
     </a-form>
@@ -60,7 +60,7 @@
     formRef.value.resetFields();
 
     config.isCreate = true;
-    config.title = '新增';
+    config.title = 'Added';
     config.visible = true;
   };
 
@@ -68,7 +68,7 @@
     formRef.value.resetFields();
 
     config.isCreate = false;
-    config.title = '编辑';
+    config.title = 'Edit';
 
     try {
       form.value = await axios.get(`/api/admin/topic-node/${id}`);
@@ -93,7 +93,7 @@
         ? '/api/admin/topic-node/create'
         : '/api/admin/topic-node/update';
       await axios.postForm<any>(url, jsonToFormData(form.value));
-      useNotificationSuccess('提交成功');
+      useNotificationSuccess('Submit successfully');
       emit('ok');
       done(true);
     } catch (e: any) {

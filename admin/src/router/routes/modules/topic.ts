@@ -5,7 +5,7 @@ export default {
   path: '/topic',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '帖子管理',
+    title: 'Post Management',
     requiresAuth: true,
     icon: 'icon-apps',
     order: 3,
@@ -16,7 +16,7 @@ export default {
       name: 'TopicNode',
       component: () => import('@/views/pages/topic-node/index.vue'),
       meta: {
-        title: '节点管理',
+        title: 'Category',
         requiresAuth: true,
         roles: ['*'],
       },
@@ -26,7 +26,7 @@ export default {
       name: 'Topic',
       component: () => import('@/views/pages/topic/index.vue'),
       meta: {
-        title: '帖子管理',
+        title: 'Post Management',
         requiresAuth: true,
         roles: ['*'],
       },

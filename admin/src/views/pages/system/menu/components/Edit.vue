@@ -17,15 +17,15 @@
         </a-tree-select>
       </a-form-item>
 
-      <a-form-item label="名称" field="title">
+      <a-form-item label="Title" field="title">
         <a-input v-model="form.title" />
       </a-form-item>
 
-      <a-form-item label="编码" field="name">
+      <a-form-item label="Name" field="name">
         <a-input v-model="form.name" />
       </a-form-item>
 
-      <a-form-item label="路径" field="path">
+      <a-form-item label="Path" field="path">
         <a-input v-model="form.path" />
       </a-form-item>
 
@@ -37,7 +37,7 @@
         <a-input-number v-model="form.sortNo" mode="button" />
       </a-form-item> -->
 
-      <a-form-item label="状态" field="status">
+      <a-form-item label="Status" field="status">
         <a-select v-model="form.status">
           <a-option :value="0">正常</a-option>
           <a-option :value="1">禁用</a-option>
@@ -87,7 +87,7 @@
     formRef.value.resetFields();
 
     config.isCreate = true;
-    config.title = '新增';
+    config.title = 'Add';
 
     await loadMenus();
 
@@ -98,7 +98,7 @@
     formRef.value.resetFields();
 
     config.isCreate = false;
-    config.title = '编辑';
+    config.title = 'Edit';
 
     await loadMenus();
 

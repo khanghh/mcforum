@@ -5,7 +5,7 @@ export default {
   path: '/dashboard',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '仪表盘',
+    title: 'Dashboard',
     requiresAuth: true,
     icon: 'icon-dashboard',
     order: 1,

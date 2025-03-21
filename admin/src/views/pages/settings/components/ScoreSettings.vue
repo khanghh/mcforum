@@ -1,33 +1,33 @@
 <template>
   <a-form :model="config" auto-label-width>
-    <a-form-item label="发帖积分">
+    <a-form-item label="Post Points">
       <a-input-number
         v-model="config.postTopicScore"
         :min="1"
         mode="button"
-        placeholder="发帖获得积分"
+        placeholder="Points earned for creating a post"
       />
     </a-form-item>
-    <a-form-item label="跟帖积分">
+    <a-form-item label="Comment Points">
       <a-input-number
         v-model="config.postCommentScore"
         :min="1"
         mode="button"
-        placeholder="跟帖获得积分"
+        placeholder="Points earned for commenting on a post"
       />
     </a-form-item>
-    <a-form-item label="签到积分">
+    <a-form-item label="Check-in Points">
       <a-input-number
         v-model="config.checkInScore"
         :min="1"
         mode="button"
-        placeholder="签到获得积分"
+        placeholder="Points earned for daily check-in"
       />
     </a-form-item>
 
     <a-form-item>
       <a-button type="primary" :loading="loading" @click="submit"
-        >提交</a-button
+        >Save</a-button
       >
     </a-form-item>
   </a-form>

@@ -3,8 +3,8 @@
     <template v-if="results && results.length">
       <div v-for="topic in results" :key="topic.id" class="topic-item">
         <div class="topic-status">
-          <a-tag v-if="topic.recommend" color="green">已推荐</a-tag>
-          <a-tag v-if="topic.status === 1" color="red">已删除</a-tag>
+          <a-tag v-if="topic.recommend" color="green">Recommended</a-tag>
+          <a-tag v-if="topic.status === 1" color="red">Deleted</a-tag>
         </div>
 
         <div class="topic-header">
@@ -20,19 +20,19 @@
                 <span>{{ topic.id }}</span>
               </div>
               <div class="meta-item">
-                <span>时间:</span>
+                <span>Time:</span>
                 <span>{{ useFormatDate(topic.createTime) }}</span>
               </div>
               <div class="meta-item">
-                <span>查看:</span>
+                <span>Views:</span>
                 <span>{{ topic.viewCount }}</span>
               </div>
               <div class="meta-item">
-                <span>点赞:</span>
+                <span>{{ Likes }}:</span>
                 <span>{{ topic.likeCount }}</span>
               </div>
               <div class="meta-item">
-                <span>评论:</span>
+                <span>{{ Comments }}:</span>
                 <span>{{ topic.commentCount }}</span>
               </div>
             </div>
@@ -78,48 +78,48 @@
                 class="action-item"
                 :href="useSiteURL('/topic/' + topic.id)"
                 target="_blank"
-                >查看详情</a-link
+                >View</a-link
               >
               <a-link class="action-item" @click="showComments(topic.id)">
-                查看评论
+                View Comments
               </a-link>
 
               <a-popconfirm
                 v-if="topic.recommend"
-                content="是否确定取消推荐？"
+                content="Cancel the recommendation?"
                 @ok="cancelRecommend(topic.id)"
               >
                 <a-button class="action-item" size="mini" type="primary"
-                  >取消推荐</a-button
+                  >Cancel recommendation</a-button
                 >
               </a-popconfirm>
 
               <a-popconfirm
                 v-else-if="!topic.recommend && topic.status === 0"
-                content="是否确定推荐？"
+                content="Recomment this post?"
                 @ok="recommend(topic.id)"
               >
                 <a-button class="action-item" size="mini" type="primary"
-                  >推荐</a-button
+                  >Recommend</a-button
                 >
               </a-popconfirm>
 
               <a-popconfirm
-                content="是否确定删除？"
+                content="Delete this post?"
                 @ok="deleteSubmit(topic.id)"
               >
                 <a-button class="action-item" size="mini" type="primary"
-                  >删除</a-button
+                  >Delete</a-button
                 >
               </a-popconfirm>
             </template>
             <template v-else-if="topic.status === 1">
               <a-popconfirm
-                content="是否确定取消删除？"
+                content="Restore this post?"
                 @ok="undeleteSubmit(topic.id)"
               >
                 <a-button class="action-item" size="mini" type="primary"
-                  >取消删除</a-button
+                  >Restore</a-button
                 >
               </a-popconfirm>
             </template>
@@ -128,25 +128,25 @@
                 class="action-item"
                 :href="useSiteURL('/topic/' + topic.id)"
                 target="_blank"
-                >查看详情</a-link
+                >Check the details</a-link
               >
               <a-link class="action-item" @click="showComments(topic.id)"
-                >查看评论</a-link
+                >View Comments</a-link
               >
               <a-popconfirm
-                content="是否确定删除？"
+                content="Delete this post?"
                 @ok="deleteSubmit(topic.id)"
               >
                 <a-button class="action-item" size="mini" type="primary"
-                  >删除</a-button
+                  >Delete</a-button
                 >
               </a-popconfirm>
               <a-popconfirm
-                content="是否确定删除？"
+                content="Delete this post?"
                 @ok="auditSubmit(topic.id)"
               >
                 <a-button class="action-item" size="mini" type="primary"
-                  >审核通过</a-button
+                  >Approved</a-button
                 >
               </a-popconfirm>
             </template>
@@ -176,7 +176,7 @@
         '/api/admin/topic/delete',
         jsonToFormData({ id: topicId })
       );
-      useNotificationSuccess('删除成功');
+      useNotificationSuccess('Deleted successfully');
       emits('change');
     } catch (e) {
       useHandleError(e);
@@ -188,7 +188,7 @@
         '/api/admin/topic/undelete',
         jsonToFormData({ id: topicId })
       );
-      useNotificationSuccess('取消删除成功');
+      useNotificationSuccess('Undelete Success');
       emits('change');
     } catch (e) {
       useHandleError(e);
@@ -200,7 +200,7 @@
         '/api/admin/topic/recommend',
         jsonToFormData({ id: topicId })
       );
-      useNotificationSuccess('推荐成功');
+      useNotificationSuccess('Recommended Success');
       emits('change');
     } catch (e) {
       useHandleError(e);
@@ -209,7 +209,7 @@
   const cancelRecommend = async (topicId) => {
     try {
       await axios.delete(`/api/admin/topic/recommend?id=${topicId}`);
-      useNotificationSuccess('取消推荐成功');
+      useNotificationSuccess('Cancel recommendation successfully');
       emits('change');
     } catch (e) {
       useHandleError(e);
@@ -221,7 +221,7 @@
         '/api/admin/topic/audit',
         jsonToFormData({ id: topicId })
       );
-      useNotificationSuccess('审核成功');
+      useNotificationSuccess('Successful audit');
       emits('change');
     } catch (e) {
       useHandleError(e);

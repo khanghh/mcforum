@@ -2,13 +2,13 @@
   <div class="container">
     <div class="container-header">
       <div style="width: max-content">
-        <a-alert type="warning">设置角色对应权限</a-alert>
+        <a-alert type="warning">Set permissions for roles</a-alert>
       </div>
 
-      <a-button type="primary" @click="saveRoleMenus">保存</a-button>
+      <a-button type="primary" @click="saveRoleMenus">Save</a-button>
     </div>
     <div class="container-main">
-      <a-card title="角色列表" class="roles-panel" :body-style="cardBodyStyle">
+      <a-card title="Roles" class="roles-panel" :body-style="cardBodyStyle">
         <div class="role-item-list">
           <div
             v-for="role in roles"
@@ -22,7 +22,7 @@
           </div>
         </div>
       </a-card>
-      <a-card title="菜单权限" class="menus-panel" :body-style="cardBodyStyle">
+      <a-card title="Permissions" class="menus-panel" :body-style="cardBodyStyle">
         <a-spin :loading="loading" dot style="width: 100%">
           <a-tree
             v-if="menus && menus.length"
@@ -81,7 +81,7 @@
           menuIds: checkedMenuIds.value ? checkedMenuIds.value.join(',') : '',
         })
       );
-      useNotificationSuccess('保存成功');
+      useNotificationSuccess('Saved successfully');
     } catch (e) {
       useHandleError(e);
     }

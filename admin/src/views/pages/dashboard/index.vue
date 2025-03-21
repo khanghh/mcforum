@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <a-card v-if="systemInfo" title="服务器信息">
+    <a-card v-if="systemInfo" title="Server Information">
       <div class="attr">
         <span class="attr-name">OS:</span>
         <span class="attr-value">{{ systemInfo.os }}</span>
@@ -23,7 +23,7 @@
       </div>
     </a-card>
 
-    <a-card v-if="systemInfo" title="开发团队信息">
+    <a-card v-if="systemInfo" title="About">
       <div class="attr">
         <span class="attr-name">Official Site:&nbsp;</span>
         <a class="attr-value" href="https://mlog.club" target="_blank"

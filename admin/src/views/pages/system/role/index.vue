@@ -3,26 +3,26 @@
     <div class="container-header">
       <a-form :model="filters" layout="inline" :size="appStore.table.size">
         <a-form-item>
-          <a-input v-model="filters.name" placeholder="角色名称" />
+          <a-input v-model="filters.name" placeholder="Role name" />
         </a-form-item>
         <a-form-item>
-          <a-input v-model="filters.code" placeholder="角色编码" />
+          <a-input v-model="filters.code" placeholder="Role coding" />
         </a-form-item>
         <a-form-item>
           <a-select
             v-model="filters.status"
-            placeholder="状态"
+            placeholder="Status"
             allow-clear
             @change="list"
           >
-            <a-option :value="0" label="正常" />
-            <a-option :value="1" label="禁用" />
+            <a-option :value="0" label="Enabled" />
+            <a-option :value="1" label="Disabled" />
           </a-select>
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit" @click="list">
             <template #icon> <icon-search /> </template>
-            查询
+            Search
           </a-button>
         </a-form-item>
       </a-form>
@@ -32,7 +32,7 @@
           <template #icon>
             <icon-plus />
           </template>
-          新增
+          Add
         </a-button>
       </div>
     </div>
@@ -54,45 +54,45 @@
         @page-size-change="onPageSizeChange"
       >
         <template #columns>
-          <a-table-column title="编号" data-index="id" />
+          <a-table-column title="ID" data-index="id" />
 
-          <a-table-column title="名称" data-index="name" />
+          <a-table-column title="Name" data-index="name" />
 
-          <a-table-column title="角色编码" data-index="code" />
+          <a-table-column title="Code" data-index="code" />
 
-          <a-table-column title="类型" data-index="name">
+          <a-table-column title="Type" data-index="name">
             <template #cell="{ record }">
               <a-tag v-if="record.type === roleTypeSystem" color="blue"
-                >系统</a-tag
+                >System</a-tag
               >
-              <a-tag v-else>自定义</a-tag>
+              <a-tag v-else>Custom</a-tag>
             </template>
           </a-table-column>
 
           <!-- <a-table-column title="排序" data-index="sortNo" /> -->
 
-          <a-table-column title="备注" data-index="remark" />
+          <a-table-column title="Remark" data-index="remark" />
 
-          <a-table-column title="状态" data-index="status">
+          <a-table-column title="Status" data-index="status">
             <template #cell="{ record }">
-              {{ record.status === 0 ? '正常' : '禁用' }}
+              {{ record.status === 0 ? 'Enabled' : 'Disabled' }}
             </template>
           </a-table-column>
 
-          <a-table-column title="创建时间" data-index="createTime">
+          <a-table-column title="CreationTime" data-index="createTime">
             <template #cell="{ record }">
               {{ useFormatDate(record.createTime) }}
             </template>
           </a-table-column>
 
-          <a-table-column title="操作">
+          <a-table-column title="Actions">
             <template #cell="{ record }">
               <a-button
                 type="primary"
                 :size="appStore.table.size"
                 :disabled="record.type === roleTypeSystem"
                 @click="showEdit(record.id)"
-                >编辑</a-button
+                >Edit</a-button
               >
             </template>
           </a-table-column>

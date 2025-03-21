@@ -5,7 +5,7 @@ export default {
   path: '/forbidden-word',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '违禁词',
+    title: 'Prohibited Words',
     requiresAuth: true,
     icon: 'icon-apps',
     order: 5,
@@ -17,7 +17,7 @@ export default {
       name: 'ForbiddenWord',
       component: () => import('@/views/pages/forbidden-word/index.vue'),
       meta: {
-        title: '违禁词',
+        title: 'Prohibited Words',
         requiresAuth: true,
         roles: ['*'],
       },

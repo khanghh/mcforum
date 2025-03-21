@@ -12,10 +12,10 @@
 
           <div class="article-status">
             <a-tag v-if="item.status === 1" color="red" size="mini"
-              >已删除</a-tag
+              >Deleted</a-tag
             >
             <a-tag v-if="item.status === 2" color="blue" size="mini"
-              >待审核</a-tag
+              >Awaiting Review</a-tag
             >
           </div>
         </div>
@@ -36,7 +36,7 @@
                   <span>{{ item.user.nickname }}</span>
                 </a>
                 <span class="article-meta-item"
-                  >发布于{{ useFormatDate(item.createTime) }}</span
+                  >Published on {{ useFormatDate(item.createTime) }}</span
                 >
               </div>
 
@@ -63,7 +63,7 @@
         <div class="article-item-actions">
           <a-popconfirm
             v-if="item.status === 0 || item.status === 2"
-            content="是否确定删除？"
+            content="Delete this post?"
             @ok="deleteSubmit(item)"
           >
             <a-button
@@ -71,12 +71,12 @@
               size="mini"
               type="primary"
               status="warning"
-              >删除</a-button
+              >Delete</a-button
             >
           </a-popconfirm>
           <a-popconfirm
             v-if="item.status === 2"
-            content="是否确定取消删除？"
+            content="Approve post?"
             @ok="auditSubmit(item)"
           >
             <a-button
@@ -84,7 +84,7 @@
               size="mini"
               type="primary"
               status="success"
-              >审核通过</a-button
+              >Approved</a-button
             >
           </a-popconfirm>
         </div>
@@ -112,7 +112,7 @@
         '/api/admin/article/delete',
         jsonToFormData({ id: row.id })
       );
-      useNotificationSuccess('删除成功');
+      useNotificationSuccess('Deleted successfully');
       emits('change');
     } catch (e) {
       useHandleError(e);
@@ -124,7 +124,7 @@
         '/api/admin/article/audit',
         jsonToFormData({ id: row.id })
       );
-      useNotificationSuccess('审核成功');
+      useNotificationSuccess('Successful audit');
       emits('change');
     } catch (e) {
       useHandleError(e);

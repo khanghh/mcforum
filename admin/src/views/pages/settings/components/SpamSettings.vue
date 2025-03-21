@@ -1,38 +1,38 @@
 <template>
   <a-form :model="config" auto-label-width>
-    <a-form-item label="发帖验证码">
-      <a-tooltip content="发帖时是否开启验证码校验" placement="top">
+    <a-form-item label="Post verification code">
+      <a-tooltip content="Whether to enable verification code verification when posting" placement="top">
         <a-switch v-model="config.topicCaptcha" />
       </a-tooltip>
     </a-form-item>
 
-    <a-form-item label="邮箱验证后发帖">
-      <a-tooltip content="需要验证邮箱后才能发帖" placement="top">
+    <a-form-item label="Post after email verification">
+      <a-tooltip content="You need to verify your email address before you can post" placement="top">
         <a-switch v-model="config.createTopicEmailVerified" />
       </a-tooltip>
     </a-form-item>
 
-    <a-form-item label="邮箱验证后发表文章">
-      <a-tooltip content="需要验证邮箱后才能发表文章" placement="top">
+    <a-form-item label="Publish the article after email verification">
+      <a-tooltip content="You need to verify your email address before you can publish an article" placement="top">
         <a-switch v-model="config.createArticleEmailVerified" />
       </a-tooltip>
     </a-form-item>
 
-    <a-form-item label="邮箱验证后评论">
-      <a-tooltip content="需要验证邮箱后才能发表评论" placement="top">
+    <a-form-item label="Comment after email verification">
+      <a-tooltip content="You need to verify your email address before you can post a comment" placement="top">
         <a-switch v-model="config.createCommentEmailVerified" />
       </a-tooltip>
     </a-form-item>
 
-    <a-form-item label="发表文章审核">
-      <a-tooltip content="发布文章后是否开启审核" placement="top">
+    <a-form-item label="Article review">
+      <a-tooltip content="Whether to enable review after publishing the article" placement="top">
         <a-switch v-model="config.articlePending" />
       </a-tooltip>
     </a-form-item>
 
-    <a-form-item label="用户观察期(秒)">
+    <a-form-item label="User observation period (seconds)">
       <a-tooltip
-        content="观察期内用户无法发表话题、动态等内容，设置为 0 表示无观察期。"
+        content="During the observation period, users cannot post topics, updates, etc. Setting this value to 0 means there is no observation period."
         placement="top"
       >
         <a-input-number
@@ -44,7 +44,7 @@
       </a-tooltip>
     </a-form-item>
 
-    <a-form-item label="邮箱白名单">
+    <a-form-item label="Email Whitelist">
       <a-select
         v-model="config.emailWhitelist"
         style="width: 100%"
@@ -52,13 +52,13 @@
         filterable
         allow-create
         default-first-option
-        placeholder="邮箱白名单"
+        placeholder="Email Whitelist"
       />
     </a-form-item>
 
     <a-form-item>
       <a-button type="primary" :loading="loading" @click="submit"
-        >提交</a-button
+        >Save</a-button
       >
     </a-form-item>
   </a-form>
@@ -93,7 +93,7 @@
     try {
       await axios.post('/api/admin/sys-config/save', config);
       await loadConfig();
-      useNotificationSuccess('提交成功');
+      useNotificationSuccess('Submit successfully');
     } catch (e) {
       useHandleError(e);
     } finally {

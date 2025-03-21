@@ -50,12 +50,12 @@
   const data = ref<NavDTO[]>([]);
   const columns = [
     {
-      title: '标题',
+      title: 'Title',
       dataIndex: 'title',
       slotName: 'name',
     },
     {
-      title: '链接',
+      title: 'Url',
       dataIndex: 'url',
       slotName: 'url',
     },
@@ -93,14 +93,14 @@
     loading.value = true;
     try {
       if (data.value.some((item) => isAnyBlank(item.title, item.url))) {
-        useNotificationError('请检查你的导航配置，导航标题和链接不能为空');
+        useNotificationError('The navigation title and link cannot be empty.');
         return;
       }
       await axios.post('/api/admin/sys-config/save', {
         siteNavs: data.value,
       });
       await loadConfig();
-      useNotificationSuccess('提交成功');
+      useNotificationSuccess('Submit successfully');
     } catch (e) {
       useHandleError(e);
     } finally {

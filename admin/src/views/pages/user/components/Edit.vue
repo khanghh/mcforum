@@ -7,33 +7,33 @@
     @before-ok="handleBeforeOk"
   >
     <a-form ref="formRef" :model="form" :rules="rules">
-      <a-form-item label="类型" field="type">
-        <a-select v-model="form.type" placeholder="用户类型">
-          <a-option :value="0" label="用户" />
-          <a-option :value="1" label="员工" />
+      <a-form-item label="Type" field="type">
+        <a-select v-model="form.type" placeholder="User Type">
+          <a-option :value="0" label="User" />
+          <a-option :value="1" label="Staff" />
         </a-select>
       </a-form-item>
 
-      <a-form-item label="昵称" field="nickname">
+      <a-form-item label="Nickname" field="nickname">
         <a-input v-model="form.nickname" />
       </a-form-item>
 
-      <a-form-item label="头像" field="avatar">
+      <a-form-item label="Avatar" field="avatar">
         <image-upload v-model="form.avatar" />
       </a-form-item>
 
-      <a-form-item label="用户名" field="username">
+      <a-form-item label="Username" field="username">
         <a-input v-model="form.username" />
       </a-form-item>
 
-      <a-form-item label="邮箱" field="email">
+      <a-form-item label="Email" field="email">
         <a-input v-model="form.email" />
       </a-form-item>
 
-      <a-form-item label="性别" field="gender">
+      <a-form-item label="Gender" field="gender">
         <a-select v-model="form.gender">
-          <a-option value="Male" label="男" />
-          <a-option value="Female" label="女" />
+          <a-option value="Male" label="Male" />
+          <a-option value="Female" label="Female" />
         </a-select>
       </a-form-item>
 
@@ -41,16 +41,16 @@
         <a-input v-model="form.birthday" />
       </a-form-item> -->
 
-      <a-form-item label="主页" field="homePage">
+      <a-form-item label="HomePage" field="homePage">
         <a-input v-model="form.homePage" />
       </a-form-item>
 
-      <a-form-item label="描述" field="description">
+      <a-form-item label="Description" field="description">
         <a-input v-model="form.description" />
       </a-form-item>
 
-      <a-form-item label="角色" field="roles">
-        <a-select v-model="form.roleIds" multiple placeholder="请选择角色">
+      <a-form-item label="Role" field="roles">
+        <a-select v-model="form.roleIds" multiple placeholder="Please select a role">
           <a-option
             v-for="role in roles"
             :key="role.id"
@@ -92,15 +92,15 @@
   const roles = ref();
 
   const rules = {
-    type: [{ required: true, message: '请选择用户类型' }],
-    nickname: [{ required: true, message: '请输入用户昵称' }],
+    type: [{ required: true, message: 'Please select user type' }],
+    nickname: [{ required: true, message: 'Please enter your nickname' }],
   };
 
   const show = async () => {
     formRef.value.resetFields();
 
     config.isCreate = true;
-    config.title = '新增';
+    config.title = 'Added';
 
     try {
       await loadRoles();
@@ -115,7 +115,7 @@
     formRef.value.resetFields();
 
     config.isCreate = false;
-    config.title = '编辑';
+    config.title = 'Edit';
 
     try {
       form.value = await axios.get(`/api/admin/user/${id}`);
@@ -145,7 +145,7 @@
         ? '/api/admin/user/create'
         : '/api/admin/user/update';
       await axios.postForm<any>(url, jsonToFormData(form.value));
-      useNotificationSuccess('提交成功');
+      useNotificationSuccess('Submit successfully');
       emit('ok');
       done(true);
     } catch (e: any) {

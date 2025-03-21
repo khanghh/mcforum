@@ -6,38 +6,38 @@
           <a-input v-model="filters.id" placeholder="ID" />
         </a-form-item>
         <a-form-item>
-          <a-input v-model="filters.userId" placeholder="用户ID" />
+          <a-input v-model="filters.userId" placeholder="UserID" />
         </a-form-item>
         <a-form-item>
           <a-select
             v-model="filters.status"
-            placeholder="状态"
+            placeholder="Status"
             allow-clear
             @change="list"
           >
-            <a-option :value="0" label="正常" />
-            <a-option :value="1" label="删除" />
-            <a-option :value="2" label="待审核" />
+            <a-option :value="0" label="Normal" />
+            <a-option :value="1" label="Deleted" />
+            <a-option :value="2" label="Awaiting Review" />
           </a-select>
         </a-form-item>
         <a-form-item>
           <a-select
             v-model="filters.recommend"
-            placeholder="是否推荐"
+            placeholder="Recommend"
             allow-clear
             @change="list"
           >
-            <a-option :value="1" label="推荐" />
-            <a-option :value="0" label="未推荐" />
+            <a-option :value="1" label="Recomment" />
+            <a-option :value="0" label="Not Recommend" />
           </a-select>
         </a-form-item>
         <a-form-item>
-          <a-input v-model="filters.title" placeholder="标题" />
+          <a-input v-model="filters.title" placeholder="Title" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit" @click="list">
             <template #icon> <icon-search /> </template>
-            查询
+            Search
           </a-button>
         </a-form-item>
       </a-form>

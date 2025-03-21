@@ -5,7 +5,7 @@ export default {
   path: '/article',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '文章管理',
+    title: 'Articles',
     requiresAuth: true,
     icon: 'icon-apps',
     order: 4,
@@ -17,7 +17,7 @@ export default {
       name: 'Article',
       component: () => import('@/views/pages/article/index.vue'),
       meta: {
-        title: '文章管理',
+        title: 'Articles',
         requiresAuth: true,
         roles: ['*'],
       },

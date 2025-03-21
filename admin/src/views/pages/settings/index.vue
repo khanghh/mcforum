@@ -2,22 +2,22 @@
   <div class="container">
     <div class="container-main">
       <a-tabs position="top" lazy-load animation destroy-on-hide>
-        <a-tab-pane key="1" title="通用配置">
+        <a-tab-pane key="1" title="Genearl">
           <div class="settings-container">
             <CommonSettings />
           </div>
         </a-tab-pane>
-        <a-tab-pane key="2" title="导航配置">
+        <a-tab-pane key="2" title="Navbar">
           <div class="settings-container">
             <NavSettings />
           </div>
         </a-tab-pane>
-        <a-tab-pane key="3" title="积分配置">
+        <a-tab-pane key="3" title="Points">
           <div class="settings-container">
             <ScoreSettings />
           </div>
         </a-tab-pane>
-        <a-tab-pane key="4" title="反作弊配置">
+        <a-tab-pane key="4" title="Spam Protection">
           <div class="settings-container">
             <SpamSettings />
           </div>

@@ -4,21 +4,20 @@
     :title="config.title"
     :size="appStore.table.size"
     @cancel="handleCancel"
-    @before-ok="handleBeforeOk"
-  >
-    <a-form ref="formRef" :model="form" :rules="rules">
-      <a-form-item label="类型" field="type">
-        <a-select v-model="form.type" placeholder="类型">
-          <a-option label="词组" value="word" />
-          <a-option label="正则表达式" value="regex" />
+    @before-ok="handleBeforeOk">
+    <a-form ref="formRef" :model="form" :rules="rules" auto-label-width>
+      <a-form-item label="Type" field="type">
+        <a-select v-model="form.type" placeholder="Type">
+          <a-option label="Word" value="word" />
+          <a-option label="Regex" value="regex" />
         </a-select>
       </a-form-item>
 
-      <a-form-item label="违禁词" field="word">
+      <a-form-item label="Match" field="word">
         <a-input v-model="form.word" />
       </a-form-item>
 
-      <a-form-item label="备注" field="remark">
+      <a-form-item label="Remark" field="remark">
         <a-input v-model="form.remark" />
       </a-form-item>
     </a-form>
@@ -26,75 +25,75 @@
 </template>
 
 <script setup lang="ts">
-  const emit = defineEmits(['ok']);
+const emit = defineEmits(['ok']);
 
-  const appStore = useAppStore();
-  const formRef = ref();
-  const config = reactive({
-    visible: false,
-    isCreate: false,
-    title: '',
-  });
+const appStore = useAppStore();
+const formRef = ref();
+const config = reactive({
+  visible: false,
+  isCreate: false,
+  title: '',
+});
 
-  const form = ref({
-    type: undefined,
-    word: undefined,
-    remark: undefined,
-  });
-  const rules = {
-    word: [{ required: true, message: '请输入违禁词' }],
-  };
+const form = ref({
+  type: undefined,
+  word: undefined,
+  remark: undefined,
+});
+const rules = {
+  word: [{ required: true, message: 'Please enter a banned word' }],
+};
 
-  const show = () => {
-    formRef.value.resetFields();
+const show = () => {
+  formRef.value.resetFields();
 
-    config.isCreate = true;
-    config.title = '新增';
-    config.visible = true;
-  };
+  config.isCreate = true;
+  config.title = 'Add prohibited words';
+  config.visible = true;
+};
 
-  const showEdit = async (id: any) => {
-    formRef.value.resetFields();
+const showEdit = async (id: any) => {
+  formRef.value.resetFields();
 
-    config.isCreate = false;
-    config.title = '编辑';
+  config.isCreate = false;
+  config.title = 'Edit';
 
-    try {
-      form.value = await axios.get(`/api/admin/forbidden-word/${id}`);
-    } catch (e: any) {
-      useHandleError(e);
-    }
+  try {
+    form.value = await axios.get(`/api/admin/forbidden-word/${id}`);
+  } catch (e: any) {
+    useHandleError(e);
+  }
 
-    config.visible = true;
-  };
+  config.visible = true;
+};
 
-  const handleCancel = () => {
-    formRef.value.resetFields();
-  };
-  const handleBeforeOk = async (done: (closed: boolean) => void) => {
-    const validateErr = await formRef.value.validate();
-    if (validateErr) {
-      done(false);
-      return;
-    }
-    try {
-      const url = config.isCreate
-        ? '/api/admin/forbidden-word/create'
-        : '/api/admin/forbidden-word/update';
-      await axios.postForm<any>(url, jsonToFormData(form.value));
-      useNotificationSuccess('提交成功');
-      emit('ok');
-      done(true);
-    } catch (e: any) {
-      useHandleError(e);
-      done(false);
-    }
-  };
+const handleCancel = () => {
+  formRef.value.resetFields();
+};
+const handleBeforeOk = async (done: (closed: boolean) => void) => {
+  const validateErr = await formRef.value.validate();
+  if (validateErr) {
+    done(false);
+    return;
+  }
+  try {
+    const url = config.isCreate
+      ? '/api/admin/forbidden-word/create'
+      : '/api/admin/forbidden-word/update';
+    await axios.postForm<any>(url, jsonToFormData(form.value));
+    useNotificationSuccess('Submit successfully');
+    emit('ok');
+    done(true);
+  } catch (e: any) {
+    useHandleError(e);
+    done(false);
+  }
+};
 
-  defineExpose({
-    show,
-    showEdit,
-  });
+defineExpose({
+  show,
+  showEdit,
+});
 </script>
 
 <style lang="less" scoped></style>

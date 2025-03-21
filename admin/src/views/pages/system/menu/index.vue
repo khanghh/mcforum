@@ -5,18 +5,18 @@
         <a-form-item>
           <a-select
             v-model="filters.status"
-            placeholder="状态"
+            placeholder="Status"
             allow-clear
             @change="list"
           >
-            <a-option :value="0" label="正常" />
-            <a-option :value="1" label="禁用" />
+            <a-option :value="0" label="Enabled" />
+            <a-option :value="1" label="Disabled" />
           </a-select>
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit" @click="list">
             <template #icon> <icon-search /> </template>
-            查询
+            Search
           </a-button>
         </a-form-item>
       </a-form>
@@ -26,7 +26,7 @@
           <template #icon>
             <icon-plus />
           </template>
-          新增
+          Add
         </a-button>
       </div>
     </div>
@@ -45,11 +45,11 @@
         @change="handleChange"
       >
         <template #columns>
-          <!-- <a-table-column title="编号" data-index="id" /> -->
+          <!-- <a-table-column title="ID" data-index="id" /> -->
 
-          <a-table-column title="名称" data-index="title" />
+          <a-table-column title="Title" data-index="title" />
 
-          <a-table-column title="编码" data-index="name" />
+          <a-table-column title="Name" data-index="name" />
 
           <a-table-column title="ICON" data-index="icon">
             <template #cell="{ record }">
@@ -57,29 +57,29 @@
             </template>
           </a-table-column>
 
-          <a-table-column title="路径" data-index="path" />
+          <a-table-column title="Path" data-index="path" />
 
           <!-- <a-table-column title="排序" data-index="sortNo" /> -->
 
-          <a-table-column title="状态" data-index="status">
+          <a-table-column title="Status" data-index="status">
             <template #cell="{ record }">
-              {{ record.status === 0 ? '正常' : '禁用' }}
+              {{ record.status === 0 ? 'Enabled' : 'Disabled' }}
             </template>
           </a-table-column>
 
-          <a-table-column title="创建时间" data-index="createTime">
+          <a-table-column title="Creation time" data-index="createTime">
             <template #cell="{ record }">
               {{ useFormatDate(record.createTime) }}
             </template>
           </a-table-column>
 
-          <a-table-column title="操作">
+          <a-table-column title="Actions">
             <template #cell="{ record }">
               <a-button
                 type="primary"
                 :size="appStore.table.size"
                 @click="showEdit(record.id)"
-                >编辑</a-button
+                >Edit</a-button
               >
             </template>
           </a-table-column>

@@ -22,7 +22,7 @@
     <template #content>
       <a-doption :disabled="disabledReload" :value="Eaction.reload">
         <icon-refresh />
-        <span>重新加载</span>
+        <span>Reload</span>
       </a-doption>
       <a-doption
         class="sperate-line"
@@ -30,11 +30,11 @@
         :value="Eaction.current"
       >
         <icon-close />
-        <span>关闭当前标签页</span>
+        <span>Close the current tab</span>
       </a-doption>
       <a-doption :disabled="disabledLeft" :value="Eaction.left">
         <icon-to-left />
-        <span>关闭左侧标签页</span>
+        <span>Close the left tab</span>
       </a-doption>
       <a-doption
         class="sperate-line"
@@ -42,15 +42,15 @@
         :value="Eaction.right"
       >
         <icon-to-right />
-        <span>关闭右侧标签页</span>
+        <span>Close the right tab</span>
       </a-doption>
       <a-doption :value="Eaction.others">
         <icon-swap />
-        <span>关闭其它标签页</span>
+        <span>Close other tabs</span>
       </a-doption>
       <a-doption :value="Eaction.all">
         <icon-folder-delete />
-        <span>关闭全部标签页</span>
+        <span>Close all tabs</span>
       </a-doption>
     </template>
   </a-dropdown>
@@ -77,7 +77,7 @@
     itemData: {
       type: Object as PropType<TagProps>,
       default() {
-        return [];
+        return {};
       },
     },
     index: {

@@ -6,7 +6,7 @@ export default {
   name: 'user',
   component: DEFAULT_LAYOUT,
   meta: {
-    title: '用户管理',
+    title: 'Users',
     requiresAuth: true,
     icon: 'icon-user',
     order: 2,
@@ -18,7 +18,7 @@ export default {
       name: 'User',
       component: () => import('@/views/pages/user/index.vue'),
       meta: {
-        title: '用户管理',
+        title: 'Users',
         requiresAuth: true,
         roles: ['*'],
       },
