@@ -71,7 +71,7 @@ export default {
       check_in: "Điểm danh",
       links: "Liên kết",
       personal_info: "Thông tin cá nhân",
-      site_notice: "Thông báo",
+      announcement: "Thông báo",
       followers: "Người theo dõi",
       following: "Đang theo dõi",
       leaderboard: "Bảng xếp hạng",

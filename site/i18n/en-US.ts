@@ -72,7 +72,7 @@ export default {
       check_in: "Check In",
       links: "Links",
       personal_info: "Personal Info",
-      site_notice: "Announcement",
+      announcement: "Announcement",
       followers: "Followers",
       following: "Following",
       leaderboard: "Leaderboard",
