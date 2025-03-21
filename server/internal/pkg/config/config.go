@@ -14,6 +14,7 @@ type Config struct {
 	Port           string   // 端口
 	IpDataPath     string   // IP数据文件
 	AllowedOrigins []string // 跨域白名单
+	Language       string
 
 	// 日志配置
 	Logger struct {

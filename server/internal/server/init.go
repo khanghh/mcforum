@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/models"
 	"bbs-go/internal/pkg/config"
 	"bbs-go/internal/pkg/iplocator"
@@ -12,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kataras/iris/v12/x/errors"
 	"github.com/mlogclub/simple/common/jsons"
 	"github.com/mlogclub/simple/common/strs"
 	"github.com/mlogclub/simple/sqls"
@@ -28,6 +30,7 @@ func Init() {
 	initCron()
 	initIpLocator()
 	initSearch()
+	InitLocale()
 }
 
 func initConfig() {
@@ -100,4 +103,13 @@ func initIpLocator() {
 
 func initSearch() {
 	search.Init(config.Instance.Search.IndexPath)
+}
+
+func InitLocale() {
+	if config.Instance.Language == "" {
+		panic(errors.New("must spcifiy site language"))
+	}
+	if err := locale.InitLocale(config.Instance.Language); err != nil {
+		panic(err)
+	}
 }

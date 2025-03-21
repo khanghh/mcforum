@@ -39,3 +39,4 @@ go.work.sum
 ip2region.xdb
 
 __debug_bin*
+/lang

@@ -117,7 +117,7 @@ var sysConfigs = []models.SysConfig{
 		Key:         constants.SysConfigUrlRedirect,
 		Value:       "true",
 		Name:        "Show URL Redirect Page",
-		Description: "Displays a notice when following external links.",
+		Description: "You need to manually confirm whether to go to the external link before jumping",
 	},
 	{
 		Key:         constants.SysConfigScoreConfig,
