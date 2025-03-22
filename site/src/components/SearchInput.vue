@@ -1,7 +1,7 @@
 <template>
   <div ref="searchForm"
-    class="searchFormDiv"
     v-click-outside="onBlur"
+    class="searchFormDiv"
     :class="{ 'input-focus': data.inputFocus, 'show-histories': showHistories }">
     <div class="search-input">
       <input v-model="data.keyword"
@@ -16,8 +16,8 @@
         @input="onInput"
         @keyup.down="changeSelect(1)"
         @keyup.up="changeSelect(-1)"
-        @keyup.enter="searchBoxOnEnter" />
-      <span @click="submitSearch" class="search-icon">
+        @keyup.enter="searchBoxOnEnter">
+      <span class="search-icon" @click="submitSearch">
         <icon name="Search" />
       </span>
     </div>
@@ -37,124 +37,127 @@
 </template>
 
 <script setup>
-const localStorageKey = "bbsgo.search.histories";
-const maxHistoryLen = 10;
-const route = useRoute();
+const localStorageKey = 'bbsgo.search.histories'
+const maxHistoryLen = 10
+const route = useRoute()
 
 const data = reactive({
-  keyword: route.query.q || "",
+  keyword: route.query.q || '',
   inputFocus: false,
   selectedIndex: -1,
   allHistories: [],
-});
+})
 
 const showHistories = computed(() => {
   return (
     data.inputFocus && histories && histories.value && histories.value.length
-  );
-});
+  )
+})
 
 const histories = computed(() => {
   if (data.keyword) {
     return data.allHistories.filter((history) => {
-      return history.includes(data.keyword);
-    });
+      return history.includes(data.keyword)
+    })
   }
-  return data.allHistories;
-});
+  return data.allHistories
+})
 
 onMounted(() => {
-  loadAllHistories();
-});
+  loadAllHistories()
+})
 
 const searchBoxOnEnter = () => {
   // 如果选中了历史搜索记录，那么使用历史搜索记录
   if (
-    data.selectedIndex >= 0 &&
-    histories.value &&
-    histories.value.length > data.selectedIndex
+    data.selectedIndex >= 0
+    && histories.value
+    && histories.value.length > data.selectedIndex
   ) {
-    data.keyword = histories.value[data.selectedIndex];
+    data.keyword = histories.value[data.selectedIndex]
   }
-  submitSearch();
-};
+  submitSearch()
+}
 const historyItemClick = (keyword) => {
-  data.keyword = keyword;
-  submitSearch();
-};
+  data.keyword = keyword
+  submitSearch()
+}
 const submitSearch = () => {
   if (!data.keyword) {
-    return;
+    return
   }
-  addHistories();
-  window.location = "/search?q=" + encodeURIComponent(data.keyword);
-};
+  addHistories()
+  window.location = '/search?q=' + encodeURIComponent(data.keyword)
+}
 const onFocus = () => {
-  data.inputFocus = true;
-};
+  data.inputFocus = true
+}
 const onBlur = () => {
-  data.inputFocus = false;
-};
+  data.inputFocus = false
+}
 const onInput = () => {
-  data.selectedIndex = -1;
-};
+  data.selectedIndex = -1
+}
 const changeSelect = (delta) => {
   if (!histories.value || !histories.value.length) {
-    return;
+    return
   }
-  let index = data.selectedIndex + delta;
+  let index = data.selectedIndex + delta
   if (index < 0) {
     // 选中熬第一个了，再往上取消选中
-    index = -1;
-  } else if (index >= histories.value.length) {
-    // 选中到最后了，再往下就回到第一个
-    index = 0;
+    index = -1
   }
-  data.selectedIndex = index;
-};
+  else if (index >= histories.value.length) {
+    // 选中到最后了，再往下就回到第一个
+    index = 0
+  }
+  data.selectedIndex = index
+}
 const historyItemMouseOver = (index) => {
-  data.selectedIndex = index;
-};
+  data.selectedIndex = index
+}
 const historyItemMouseOut = () => {
-  data.selectedIndex = -1;
-};
+  data.selectedIndex = -1
+}
 const loadAllHistories = () => {
   try {
-    data.allHistories = JSON.parse(localStorage.getItem(localStorageKey)) || [];
-  } catch (error) {
-    data.allHistories = [];
+    data.allHistories = JSON.parse(localStorage.getItem(localStorageKey)) || []
   }
-};
+  catch (error) {
+    console.log(error)
+    data.allHistories = []
+  }
+}
 const addHistories = () => {
   if (!data.keyword) {
-    return;
+    return
   }
-  const newArray = [];
-  newArray.push(data.keyword);
+  const newArray = []
+  newArray.push(data.keyword)
   if (data.allHistories && data.allHistories.length) {
     for (let i = 0; i < data.allHistories.length; i++) {
-      const element = data.allHistories[i];
+      const element = data.allHistories[i]
       if (newArray.length < maxHistoryLen && !newArray.includes(element)) {
-        newArray.push(element);
+        newArray.push(element)
       }
     }
   }
-  localStorage.setItem(localStorageKey, JSON.stringify(newArray));
-  data.allHistories = newArray;
-};
+  localStorage.setItem(localStorageKey, JSON.stringify(newArray))
+  data.allHistories = newArray
+}
 const deleteHistory = (kw) => {
-  const newArray = [];
+  const newArray = []
   if (data.allHistories && data.allHistories.length) {
     for (let i = 0; i < data.allHistories.length; i++) {
-      const element = data.allHistories[i];
+      const element = data.allHistories[i]
       if (element !== kw && !newArray.includes(element)) {
-        newArray.push(element);
+        newArray.push(element)
       }
     }
   }
-  localStorage.setItem(localStorageKey, JSON.stringify(newArray));
-  data.allHistories = newArray;
-};
+  localStorage.setItem(localStorageKey, JSON.stringify(newArray))
+  data.allHistories = newArray
+}
 </script>
 
 <style lang="scss" scoped>

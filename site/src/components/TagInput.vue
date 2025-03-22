@@ -67,48 +67,48 @@ const props = defineProps({
   modelValue: {
     type: Array,
     default() {
-      return [];
+      return []
     },
   },
-});
+})
 
-const configStore = useConfigStore();
+const configStore = useConfigStore()
 
-const maxTagCount = 3;
-const maxWordCount = 15;
+const maxTagCount = 3
+const maxWordCount = 15
 
-const tagInput = ref(null);
-const tags = ref(props.modelValue || []);
-const showRecommendTags = ref(false);
-const inputTag = ref("");
-const autocompleteTags = ref([]);
-const selectIndex = ref(-1);
+const tagInput = ref(null)
+const tags = ref(props.modelValue || [])
+const showRecommendTags = ref(false)
+const inputTag = ref('')
+const autocompleteTags = ref([])
+const selectIndex = ref(-1)
 
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(['update:modelValue'])
 
 const recommendTags = computed(() => {
-  return configStore.config.recommendTags;
-});
+  return configStore.config.recommendTags
+})
 
-function removeTag(event, tag) {
+function removeTag(event) {
   if (event.currentTarget.value) {
-    return;
+    return
   }
-  const selectionStart = tagInput.value.selectionStart;
+  const selectionStart = tagInput.value.selectionStart
   if (!inputTag.value || selectionStart === 0) {
     // input框没内容，或者光标在首位的时候就删除最后一个标签
-    tags.value.splice(tags.value.length - 1, 1);
-    emits("update:modelValue", tags.value);
+    tags.value.splice(tags.value.length - 1, 1)
+    emits('update:modelValue', tags.value)
   }
 }
 
 function clickRemoveTag(event) {
-  const tag = event.target.dataset.name;
+  const tag = event.target.dataset.name
   if (tag) {
-    const index = tags.value.indexOf(tag);
+    const index = tags.value.indexOf(tag)
     if (index !== -1) {
-      tags.value.splice(index, 1);
-      emits("update:modelValue", tags.value);
+      tags.value.splice(index, 1)
+      emits('update:modelValue', tags.value)
     }
   }
 }
@@ -118,8 +118,8 @@ function clickRemoveTag(event) {
  * @param index
  */
 function selectTag(index) {
-  selectIndex.value = index;
-  addTag();
+  selectIndex.value = index
+  addTag()
 }
 
 /**
@@ -128,20 +128,21 @@ function selectTag(index) {
  */
 function addTag(event) {
   if (event) {
-    event.stopPropagation();
-    event.preventDefault();
+    event.stopPropagation()
+    event.preventDefault()
   }
 
   if (
-    selectIndex.value >= 0 &&
-    autocompleteTags.value.length > selectIndex.value
+    selectIndex.value >= 0
+    && autocompleteTags.value.length > selectIndex.value
   ) {
-    addTagName(autocompleteTags.value[selectIndex.value]);
-  } else {
-    addTagName(inputTag.value);
+    addTagName(autocompleteTags.value[selectIndex.value])
   }
-  autocompleteTags.value = [];
-  selectIndex.value = -1;
+  else {
+    addTagName(inputTag.value)
+  }
+  autocompleteTags.value = []
+  selectIndex.value = -1
 }
 
 /**
@@ -149,8 +150,8 @@ function addTag(event) {
  * @param tagName
  */
 function addRecommendTag(tagName) {
-  addTagName(tagName);
-  closeRecommendTags();
+  addTagName(tagName)
+  closeRecommendTags()
 }
 
 /**
@@ -160,93 +161,94 @@ function addRecommendTag(tagName) {
  */
 function addTagName(tagName) {
   if (!tagName) {
-    return false;
+    return false
   }
 
   // 最多四个标签
   if (tags.value && tags.value.length >= maxTagCount) {
-    return false;
+    return false
   }
 
   // 每个标签最多15个字符
   if (tagName.length > maxWordCount) {
-    return false;
+    return false
   }
 
   // 标签已经存在
   if (tags.value && tags.value.includes(tagName)) {
-    return false;
+    return false
   }
 
-  tags.value.push(tagName);
-  inputTag.value = "";
-  emits("update:modelValue", tags.value);
-  return true;
+  tags.value.push(tagName)
+  inputTag.value = ''
+  emits('update:modelValue', tags.value)
+  return true
 }
 
 async function autocomplete() {
-  closeRecommendTags();
-  selectIndex.value = -1;
+  closeRecommendTags()
+  selectIndex.value = -1
   if (!inputTag.value) {
-    autocompleteTags.value = [];
-  } else {
-    const ret = await useHttpPostForm("/api/tag/autocomplete", {
+    autocompleteTags.value = []
+  }
+  else {
+    const ret = await useHttpPostForm('/api/tag/autocomplete', {
       body: {
         input: inputTag.value,
       },
-    });
-    autocompleteTags.value = [];
+    })
+    autocompleteTags.value = []
     if (ret.length > 0) {
       for (let i = 0; i < ret.length; i++) {
-        autocompleteTags.value.push(ret[i].name);
+        autocompleteTags.value.push(ret[i].name)
       }
     }
   }
 }
 
 function selectUp(event) {
-  event.stopPropagation();
-  event.preventDefault();
-  const curIndex = selectIndex.value;
-  const maxIndex = autocompleteTags.value.length - 1;
+  event.stopPropagation()
+  event.preventDefault()
+  const curIndex = selectIndex.value
+  const maxIndex = autocompleteTags.value.length - 1
   if (maxIndex < 0 || curIndex < 0) {
     // 已经在最顶部
-    return;
+    return
   }
-  selectIndex.value--;
+  selectIndex.value--
 }
 
 function selectDown(event) {
-  event.stopPropagation();
-  event.preventDefault();
-  const curIndex = selectIndex.value;
-  const maxIndex = autocompleteTags.value.length - 1;
+  event.stopPropagation()
+  event.preventDefault()
+  const curIndex = selectIndex.value
+  const maxIndex = autocompleteTags.value.length - 1
   if (maxIndex < 0 || curIndex >= maxIndex) {
     // 已经在最底部
-    return;
+    return
   }
-  selectIndex.value++;
+  selectIndex.value++
 }
 
 // 关闭推荐
 function openRecommendTags() {
-  showRecommendTags.value = true;
+  showRecommendTags.value = true
 }
 
 // 开启推荐
 function closeRecommendTags() {
   setTimeout(() => {
-    showRecommendTags.value = false;
-  }, 300);
+    showRecommendTags.value = false
+  }, 300)
 }
 
 // 关闭自动补全
 function close() {
   if (autocompleteTags.value && autocompleteTags.value.length > 0) {
-    autocompleteTags.value = [];
-    selectIndex.value = -1;
+    autocompleteTags.value = []
+    selectIndex.value = -1
   }
-  closeRecommendTags();
+  closeRecommendTags()
 }
 </script>
 

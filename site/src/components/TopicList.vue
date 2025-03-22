@@ -65,9 +65,9 @@
             <div class="btn" @click="toTopicDetail(topic.id)">
               <icon name="MessageSquareMore" size="1em" />
               {{ $t('feed.actions.comment') }}
-              <span v-if="topic.commentCount > 0">{{
-                topic.commentCount
-              }}</span>
+              <span v-if="topic.commentCount > 0">
+                {{ topic.commentCount }}
+              </span>
             </div>
             <div class="btn" @click="toTopicDetail(topic.id)">
               <icon name="BookOpenText" size="1em" />
@@ -85,9 +85,10 @@
     </li>
   </ul>
 </template>
+
 <script setup>
-const i18n = useI18n();
-const props = defineProps({
+const i18n = useI18n()
+defineProps({
   topics: {
     type: Array,
     default: () => [],
@@ -101,40 +102,43 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
 async function like(topic) {
   try {
     if (topic.liked) {
-      await useHttpPostForm("/api/like/unlike", {
+      await useHttpPostForm('/api/like/unlike', {
         body: {
-          entityType: "topic",
+          entityType: 'topic',
           entityId: topic.id,
         },
-      });
-      topic.liked = false;
-      topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0;
-      useMsgSuccess(i18n.t('message.unliked_success'));
-    } else {
-      await useHttpPostForm("/api/like/like", {
-        body: {
-          entityType: "topic",
-          entityId: topic.id,
-        },
-      });
-      topic.liked = true;
-      topic.likeCount++;
-      useMsgSuccess(i18n.t('message.liked_success'));
+      })
+      topic.liked = false
+      topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0
+      useMsgSuccess(i18n.t('message.unliked_success'))
     }
-  } catch (e) {
-    useCatchError(e);
+    else {
+      await useHttpPostForm('/api/like/like', {
+        body: {
+          entityType: 'topic',
+          entityId: topic.id,
+        },
+      })
+      topic.liked = true
+      topic.likeCount++
+      useMsgSuccess(i18n.t('message.liked_success'))
+    }
+  }
+  catch (e) {
+    useCatchError(e)
   }
 }
 
 async function toTopicDetail(topicId) {
-  useLinkTo(`/topic/${topicId}`);
+  useLinkTo(`/topic/${topicId}`)
 }
 </script>
+
 <style lang="scss" scoped>
 .topic-list {
   .topic-item {

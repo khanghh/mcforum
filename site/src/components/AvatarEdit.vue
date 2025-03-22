@@ -2,12 +2,12 @@
   <div class="avatar-edit">
     <div class="avatar-view" :style="{ backgroundImage: 'url(' + value + ')' }">
       <div class="upload-view" @click="pickImage">
-        <icon name="CloudUpload"/>
+        <icon name="CloudUpload" />
         <span>点击修改</span>
       </div>
     </div>
 
-    <input ref="uploadImage" accept="image/*" type="file" @input="uploadAvatar" />
+    <input ref="uploadImage" accept="image/*" type="file" @input="uploadAvatar">
   </div>
 </template>
 
@@ -16,44 +16,45 @@ export default {
   props: {
     value: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   methods: {
     pickImage() {
-      const currentObj = this.$refs.uploadImage;
-      currentObj.dispatchEvent(new MouseEvent("click"));
+      const currentObj = this.$refs.uploadImage
+      currentObj.dispatchEvent(new MouseEvent('click'))
     },
     async uploadAvatar(e) {
-      const files = e.target.files;
+      const files = e.target.files
       if (files.length <= 0) {
-        return;
+        return
       }
       try {
         // 上传头像
-        const file = files[0];
-        const formData = new FormData();
-        formData.append("image", file, file.name);
-        const ret = await useHttpPostMultipart("/api/upload", formData);
+        const file = files[0]
+        const formData = new FormData()
+        formData.append('image', file, file.name)
+        const ret = await useHttpPostMultipart('/api/upload', formData)
 
         // 设置头像
-        await useHttpPostForm("/api/user/update/avatar", {
+        await useHttpPostForm('/api/user/update/avatar', {
           body: {
             avatar: ret.url,
           },
-        });
+        })
 
         // 重新加载数据
-        const userStore = useUserStore();
-        userStore.fetchCurrent();
-        useMsgSuccess("头像更新成功");
-      } catch (e) {
-        console.error(e);
-        useMsgError("头像更新失败");
+        const userStore = useUserStore()
+        userStore.fetchCurrent()
+        useMsgSuccess('头像更新成功')
+      }
+      catch (e) {
+        console.error(e)
+        useMsgError('头像更新失败')
       }
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/pkg/errs"
@@ -29,16 +30,16 @@ type TopicController struct {
 func (c *TopicController) GetNode_navs() *web.JsonResult {
 	nodes := []models.NodeResponse{
 		{
-			Id:   0,
-			Name: "最新",
+			Name: locale.T("nav.news_feed"),
+			Slug: "whats-new",
 		},
 		{
-			Id:   -1,
-			Name: "推荐",
+			Name: locale.T("nav.recommended"),
+			Slug: "recommended",
 		},
 		{
-			Id:   -2,
-			Name: "关注",
+			Name: locale.T("nav.feed"),
+			Slug: "feed",
 		},
 	}
 	realNodes := render.BuildNodes(services.TopicNodeService.GetNodes())

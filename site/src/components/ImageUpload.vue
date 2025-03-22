@@ -1,15 +1,15 @@
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 const props = defineProps({
   modelValue: {
     type: Array,
     default() {
-      return [];
+      return []
     },
   },
   accept: {
     type: String,
-    default: "image/*",
+    default: 'image/*',
   },
   limit: {
     type: Number,
@@ -21,48 +21,48 @@ const props = defineProps({
   },
   size: {
     type: String,
-    default: "94px",
+    default: '94px',
   },
-});
-const emits = defineEmits(["update:modelValue"]);
-const fileList = ref(props.modelValue);
-const previewFiles = ref([]);
-const currentInput = ref(null);
-const loading = ref(false);
+})
+const emits = defineEmits(['update:modelValue'])
+const fileList = ref(props.modelValue)
+const previewFiles = ref([])
+const currentInput = ref(null)
+const loading = ref(false)
 
 function onClick() {
   if (currentInput.value) {
-    currentInput.value.dispatchEvent(new MouseEvent("click"));
+    currentInput.value.dispatchEvent(new MouseEvent('click'))
   }
 }
 
 function onInput(e) {
-  const files = e.target.files;
-  addFiles(files);
+  const files = e.target.files
+  addFiles(files)
 }
 
 function addFiles(files) {
-  if (!files || !files.length) return; // 没有文件
-  if (!checkSizeLimit(files)) return; // 文件大小检查
-  if (!checkLengthLimit(files)) return; // 文件数量检查
+  if (!files || !files.length) return // 没有文件
+  if (!checkSizeLimit(files)) return // 文件大小检查
+  if (!checkLengthLimit(files)) return // 文件数量检查
 
-  const fileArray = [];
+  const fileArray = []
   for (let i = 0; i < files.length; i++) {
-    const url = getObjectURL(files[i]);
+    const url = getObjectURL(files[i])
     previewFiles.value.push({
       name: files[i].name,
       url,
       progress: 0,
       deleted: false,
       size: files[i].size,
-    });
-    fileArray.push(files[i]);
+    })
+    fileArray.push(files[i])
   }
   const promiseList = fileArray.reduce((result, file, index, array) => {
-    result.push(uploadFile(file, index, array.length));
-    return result;
-  }, []);
-  uploadFiles(promiseList);
+    result.push(uploadFile(file, index, array.length))
+    return result
+  }, [])
+  uploadFiles(promiseList)
 }
 
 function uploadFile(file, index, length) {
@@ -83,144 +83,130 @@ function uploadFile(file, index, length) {
   //         ) * 0.9;
   //     },
   //   };
-  const formData = new FormData();
-  formData.append("image", file, file.name);
-  return useHttp("/api/upload", {
-    method: "POST",
+  const formData = new FormData()
+  formData.append('image', file, file.name)
+  return useHttp('/api/upload', {
+    method: 'POST',
     body: formData,
-  });
+  })
 }
 function uploadFiles(promiseList) {
-  loading.value = true;
+  loading.value = true
 
   Promise.all(promiseList).then(
     (resList) => {
       // 请求响应后，更新到 100%
       previewFiles.value.forEach((item) => {
-        item.progress = 100;
-      });
+        item.progress = 100
+      })
       resList.forEach((item) => {
-        fileList.value.push(item);
-      });
+        fileList.value.push(item)
+      })
       if (currentInput.value) {
-        currentInput.value.value = "";
+        currentInput.value.value = ''
       }
-      loading.value = false;
-      emits("update:modelValue", fileList);
+      loading.value = false
+      emits('update:modelValue', fileList.value)
     },
     (e) => {
       if (currentInput.value) {
-        currentInput.value.value = "";
+        currentInput.value.value = ''
       }
 
       // 失败的时候取消对应的预览照片
-      const length = promiseList.length;
-      previewFiles.value.splice(previewFiles.value.length - length, length);
-      console.error(e);
+      const length = promiseList.length
+      previewFiles.value.splice(previewFiles.value.length - length, length)
+      console.error(e)
 
-      loading.value = false;
-    }
-  );
+      loading.value = false
+    },
+  )
 }
 function removeItem(index) {
   ElMessageBox.confirm(i18n.t('dialog.message.confirm_action_post'), i18n.t('dialog.title.prompt'), {
     confirmButtonText: i18n.t('dialog.button.confirm'),
     cancelButtonText: i18n.t('dialog.button.cancel'),
-    type: "warning",
+    type: 'warning',
   }).then(
     () => {
-      previewFiles.value[index].deleted = true; // 删除动画
-      fileList.value.splice(index, 1);
-      emits("update:modelValue", fileList.value); // 避免和回显冲突，先修改 fileList
+      previewFiles.value[index].deleted = true // 删除动画
+      fileList.value.splice(index, 1)
+      emits('update:modelValue', fileList.value) // 避免和回显冲突，先修改 fileList
       setTimeout(() => {
-        previewFiles.value.splice(index, 1);
-        useMsgSuccess(i18n.t('message.delete_success'));
-      }, 900);
+        previewFiles.value.splice(index, 1)
+        useMsgSuccess(i18n.t('message.delete_success'))
+      }, 900)
     },
-    () => console.log("canceled delete")
-  );
+    () => console.log('canceled delete'),
+  )
 }
 function checkSizeLimit(files) {
-  let pass = true;
+  let pass = true
   for (let i = 0; i < files.length; i++) {
     if (files[i].size > props.sizeLimit) {
-      pass = false;
+      pass = false
     }
   }
   if (!pass)
-    useMsgError(i18n.t('message.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }));
-  return pass;
+    useMsgError(i18n.t('message.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }))
+  return pass
 }
 function checkLengthLimit(files) {
   if (previewFiles.value.length + files.length > props.limit) {
-    useMsgWarning(i18n.t('message.image_upload_limit', { limit: props.limit }));
-    return false;
-  } else {
-    return true;
+    useMsgWarning(i18n.t('message.image_upload_limit', { limit: props.limit }))
+    return false
+  }
+  else {
+    return true
   }
 }
 function getObjectURL(file) {
-  let url = null;
+  let url = null
   if (window.createObjectURL) {
     // basic
-    url = window.createObjectURL(file);
-  } else if (window.URL) {
-    // mozilla(firefox)
-    url = window.URL.createObjectURL(file);
-  } else if (window.webkitURL) {
-    // webkit or chrome
-    url = window.webkitURL.createObjectURL(file);
+    url = window.createObjectURL(file)
   }
-  return url;
+  else if (window.URL) {
+    // mozilla(firefox)
+    url = window.URL.createObjectURL(file)
+  }
+  else if (window.webkitURL) {
+    // webkit or chrome
+    url = window.webkitURL.createObjectURL(file)
+  }
+  return url
 }
 function clear() {
-  fileList.value = [];
-  previewFiles.value = [];
+  fileList.value = []
+  previewFiles.value = []
 }
 
 defineExpose({
   onClick,
   clear,
   loading,
-});
+})
 </script>
 
 <template>
   <div class="image-uploads">
-    <div
-      v-for="(image, index) in previewFiles"
-      :key="index"
-      class="preview-item"
-      :class="{ deleted: image.deleted }"
+    <div v-for="(image, index) in previewFiles" :key="index" class="preview-item" :class="{ deleted: image.deleted }"
       :style="{ width: size, height: size }">
-      <img :src="image.url" class="image-item" />
-      <el-progress
-        v-show="image.progress < 100"
-        :percentage="image.progress"
-        color="#25A9F6"
-        :show-text="false"
+      <img :src="image.url" class="image-item">
+      <el-progress v-show="image.progress < 100" :percentage="image.progress" color="#25A9F6" :show-text="false"
         class="progress" />
-      <div v-show="image.progress < 100" class="cover">上传中...</div>
-      <div
-        class="upload-delete"
-        :class="{
-          'show-delete': image.progress === 100,
-        }"
-        @click="removeItem(index)">
+      <div v-show="image.progress < 100" class="cover">
+        上传中...
+      </div>
+      <div class="upload-delete" :class="{
+        'show-delete': image.progress === 100,
+      }" @click="removeItem(index)">
         <icon name="Trash2" />
       </div>
     </div>
-    <div
-      v-show="previewFiles.length < limit"
-      class="add-image-btn"
-      :style="{ width: size, height: size }"
+    <div v-show="previewFiles.length < limit" class="add-image-btn" :style="{ width: size, height: size }"
       @click="onClick($event)">
-      <input
-        ref="currentInput"
-        :accept="accept"
-        type="file"
-        multiple
-        @input="onInput" />
+      <input ref="currentInput" :accept="accept" type="file" multiple @input="onInput">
       <div class="add-image-btn-wrapper">
         <slot name="add-image-button">
           <icon name="Plus" color="#1c71d8" size="30px" />

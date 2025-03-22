@@ -1,41 +1,28 @@
 <template>
   <div class="comments">
-    <load-more-async
-      ref="loadMore"
-      v-slot="{ results }"
-      :params="{ entityType, entityId }"
-      url="/api/comment/comments">
+    <load-more-async ref="loadMore" v-slot="{ results }" :params="{ entityType, entityId }" url="/api/comment/comments">
       <div v-for="comment in results" :key="comment.id" class="comment">
         <div class="comment-item-left">
           <my-avatar :user="comment.user" :size="40" has-border />
         </div>
         <div class="comment-item-main">
           <div class="comment-meta">
-            <nuxt-link
-              :to="`/user/${comment.user.id}`"
-              class="comment-nickname">
+            <nuxt-link :to="`/user/${comment.user.id}`" class="comment-nickname">
               {{ comment.user.nickname }}
             </nuxt-link>
             <div class="comment-meta-right">
-              <time class="comment-time">{{
-                usePrettyDate(comment.createTime)
-                }}</time>
+              <time class="comment-time">
+                {{ usePrettyDate(comment.createTime) }}</time>
               <span v-if="comment.ipLocation" class="comment-ip-area">IP属地{{ comment.ipLocation }}</span>
             </div>
           </div>
           <div class="comment-content-wrapper">
             <template v-if="comment.content">
-              <div
-                v-if="comment.contentType === 'text'"
-                class="comment-content content"
-                v-text="comment.content" />
-              <div
-                v-else
-                class="comment-content content"
-                v-html="comment.content" />
+              <div v-if="comment.contentType === 'text'" class="comment-content content" v-text="comment.content" />
+              <div v-else class="comment-content content" v-html="comment.content" />
             </template>
             <div v-if="comment.imageList && comment.imageList.length" class="comment-image-list">
-              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url" />
+              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url">
             </div>
           </div>
           <div class="comment-actions">
@@ -47,20 +34,16 @@
             <div class="comment-action-item" :class="{ active: reply.commentId === comment.id }"
               @click="switchShowReply(comment)">
               <icon name="MessageSquareMore" />
-              <span>&nbsp;{{
-                reply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply')
-                }}</span>
+              <span>&nbsp;
+                {{ reply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}</span>
             </div>
           </div>
           <div v-if="reply.commentId === comment.id" class="comment-reply-form">
             <text-editor :ref="`editor${comment.id}`" v-model="reply.value" :height="100"
               @submit="submitReply(comment)" />
           </div>
-          <CommentSubList v-if="
-            comment.replies &&
-            comment.replies.results &&
-            comment.replies.results.length
-          " :comment-id="comment.id" :data="comment.replies" @reply="onReply(comment, $event)" />
+          <CommentSubList v-if="comment.replies && comment.replies.results && comment.replies.results.length"
+            :comment-id="comment.id" :data="comment.replies" @reply="onReply(comment, $event)" />
         </div>
       </div>
     </load-more-async>
@@ -68,128 +51,131 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const props = defineProps({
+const i18n = useI18n()
+defineProps({
   entityType: {
     type: String,
-    default: "",
     required: true,
   },
   entityId: {
     type: Number,
-    default: 0,
     required: true,
   },
-});
+})
 const reply = reactive({
   commentId: 0,
   value: {
-    content: "",
+    content: '',
     imageList: [],
   },
-});
+})
 
-const userStore = useUserStore();
-const loadMore = ref(null);
+const userStore = useUserStore()
+const loadMore = ref(null)
 
-const append = (data) => {
+const append = () => {
   if (loadMore.value) {
     // console.log(loadMore.value);
     // console.log(loadMore.value.unshiftResults);
     // loadMore.value.unshiftResults(data);
-    loadMore.value.refresh();
+    loadMore.value.refresh()
   }
-};
+}
 
 const like = async (comment) => {
   try {
     if (comment.liked) {
-      await useHttpPostForm("/api/like/unlike", {
+      await useHttpPostForm('/api/like/unlike', {
         body: {
-          entityType: "comment",
+          entityType: 'comment',
           entityId: comment.id,
         },
-      });
-      comment.liked = false;
-      comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0;
-      useMsgSuccess(i18n.t('message.unliked_success'));
-    } else {
-      await useHttpPostForm("/api/like/like", {
-        body: {
-          entityType: "comment",
-          entityId: comment.id,
-        },
-      });
-      comment.liked = true;
-      comment.likeCount = comment.likeCount + 1;
-      useMsgSuccess(i18n.t('message.liked_success'));
+      })
+      comment.liked = false
+      comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
+      useMsgSuccess(i18n.t('message.unliked_success'))
     }
-  } catch (e) {
-    useCatchError(e);
+    else {
+      await useHttpPostForm('/api/like/like', {
+        body: {
+          entityType: 'comment',
+          entityId: comment.id,
+        },
+      })
+      comment.liked = true
+      comment.likeCount = comment.likeCount + 1
+      useMsgSuccess(i18n.t('message.liked_success'))
+    }
   }
-};
+  catch (e) {
+    useCatchError(e)
+  }
+}
 
 const switchShowReply = (comment) => {
   if (!userStore.user) {
-    useMsgSignIn();
-    return;
+    useMsgSignIn()
+    return
   }
 
   if (reply.commentId === comment.id) {
-    hideReply(comment);
-  } else {
-    reply.commentId = comment.id;
+    hideReply(comment)
+  }
+  else {
+    reply.commentId = comment.id
     // // TODO
     // setTimeout(() => {
     //   this.$refs[`editor${comment.id}`][0].focus();
     // }, 0);
   }
-};
+}
 
-const hideReply = (comment) => {
-  reply.commentId = 0;
-  reply.value.content = "";
-  reply.value.imageList = [];
-};
+const hideReply = () => {
+  reply.commentId = 0
+  reply.value.content = ''
+  reply.value.imageList = []
+}
 
 const submitReply = async (parent) => {
   try {
-    const ret = await useHttpPostForm("/api/comment/create", {
+    const ret = await useHttpPostForm('/api/comment/create', {
       body: {
-        entityType: "comment",
+        entityType: 'comment',
         entityId: parent.id,
         content: reply.value.content,
         imageList:
           reply.value.imageList && reply.value.imageList.length
             ? JSON.stringify(reply.value.imageList)
-            : "",
+            : '',
       },
-    });
-    hideReply();
-    appendReply(parent, ret);
-    useMsgSuccess(i18n.t('message.comment_success'));
-  } catch (e) {
-    useCatchError(e);
+    })
+    hideReply()
+    appendReply(parent, ret)
+    useMsgSuccess(i18n.t('message.comment_success'))
   }
-};
+  catch (e) {
+    useCatchError(e)
+  }
+}
 
 const onReply = (parent, comment) => {
-  appendReply(parent, comment);
-};
+  appendReply(parent, comment)
+}
 
 const appendReply = (parent, comment) => {
   if (parent.replies && parent.replies.results) {
-    parent.replies.results.push(comment);
-  } else {
+    parent.replies.results.push(comment)
+  }
+  else {
     parent.replies = {
       results: [comment],
-    };
+    }
   }
-};
+}
 
 defineExpose({
   append,
-});
+})
 </script>
 
 <style scoped lang="scss">

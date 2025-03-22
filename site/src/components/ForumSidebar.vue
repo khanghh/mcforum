@@ -5,10 +5,11 @@
       <li
         v-for="node in nodes"
         :key="node.id"
-        :class="{ active: envStore.currentNodeId === node.id }"
-      >
+        :class="{ active: envStore.currentNodeId === node.id }">
         <nuxt-link :to="nodeUrl(node)">
-          <img class="node-logo" :src="nodeLogo(node)" />
+          <img
+            class="node-logo"
+            :src="nodeLogo(node)">
           <span class="node-name">{{ node.name }}</span>
         </nuxt-link>
       </li>
@@ -17,40 +18,45 @@
 </template>
 
 <script setup>
-import iconNew from "~/assets/images/new.png";
-import iconRecommend from "~/assets/images/recommend.png";
-import iconFeed from "~/assets/images/feed.png";
-import iconNode from "~/assets/images/node.png";
+import iconNew from '~/assets/images/new.png'
+import iconRecommend from '~/assets/images/recommend.png'
+import iconFeed from '~/assets/images/feed.png'
+import iconNode from '~/assets/images/node.png'
 
-const envStore = useEnvStore();
+const envStore = useEnvStore()
 
-const { data: nodes } = await useAsyncData("nodes", () =>
-  useMyFetch(`/api/topic/node_navs`)
-);
+const { data: nodes } = await useAsyncData('nodes', () =>
+  useMyFetch(`/api/topic/node_navs`),
+)
 
 function nodeLogo(node) {
   if (node.logo) {
-    return node.logo;
+    return node.logo
   }
   if (node.id === 0) {
-    return iconNew;
-  } else if (node.id === -1) {
-    return iconRecommend;
-  } else if (node.id === -2) {
-    return iconFeed;
+    return iconNew
   }
-  return iconNode;
+  else if (node.id === -1) {
+    return iconRecommend
+  }
+  else if (node.id === -2) {
+    return iconFeed
+  }
+  return iconNode
 }
 
 function nodeUrl(node) {
   if (node.id > 0) {
-    return `/topics/node/${node.id}`;
-  } else if (node.id === 0) {
-    return "/topics/node/newest";
-  } else if (node.id === -1) {
-    return "/topics/node/recommend";
-  } else if (node.id === -2) {
-    return "/topics/node/feed";
+    return `/topics/node/${node.id}`
+  }
+  else if (node.id === 0) {
+    return '/topics/node/newest'
+  }
+  else if (node.id === -1) {
+    return '/topics/node/recommend'
+  }
+  else if (node.id === -2) {
+    return '/topics/node/feed'
   }
 }
 </script>
@@ -116,6 +122,7 @@ function nodeUrl(node) {
 
         display: flex;
         align-items: center;
+
         //justify-content: center;
         .node-logo {
           width: 24px;

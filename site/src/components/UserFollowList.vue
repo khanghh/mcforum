@@ -15,49 +15,50 @@
           <follow-btn
             :user-id="item.id"
             :followed="item.followed"
-            @onFollowed="onFollowed"
-          />
+            @onFollowed="onFollowed" />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    users: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
+<script setup>
+
+defineProps({
+  users: {
+    type: Array,
+    default: () => [],
   },
-  methods: {
-    onFollowed(userId, followed) {
-      this.$emit("onFollowed", userId, followed);
-    },
-  },
-};
+})
+
+const emit = defineEmits(['onFollowed'])
+
+const onFollowed = (userId, followed) => {
+  emit('onFollowed', userId, followed)
+}
 </script>
 
 <style lang="scss" scoped>
 .user-follow-item {
   display: flex;
   align-items: center;
+
   &:not(:last-child) {
     margin: 10px 0;
   }
+
   .user-follow-item-info {
     width: 100%;
     margin: auto 10px;
 
     .nickname {
       font-size: 14px;
+
       a {
         color: var(--text-color);
       }
     }
+
     .description {
       font-size: 12px;
       color: var(--text-color3);

@@ -1,7 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
-  srcDir: 'src/',
 
   // ssr: false,
   modules: [
@@ -36,24 +34,13 @@ export default defineNuxtConfig({
   plugins: [
   ],
 
-  elementPlus: {
-    defaultLocale: 'vi',
-  },
-
-  colorMode: {
-    preference: 'system', // default value of $colorMode.preference
-    fallback: 'light', // fallback value if not system preference found
-    storageKey: 'bbsgo-color-mode',
-    classPrefix: 'theme-',
-    classSuffix: '',
-  },
-
   imports: {
     dirs: [
       'apis',
       'stores',
     ],
   },
+  devtools: { enabled: true },
 
   app: {
     head: {
@@ -63,15 +50,26 @@ export default defineNuxtConfig({
         {
           src: 'https://hm.baidu.com/hm.js?f14b836e09b72aedce29a86e809936de',
           type: 'text/javascript',
-          async: true
-        }
-      ]
+          async: true,
+        },
+      ],
     },
   },
 
   css: [
     '~/assets/css/index.scss',
   ],
+
+  colorMode: {
+    preference: 'system', // default value of $colorMode.preference
+    fallback: 'light', // fallback value if not system preference found
+    storageKey: 'bbsgo-color-mode',
+    classPrefix: 'theme-',
+    classSuffix: '',
+  },
+  srcDir: 'src/',
+
+  compatibilityDate: '2024-09-15',
 
   nitro: {
     routeRules: {
@@ -85,8 +83,6 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    vueI18n: './i18n.config.ts'
+    vueI18n: './i18n.config.ts',
   },
-
-  compatibilityDate: '2024-09-15',
 })

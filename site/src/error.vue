@@ -12,15 +12,15 @@ defineProps({
     type: Object,
     default: null,
   },
-});
+})
 
 definePageMeta({
-  layout: "default",
-});
+  layout: 'default',
+})
 
 const handleError = () => {
-  clearError({ redirect: "/" });
-};
+  clearError({ redirect: '/' })
+}
 </script>
 
 <template>
@@ -38,9 +38,15 @@ const handleError = () => {
             </div>
 
             <template v-else>
-              <div v-if="error.statusCode === 404">页面没找到</div>
-              <div v-if="error.statusCode === 403">Forbidden</div>
-              <div v-else>{{ error.statusCode }} 异常</div>
+              <div v-if="error.statusCode === 404">
+                页面没找到
+              </div>
+              <div v-if="error.statusCode === 403">
+                Forbidden
+              </div>
+              <div v-else>
+                {{ error.statusCode }} 异常
+              </div>
             </template>
           </div>
           <div class="report">

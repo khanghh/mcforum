@@ -1,99 +1,3 @@
-<script>
-export default {
-  props: {
-    height: {
-      type: Number,
-      default: 120,
-    },
-    value: {
-      type: Object,
-      default() {
-        return {
-          content: '',
-          imageList: [],
-        }
-      },
-    },
-  },
-  emits: ['submit', 'update:modelValue'],
-  data() {
-    return {
-      post: this.value,
-      showImageUpload: false, // 是否显示图片上传
-      imageUploading: false, // 图片上传中
-    }
-  },
-  methods: {
-    doSubmit() {
-      this.$emit('submit')
-    },
-    onInput() {
-      this.$emit('update:modelValue', this.post)
-    },
-    isOnUpload() {
-      return this.imageUploading
-    },
-    handleParse(e) {
-      const items = e.clipboardData && e.clipboardData.items
-      if (!items || !items.length) {
-        return
-      }
-
-      let file = null
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.includes('image')) {
-          file = items[i].getAsFile()
-        }
-      }
-
-      if (file) {
-        e.preventDefault() // 阻止默认行为即不让剪贴板内容显示出来
-        this.showImageUpload = true // 展开上传面板
-        this.$refs.imageUploader.addFiles([file])
-      }
-    },
-    handleDrag(e) {
-      e.stopPropagation()
-      e.preventDefault()
-
-      const items = e.dataTransfer.items
-      if (!items || !items.length) {
-        return
-      }
-
-      const files = []
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.includes('image')) {
-          files.push(items[i].getAsFile())
-        }
-      }
-
-      if (files && files.length) {
-        this.showImageUpload = true // 展开上传面板
-        this.$refs.imageUploader.addFiles(files)
-      }
-    },
-    switchImageUpload() {
-      if (!this.showImageUpload) {
-        // 打开文件弹窗
-        // this.$refs.imageUploader.onClick()
-      }
-      this.showImageUpload = !this.showImageUpload
-    },
-    clear() {
-      this.post.content = ''
-      this.post.imageList = []
-      this.showImageUpload = false
-      this.$refs.imageUploader.clear()
-      this.onInput()
-    },
-    focus() {
-      this.$refs.textarea.focus()
-    },
-  },
-}
-</script>
-
 <template>
   <div class="text-editor">
     <textarea
@@ -132,6 +36,101 @@ export default {
     </div>
   </div>
 </template>
+
+<script setup>
+
+const props = defineProps({
+  height: {
+    type: Number,
+    default: 120,
+  },
+  value: {
+    type: Object,
+    default: () => ({
+      content: '',
+      imageList: [],
+    }),
+  },
+})
+
+const emit = defineEmits(['submit', 'update:modelValue'])
+
+const post = ref({ ...props.value })
+const showImageUpload = ref(false)
+const imageUploading = ref(false)
+
+function doSubmit() {
+  emit('submit')
+}
+
+const onInput = () => {
+  emit('update:modelValue', post.value)
+}
+
+const isOnUpload = () => imageUploading.value
+
+const handleParse = (e) => {
+  const items = e.clipboardData?.items
+  if (!items?.length) return
+
+  let file = null
+  for (const item of items) {
+    if (item.type.includes('image')) {
+      file = item.getAsFile()
+    }
+  }
+
+  if (file) {
+    e.preventDefault() // Prevent default clipboard behavior
+    showImageUpload.value = true
+    imageUploaderRef.value?.addFiles([file])
+  }
+}
+
+const handleDrag = (e) => {
+  e.stopPropagation()
+  e.preventDefault()
+
+  const items = e.dataTransfer?.items
+  if (!items?.length) return
+
+  const files = [...items]
+    .filter(item => item.type.includes('image'))
+    .map(item => item.getAsFile())
+
+  if (files.length) {
+    showImageUpload.value = true
+    imageUploaderRef.value?.addFiles(files)
+  }
+}
+
+const switchImageUpload = () => {
+  showImageUpload.value = !showImageUpload.value
+}
+
+const clear = () => {
+  post.value.content = ''
+  post.value.imageList = []
+  showImageUpload.value = false
+  imageUploaderRef.value?.clear()
+  onInput()
+}
+
+const focus = () => {
+  textareaRef.value?.focus()
+}
+
+const imageUploaderRef = ref(null)
+const textareaRef = ref(null)
+
+watch(
+  () => props.value,
+  (newValue) => {
+    post.value = { ...newValue }
+  },
+  { deep: true },
+)
+</script>
 
 <style lang="scss" scoped>
 .text-editor {

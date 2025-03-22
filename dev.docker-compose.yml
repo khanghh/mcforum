@@ -13,9 +13,9 @@ services:
     ports:
       - 8080:8080
       - 8082:8082
+      - 8123:8123
       - 3000:3000
     network_mode: bridge
-  
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin

@@ -1,6 +1,8 @@
 <template>
   <div v-if="siteNotification" class="widget">
-    <div class="widget-header">{{ $t('widget.title.announcement') }}</div>
+    <div class="widget-header">
+      {{ $t('widget.title.announcement') }}
+    </div>
     <div class="widget-content content notice-content">
       <p v-html="siteNotification"></p>
     </div>
@@ -9,9 +11,9 @@
 
 <script setup>
 const siteNotification = computed(() => {
-  const configStore = useConfigStore();
-  return configStore.config.siteNotification;
-});
+  const configStore = useConfigStore()
+  return configStore.config.siteNotification
+})
 </script>
 
 <style lang="scss" scoped>

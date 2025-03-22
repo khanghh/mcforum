@@ -25,11 +25,11 @@
             <!-- <nuxt-link to="/search">xxxx</nuxt-link> -->
           </div>
 
-          <div class="navbar-item" v-if="user">
+          <div v-if="user" class="navbar-item">
             <create-topic-btn />
           </div>
 
-          <div class="navbar-item dropdown is-hoverable is-right msg-notice" v-if="user">
+          <div v-if="user" class="navbar-item dropdown is-hoverable is-right msg-notice">
             <msg-notice />
           </div>
 
@@ -74,23 +74,23 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const userStore = useUserStore();
-const configStore = useConfigStore();
+const i18n = useI18n()
+const userStore = useUserStore()
+const configStore = useConfigStore()
 
-const { user } = storeToRefs(userStore);
-const { config } = storeToRefs(configStore);
+const { user } = storeToRefs(userStore)
+const { config } = storeToRefs(configStore)
 
-const navbarActive = ref(false);
+const navbarActive = ref(false)
 
 function toggleNav() {
-  navbarActive.value = !navbarActive.value;
+  navbarActive.value = !navbarActive.value
 }
 
 async function signout() {
   if (confirm(i18n.t('dialog.message.sign_out_alert'))) {
-    await userStore.signout();
-    useLinkTo("/");
+    await userStore.signout()
+    useLinkTo('/')
   }
 }
 </script>

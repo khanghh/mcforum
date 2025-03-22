@@ -11,9 +11,11 @@
     </div>
     <div class="widget-content">
       <div v-if="followList && followList.length">
-        <user-follow-list :users="followList" @onFollowed="onFollowed" />
+        <user-follow-list :users="followList" @on-followed="onFollowed" />
       </div>
-      <div v-else class="widget-tips">{{ $t('message.no_follower_yet') }}</div>
+      <div v-else class="widget-tips">
+        {{ $t('message.no_follower_yet') }}
+      </div>
     </div>
   </div>
 </template>
@@ -24,23 +26,23 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-});
+})
 
-const followList = ref([]);
+const followList = ref([])
 
 onMounted(() => {
-  loadData();
-});
+  loadData()
+})
 
 async function loadData() {
   const data = await useHttpGet(
-    `/api/fans/recent/follow?userId=${props.user.id}`
-  );
-  followList.value = data.results;
+    `/api/fans/recent/follow?userId=${props.user.id}`,
+  )
+  followList.value = data.results
 }
 
-async function onFollowed(userId, followed) {
-  await loadData();
+async function onFollowed(/* userId, followed */) {
+  await loadData()
 }
 </script>
 

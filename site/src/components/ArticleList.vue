@@ -20,36 +20,38 @@
               </nuxt-link>
               <time :datetime="useFormatDate(article.createTime)">
                 {{ $t('feed.published') }}
-                {{ usePrettyDate(article.createTime) }}</time>
+                {{ usePrettyDate(article.createTime) }}
+              </time>
             </span>
           </div>
 
           <div class="article-meta-right">
             <div v-if="article.tags && article.tags.length > 0">
               <nuxt-link v-for="tag in article.tags" :key="tag.id" class="article-tag"
-                :to="'/articles/tag/' + tag.id">{{ tag.name }}</nuxt-link>
+                :to="'/articles/tag/' + tag.id">
+                {{ tag.name }}
+              </nuxt-link>
             </div>
           </div>
         </div>
       </div>
       <div v-if="article.cover" class="article-item-cover">
-        <img :src="article.cover.url" />
+        <img :src="article.cover.url">
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-
-const props = defineProps({
+defineProps({
   articles: {
     type: Array,
     default() {
-      return [];
+      return []
     },
     required: false,
   },
-});
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+defineProps({
   maxWordCount: {
     type: Number,
     default: 5000,

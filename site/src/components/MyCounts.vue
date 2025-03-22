@@ -1,20 +1,22 @@
 <template>
   <div class="widget">
-    <div class="widget-header">{{ $t("widget.title.statistics") }}</div>
+    <div class="widget-header">
+      {{ $t("widget.title.statistics") }}
+    </div>
     <div class="widget-content extra-info">
       <ul>
         <li>
-          <span>{{ $t("profile.info.points") }}</span><br />
+          <span>{{ $t("profile.info.points") }}</span><br>
           <nuxt-link to="/user/scores">
             <b>{{ user.score }}</b>
           </nuxt-link>
         </li>
         <li>
-          <span>{{ $t("profile.info.topics") }}</span><br />
+          <span>{{ $t("profile.info.topics") }}</span><br>
           <b>{{ user.topicCount }}</b>
         </li>
         <li>
-          <span>{{ $t("profile.info.comments") }}</span><br />
+          <span>{{ $t("profile.info.comments") }}</span><br>
           <b>{{ user.commentCount }}</b>
         </li>
       </ul>
@@ -30,7 +32,7 @@ export default {
       required: true,
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

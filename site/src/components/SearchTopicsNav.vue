@@ -7,22 +7,28 @@
       <li :class="{ active: nodeId === -1 }" class="topics-nav-item">
         <a @click="setNodeId(-1)">{{ $t('search.recommended') }}</a>
       </li>
-      <li
-        v-for="node in nodes"
-        :key="node.id"
-        :class="{ active: nodeId === node.id }"
-        class="topics-nav-item">
+      <li v-for="node in nodes" :key="node.id" :class="{ active: nodeId === node.id }" class="topics-nav-item">
         <a @click="setNodeId(node.id)">{{ node.name }}</a>
       </li>
     </ul>
     <div class="search-time-range">
       <div class="select is-small">
         <select v-model="timeRange" @change="setTimeRange">
-          <option :value="0">{{ $t('search.no_time_limit') }}</option>
-          <option :value="1">{{ $t('search.within_one_day') }}</option>
-          <option :value="2">{{ $t('search.within_one_week') }}</option>
-          <option :value="3">{{ $t('search.within_one_month') }}</option>
-          <option :value="4">{{ $t('search.within_one_year') }}</option>
+          <option :value="0">
+            {{ $t('search.no_time_limit') }}
+          </option>
+          <option :value="1">
+            {{ $t('search.within_one_day') }}
+          </option>
+          <option :value="2">
+            {{ $t('search.within_one_week') }}
+          </option>
+          <option :value="3">
+            {{ $t('search.within_one_month') }}
+          </option>
+          <option :value="4">
+            {{ $t('search.within_one_year') }}
+          </option>
         </select>
       </div>
     </div>

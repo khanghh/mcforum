@@ -9,10 +9,7 @@
         <el-skeleton :rows="3" animated />
       </div>
       <div class="has-more">
-        <button
-          class="button is-primary is-small"
-          :disabled="disabled"
-          @click="loadMore">
+        <button class="button is-primary is-small" :disabled="disabled" @click="loadMore">
           <span v-if="loading" class="icon">
             <icon name="LoaderCircle" class="icon-loading" />
           </span>
@@ -27,7 +24,7 @@
 defineExpose({
   refresh,
   unshiftResults,
-});
+})
 
 const props = defineProps({
   // 请求URL
@@ -39,72 +36,74 @@ const props = defineProps({
   params: {
     type: Object,
     default() {
-      return {};
+      return {}
     },
   },
-});
+})
 // 是否正在加载中
-const loading = ref(false);
+const loading = ref(false)
 const pageData = reactive({
-  cursor: "",
+  cursor: '',
   results: [],
   hasMore: true,
-});
+})
 
 const disabled = computed(() => {
-  return loading.value || !pageData.hasMore;
-});
+  return loading.value || !pageData.hasMore
+})
 
 const empty = computed(() => {
-  return pageData.hasMore === false && pageData.results.length === 0;
-});
+  return pageData.hasMore === false && pageData.results.length === 0
+})
 
 const { data: first } = await useAsyncData(() => {
   return useMyFetch(props.url, {
     params: props.params || {},
-  });
-});
+  })
+})
 
-renderData(first.value);
+renderData(first.value)
 
 async function loadMore() {
-  loading.value = true;
+  loading.value = true
   try {
     const filters = Object.assign(props.params || {}, {
-      cursor: pageData.cursor || "",
-    });
+      cursor: pageData.cursor || '',
+    })
     const data = await useHttpGet(props.url, {
       params: filters,
-    });
-    renderData(data);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    loading.value = false;
+    })
+    renderData(data)
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    loading.value = false
   }
 }
 
 function refresh() {
-  pageData.cursor = "";
-  pageData.results = [];
-  pageData.hasMore = true;
-  return loadMore();
+  pageData.cursor = ''
+  pageData.results = []
+  pageData.hasMore = true
+  return loadMore()
 }
 
 function renderData(data) {
-  data = data || {};
-  pageData.cursor = data.cursor;
-  pageData.hasMore = data.hasMore;
+  data = data || {}
+  pageData.cursor = data.cursor
+  pageData.hasMore = data.hasMore
   if (data.results && data.results.length) {
     data.results.forEach((item) => {
-      pageData.results.push(item);
-    });
+      pageData.results.push(item)
+    })
   }
 }
 
 function unshiftResults(item) {
   if (item && pageData && pageData.results) {
-    pageData.results.unshift(item);
+    pageData.results.unshift(item)
   }
 }
 </script>

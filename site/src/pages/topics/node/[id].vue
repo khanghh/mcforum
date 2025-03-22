@@ -4,7 +4,7 @@
       <div class="left-container">
         <div class="main-content no-padding no-bg topics-wrapper">
           <div class="topics-nav">
-            <topics-nav />
+            <forum-sidebar />
           </div>
           <div class="topics-main">
             <load-more-async

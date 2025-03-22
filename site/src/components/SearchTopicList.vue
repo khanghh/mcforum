@@ -7,8 +7,7 @@
       <a
         target="_blank"
         :href="'/topic/' + item.id"
-        class="topic-search-item-summary content"
-      >
+        class="topic-search-item-summary content">
         <p v-html="item.summary"></p>
       </a>
       <div class="topic-mates">
@@ -33,7 +32,7 @@ export default {
       default: null,
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -80,6 +79,7 @@ export default {
     .topic-mates {
       font-size: 13px;
       color: var(--text-color3);
+
       span {
         margin-right: 10px;
       }

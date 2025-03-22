@@ -76,6 +76,7 @@ type ArticleResponse struct {
 type NodeResponse struct {
 	Id          int64  `json:"id"`
 	Name        string `json:"name"`
+	Slug        string `json:"slug"`
 	Logo        string `json:"logo"`
 	Description string `json:"description"`
 }

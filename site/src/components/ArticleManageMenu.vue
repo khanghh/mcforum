@@ -4,9 +4,15 @@
       <span class="el-dropdown-link">{{ $t('publish.manage') }}</span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item command="edit">{{ $t('publish.action.edit') }}</el-dropdown-item>
-          <el-dropdown-item command="delete">{{ $t('publish.action.delete') }}</el-dropdown-item>
-          <el-dropdown-item command="pin">{{ $t('publish.action.pin') }}</el-dropdown-item>
+          <el-dropdown-item command="edit">
+            {{ $t('publish.action.edit') }}
+          </el-dropdown-item>
+          <el-dropdown-item command="delete">
+            {{ $t('publish.action.delete') }}
+          </el-dropdown-item>
+          <el-dropdown-item command="pin">
+            {{ $t('publish.action.pin') }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -14,48 +20,53 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 const props = defineProps({
   article: {
     type: Object,
     required: true,
   },
-});
+})
 
-const userStore = useUserStore();
-const isOwner = userIsOwner(userStore.user);
-const isAdmin = userIsAdmin(userStore.user);
+const userStore = useUserStore()
+const isOwner = userIsOwner(userStore.user)
+const isAdmin = userIsAdmin(userStore.user)
 const isArticleOwner = computed(() => {
-  return userStore.user && userStore.user.id === props.article.user.id;
-});
+  return userStore.user && userStore.user.id === props.article.user.id
+})
 const hasPermission = computed(() => {
-  return isArticleOwner || isOwner || isAdmin;
-});
+  return isArticleOwner.value || isOwner || isAdmin
+})
 
 async function handleCommand(command) {
-  if (command === "edit") {
-    editArticle();
-  } else if (command === "delete") {
-    deleteArticle();
-  } else if (command === "forbidden7Days") {
-    await forbidden(7);
-  } else if (command === "forbiddenForever") {
-    await forbidden(-1);
-  } else {
-    console.log("click on item " + command);
+  if (command === 'edit') {
+    editArticle()
+  }
+  else if (command === 'delete') {
+    deleteArticle()
+  }
+  else if (command === 'forbidden7Days') {
+    await forbidden(7)
+  }
+  else if (command === 'forbiddenForever') {
+    await forbidden(-1)
+  }
+  else {
+    console.log('click on item ' + command)
   }
 }
 async function forbidden(days) {
   try {
-    await useHttpPostForm("/api/user/forbidden", {
+    await useHttpPostForm('/api/user/forbidden', {
       body: {
         userId: props.article.user.id,
         days,
       },
-    });
-    useMsgSuccess(i18n.t('message.mute_user_success'));
-  } catch (e) {
-    useMsgError(i18n.t('message.mute_user_failure'));
+    })
+    useMsgSuccess(i18n.t('message.mute_user_success'))
+  }
+  catch (e) {
+    useMsgError(i18n.t('message.mute_user_failure', { error: e }))
   }
 }
 function deleteArticle() {
@@ -65,17 +76,17 @@ function deleteArticle() {
         useMsg({
           message: i18n.t('message.delete_success'),
           onClose() {
-            useLinkTo("/articles");
+            useLinkTo('/articles')
           },
-        });
+        })
       })
       .catch((e) => {
-        useMsgError(i18n.t('message.delete_success', { error: (e.message || e) }));
-      });
-  });
+        useMsgError(i18n.t('message.delete_success', { error: (e.message || e) }))
+      })
+  })
 }
 function editArticle() {
-  useLinkTo(`/article/edit/${props.article.id}`);
+  useLinkTo(`/article/edit/${props.article.id}`)
 }
 </script>
 

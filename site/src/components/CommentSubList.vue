@@ -7,36 +7,30 @@
       <div class="comment-item-main">
         <div class="comment-meta">
           <div>
-            <nuxt-link
-              :to="`/user/${comment.user.id}`"
-              class="comment-nickname">
+            <nuxt-link :to="`/user/${comment.user.id}`" class="comment-nickname">
               {{ comment.user.nickname }}
             </nuxt-link>
             <template v-if="comment.quote">
               <span>&nbsp;{{ $t('feed.replied_to') }}&nbsp;</span>
-              <nuxt-link
-                :to="`/user/${comment.quote.user.id}`"
-                class="comment-nickname">
+              <nuxt-link :to="`/user/${comment.quote.user.id}`" class="comment-nickname">
                 {{ comment.quote.user.nickname }}
               </nuxt-link>
             </template>
           </div>
-          <time class="comment-time">{{
-            usePrettyDate(comment.createTime)
-          }}</time>
+          <time class="comment-time">{{ usePrettyDate(comment.createTime) }}</time>
         </div>
         <div class="comment-content-wrapper">
           <div v-if="comment.content" class="comment-content content">
             <div v-text="comment.content" />
           </div>
           <div v-if="comment.imageList && comment.imageList.length" class="comment-image-list">
-            <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url" />
+            <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url">
           </div>
 
           <div v-if="comment.quote" class="comment-quote">
             <div class="comment-quote-content content" v-html="comment.quote.content" />
             <div v-if="comment.quote.imageList && comment.quote.imageList.length" class="comment-quote-image-list">
-              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url" />
+              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url">
             </div>
           </div>
         </div>
@@ -49,9 +43,10 @@
           <div class="comment-action-item" :class="{ active: reply.quoteId === comment.id }"
             @click="switchShowReply(comment)">
             <icon name="MessageSquareMore" />
-            <span>&nbsp;{{
-              reply.quoteId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply')
-            }}</span>
+            <span>
+              &nbsp;
+              {{ reply.quoteId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+            </span>
           </div>
         </div>
         <div v-if="reply.quoteId === comment.id" class="comment-reply-form">
@@ -66,7 +61,7 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 
 const props = defineProps({
   commentId: {
@@ -77,104 +72,108 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(['reply']);
+const emit = defineEmits(['reply'])
 
-const replies = ref(props.data);
+const replies = ref(props.data)
 const reply = ref({
   quoteId: 0,
   value: {
-    content: "",
+    content: '',
     imageList: [],
   },
-});
+})
 
 const user = computed(() => {
-  const userStore = useUserStore();
-  return userStore.user;
-});
+  const userStore = useUserStore()
+  return userStore.user
+})
 
 async function loadMore() {
-  const ret = await useHttpGet("/api/comment/replies", {
+  const ret = await useHttpGet('/api/comment/replies', {
     params: {
       commentId: props.commentId,
       cursor: replies.value.cursor,
     },
-  });
-  replies.value.cursor = ret.cursor;
-  replies.value.hasMore = ret.hasMore;
-  replies.value.results.push(...ret.results);
+  })
+  replies.value.cursor = ret.cursor
+  replies.value.hasMore = ret.hasMore
+  replies.value.results.push(...ret.results)
 }
 
 async function like(comment) {
   try {
     if (comment.liked) {
-      await useHttpPostForm("/api/like/unlike", {
+      await useHttpPostForm('/api/like/unlike', {
         body: {
-          entityType: "comment",
+          entityType: 'comment',
           entityId: comment.id,
         },
-      });
-      comment.liked = false;
-      comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0;
-      useMsgSuccess(i18n.t('message.unliked_success'));
-    } else {
-      await useHttpPostForm("/api/like/like", {
-        body: {
-          entityType: "comment",
-          entityId: comment.id,
-        },
-      });
-      comment.liked = true;
-      comment.likeCount = comment.likeCount + 1;
-      useMsgSuccess(i18n.t('message.liked_success'));
+      })
+      comment.liked = false
+      comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
+      useMsgSuccess(i18n.t('message.unliked_success'))
     }
-  } catch (e) {
-    useCatchError(e);
+    else {
+      await useHttpPostForm('/api/like/like', {
+        body: {
+          entityType: 'comment',
+          entityId: comment.id,
+        },
+      })
+      comment.liked = true
+      comment.likeCount = comment.likeCount + 1
+      useMsgSuccess(i18n.t('message.liked_success'))
+    }
+  }
+  catch (e) {
+    useCatchError(e)
   }
 }
 
 function switchShowReply(comment) {
   if (!user.value) {
-    useMsgSignIn();
-    return;
+    useMsgSignIn()
+    return
   }
 
   if (reply.value.quoteId === comment.id) {
-    hideReply(comment);
-  } else {
-    reply.value.quoteId = comment.id;
+    hideReply(comment)
+  }
+  else {
+    reply.value.quoteId = comment.id
     setTimeout(() => {
-      $refs[`editor${comment.id}`][0].focus();
-    }, 0);
+      $refs[`editor${comment.id}`][0].focus()
+    }, 0)
   }
 }
 
 function hideReply() {
-  reply.value.quoteId = 0;
-  reply.value.value.content = "";
-  reply.value.value.imageList = [];
+  reply.value.quoteId = 0
+  reply.value.value.content = ''
+  reply.value.value.imageList = []
 }
 
-async function submitReply(parent) {
+async function submitReply(/* parent */) {
   try {
-    const ret = await useHttpPostForm("/api/comment/create", {
+    const ret = await useHttpPostForm('/api/comment/create', {
       body: {
-        entityType: "comment",
+        entityType: 'comment',
         entityId: props.commentId,
         quoteId: reply.value.quoteId,
         content: reply.value.value.content,
         imageList: reply.value.value.imageList && reply.value.value.imageList.length
           ? JSON.stringify(reply.value.value.imageList)
-          : "",
+          : '',
       },
-    });
-    hideReply();
-    emit("reply", ret);
-    useMsgSuccess(i18n.t('message.comment_success'));
-  } catch (e) {
-    useCatchError(e);
+    })
+    hideReply()
+    emit('reply', ret)
+    useMsgSuccess(i18n.t('message.comment_success'))
+  }
+  catch (e) {
+    useCatchError(e)
   }
 }
 </script>

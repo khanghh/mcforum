@@ -36,6 +36,6 @@ USER node
 
 WORKDIR /bbs-go
 
-EXPOSE 8080 8082 3000
+EXPOSE 8080 8082 8123 3000
 
 CMD ["sh", "-c", "trap 'exit 0' INT TERM; while true; do sleep 1; done"]

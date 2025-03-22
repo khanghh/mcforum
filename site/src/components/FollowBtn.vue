@@ -1,9 +1,6 @@
 <template>
   <div>
-    <button
-      class="button follow-btn"
-      :class="{ 'is-followed': followed }"
-      @click="follow">
+    <button class="button follow-btn" :class="{ 'is-followed': followed }" @click="follow">
       <icon name="Plus" />
       <span>{{ followed ? $t('profile.actions.unfollow') : $t('profile.actions.follow') }}</span>
     </button>
@@ -11,46 +8,48 @@
 </template>
 
 <script setup>
-const userStore = useUserStore();
+const userStore = useUserStore()
 const props = defineProps({
   userId: {
     type: Number,
     required: true,
   },
-});
-const emits = defineEmits(["onFollowed"]);
+})
+const emits = defineEmits(['onFollowed'])
 
 const { data: followed } = await useAsyncData(`followed:${props.userId}`, () =>
-  useMyFetch(`/api/fans/isfollowed?userId=${props.userId}`)
-);
+  useMyFetch(`/api/fans/isfollowed?userId=${props.userId}`),
+)
 
 async function follow() {
   if (!userStore.isLogin) {
-    useMsgSignIn();
-    return;
+    useMsgSignIn()
+    return
   }
   try {
     if (followed.value) {
-      await useHttpPostForm("/api/fans/unfollow", {
+      await useHttpPostForm('/api/fans/unfollow', {
         body: {
           userId: props.userId,
         },
-      });
-      followed.value = false;
-      emits("onFollowed", props.userId, false);
+      })
+      followed.value = false
+      emits('onFollowed', props.userId, false)
       // useMsgSuccess("取消关注成功");
-    } else {
-      await useHttpPostForm("/api/fans/follow", {
+    }
+    else {
+      await useHttpPostForm('/api/fans/follow', {
         body: {
           userId: props.userId,
         },
-      });
-      followed.value = true;
-      emits("onFollowed", props.userId, true);
+      })
+      followed.value = true
+      emits('onFollowed', props.userId, true)
       // useMsgSuccess("关注成功");
     }
-  } catch (e) {
-    useMsgError(e.message || e);
+  }
+  catch (e) {
+    useMsgError(e.message || e)
   }
 }
 </script>

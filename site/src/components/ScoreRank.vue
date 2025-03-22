@@ -8,9 +8,9 @@
         <li v-for="user in scoreRank" :key="user.id">
           <my-avatar :user="user" :size="35" />
           <div class="score-user-info">
-            <nuxt-link :to="'/user/' + user.id" class="score-nickname">{{
-              user.nickname
-              }}</nuxt-link>
+            <nuxt-link :to="'/user/' + user.id" class="score-nickname">
+              {{ user.nickname }}
+            </nuxt-link>
             <p class="score-desc">
               {{ $t('widget.leaderboard.topic_count', user.topicCount) }},
               {{ $t('widget.leaderboard.comment_count', user.commentCount) }}
@@ -29,8 +29,7 @@
 </template>
 
 <script setup>
-const { data: scoreRank } = useAsyncData(() =>
-  useMyFetch("/api/user/score/rank")
+const { data: scoreRank } = useAsyncData(() => useMyFetch("/api/user/score/rank")
 );
 </script>
 

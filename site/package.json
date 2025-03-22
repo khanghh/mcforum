@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "nuxt build --dotenv .env.production",
     "build:docker": "nuxt build --dotenv .env.docker",
@@ -10,17 +11,15 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "2.6.4",
     "@element-plus/nuxt": "1.0.10",
-    "@nuxt/devtools": "latest",
+    "@nuxt/eslint": "1.0.1",
     "@nuxtjs/color-mode": "3.4.2",
-    "@nuxtjs/eslint-module": "4.1.0",
     "@nuxtjs/i18n": "9.3.1",
     "@vueuse/core": "10.11.0",
     "@vueuse/nuxt": "10.11.0",
     "bulma": "1.0.1",
     "element-plus": "2.7.7",
-    "eslint": "8.56.0",
+    "eslint": "9.23.0",
     "nuxt": "3.12.3",
     "sass": "1.70.0",
     "typescript": "5.5.3"

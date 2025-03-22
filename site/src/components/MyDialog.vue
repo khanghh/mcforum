@@ -3,7 +3,7 @@
     <div
       class="dialog-mask"
       :class="{ visible: visible }"
-      :style="{ zIndex: zIndex }"></div>
+      :style="{ zIndex: zIndex }" />
     <transition
       appear
       enter-active-class="animate__animated animate__fadeIn"
@@ -20,13 +20,15 @@
             maxWidth: dialogContentMaxWidth,
           }">
           <div class="dialog-header">
-            <div class="dialog-title">{{ title }}</div>
+            <div class="dialog-title">
+              {{ title }}
+            </div>
             <div class="dialog-close">
-              <icon name="X" @click="close"></icon>
+              <icon name="X" @click="close" />
             </div>
           </div>
           <div class="dialog-main">
-            <slot></slot>
+            <slot />
           </div>
           <div
             class="dialog-footer"
@@ -45,12 +47,12 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const emits = defineEmits(["update:visible", "ok", "cancel"]);
+const i18n = useI18n()
+const emits = defineEmits(['update:visible', 'ok', 'cancel'])
 defineExpose({
   show,
   close,
-});
+})
 
 const props = defineProps({
   visible: {
@@ -73,7 +75,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: "",
+    default: '',
   },
   btnsCenter: {
     type: Boolean,
@@ -89,38 +91,38 @@ const props = defineProps({
   },
   okBtnText: {
     type: String,
-    default: "",
+    default: '',
   },
-});
+})
 
 const okBtnText = computed(() => props.okBtnText || i18n.t('dialog.button.confirm'))
 
 const dialogContentWidth = computed(() => {
   if (props.width > 0) {
-    return `${props.width}px`;
+    return `${props.width}px`
   }
   // return 'auto'
-  return "100%";
-});
+  return '100%'
+})
 const dialogContentMaxWidth = computed(() => {
   if (props.maxWidth > 0) {
-    return `${props.maxWidth}px`;
+    return `${props.maxWidth}px`
   }
-  return "";
-});
+  return ''
+})
 
 function show() {
-  emits("update:visible", true);
+  emits('update:visible', true)
 }
 function close() {
-  emits("update:visible", false);
+  emits('update:visible', false)
 }
 function ok() {
-  emits("ok");
+  emits('ok')
 }
 function cancel() {
-  emits("cancel");
-  close();
+  emits('cancel')
+  close()
 }
 </script>
 

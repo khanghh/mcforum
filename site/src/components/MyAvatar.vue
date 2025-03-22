@@ -5,22 +5,19 @@
     target="_blank"
     :to="`/user/${user.id}`"
     :class="[sizeClass]"
-    :style="extraStyle"
-  >
+    :style="extraStyle">
     <img
       v-if="hasAvatarUrl && !loadError"
       :src="avatarUrl"
       class="avatar"
       :class="[sizeClass, roundClass, borderClass]"
       :alt="user.nickname"
-      @error="error"
-    />
+      @error="error">
     <span
       v-else-if="styleText"
       class="avatar"
       :class="[sizeClass, roundClass, borderClass]"
-      :style="styleText"
-    >
+      :style="styleText">
       {{ usernameAt }}
     </span>
   </nuxt-link>
@@ -28,11 +25,11 @@
 
 <script>
 export default {
-  name: "Avatar",
+  name: 'Avatar',
   props: {
     user: {
       type: [Object, String],
-      default: () => {},
+      default: () => { },
     },
     size: {
       type: [Number, String],
@@ -48,67 +45,65 @@ export default {
     },
     extraStyle: {
       type: [Object],
-      default: () => {},
+      default: () => { },
     },
   },
   data() {
     return {
       loadError: false,
       sizes: {
-        150: "font-size: 60px;line-height: 150px;border-radius: 2px",
-        100: "font-size: 40px;line-height: 100px;border-radius: 2px",
-        80: "font-size: 32px;line-height: 80px;border-radius: 2px",
-        70: "font-size: 28px;line-height: 70px;border-radius: 2px",
-        60: "font-size: 26px;line-height: 60px;border-radius: 2px",
-        50: "font-size: 24px;line-height: 50px;border-radius: 2px",
-        45: "font-size: 22px;line-height: 45px;border-radius: 2px",
-        40: "font-size: 20px;line-height: 40px;border-radius: 2px",
-        35: "font-size: 18px;line-height: 30px;border-radius: 2px",
-        30: "font-size: 18px;line-height: 30px;border-radius: 2px",
-        24: "font-size: 12px;line-height: 24px;border-radius: 2px",
-        20: "font-size: 10px;line-height: 20px;border-radius: 2px",
+        150: 'font-size: 60px;line-height: 150px;border-radius: 2px',
+        100: 'font-size: 40px;line-height: 100px;border-radius: 2px',
+        80: 'font-size: 32px;line-height: 80px;border-radius: 2px',
+        70: 'font-size: 28px;line-height: 70px;border-radius: 2px',
+        60: 'font-size: 26px;line-height: 60px;border-radius: 2px',
+        50: 'font-size: 24px;line-height: 50px;border-radius: 2px',
+        45: 'font-size: 22px;line-height: 45px;border-radius: 2px',
+        40: 'font-size: 20px;line-height: 40px;border-radius: 2px',
+        35: 'font-size: 18px;line-height: 30px;border-radius: 2px',
+        30: 'font-size: 18px;line-height: 30px;border-radius: 2px',
+        24: 'font-size: 12px;line-height: 24px;border-radius: 2px',
+        20: 'font-size: 10px;line-height: 20px;border-radius: 2px',
       },
-    };
+    }
   },
   computed: {
     hasAvatarUrl() {
-      return this.avatarUrl;
+      return this.avatarUrl
     },
     avatarUrl() {
-      return this.user.smallAvatar || this.user.avatar;
+      return this.user.smallAvatar || this.user.avatar
     },
     usernameAt() {
       let c = this.user.nickname
         ? this.user.nickname.charAt(0).toUpperCase()
-        : "";
+        : ''
       if (!c) {
         c = this.user.username
           ? this.user.username.charAt(0).toUpperCase()
-          : "";
+          : ''
       }
-      return c;
+      return c
     },
     styleText() {
-      return `background-color: #${useStringToColor(this.usernameAt)};${
-        this.sizes[this.size]
-      }`;
+      return `background-color: #${useStringToColor(this.usernameAt)};${this.sizes[this.size]}`
     },
     sizeClass() {
-      return [`avatar-size-${this.size}`];
+      return [`avatar-size-${this.size}`]
     },
     roundClass() {
-      return this.round ? "round" : "";
+      return this.round ? 'round' : ''
     },
     borderClass() {
-      return this.hasBorder ? "has-border" : "";
+      return this.hasBorder ? 'has-border' : ''
     },
   },
   methods: {
     error() {
-      this.loadError = true;
+      this.loadError = true
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -119,6 +114,7 @@ export default {
   min-height: 150px;
   border-radius: 2px;
 }
+
 .avatar-size-100 {
   width: 100px;
   height: 100px;
@@ -126,6 +122,7 @@ export default {
   min-height: 100px;
   border-radius: 2px;
 }
+
 .avatar-size-80 {
   width: 80px;
   height: 80px;
@@ -149,6 +146,7 @@ export default {
   min-height: 60px;
   border-radius: 2px;
 }
+
 .avatar-size-50 {
   width: 50px;
   height: 50px;
@@ -156,6 +154,7 @@ export default {
   min-height: 50px;
   border-radius: 2px;
 }
+
 .avatar-size-45 {
   width: 45px;
   height: 45px;
@@ -163,6 +162,7 @@ export default {
   min-height: 45px;
   border-radius: 2px;
 }
+
 .avatar-size-40 {
   width: 40px;
   height: 40px;
@@ -170,6 +170,7 @@ export default {
   min-height: 40px;
   border-radius: 2px;
 }
+
 .avatar-size-35 {
   width: 35px;
   height: 35px;
@@ -177,6 +178,7 @@ export default {
   min-height: 35px;
   border-radius: 2px;
 }
+
 .avatar-size-30 {
   width: 30px;
   height: 30px;
@@ -184,6 +186,7 @@ export default {
   min-height: 30px;
   border-radius: 2px;
 }
+
 .avatar-size-24 {
   width: 24px;
   height: 24px;
@@ -191,6 +194,7 @@ export default {
   min-height: 24px;
   border-radius: 2px;
 }
+
 .avatar-size-20 {
   width: 20px;
   height: 20px;
@@ -224,6 +228,7 @@ img.avatar {
     backface-visibility: hidden;
   }
 }
+
 span.avatar {
   color: var(--text-color5);
   display: flex;

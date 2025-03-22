@@ -21,9 +21,9 @@
     <div class="profile-info">
       <div class="metas">
         <h1 class="nickname">
-          <nuxt-link :to="'/user/' + localUser.id">{{
-            localUser.nickname
-            }}</nuxt-link>
+          <nuxt-link :to="'/user/' + localUser.id">
+            {{ localUser.nickname }}
+          </nuxt-link>
         </h1>
         <div v-if="localUser.description" class="description">
           <p>{{ localUser.description }}</p>
@@ -39,59 +39,61 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-import defaultUserBg from "~/assets/images/default-user-bg.jpg";
+import defaultUserBg from '~/assets/images/default-user-bg.jpg'
+
+const i18n = useI18n()
 const props = defineProps({
   user: {
     type: Object,
     required: true,
   },
-});
-const localUser = ref(props.user);
-const userStore = useUserStore();
+})
+const localUser = ref(props.user)
+const userStore = useUserStore()
 const currentUser = computed(() => {
-  return userStore.user;
-});
+  return userStore.user
+})
 const isOwner = computed(() => {
   return (
-    localUser.value &&
-    currentUser.value &&
-    localUser.value.id === currentUser.value.id
-  );
-});
+    localUser.value
+    && currentUser.value
+    && localUser.value.id === currentUser.value.id
+  )
+})
 const backgroundImage = computed(() => {
   if (localUser.value.smallBackgroundImage) {
-    return localUser.value.smallBackgroundImage;
+    return localUser.value.smallBackgroundImage
   }
-  return defaultUserBg;
-});
+  return defaultUserBg
+})
 
 async function uploadBackground(e) {
-  const files = e.target.files;
+  const files = e.target.files
   if (files.length <= 0) {
-    return;
+    return
   }
   try {
     // 上传头像
-    const file = files[0];
-    const formData = new FormData();
-    formData.append("image", file, file.name);
-    const ret = await useHttpPostMultipart("/api/upload", formData);
+    const file = files[0]
+    const formData = new FormData()
+    formData.append('image', file, file.name)
+    const ret = await useHttpPostMultipart('/api/upload', formData)
 
     // 设置背景
-    await useHttpPostForm("/api/user/set_background_image", {
+    await useHttpPostForm('/api/user/set_background_image', {
       body: {
         backgroundImage: ret.url,
       },
-    });
+    })
 
     // 重新加载数据
-    localUser.value = await userStore.fetchCurrent();
+    localUser.value = await userStore.fetchCurrent()
 
-    useMsgSuccess(i18n.t('message.set_cover_photo_success'));
-  } catch (e) {
-    useMsgError(e.message || e);
-    console.error(e);
+    useMsgSuccess(i18n.t('message.set_cover_photo_success'))
+  }
+  catch (e) {
+    useMsgError(e.message || e)
+    console.error(e)
   }
 }
 </script>

@@ -2,7 +2,7 @@
 const props = defineProps({
   entityType: {
     type: String,
-    default: "",
+    default: '',
     required: true,
   },
   entityId: {
@@ -15,7 +15,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emits = defineEmits(["created"]);
+const emits = defineEmits(['created']);
 const userStore = useUserStore();
 const configStore = useConfigStore();
 const user = computed(() => {
@@ -40,7 +40,7 @@ const isNeedEmailVerify = computed(() => {
 
 function commentCreated(data) {
   list.value.append(data);
-  emits("created", data);
+  emits('created', data);
 }
 function reply(quote) {
   // this.$refs.input.reply(quote)
@@ -62,15 +62,12 @@ function reply(quote) {
         <div class="comment-login-div">
           请先前往
           <nuxt-link style="font-weight: 700" to="/user/profile/account">
-            个人中心 &gt; 账号设置 </nuxt-link>页面设置邮箱，并完成邮箱认证。
+            个人中心 &gt; 账号设置
+          </nuxt-link>页面设置邮箱，并完成邮箱认证。
         </div>
       </div>
       <template v-else>
-        <comment-input
-          ref="input"
-          :entity-id="entityId"
-          :entity-type="entityType"
-          @created="commentCreated" />
+        <comment-input ref="input" :entity-id="entityId" :entity-type="entityType" @created="commentCreated" />
       </template>
     </template>
     <div v-else class="comment-not-login">

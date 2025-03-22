@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from 'vue'
 import {
   CloudUpload,
   Trophy,
@@ -26,7 +26,7 @@ import {
   Settings,
   LockOpen,
   SquarePen,
-} from "lucide-vue-next";
+} from 'lucide-vue-next'
 
 const icons = {
   CloudUpload,
@@ -59,7 +59,7 @@ const icons = {
 const props = defineProps({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   size: {
     type: String,
@@ -67,23 +67,18 @@ const props = defineProps({
   },
   strokeWidth: {
     type: Number,
-    default: 2
+    default: 2,
   },
   color: String,
   filled: Boolean,
   defaultClass: String,
 })
 
-const icon = computed(() => icons[props.name]);
-const fill = computed(() => props.filled ? props.color || 'currentColor' : 'none');
+const icon = computed(() => icons[props.name])
+const fill = computed(() => props.filled ? props.color || 'currentColor' : 'none')
 </script>
 
 <template>
-  <component
-    :is="icon"
-    :size="size"
-    :fill="fill"
-    :color="color"
-    :stroke-width="strokeWidth"
+  <component :is="icon" :size="size" :fill="fill" :color="color" :stroke-width="strokeWidth"
     :default-class="defaultClass" />
 </template>

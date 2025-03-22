@@ -1,6 +1,8 @@
 <template>
   <div class="widget">
-    <div class="widget-header">{{ $t('widget.title.check_in') }}</div>
+    <div class="widget-header">
+      {{ $t('widget.title.check_in') }}
+    </div>
     <div class="widget-content checkin">
       <div class="checkedin">
         <div class="gold-icon-box">
@@ -53,9 +55,10 @@
         </span>
       </div>
 
-
       <div v-if="checkInRank && checkInRank.length" class="rank">
-        <div class="rank-title">{{ $t("widget.check_in.today_ranking") }}</div>
+        <div class="rank-title">
+          {{ $t("widget.check_in.today_ranking") }}
+        </div>
         <ul>
           <li v-for="rank in checkInRank" :key="rank.id" class="rounded">
             <my-avatar :user="rank.user" :size="30" class="rank-user-avatar" />
@@ -73,32 +76,33 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const userStore = useUserStore();
+const i18n = useI18n()
+const userStore = useUserStore()
 
 const isLogin = computed(() => {
-  return userStore.user !== null;
-});
+  return userStore.user !== null
+})
 
 const user = computed(() => {
-  return userStore.user;
-});
+  return userStore.user
+})
 
 const { data: checkIn, refresh: refreshCheckIn } = await useAsyncData(() =>
-  useMyFetch(`/api/checkin/checkin`)
-);
+  useMyFetch(`/api/checkin/checkin`),
+)
 const { data: checkInRank, refresh: refreshCheckInRank } = await useAsyncData(
-  () => useMyFetch(`/api/checkin/rank`)
-);
+  () => useMyFetch(`/api/checkin/rank`),
+)
 
 async function doCheckIn() {
   try {
-    checkIn.value = await useHttpPostForm("/api/checkin/checkin");
-    useMsgSuccess(i18n.t('widget.check_in.success'));
-    refreshCheckIn();
-    refreshCheckInRank();
-  } catch (e) {
-    useCatchError(e);
+    checkIn.value = await useHttpPostForm('/api/checkin/checkin')
+    useMsgSuccess(i18n.t('widget.check_in.success'))
+    refreshCheckIn()
+    refreshCheckInRank()
+  }
+  catch (e) {
+    useCatchError(e)
   }
 }
 </script>

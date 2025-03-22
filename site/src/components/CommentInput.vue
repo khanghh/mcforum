@@ -1,42 +1,40 @@
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 const props = defineProps({
   entityType: {
     type: String,
-    default: "",
     required: true,
   },
   entityId: {
     type: Number,
-    default: 0,
     required: true,
   },
-});
-const emits = defineEmits(["created"]);
+})
+const emits = defineEmits(['created'])
 const value = ref({
-  content: "", // 内容
+  content: '', // 内容
   imageList: [],
-});
-const sending = ref(false); // 发送中
-const quote = ref(null); // 引用的对象
-const commentEditor = ref(null); // 编辑器组件
-const simpleEditor = ref(null); // 编辑器组件
+})
+const sending = ref(false) // 发送中
+const quote = ref(null) // 引用的对象
+const commentEditor = ref(null) // 编辑器组件
+const simpleEditor = ref(null) // 编辑器组件
 
 async function create() {
   if (!value.value.content) {
-    useMsgError("请输入评论内容");
-    return;
+    useMsgError('请输入评论内容')
+    return
   }
   if (sending.value) {
-    return;
+    return
   }
   if (simpleEditor.value && simpleEditor.value.isOnUpload()) {
-    useMsgWarning("正在上传中...请上传完成后提交");
-    return;
+    useMsgWarning('正在上传中...请上传完成后提交')
+    return
   }
-  sending.value = true;
+  sending.value = true
   try {
-    const data = await useHttpPostForm("/api/comment/create", {
+    const data = await useHttpPostForm('/api/comment/create', {
       body: {
         contentType: props.contentType,
         entityType: props.entityType,
@@ -45,33 +43,35 @@ async function create() {
         imageList:
           value.value.imageList && value.value.imageList.length
             ? JSON.stringify(value.value.imageList)
-            : "",
-        quoteId: quote.value ? quote.value.id : "",
+            : '',
+        quoteId: quote.value ? quote.value.id : '',
       },
-    });
-    emits("created", data);
+    })
+    emits('created', data)
 
-    value.value.content = "";
-    value.value.imageList = [];
-    quote.value = null;
-    simpleEditor.value.clear();
-    useMsgSuccess(i18n.t('message.comment_success'));
-  } catch (e) {
-    console.error(e);
-    useMsgError(e.message || e);
-  } finally {
-    sending.value = false;
+    value.value.content = ''
+    value.value.imageList = []
+    quote.value = null
+    simpleEditor.value.clear()
+    useMsgSuccess(i18n.t('message.comment_success'))
+  }
+  catch (e) {
+    console.error(e)
+    useMsgError(e.message || e)
+  }
+  finally {
+    sending.value = false
   }
 }
-function reply(quote) {
-  quote.value = quote;
-  commentEditor.value.scrollIntoView({
-    block: "start",
-    behavior: "smooth",
-  });
-}
+// function reply(quote) {
+//   quote.value = quote
+//   commentEditor.value.scrollIntoView({
+//     block: 'start',
+//     behavior: 'smooth',
+//   })
+// }
 function cancelReply() {
-  quote.value = null;
+  quote.value = null
 }
 </script>
 

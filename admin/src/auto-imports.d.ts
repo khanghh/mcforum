@@ -38,7 +38,7 @@ declare global {
   const getUserInfo: typeof import('./api/user')['getUserInfo']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
-  const index: typeof import('./store/modules/user/index')['default']
+  const index: typeof import('./store/modules/tab-bar/index')['default']
   const inject: typeof import('vue')['inject']
   const isAnyBlank: typeof import('./composables/index')['isAnyBlank']
   const isBlank: typeof import('./composables/index')['isBlank']
