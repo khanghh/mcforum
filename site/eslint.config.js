@@ -1,4 +1,5 @@
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
+import globals from 'globals'
 
 export default createConfigForNuxt({
   features: {
@@ -8,7 +9,19 @@ export default createConfigForNuxt({
       quotes: 'single',
     },
   },
-}).override('nuxt/vue/rules', {
+},
+  {
+    languageOptions: {
+      globals: {
+        ...globals.builtin,
+        ...globals.browser,
+        ...globals.node,
+        defineNuxtConfig: 'readonly',
+        defineEventHandler: 'readonly',
+      },
+    },
+  },
+).override('nuxt/vue/rules', {
   rules: {
     '@typescript-eslint/no-unused-vars': 'off',
     'vue/html-closing-bracket-newline': 'off',
