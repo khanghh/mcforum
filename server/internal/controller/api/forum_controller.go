@@ -24,7 +24,7 @@ type ForumController struct {
 func (c *ForumController) GetMenu() *web.JsonResult {
 	forumList := []response.ForumResponse{
 		{
-			Name: locale.T("nav.news_feed"),
+			Name: locale.T("nav.whats-new"),
 			Slug: "whats-new",
 		},
 		{
@@ -32,7 +32,7 @@ func (c *ForumController) GetMenu() *web.JsonResult {
 			Slug: "recommended",
 		},
 		{
-			Name: locale.T("nav.feed"),
+			Name: locale.T("nav.followed"),
 			Slug: "feed",
 		},
 	}
