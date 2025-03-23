@@ -11,11 +11,12 @@ import (
 	"math"
 	"time"
 
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+
 	"github.com/blevesearch/bleve/v2"
 	"github.com/mitchellh/mapstructure"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
 	"github.com/spf13/cast"
 )
 

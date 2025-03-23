@@ -3,11 +3,12 @@ package admin
 import (
 	"strconv"
 
-	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/web"
+	"bbs-go/web/params"
 
-	"bbs-go/internal/controllers/render"
+	"github.com/kataras/iris/v12"
+
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/services"
 )
 
@@ -29,7 +30,7 @@ func (c *UserScoreLogController) AnyList() *web.JsonResult {
 
 	var results []map[string]interface{}
 	for _, userScoreLog := range list {
-		user := render.BuildUserInfoDefaultIfNull(userScoreLog.UserId)
+		user := response.BuildUserInfoDefaultIfNull(userScoreLog.UserId)
 		item := web.NewRspBuilder(userScoreLog).Put("user", user).Build()
 		results = append(results, item)
 	}

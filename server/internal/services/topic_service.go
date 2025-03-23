@@ -8,10 +8,10 @@ import (
 	"math"
 	"net/http"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 
@@ -122,7 +122,7 @@ func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content
 		return errors.New("标题长度不能超过128")
 	}
 
-	node := repositories.TopicNodeRepository.Get(sqls.DB(), nodeId)
+	node := repositories.ForumRepository.Get(sqls.DB(), nodeId)
 	if node == nil || node.Status != constants.StatusOK {
 		return errors.New("节点不存在")
 	}
@@ -204,19 +204,19 @@ func (s *topicService) GetTopicTags(topicId int64) []models.Tag {
 
 // GetTopics 帖子列表（最新、推荐、关注、节点）
 func (s *topicService) GetTopics(user *models.User, nodeId, cursor int64) (topics []models.Topic, nextCursor int64, hasMore bool) {
-	var limit int = 20
 	if nodeId == constants.NodeIdFollow {
 		if user != nil {
-			return s._GetFollowTopics(user.Id, cursor)
+			return s.GetFollowedAuthorsTopics(user.Id, cursor)
 		}
 		return
 	} else {
-		return s._GetNodeTopics(nodeId, cursor, limit)
+		return s._GetNodeTopics(nodeId, cursor)
 	}
 }
 
 // _GetNodeTopics 帖子列表（最新、推荐、节点）
-func (s *topicService) _GetNodeTopics(nodeId, cursor int64, limit int) (topics []models.Topic, nextCursor int64, hasMore bool) {
+func (s *topicService) _GetNodeTopics(nodeId, cursor int64) (topics []models.Topic, nextCursor int64, hasMore bool) {
+	const limit = 20
 	cnd := sqls.NewCnd()
 	if nodeId > 0 {
 		cnd.Eq("node_id", nodeId)
@@ -238,9 +238,26 @@ func (s *topicService) _GetNodeTopics(nodeId, cursor int64, limit int) (topics [
 	return
 }
 
+func (s *topicService) GetRecommendedTopics(cursor int64) (topics []models.Topic, nextCursor int64, hasMore bool) {
+	const limit = 20
+	cnd := sqls.NewCnd().Eq("recommend", true)
+	if cursor > 0 {
+		cnd.Lt("last_comment_time", cursor)
+	}
+	cnd.Eq("status", constants.StatusOK).Desc("last_comment_time").Limit(limit)
+	topics = repositories.TopicRepository.Find(sqls.DB(), cnd)
+	if len(topics) > 0 {
+		nextCursor = topics[len(topics)-1].LastCommentTime
+		hasMore = len(topics) >= limit
+	} else {
+		nextCursor = cursor
+	}
+	return
+}
+
 // _GetFollowTopics 关注帖子列表
-func (s *topicService) _GetFollowTopics(userId int64, cursor int64) (topics []models.Topic, nextCursor int64, hasMore bool) {
-	var limit = 20
+func (s *topicService) GetFollowedAuthorsTopics(userId int64, cursor int64) (topics []models.Topic, nextCursor int64, hasMore bool) {
+	const limit = 20
 	cnd := sqls.NewCnd().Eq("user_id", userId)
 	cnd.Eq("data_type", constants.EntityTopic)
 	if cursor > 0 {

@@ -5,9 +5,10 @@ import (
 	"strings"
 	"sync"
 
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
+
 	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
 )
 
 var (

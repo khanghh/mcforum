@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
 	"gorm.io/gorm"
 
 	"bbs-go/internal/models"

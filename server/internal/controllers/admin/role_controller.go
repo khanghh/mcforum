@@ -6,11 +6,12 @@ import (
 	"bbs-go/internal/services"
 	"strconv"
 
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 )
 
 type RoleController struct {

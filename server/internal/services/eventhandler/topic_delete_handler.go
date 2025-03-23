@@ -8,7 +8,7 @@ import (
 	"bbs-go/internal/services"
 	"reflect"
 
-	"github.com/mlogclub/simple/sqls"
+	"bbs-go/sqls"
 )
 
 func init() {

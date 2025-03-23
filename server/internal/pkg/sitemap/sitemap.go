@@ -10,8 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"bbs-go/common/dates"
+
 	"github.com/ikeikeikeike/go-sitemap-generator/v2/stm"
-	"github.com/mlogclub/simple/common/dates"
 
 	"bbs-go/internal/models"
 	"bbs-go/internal/pkg/config"

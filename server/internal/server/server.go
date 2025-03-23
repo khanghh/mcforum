@@ -9,10 +9,11 @@ import (
 	"os"
 	"strings"
 
+	"bbs-go/web"
+
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/mlogclub/simple/web"
 
 	"github.com/kataras/iris/v12/middleware/logger"
 	"github.com/kataras/iris/v12/middleware/recover"
@@ -54,23 +55,24 @@ func NewServer() {
 	app.HandleDir("/admin", "./admin")
 
 	// api
-	mvc.Configure(app.Party("/api"), func(m *mvc.Application) {
-		m.Party("/topic").Handle(new(api.TopicController))
-		m.Party("/article").Handle(new(api.ArticleController))
-		m.Party("/login").Handle(new(api.LoginController))
-		m.Party("/user").Handle(new(api.UserController))
-		m.Party("/tag").Handle(new(api.TagController))
-		m.Party("/comment").Handle(new(api.CommentController))
-		m.Party("/favorite").Handle(new(api.FavoriteController))
-		m.Party("/like").Handle(new(api.LikeController))
-		m.Party("/checkin").Handle(new(api.CheckinController))
-		m.Party("/config").Handle(new(api.ConfigController))
-		m.Party("/upload").Handle(new(api.UploadController))
-		m.Party("/link").Handle(new(api.LinkController))
-		m.Party("/captcha").Handle(new(api.CaptchaController))
-		m.Party("/search").Handle(new(api.SearchController))
-		m.Party("/fans").Handle(new(api.FansController))
-		m.Party("/user-report").Handle(new(api.UserReportController))
+	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
+	apiRoute.Configure(func(m *mvc.Application) {
+		apiRoute.Party("/topic").Handle(new(api.TopicController))
+		apiRoute.Party("/forum").Handle(new(api.ForumController))
+		apiRoute.Party("/login").Handle(new(api.LoginController))
+		apiRoute.Party("/user").Handle(new(api.UserController))
+		apiRoute.Party("/tag").Handle(new(api.TagController))
+		apiRoute.Party("/comment").Handle(new(api.CommentController))
+		apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
+		apiRoute.Party("/like").Handle(new(api.LikeController))
+		apiRoute.Party("/checkin").Handle(new(api.CheckinController))
+		apiRoute.Party("/config").Handle(new(api.ConfigController))
+		apiRoute.Party("/upload").Handle(new(api.UploadController))
+		apiRoute.Party("/link").Handle(new(api.LinkController))
+		apiRoute.Party("/captcha").Handle(new(api.CaptchaController))
+		apiRoute.Party("/search").Handle(new(api.SearchController))
+		apiRoute.Party("/fans").Handle(new(api.FansController))
+		apiRoute.Party("/user-report").Handle(new(api.UserReportController))
 	})
 
 	// admin
@@ -79,12 +81,10 @@ func NewServer() {
 		m.Party("/common").Handle(new(admin.CommonController))
 		m.Party("/user").Handle(new(admin.UserController))
 		m.Party("/tag").Handle(new(admin.TagController))
-		m.Party("/article").Handle(new(admin.ArticleController))
 		m.Party("/comment").Handle(new(admin.CommentController))
 		m.Party("/favorite").Handle(new(admin.FavoriteController))
-		m.Party("/article-tag").Handle(new(admin.ArticleTagController))
 		m.Party("/topic").Handle(new(admin.TopicController))
-		m.Party("/topic-node").Handle(new(admin.TopicNodeController))
+		m.Party("/topic-node").Handle(new(admin.ForumController))
 		m.Party("/sys-config").Handle(new(admin.SysConfigController))
 		m.Party("/link").Handle(new(admin.LinkController))
 		m.Party("/user-score-log").Handle(new(admin.UserScoreLogController))

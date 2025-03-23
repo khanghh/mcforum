@@ -5,10 +5,11 @@ import (
 	"mime"
 	"time"
 
+	"bbs-go/common/dates"
+	"bbs-go/common/digests"
+	"bbs-go/common/strs"
+
 	"github.com/go-resty/resty/v2"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/digests"
-	"github.com/mlogclub/simple/common/strs"
 )
 
 // generateKey 生成图片Key

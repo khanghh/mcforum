@@ -1,16 +1,16 @@
 package api
 
 import (
-	"bbs-go/internal/controllers/render"
-	"bbs-go/internal/models"
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/services"
 	"strconv"
 
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 )
 
 type FansController struct {
@@ -74,9 +74,9 @@ func (c *FansController) GetFans() *web.JsonResult {
 		followedSet = services.UserFollowService.IsFollowedUsers(current.Id, userIds...)
 	}
 
-	var itemList []*models.UserInfo
+	var itemList []*response.UserInfo
 	for _, id := range userIds {
-		item := render.BuildUserInfoDefaultIfNull(id)
+		item := response.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
@@ -101,9 +101,9 @@ func (c *FansController) GetFollowed() *web.JsonResult {
 		}
 	}
 
-	var itemList []*models.UserInfo
+	var itemList []*response.UserInfo
 	for _, id := range userIds {
-		item := render.BuildUserInfoDefaultIfNull(id)
+		item := response.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
@@ -120,9 +120,9 @@ func (c *FansController) GetRecentFans() *web.JsonResult {
 		followedSet = services.UserFollowService.IsFollowedUsers(current.Id, userIds...)
 	}
 
-	var itemList []*models.UserInfo
+	var itemList []*response.UserInfo
 	for _, id := range userIds {
-		item := render.BuildUserInfoDefaultIfNull(id)
+		item := response.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
@@ -146,9 +146,9 @@ func (c *FansController) GetRecentFollow() *web.JsonResult {
 		}
 	}
 
-	var itemList []*models.UserInfo
+	var itemList []*response.UserInfo
 	for _, id := range userIds {
-		item := render.BuildUserInfoDefaultIfNull(id)
+		item := response.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}

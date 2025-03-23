@@ -3,11 +3,12 @@ package admin
 import (
 	"strconv"
 
-	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/web"
+	"bbs-go/web/params"
 
-	"bbs-go/internal/controllers/render"
+	"github.com/kataras/iris/v12"
+
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/services"
@@ -31,7 +32,7 @@ func (c *TopicController) AnyList() *web.JsonResult {
 
 	var results []map[string]interface{}
 	for _, topic := range list {
-		item := render.BuildSimpleTopic(&topic)
+		item := response.BuildSimpleTopic(&topic)
 		builder := web.NewRspBuilder(item)
 		builder.Put("status", topic.Status)
 		results = append(results, builder.Build())

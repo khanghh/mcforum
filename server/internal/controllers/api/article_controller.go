@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/bbsurls"
 	"bbs-go/internal/pkg/errs"
@@ -8,15 +9,15 @@ import (
 	"log/slog"
 	"strconv"
 
+	"bbs-go/common/jsons"
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 	"github.com/panjf2000/ants/v2"
 	"github.com/sirupsen/logrus"
 
-	"bbs-go/internal/controllers/render"
 	"bbs-go/internal/models"
 	"bbs-go/internal/services"
 )
@@ -67,7 +68,7 @@ func (c *ArticleController) GetBy(articleId int64) *web.JsonResult {
 	}
 
 	services.ArticleService.IncrViewCount(articleId) // 增加浏览量
-	return web.JsonData(render.BuildArticle(article, user))
+	return web.JsonData(response.BuildArticle(article, user))
 }
 
 // PostCreate 发表文章
@@ -86,7 +87,7 @@ func (c *ArticleController) PostCreate() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return web.JsonData(render.BuildArticle(article, user))
+	return web.JsonData(response.BuildArticle(article, user))
 }
 
 // 编辑时获取详情
@@ -218,14 +219,14 @@ func (c *ArticleController) GetUserArticles() *web.JsonResult {
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	articles, cursor, hasMore := services.ArticleService.GetUserArticles(userId, cursor)
-	return web.JsonCursorData(render.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // 文章列表
 func (c *ArticleController) GetArticles() *web.JsonResult {
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	articles, cursor, hasMore := services.ArticleService.GetArticles(cursor)
-	return web.JsonCursorData(render.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // 标签文章列表
@@ -233,5 +234,5 @@ func (c *ArticleController) GetTagArticles() *web.JsonResult {
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	tagId := params.FormValueInt64Default(c.Ctx, "tagId", 0)
 	articles, cursor, hasMore := services.ArticleService.GetTagArticles(tagId, cursor)
-	return web.JsonCursorData(render.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore)
 }

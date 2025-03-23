@@ -3,7 +3,7 @@ package config
 import (
 	"strings"
 
-	"github.com/mlogclub/simple/sqls"
+	"bbs-go/sqls"
 )
 
 var Instance *Config

@@ -1,15 +1,16 @@
 package api
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
 
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 
 	"bbs-go/internal/cache"
-	"bbs-go/internal/controllers/render"
 	"bbs-go/internal/services"
 )
 
@@ -23,7 +24,7 @@ func (c *TagController) GetBy(tagId int64) *web.JsonResult {
 	if tag == nil {
 		return web.JsonErrorMsg("标签不存在")
 	}
-	return web.JsonData(render.BuildTag(tag))
+	return web.JsonData(response.BuildTag(tag))
 }
 
 // 标签列表
@@ -33,7 +34,7 @@ func (c *TagController) GetTags() *web.JsonResult {
 		Eq("status", constants.StatusOK).
 		Page(page, 200).Desc("id"))
 
-	return web.JsonPageData(render.BuildTags(tags), paging)
+	return web.JsonPageData(response.BuildTags(tags), paging)
 }
 
 // 标签自动完成

@@ -13,12 +13,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/passwd"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/common/passwd"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"gorm.io/gorm"
 
 	"bbs-go/internal/cache"
@@ -539,12 +540,12 @@ func (s *userService) CheckPostStatus(user *models.User) error {
 
 // IncrScoreForPostTopic 发帖获积分
 func (s *userService) IncrScoreForPostTopic(topic *models.Topic) {
-	config := SysConfigService.GetConfig()
-	if config.ScoreConfig.PostTopicScore <= 0 {
+	config := SysConfigService.GetPointConfig()
+	if config.PostTopicScore <= 0 {
 		slog.Info("请配置发帖积分")
 		return
 	}
-	err := s.addScore(topic.UserId, config.ScoreConfig.PostTopicScore, constants.EntityTopic,
+	err := s.addScore(topic.UserId, config.PostTopicScore, constants.EntityTopic,
 		strconv.FormatInt(topic.Id, 10), "发表话题")
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
@@ -557,12 +558,12 @@ func (s *userService) IncrScoreForPostComment(comment *models.Comment) {
 	if comment.EntityType != constants.EntityTopic {
 		return
 	}
-	config := SysConfigService.GetConfig()
-	if config.ScoreConfig.PostCommentScore <= 0 {
+	config := SysConfigService.GetPointConfig()
+	if config.PostCommentScore <= 0 {
 		slog.Info("请配置跟帖积分")
 		return
 	}
-	err := s.addScore(comment.UserId, config.ScoreConfig.PostCommentScore, constants.EntityComment,
+	err := s.addScore(comment.UserId, config.PostCommentScore, constants.EntityComment,
 		strconv.FormatInt(comment.Id, 10), "发表跟帖")
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))

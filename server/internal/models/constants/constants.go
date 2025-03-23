@@ -18,7 +18,7 @@ const (
 	SysConfigRecommendTags              = "recommendTags"              // 推荐标签
 	SysConfigUrlRedirect                = "urlRedirect"                // 是否开启链接跳转
 	SysConfigScoreConfig                = "scoreConfig"                // 分数配置
-	SysConfigDefaultNodeId              = "defaultNodeId"              // 发帖默认节点
+	SysConfigDefaultForumId             = "defaultNodeId"              // 发帖默认节点
 	SysConfigArticlePending             = "articlePending"             // 是否开启文章审核
 	SysConfigTopicCaptcha               = "topicCaptcha"               // 是否开启发帖验证码
 	SysConfigUserObserveSeconds         = "userObserveSeconds"         // 新用户观察期
@@ -121,6 +121,11 @@ const (
 	NodeIdNewest    int64 = 0
 	NodeIdRecommend int64 = -1
 	NodeIdFollow    int64 = -2
+)
+const (
+	ForumWhatsNew    = "whats-new"
+	ForumRecommended = "recommended"
+	ForumFeed        = "feed"
 )
 
 type Gender string

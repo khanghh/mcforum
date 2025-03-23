@@ -1,9 +1,8 @@
 package api
 
 import (
-	"bbs-go/internal/locale"
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
-	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/spam"
@@ -11,14 +10,14 @@ import (
 	"strconv"
 	"strings"
 
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 
 	"bbs-go/internal/cache"
-	"bbs-go/internal/controllers/render"
 	"bbs-go/internal/models"
 	"bbs-go/internal/services"
 )
@@ -27,37 +26,17 @@ type TopicController struct {
 	Ctx iris.Context
 }
 
-func (c *TopicController) GetNode_navs() *web.JsonResult {
-	nodes := []models.NodeResponse{
-		{
-			Name: locale.T("nav.news_feed"),
-			Slug: "whats-new",
-		},
-		{
-			Name: locale.T("nav.recommended"),
-			Slug: "recommended",
-		},
-		{
-			Name: locale.T("nav.feed"),
-			Slug: "feed",
-		},
-	}
-	realNodes := render.BuildNodes(services.TopicNodeService.GetNodes())
-	nodes = append(nodes, realNodes...)
-	return web.JsonData(nodes)
-}
-
 // 节点
 func (c *TopicController) GetNodes() *web.JsonResult {
-	nodes := render.BuildNodes(services.TopicNodeService.GetNodes())
+	nodes := response.BuildForumList(services.ForumService.GetAll())
 	return web.JsonData(nodes)
 }
 
 // 节点信息
 func (c *TopicController) GetNode() *web.JsonResult {
 	nodeId := params.FormValueInt64Default(c.Ctx, "nodeId", 0)
-	node := services.TopicNodeService.Get(nodeId)
-	return web.JsonData(render.BuildNode(node))
+	node := services.ForumService.Get(nodeId)
+	return web.JsonData(response.BuildForum(node))
 }
 
 // 发表帖子
@@ -76,7 +55,7 @@ func (c *TopicController) PostCreate() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return web.JsonData(render.BuildSimpleTopic(topic))
+	return web.JsonData(response.BuildSimpleTopic(topic))
 }
 
 // 编辑时获取详情
@@ -149,7 +128,7 @@ func (c *TopicController) PostEditBy(topicId int64) *web.JsonResult {
 	// 操作日志
 	services.OperateLogService.AddOperateLog(user.Id, constants.OpTypeUpdate, constants.EntityTopic, topicId,
 		"", c.Ctx.Request())
-	return web.JsonData(render.BuildSimpleTopic(topic))
+	return web.JsonData(response.BuildSimpleTopic(topic))
 }
 
 // 删除帖子
@@ -216,15 +195,15 @@ func (c *TopicController) GetBy(topicId int64) *web.JsonResult {
 	}
 
 	services.TopicService.IncrViewCount(topicId) // 增加浏览量
-	return web.JsonData(render.BuildTopic(topic, user))
+	return web.JsonData(response.BuildTopic(topic, user))
 }
 
 // 点赞用户
 func (c *TopicController) GetRecentlikesBy(topicId int64) *web.JsonResult {
 	likes := services.UserLikeService.Recent(constants.EntityTopic, topicId, 5)
-	var users []models.UserInfo
+	var users []response.UserInfo
 	for _, like := range likes {
-		userInfo := render.BuildUserInfoDefaultIfNull(like.UserId)
+		userInfo := response.BuildUserInfoDefaultIfNull(like.UserId)
 		if userInfo != nil {
 			users = append(users, *userInfo)
 		}
@@ -236,7 +215,7 @@ func (c *TopicController) GetRecentlikesBy(topicId int64) *web.JsonResult {
 func (c *TopicController) GetRecent() *web.JsonResult {
 	user := services.UserTokenService.GetCurrent(c.Ctx)
 	topics := services.TopicService.Find(sqls.NewCnd().Where("status = ?", constants.StatusOK).Desc("id").Limit(10))
-	return web.JsonData(render.BuildSimpleTopics(topics, user))
+	return web.JsonData(response.BuildSimpleTopics(topics, user))
 }
 
 // 用户帖子列表
@@ -248,34 +227,7 @@ func (c *TopicController) GetUserTopics() *web.JsonResult {
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	user := services.UserTokenService.GetCurrent(c.Ctx)
 	topics, cursor, hasMore := services.TopicService.GetUserTopics(userId, cursor)
-	return web.JsonCursorData(render.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
-}
-
-// 帖子列表
-func (c *TopicController) GetTopics() *web.JsonResult {
-	var (
-		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
-		nodeId = params.FormValueInt64Default(c.Ctx, "nodeId", 0)
-		user   = services.UserTokenService.GetCurrent(c.Ctx)
-	)
-	if nodeId == constants.NodeIdFollow && user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-
-	var temp []models.Topic
-	if cursor <= 0 {
-		stickyTopics := services.TopicService.GetStickyTopics(nodeId, 3)
-		temp = append(temp, stickyTopics...)
-	}
-	topics, cursor, hasMore := services.TopicService.GetTopics(user, nodeId, cursor)
-	for _, topic := range topics {
-		topic.Sticky = false // 正常列表不要渲染置顶
-		temp = append(temp, topic)
-	}
-	list := common.Distinct(temp, func(t models.Topic) any {
-		return t.Id
-	})
-	return web.JsonCursorData(render.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // 标签帖子列表
@@ -289,7 +241,7 @@ func (c *TopicController) GetTagTopics() *web.JsonResult {
 		return web.JsonError(err)
 	}
 	topics, cursor, hasMore := services.TopicService.GetTagTopics(tagId, cursor)
-	return web.JsonCursorData(render.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // 收藏
@@ -321,14 +273,14 @@ func (c *TopicController) GetRecommend() *web.JsonResult {
 			end = len(topics)
 		}
 		ret := dest[0:end]
-		return web.JsonData(render.BuildSimpleTopics(ret, nil))
+		return web.JsonData(response.BuildSimpleTopics(ret, nil))
 	}
 }
 
 // 最新话题
 func (c *TopicController) GetNewest() *web.JsonResult {
 	topics := services.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
-	return web.JsonData(render.BuildSimpleTopics(topics, nil))
+	return web.JsonData(response.BuildSimpleTopics(topics, nil))
 }
 
 // 设置置顶

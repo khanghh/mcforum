@@ -5,8 +5,9 @@ import (
 	"errors"
 	"time"
 
+	"bbs-go/sqls"
+
 	"github.com/goburrow/cache"
-	"github.com/mlogclub/simple/sqls"
 
 	"bbs-go/internal/models"
 	"bbs-go/internal/repositories"

@@ -10,10 +10,10 @@ import (
 	"bbs-go/internal/repositories"
 	"log/slog"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/common/jsons"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
 )
 
 var MessageService = newMessageService()

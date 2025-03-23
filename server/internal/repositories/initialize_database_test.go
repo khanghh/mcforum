@@ -7,9 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/passwd"
-	"github.com/mlogclub/simple/sqls"
+	"bbs-go/common/dates"
+	"bbs-go/common/passwd"
+	"bbs-go/sqls"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -46,9 +47,34 @@ var adminUser = models.User{
 	Roles:         "owner",
 }
 
-var topicNodes = []models.TopicNode{
+var forums = []models.Forum{
 	{
-		Name:        "default",
+		Name:        "Thông báo",
+		Slug:        "announcement",
+		Description: "",
+		SortNo:      0,
+		Status:      constants.StatusOK,
+		CreateTime:  dates.NowTimestamp(),
+	},
+	{
+		Name:        "Hỗ trợ",
+		Slug:        "support",
+		Description: "",
+		SortNo:      0,
+		Status:      constants.StatusOK,
+		CreateTime:  dates.NowTimestamp(),
+	},
+	{
+		Name:        "Thảo luận",
+		Slug:        "discussion",
+		Description: "",
+		SortNo:      0,
+		Status:      constants.StatusOK,
+		CreateTime:  dates.NowTimestamp(),
+	},
+	{
+		Name:        "Nhân sự",
+		Slug:        "staff",
 		Description: "",
 		SortNo:      0,
 		Status:      constants.StatusOK,
@@ -126,7 +152,7 @@ var sysConfigs = []models.SysConfig{
 		Description: "Defines points for posts, comments, and check-ins.",
 	},
 	{
-		Key:         constants.SysConfigDefaultNodeId,
+		Key:         constants.SysConfigDefaultForumId,
 		Value:       "1",
 		Name:        "Default Category",
 		Description: "Default category for new topics.",
@@ -328,12 +354,12 @@ func TestCreateUserRole(t *testing.T) {
 	}
 }
 
-func TestCreateTopicNodes(t *testing.T) {
-	for idx, item := range topicNodes {
+func TestCreateForums(t *testing.T) {
+	for idx, item := range forums {
 		item.Id = int64(idx + 1)
 		item.SortNo = idx
 		item.CreateTime = dates.NowTimestamp()
-		err := TopicNodeRepository.Create(db, &item)
+		err := ForumRepository.Create(db, &item)
 		if err != nil {
 			panic(err)
 		}
@@ -392,7 +418,7 @@ func TestInitializeDatabase(t *testing.T) {
 	TestCreateUser(t)
 	TestCreateRoles(t)
 	TestCreateUserRole(t)
-	TestCreateTopicNodes(t)
+	TestCreateForums(t)
 	TestCreateSysConfigs(t)
 	TestCreateMenu(t)
 	TestCreateRoleMenu(t)

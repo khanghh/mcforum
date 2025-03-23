@@ -11,10 +11,11 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
+	"bbs-go/common/dates"
+	"bbs-go/common/jsons"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+
 	"gorm.io/gorm"
 )
 
@@ -137,12 +138,12 @@ func (s topicPublishService) _CheckParams(userId int64, form models.CreateTopicF
 	}
 
 	if form.NodeId <= 0 {
-		form.NodeId = SysConfigService.GetConfig().DefaultNodeId
+		form.NodeId = SysConfigService.GetDefaultForumId()
 		if form.NodeId <= 0 {
 			return errors.New("请选择节点")
 		}
 	}
-	node := repositories.TopicNodeRepository.Get(sqls.DB(), form.NodeId)
+	node := repositories.ForumRepository.Get(sqls.DB(), form.NodeId)
 	if node == nil || node.Status != constants.StatusOK {
 		return errors.New("节点不存在")
 	}

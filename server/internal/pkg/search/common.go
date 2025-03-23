@@ -3,9 +3,10 @@ package search
 import (
 	"log/slog"
 
+	"bbs-go/common/jsons"
+
 	"github.com/blevesearch/bleve/v2"
 	"github.com/blevesearch/bleve/v2/mapping"
-	"github.com/mlogclub/simple/common/jsons"
 )
 
 type TopicDocument struct {

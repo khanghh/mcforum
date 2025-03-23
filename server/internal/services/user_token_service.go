@@ -10,11 +10,12 @@ import (
 	"bbs-go/internal/models"
 	"bbs-go/internal/repositories"
 
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
 )
 
 var UserTokenService = newUserTokenService()

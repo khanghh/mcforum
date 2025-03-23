@@ -5,14 +5,13 @@ import (
 	"errors"
 	"log/slog"
 	"strconv"
-	"strings"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/common/numbers"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/common/jsons"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
 	"github.com/spf13/cast"
 	"github.com/tidwall/gjson"
 
@@ -176,6 +175,16 @@ func (s *sysConfigService) IsEnableHideContent() bool {
 	return strs.EqualsIgnoreCase(value, "true") || strs.EqualsIgnoreCase(value, "1")
 }
 
+func (s *sysConfigService) IsEnabledTopicCaptcha() bool {
+	value := cache.SysConfigCache.GetValue(constants.SysConfigTopicCaptcha)
+	return strs.EqualsIgnoreCase(value, "true") || strs.EqualsIgnoreCase(value, "1")
+}
+
+func (s *sysConfigService) IsEnabledUrlRedirectPage() bool {
+	value := cache.SysConfigCache.GetValue(constants.SysConfigUrlRedirect)
+	return strs.EqualsIgnoreCase(value, "true") || strs.EqualsIgnoreCase(value, "1")
+}
+
 func (s *sysConfigService) IsArticlePending() bool {
 	value := cache.SysConfigCache.GetValue(constants.SysConfigArticlePending)
 	return strs.EqualsIgnoreCase(value, "true") || strs.EqualsIgnoreCase(value, "1")
@@ -218,81 +227,98 @@ func (s *sysConfigService) GetModules() models.ModulesConfig {
 func (s *sysConfigService) GetEmailWhitelist() []string {
 	str := cache.SysConfigCache.GetValue(constants.SysConfigEmailWhitelist)
 	var emailWhitelist []string
-	if strs.IsNotBlank(str) {
-		_ = jsons.Parse(str, &emailWhitelist)
-	}
+	_ = jsons.Parse(str, &emailWhitelist)
 	return emailWhitelist
 }
 
-func (s *sysConfigService) GetConfig() *models.SysConfigResponse {
-	var (
-		siteTitle                  = cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
-		siteDescription            = cache.SysConfigCache.GetValue(constants.SysConfigSiteDescription)
-		siteKeywords               = cache.SysConfigCache.GetValue(constants.SysConfigSiteKeywords)
-		siteNotification           = cache.SysConfigCache.GetValue(constants.SysConfigSiteNotification)
-		recommendTags              = cache.SysConfigCache.GetValue(constants.SysConfigRecommendTags)
-		urlRedirect                = cache.SysConfigCache.GetValue(constants.SysConfigUrlRedirect)
-		scoreConfigStr             = cache.SysConfigCache.GetValue(constants.SysConfigScoreConfig)
-		defaultNodeIdStr           = cache.SysConfigCache.GetValue(constants.SysConfigDefaultNodeId)
-		topicCaptcha               = cache.SysConfigCache.GetValue(constants.SysConfigTopicCaptcha)
-		userObserveSecondsStr      = cache.SysConfigCache.GetValue(constants.SysConfigUserObserveSeconds)
-		siteNavs                   = s.GetSiteNavs()
-		loginMethod                = s.GetLoginMethod()
-		createTopicEmailVerified   = s.IsCreateTopicEmailVerified()
-		createArticleEmailVerified = s.IsCreateArticleEmailVerified()
-		createCommentEmailVerified = s.IsCreateCommentEmailVerified()
-		enableHideContent          = s.IsEnableHideContent()
-		articlePending             = s.IsArticlePending()
-	)
-
-	var siteKeywordsArr []string
-	if strs.IsNotBlank(siteKeywords) {
-		if err := jsons.Parse(siteKeywords, &siteKeywordsArr); err != nil {
-			slog.Warn("站点关键词数据错误", slog.Any("err", err))
-		}
+func (s *sysConfigService) GetPointConfig() models.ScoreConfig {
+	str := cache.SysConfigCache.GetValue(constants.SysConfigScoreConfig)
+	var pointConfig models.ScoreConfig
+	if err := jsons.Parse(str, &pointConfig); err != nil {
+		slog.Error("Failed to get system config", "key", constants.SysConfigScoreConfig, "error", err)
 	}
+	return pointConfig
+}
 
-	var recommendTagsArr []string
-	if strs.IsNotBlank(recommendTags) {
-		if err := jsons.Parse(recommendTags, &recommendTagsArr); err != nil {
-			slog.Warn("推荐标签数据错误", slog.Any("err", err))
-		}
+func (s *sysConfigService) GetDefaultForumId() int64 {
+	str := cache.SysConfigCache.GetValue(constants.SysConfigDefaultForumId)
+	forumId, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		slog.Error("Failed to get system config", "key", constants.SysConfigScoreConfig, "error", err)
 	}
+	return forumId
+}
 
-	var scoreConfig models.ScoreConfig
-	if strs.IsNotBlank(scoreConfigStr) {
-		if err := jsons.Parse(scoreConfigStr, &scoreConfig); err != nil {
-			slog.Warn("积分配置错误", slog.Any("err", err))
-		}
-	}
+func (s *sysConfigService) GetConfig() []models.SysConfig {
+	return s.GetAll()
+	// var (
+	// 	siteTitle                  = cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
+	// 	siteDescription            = cache.SysConfigCache.GetValue(constants.SysConfigSiteDescription)
+	// 	siteKeywords               = cache.SysConfigCache.GetValue(constants.SysConfigSiteKeywords)
+	// 	siteNotification           = cache.SysConfigCache.GetValue(constants.SysConfigSiteNotification)
+	// 	recommendTags              = cache.SysConfigCache.GetValue(constants.SysConfigRecommendTags)
+	// 	urlRedirect                = cache.SysConfigCache.GetValue(constants.SysConfigUrlRedirect)
+	// 	scoreConfigStr             = cache.SysConfigCache.GetValue(constants.SysConfigScoreConfig)
+	// 	defaultNodeIdStr           = cache.SysConfigCache.GetValue(constants.SysConfigDefaultNodeId)
+	// 	topicCaptcha               = cache.SysConfigCache.GetValue(constants.SysConfigTopicCaptcha)
+	// 	userObserveSecondsStr      = cache.SysConfigCache.GetValue(constants.SysConfigUserObserveSeconds)
+	// 	siteNavs                   = s.GetSiteNavs()
+	// 	loginMethod                = s.GetLoginMethod()
+	// 	createTopicEmailVerified   = s.IsCreateTopicEmailVerified()
+	// 	createArticleEmailVerified = s.IsCreateArticleEmailVerified()
+	// 	createCommentEmailVerified = s.IsCreateCommentEmailVerified()
+	// 	enableHideContent          = s.IsEnableHideContent()
+	// 	articlePending             = s.IsArticlePending()
+	// )
 
-	var (
-		defaultNodeId      = numbers.ToInt64(defaultNodeIdStr)
-		userObserveSeconds = numbers.ToInt(userObserveSecondsStr)
-	)
+	// var siteKeywordsArr []string
+	// if strs.IsNotBlank(siteKeywords) {
+	// 	if err := jsons.Parse(siteKeywords, &siteKeywordsArr); err != nil {
+	// 		slog.Warn("站点关键词数据错误", slog.Any("err", err))
+	// 	}
+	// }
 
-	return &models.SysConfigResponse{
-		SiteTitle:                  siteTitle,
-		SiteDescription:            siteDescription,
-		SiteKeywords:               siteKeywordsArr,
-		SiteNavs:                   siteNavs,
-		SiteNotification:           siteNotification,
-		RecommendTags:              recommendTagsArr,
-		UrlRedirect:                strings.ToLower(urlRedirect) == "true",
-		ScoreConfig:                scoreConfig,
-		DefaultNodeId:              defaultNodeId,
-		ArticlePending:             articlePending,
-		TopicCaptcha:               strings.ToLower(topicCaptcha) == "true",
-		UserObserveSeconds:         userObserveSeconds,
-		TokenExpireDays:            s.GetTokenExpireDays(),
-		LoginMethod:                loginMethod,
-		CreateTopicEmailVerified:   createTopicEmailVerified,
-		CreateArticleEmailVerified: createArticleEmailVerified,
-		CreateCommentEmailVerified: createCommentEmailVerified,
-		EnableHideContent:          enableHideContent,
-		Modules:                    s.GetModules(),
-		EmailWhitelist:             s.GetEmailWhitelist(),
-	}
+	// var recommendTagsArr []string
+	// if strs.IsNotBlank(recommendTags) {
+	// 	if err := jsons.Parse(recommendTags, &recommendTagsArr); err != nil {
+	// 		slog.Warn("推荐标签数据错误", slog.Any("err", err))
+	// 	}
+	// }
+
+	// var scoreConfig models.ScoreConfig
+	// if strs.IsNotBlank(scoreConfigStr) {
+	// 	if err := jsons.Parse(scoreConfigStr, &scoreConfig); err != nil {
+	// 		slog.Warn("积分配置错误", slog.Any("err", err))
+	// 	}
+	// }
+
+	// var (
+	// 	defaultNodeId      = numbers.ToInt64(defaultNodeIdStr)
+	// 	userObserveSeconds = numbers.ToInt(userObserveSecondsStr)
+	// )
+
+	// return &models.SysConfig{
+	// 	SiteTitle:                  siteTitle,
+	// 	SiteDescription:            siteDescription,
+	// 	SiteKeywords:               siteKeywordsArr,
+	// 	SiteNavs:                   siteNavs,
+	// 	SiteNotification:           siteNotification,
+	// 	RecommendTags:              recommendTagsArr,
+	// 	UrlRedirect:                strings.ToLower(urlRedirect) == "true",
+	// 	ScoreConfig:                scoreConfig,
+	// 	DefaultNodeId:              defaultNodeId,
+	// 	ArticlePending:             articlePending,
+	// 	TopicCaptcha:               strings.ToLower(topicCaptcha) == "true",
+	// 	UserObserveSeconds:         userObserveSeconds,
+	// 	TokenExpireDays:            s.GetTokenExpireDays(),
+	// 	LoginMethod:                loginMethod,
+	// 	CreateTopicEmailVerified:   createTopicEmailVerified,
+	// 	CreateArticleEmailVerified: createArticleEmailVerified,
+	// 	CreateCommentEmailVerified: createCommentEmailVerified,
+	// 	EnableHideContent:          enableHideContent,
+	// 	Modules:                    s.GetModules(),
+	// 	EmailWhitelist:             s.GetEmailWhitelist(),
+	// }
 }
 
 func (s *sysConfigService) GetStr(key, def string) (value string) {

@@ -4,8 +4,9 @@ import (
 	"bbs-go/internal/pkg/html"
 	"sync"
 
+	"bbs-go/common/strs"
+
 	"github.com/88250/lute"
-	"github.com/mlogclub/simple/common/strs"
 )
 
 var (

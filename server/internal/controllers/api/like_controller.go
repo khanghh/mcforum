@@ -5,10 +5,11 @@ import (
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/services"
 
+	"bbs-go/common/strs"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 )
 
 type LikeController struct {

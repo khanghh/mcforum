@@ -1,12 +1,12 @@
 package api
 
 import (
-	"bbs-go/internal/controllers/render"
+	"bbs-go/web"
 
 	"github.com/dchest/captcha"
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/web"
 
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/services"
 )
@@ -38,7 +38,7 @@ func (c *LoginController) PostSignup() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return render.BuildLoginSuccess(c.Ctx, user, redirect)
+	return response.BuildLoginSuccess(c.Ctx, user, redirect)
 }
 
 // 用户名密码登录
@@ -62,7 +62,7 @@ func (c *LoginController) PostSignin() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return render.BuildLoginSuccess(c.Ctx, user, redirect)
+	return response.BuildLoginSuccess(c.Ctx, user, redirect)
 }
 
 // 退出登录

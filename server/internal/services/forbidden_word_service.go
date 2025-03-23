@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
 )
 
 var ForbiddenWordService = newForbiddenWordService()

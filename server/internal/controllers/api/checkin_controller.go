@@ -2,13 +2,14 @@ package api
 
 import (
 	"bbs-go/internal/cache"
-	"bbs-go/internal/controllers/render"
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/services"
 	"time"
 
+	"bbs-go/common/dates"
+	"bbs-go/web"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/web"
 )
 
 type CheckinController struct {
@@ -51,7 +52,7 @@ func (c *CheckinController) GetRank() *web.JsonResult {
 	var itemList []map[string]interface{}
 	for _, checkIn := range list {
 		itemList = append(itemList, web.NewRspBuilder(checkIn).
-			Put("user", render.BuildUserInfoDefaultIfNull(checkIn.UserId)).
+			Put("user", response.BuildUserInfoDefaultIfNull(checkIn.UserId)).
 			Build())
 	}
 	return web.JsonData(itemList)

@@ -1,16 +1,17 @@
 package admin
 
 import (
-	"bbs-go/internal/controllers/render"
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/services"
 	"strconv"
 
+	"bbs-go/common/dates"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 )
 
 type MenuController struct {
@@ -22,7 +23,7 @@ func (c *MenuController) GetBy(id int64) *web.JsonResult {
 	if t == nil {
 		return web.JsonErrorMsg("Not found, id=" + strconv.FormatInt(id, 10))
 	}
-	return web.JsonData(render.BuildMenu(t))
+	return web.JsonData(response.BuildMenu(t))
 }
 
 func (c *MenuController) GetTree() *web.JsonResult {
@@ -31,7 +32,7 @@ func (c *MenuController) GetTree() *web.JsonResult {
 			ParamName: "status",
 		},
 	).Asc("sort_no").Desc("id"))
-	return web.JsonData(render.BuildMenuSimpleTree(0, list))
+	return web.JsonData(response.BuildMenuSimpleTree(0, list))
 }
 
 func (c *MenuController) AnyList() *web.JsonResult {
@@ -40,7 +41,7 @@ func (c *MenuController) AnyList() *web.JsonResult {
 			ParamName: "status",
 		},
 	).Asc("sort_no").Desc("id"))
-	return web.JsonData(render.BuildMenuTree(0, list))
+	return web.JsonData(response.BuildMenuTree(0, list))
 }
 
 func (c *MenuController) PostCreate() *web.JsonResult {
@@ -101,7 +102,7 @@ func (c *MenuController) GetUser_menus() *web.JsonResult {
 		return web.JsonError(err)
 	}
 	list := services.MenuService.GetUserMenus(user)
-	return web.JsonData(render.BuildMenuTree(0, list))
+	return web.JsonData(response.BuildMenuTree(0, list))
 }
 
 func (c *MenuController) PostUpdate_sort() *web.JsonResult {

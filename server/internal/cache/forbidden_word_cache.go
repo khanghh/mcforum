@@ -6,8 +6,9 @@ import (
 	"log/slog"
 	"time"
 
+	"bbs-go/sqls"
+
 	"github.com/goburrow/cache"
-	"github.com/mlogclub/simple/sqls"
 )
 
 type forbiddenWordCache struct {

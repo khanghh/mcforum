@@ -9,7 +9,7 @@ import (
 var Models = []interface{}{
 	&UserRole{}, &Role{}, &Menu{}, &RoleMenu{},
 
-	&User{}, &UserToken{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{}, &Topic{}, &TopicNode{},
+	&User{}, &UserToken{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{}, &Topic{}, &Forum{},
 	&TopicTag{}, &UserLike{}, &Message{}, &SysConfig{}, &Link{},
 	&UserScoreLog{}, &OperateLog{}, &EmailCode{}, &CheckIn{}, &UserFollow{}, &UserFeed{}, &UserReport{},
 	&ForbiddenWord{},
@@ -120,10 +120,11 @@ type Favorite struct {
 	CreateTime int64  `json:"createTime" form:"createTime"`                                                        // 创建时间
 }
 
-// TopicNode 话题节点
-type TopicNode struct {
+// Forum 话题节点
+type Forum struct {
 	Model
 	Name        string `gorm:"size:32;unique" json:"name" form:"name"`                     // 名称
+	Slug        string `gorm:"size:32;unique" json:"slug" form:"slug"`                     // 名称
 	Description string `gorm:"size:1024" json:"description" form:"description"`            // 描述
 	Logo        string `gorm:"size:1024" json:"logo" form:"logo"`                          // 图标
 	SortNo      int    `gorm:"type:int(11);index:idx_sort_no" json:"sortNo" form:"sortNo"` // 排序编号

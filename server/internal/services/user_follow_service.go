@@ -7,10 +7,11 @@ import (
 	"bbs-go/internal/pkg/event"
 	"bbs-go/internal/repositories"
 
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
 	"github.com/emirpasic/gods/sets/hashset"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
 	"gorm.io/gorm"
 )
 

@@ -8,11 +8,12 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/common/jsons"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"

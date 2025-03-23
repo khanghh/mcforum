@@ -1,18 +1,18 @@
 package admin
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/markdown"
 	"strconv"
 
-	"bbs-go/internal/controllers/render"
+	"bbs-go/common/jsons"
+	"bbs-go/common/strs"
+	"bbs-go/web"
+	"bbs-go/web/params"
 
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 
 	"bbs-go/internal/services"
 )
@@ -62,7 +62,7 @@ func (c *CommentController) AnyList() *web.JsonResult {
 		builder := web.NewRspBuilder(comment)
 
 		// 用户
-		builder = builder.Put("user", render.BuildUserInfoDefaultIfNull(comment.UserId))
+		builder = builder.Put("user", response.BuildUserInfoDefaultIfNull(comment.UserId))
 
 		// 内容
 		if comment.ContentType == constants.ContentTypeMarkdown {

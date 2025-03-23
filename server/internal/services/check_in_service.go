@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
 )
 
 var CheckInService = newCheckInService()
@@ -112,9 +112,9 @@ func (s *checkInService) CheckIn(userId int64) error {
 		// 清理签到排行榜缓存
 		cache.UserCache.RefreshCheckInRank()
 		// 处理签到积分
-		config := SysConfigService.GetConfig()
-		if config.ScoreConfig.CheckInScore > 0 {
-			_ = UserService.IncrScore(userId, config.ScoreConfig.CheckInScore, constants.EntityCheckIn,
+		config := SysConfigService.GetPointConfig()
+		if config.CheckInScore > 0 {
+			_ = UserService.IncrScore(userId, config.CheckInScore, constants.EntityCheckIn,
 				strconv.FormatInt(userId, 10), "签到"+strconv.Itoa(dayName))
 		} else {
 			slog.Warn("签到积分未配置...")

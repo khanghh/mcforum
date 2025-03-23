@@ -6,8 +6,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
 )
 
 // PostFrequencyStrategy 发表频率限制

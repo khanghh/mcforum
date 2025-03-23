@@ -4,10 +4,11 @@ import (
 	"bbs-go/internal/models"
 	"bbs-go/internal/repositories"
 
-	"github.com/mlogclub/simple/common/arrs"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/arrs"
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
 	"gorm.io/gorm"
 )
 

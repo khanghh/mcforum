@@ -1,19 +1,20 @@
 package api
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/spam"
 	"strconv"
 
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 	"github.com/panjf2000/ants/v2"
 	"github.com/sirupsen/logrus"
 
-	"bbs-go/internal/controllers/render"
 	"bbs-go/internal/services"
 )
 
@@ -59,7 +60,7 @@ func (c *CommentController) GetComments() *web.JsonResult {
 	}
 	currentUser := services.UserTokenService.GetCurrent(c.Ctx)
 	comments, cursor, hasMore := services.CommentService.GetComments(entityType, entityId, cursor)
-	return web.JsonCursorData(render.BuildComments(comments, currentUser, true, false), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildComments(comments, currentUser, true, false), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 func (c *CommentController) GetReplies() *web.JsonResult {
@@ -69,7 +70,7 @@ func (c *CommentController) GetReplies() *web.JsonResult {
 	)
 	currentUser := services.UserTokenService.GetCurrent(c.Ctx)
 	comments, cursor, hasMore := services.CommentService.GetReplies(commentId, cursor, 10)
-	return web.JsonCursorData(render.BuildComments(comments, currentUser, false, true), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildComments(comments, currentUser, false, true), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 func (c *CommentController) PostCreate() *web.JsonResult {
@@ -87,5 +88,5 @@ func (c *CommentController) PostCreate() *web.JsonResult {
 		return web.JsonError(err)
 	}
 
-	return web.JsonData(render.BuildComment(comment))
+	return web.JsonData(response.BuildComment(comment))
 }

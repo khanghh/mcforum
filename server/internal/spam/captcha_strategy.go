@@ -15,7 +15,7 @@ func (CaptchaStrategy) Name() string {
 }
 
 func (CaptchaStrategy) CheckTopic(user *models.User, form models.CreateTopicForm) error {
-	if services.SysConfigService.GetConfig().TopicCaptcha && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
+	if services.SysConfigService.IsEnabledTopicCaptcha() && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
 		return errs.CaptchaError
 	}
 	return nil

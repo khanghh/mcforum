@@ -4,10 +4,11 @@ import (
 	"strings"
 	"time"
 
+	"bbs-go/common/strs"
+	"bbs-go/web/params"
+
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/web/params"
 	"github.com/spf13/cast"
 )
 

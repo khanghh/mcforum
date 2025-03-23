@@ -4,8 +4,8 @@ import (
 	"bbs-go/internal/models/constants"
 	"strings"
 
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
 
 	"bbs-go/internal/cache"
 	"bbs-go/internal/models"
@@ -87,14 +87,8 @@ func (s *tagService) GetByName(name string) *models.Tag {
 	return repositories.TagRepository.GetByName(name)
 }
 
-func (s *tagService) GetTags() []models.TagResponse {
-	list := repositories.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ?", constants.StatusOK))
-
-	var tags []models.TagResponse
-	for _, tag := range list {
-		tags = append(tags, models.TagResponse{Id: tag.Id, Name: tag.Name})
-	}
-	return tags
+func (s *tagService) GetTags() []models.Tag {
+	return repositories.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ?", constants.StatusOK))
 }
 
 func (s *tagService) GetTagInIds(tagIds []int64) []models.Tag {

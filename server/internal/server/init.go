@@ -13,10 +13,11 @@ import (
 	"strings"
 	"time"
 
+	"bbs-go/common/jsons"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+
 	"github.com/kataras/iris/v12/x/errors"
-	"github.com/mlogclub/simple/common/jsons"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

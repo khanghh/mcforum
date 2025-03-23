@@ -1,19 +1,20 @@
 package admin
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/sitemap"
 	"strconv"
 
 	"bbs-go/internal/models"
 
+	"bbs-go/common/dates"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 
 	"bbs-go/internal/cache"
-	"bbs-go/internal/controllers/render"
 	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/services"
 )
@@ -63,7 +64,7 @@ func (c *ArticleController) buildArticles(articles []models.Article) []map[strin
 		builder := web.NewRspBuilderExcludes(article, "content")
 
 		// 用户
-		builder = builder.Put("user", render.BuildUserInfoDefaultIfNull(article.UserId))
+		builder = builder.Put("user", response.BuildUserInfoDefaultIfNull(article.UserId))
 
 		// 简介
 		builder.Put("summary", common.GetSummary(article.ContentType, article.Content))
@@ -71,10 +72,10 @@ func (c *ArticleController) buildArticles(articles []models.Article) []map[strin
 		// 标签
 		tagIds := cache.ArticleTagCache.Get(article.Id)
 		tags := cache.TagCache.GetList(tagIds)
-		builder.Put("tags", render.BuildTags(tags))
+		builder.Put("tags", response.BuildTags(tags))
 
 		// 封面
-		builder.Put("cover", render.BuildImage(article.Cover))
+		builder.Put("cover", response.BuildImage(article.Cover))
 
 		results = append(results, builder.Build())
 	}
@@ -118,7 +119,7 @@ func (c *ArticleController) PostUpdate() *web.JsonResult {
 func (c *ArticleController) GetTags() *web.JsonResult {
 	articleId := params.FormValueInt64Default(c.Ctx, "articleId", 0)
 	tags := services.ArticleService.GetArticleTags(articleId)
-	return web.JsonData(render.BuildTags(tags))
+	return web.JsonData(response.BuildTags(tags))
 }
 
 func (c *ArticleController) PostTags() *web.JsonResult {
@@ -127,7 +128,7 @@ func (c *ArticleController) PostTags() *web.JsonResult {
 		tags      = params.FormValueStringArray(c.Ctx, "tags")
 	)
 	services.ArticleService.PutTags(articleId, tags)
-	return web.JsonData(render.BuildTags(services.ArticleService.GetArticleTags(articleId)))
+	return web.JsonData(response.BuildTags(services.ArticleService.GetArticleTags(articleId)))
 }
 
 func (c *ArticleController) PostDelete() *web.JsonResult {

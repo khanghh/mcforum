@@ -1,17 +1,18 @@
 package admin
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
 	"strconv"
 	"strings"
 
-	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
 
-	"bbs-go/internal/controllers/render"
+	"github.com/kataras/iris/v12"
+
 	"bbs-go/internal/models"
 	"bbs-go/internal/services"
 )
@@ -101,17 +102,17 @@ func (c *TagController) GetAutocomplete() *web.JsonResult {
 	} else {
 		tags = services.TagService.Find(sqls.NewCnd().Desc("id").Limit(10))
 	}
-	return web.JsonData(render.BuildTags(tags))
+	return web.JsonData(response.BuildTags(tags))
 }
 
 // 根据标签编号批量获取
 func (c *TagController) GetTags() *web.JsonResult {
 	tagIds := params.FormValueInt64Array(c.Ctx, "tagIds")
-	var tags *[]models.TagResponse
+	var tags *[]response.TagResponse
 	if len(tagIds) > 0 {
 		tagArr := services.TagService.Find(sqls.NewCnd().In("id", tagIds))
 		if len(tagArr) > 0 {
-			tags = render.BuildTags(tagArr)
+			tags = response.BuildTags(tagArr)
 		}
 	}
 	return web.JsonData(tags)

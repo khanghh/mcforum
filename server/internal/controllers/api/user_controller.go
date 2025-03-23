@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bbs-go/internal/controllers/response"
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/msg"
@@ -9,16 +10,16 @@ import (
 	"strings"
 	"time"
 
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
+	"bbs-go/sqls"
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 	"github.com/spf13/cast"
 
 	"bbs-go/internal/cache"
-	"bbs-go/internal/controllers/render"
 	"bbs-go/internal/models"
 	"bbs-go/internal/services"
 )
@@ -31,7 +32,7 @@ type UserController struct {
 func (c *UserController) GetCurrent() *web.JsonResult {
 	user := services.UserTokenService.GetCurrent(c.Ctx)
 	if user != nil {
-		return web.JsonData(render.BuildUserProfile(user))
+		return web.JsonData(response.BuildUserProfile(user))
 	}
 	return web.JsonSuccess()
 }
@@ -40,7 +41,7 @@ func (c *UserController) GetCurrent() *web.JsonResult {
 func (c *UserController) GetBy(userId int64) *web.JsonResult {
 	user := cache.UserCache.Get(userId)
 	if user != nil && user.Status != constants.StatusDeleted {
-		return web.JsonData(render.BuildUserDetail(user))
+		return web.JsonData(response.BuildUserDetail(user))
 	}
 	return web.JsonErrorMsg("用户不存在")
 }
@@ -274,7 +275,7 @@ func (c *UserController) GetFavorites() *web.JsonResult {
 		hasMore = len(favorites) >= limit
 	}
 
-	return web.JsonCursorData(render.BuildFavorites(favorites), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(response.BuildFavorites(favorites), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // 获取最近3条未读消息
@@ -287,7 +288,7 @@ func (c *UserController) GetMsgrecent() *web.JsonResult {
 		messages = services.MessageService.Find(sqls.NewCnd().Eq("user_id", user.Id).
 			Eq("status", msg.StatusUnread).Limit(3).Desc("id"))
 	}
-	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", render.BuildMessages(messages)).JsonResult()
+	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", response.BuildMessages(messages)).JsonResult()
 }
 
 // 用户消息
@@ -319,7 +320,7 @@ func (c *UserController) GetMessages() *web.JsonResult {
 	// 全部标记为已读
 	services.MessageService.MarkRead(user.Id)
 
-	return web.JsonCursorData(render.BuildMessages(list), cast.ToString(nextCursor), hasMore)
+	return web.JsonCursorData(response.BuildMessages(list), cast.ToString(nextCursor), hasMore)
 }
 
 // 用户积分记录
@@ -353,9 +354,9 @@ func (c *UserController) GetScore_logs() *web.JsonResult {
 // 积分排行
 func (c *UserController) GetScoreRank() *web.JsonResult {
 	users := cache.UserCache.GetScoreRank()
-	var results []*models.UserInfo
+	var results []*response.UserInfo
 	for _, user := range users {
-		results = append(results, render.BuildUserInfo(&user))
+		results = append(results, response.BuildUserInfo(&user))
 	}
 	return web.JsonData(results)
 }

@@ -7,9 +7,10 @@ import (
 	"bbs-go/internal/models"
 	"bbs-go/internal/repositories"
 
+	"bbs-go/common/dates"
+	"bbs-go/sqls"
+
 	"github.com/goburrow/cache"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/sqls"
 )
 
 type userCache struct {

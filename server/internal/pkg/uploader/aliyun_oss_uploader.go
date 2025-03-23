@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"sync"
 
-	"github.com/mlogclub/simple/common/strs"
+	"bbs-go/common/strs"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 

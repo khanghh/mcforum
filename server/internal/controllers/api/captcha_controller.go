@@ -4,10 +4,11 @@ import (
 	"bbs-go/internal/pkg/bbsurls"
 	"log/slog"
 
+	"bbs-go/common/strs"
+	"bbs-go/web"
+
 	"github.com/dchest/captcha"
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/strs"
-	"github.com/mlogclub/simple/web"
 )
 
 type CaptchaController struct {

@@ -3,7 +3,7 @@ package text
 import (
 	"strings"
 
-	"github.com/mlogclub/simple/common/strs"
+	"bbs-go/common/strs"
 )
 
 // GetSummary 获取summary

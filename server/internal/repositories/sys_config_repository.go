@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"github.com/mlogclub/simple/sqls"
-	"github.com/mlogclub/simple/web/params"
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
 	"gorm.io/gorm"
 
 	"bbs-go/internal/models"
@@ -87,7 +88,7 @@ func (r *sysConfigRepository) Delete(db *gorm.DB, id int64) {
 }
 
 func (r *sysConfigRepository) GetByKey(db *gorm.DB, key string) *models.SysConfig {
-	if len(key) == 0 {
+	if key == "" {
 		return nil
 	}
 	return r.Take(db, "`key` = ?", key)

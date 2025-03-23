@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mlogclub/simple/common/arrays"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
+	"bbs-go/common/arrays"
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
 )
 
 // IsForbidden 是否禁言

@@ -3,9 +3,10 @@ package api
 import (
 	"errors"
 
+	"bbs-go/web"
+	"bbs-go/web/params"
+
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/web"
-	"github.com/mlogclub/simple/web/params"
 
 	"bbs-go/internal/models/constants"
 	"bbs-go/internal/pkg/errs"

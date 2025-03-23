@@ -9,7 +9,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/mlogclub/simple/common/strs"
+	"bbs-go/common/strs"
+
 	"github.com/pkg/errors"
 
 	"gopkg.in/natefinch/lumberjack.v2"

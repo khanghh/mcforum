@@ -1,7 +1,7 @@
 package errs
 
 import (
-	"github.com/mlogclub/simple/web"
+	"bbs-go/web"
 )
 
 var (
