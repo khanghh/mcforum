@@ -8,10 +8,10 @@
     </div>
 
     <div class="widget-content">
-      <load-more-async v-slot="{ results }" url="/api/user/messages">
-        <ul v-if="results && results.length" class="message-list">
+      <load-more-async v-slot="{ items }" url="/api/user/messages">
+        <ul v-if="items && items.length" class="message-list">
           <li
-            v-for="message in results"
+            v-for="message in items"
             :key="message.messageId"
             class="message-item">
             <div class="message-item-left">
@@ -20,18 +20,24 @@
             <div class="message-item-right">
               <div class="message-item-meta">
                 <span v-if="message.from.id > 0" class="msg-nickname">
-                  <nuxt-link :to="'/user/' + message.from.id" target="_blank">{{
-                    message.from.nickname
-                  }}</nuxt-link>
+                  <nuxt-link :to="'/user/' + message.from.id" target="_blank">
+                    {{
+                      message.from.nickname
+                    }}
+                  </nuxt-link>
                 </span>
                 <span v-else class="msg-nickname">
-                  <a href="javascript:void(0)" target="_blank">{{
-                    message.from.nickname
-                  }}</a>
+                  <a href="javascript:void(0)" target="_blank">
+                    {{
+                      message.from.nickname
+                    }}
+                  </a>
                 </span>
-                <span class="msg-time">{{
-                  usePrettyDate(message.createTime)
-                }}</span>
+                <span class="msg-time">
+                  {{
+                    usePrettyDate(message.createTime)
+                  }}
+                </span>
                 <span v-if="message.title" class="msg-title">
                   {{ message.title }}
                 </span>
@@ -58,15 +64,15 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 definePageMeta({
-  layout: "ucenter",
-  middleware: ["auth"],
-});
+  layout: 'ucenter',
+  middleware: ['auth'],
+})
 
 useHead({
   title: useSiteTitle(i18n.t('page.messages')),
-});
+})
 </script>
 
 <style lang="scss" scoped>

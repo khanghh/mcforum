@@ -8,14 +8,16 @@
     </div>
 
     <div class="widget-content">
-      <load-more-async v-slot="{ results }" url="/api/user/favorites">
-        <ul v-if="results && results.length" class="favorite-list">
+      <load-more-async v-slot="{ items }" url="/api/user/favorites">
+        <ul v-if="items && items.length" class="favorite-list">
           <li
-            v-for="item in results"
+            v-for="item in items"
             :key="item.favoriteId"
             class="favorite-item">
             <div v-if="item.deleted" class="favorite-item">
-              <div class="favorite-summary">{{ $t('message.content_deleted') }}</div>
+              <div class="favorite-summary">
+                {{ $t('message.content_deleted') }}
+              </div>
             </div>
             <div v-else>
               <div class="favorite-title">
@@ -25,9 +27,13 @@
                 {{ item.content }}
               </div>
               <div class="favorite-meta">
-                <span class="favorite-meta-item"><nuxt-link :to="'/user/' + item.user.id">{{
-                  item.user.nickname
-                    }}</nuxt-link></span>
+                <span class="favorite-meta-item">
+                  <nuxt-link :to="'/user/' + item.user.id">
+                    {{
+                      item.user.nickname
+                    }}
+                  </nuxt-link>
+                </span>
                 <span class="favorite-meta-item"><time>{{ usePrettyDate(item.createTime) }}</time></span>
               </div>
             </div>
@@ -39,15 +45,15 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 definePageMeta({
-  layout: "ucenter",
-  middleware: ["auth"],
-});
+  layout: 'ucenter',
+  middleware: ['auth'],
+})
 
 useHead({
   title: useSiteTitle(i18n.t('page.favorites')),
-});
+})
 </script>
 
 <style lang="scss" scoped>

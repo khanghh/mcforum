@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/kataras/iris/v12/context"
@@ -11,19 +10,9 @@ import (
 
 func kebabCasePathWordFunc(path string, w string, index int) string {
 	if index > 0 {
-		path += "-" + strings.ToLower(w)
-	} else {
-		path += strings.ToLower(w)
+		return path + "-" + strings.ToLower(w)
 	}
-	// if path[len(path)-1] != '/' {
-	// 	path += "/"
-	// }
-	fmt.Println("path", path)
-	return path
-	// if index == 0 {
-	// 	return path + strings.ToLower(word)
-	// }
-	// return path + "-" + strings.ToLower(word)
+	return path + strings.ToLower(w)
 }
 
 type MVCApplication struct {

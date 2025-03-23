@@ -4,7 +4,7 @@
       <my-empty />
     </slot>
     <template v-else>
-      <slot name="default" :results="pageData.results" />
+      <slot name="default" :items="pageData.items" />
       <div v-if="loading" class="loading">
         <el-skeleton :rows="3" animated />
       </div>
@@ -44,7 +44,7 @@ const props = defineProps({
 const loading = ref(false)
 const pageData = reactive({
   cursor: '',
-  results: [],
+  items: [],
   hasMore: true,
 })
 
@@ -53,7 +53,7 @@ const disabled = computed(() => {
 })
 
 const empty = computed(() => {
-  return pageData.hasMore === false && pageData.results.length === 0
+  return pageData.hasMore === false && pageData.items.length === 0
 })
 
 const { data: first } = await useAsyncData(() => {
@@ -85,7 +85,7 @@ async function loadMore() {
 
 function refresh() {
   pageData.cursor = ''
-  pageData.results = []
+  pageData.items = []
   pageData.hasMore = true
   return loadMore()
 }
@@ -94,16 +94,16 @@ function renderData(data) {
   data = data || {}
   pageData.cursor = data.cursor
   pageData.hasMore = data.hasMore
-  if (data.results && data.results.length) {
-    data.results.forEach((item) => {
-      pageData.results.push(item)
+  if (data.items && data.items.length) {
+    data.items.forEach((item) => {
+      pageData.items.push(item)
     })
   }
 }
 
 function unshiftResults(item) {
-  if (item && pageData && pageData.results) {
-    pageData.results.unshift(item)
+  if (item && pageData && pageData.items) {
+    pageData.items.unshift(item)
   }
 }
 </script>

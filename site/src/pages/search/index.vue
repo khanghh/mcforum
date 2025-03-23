@@ -6,11 +6,10 @@
           <search-topics-nav />
           <load-more-async
             ref="loadMore"
-            v-slot="{ results }"
+            v-slot="{ items }"
             url="/api/search/topic"
-            :params="params"
-          >
-            <search-topic-list :results="results" />
+            :params="params">
+            <search-topic-list :results="items" />
           </load-more-async>
         </div>
       </div>
@@ -25,28 +24,28 @@
 </template>
 
 <script setup>
-const route = useRoute();
-const loadMore = ref(null);
+const route = useRoute()
+const loadMore = ref(null)
 const params = reactive({
-  keyword: route.query.q || "",
+  keyword: route.query.q || '',
   nodeId: route.query.nodeId || 0,
   timeRange: route.query.timeRange,
-});
+})
 
 watch(
   () => route.query,
   (newQuery, oldQuery) => {
-    params.keyword = newQuery.q || "";
-    params.nodeId = newQuery.nodeId || 0;
-    params.timeRange = newQuery.timeRange;
+    params.keyword = newQuery.q || ''
+    params.nodeId = newQuery.nodeId || 0
+    params.timeRange = newQuery.timeRange
     nextTick(() => {
       if (loadMore.value) {
-        loadMore.value.refresh();
+        loadMore.value.refresh()
       }
-    });
+    })
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 </script>
 
 <style lang="scss" scoped>

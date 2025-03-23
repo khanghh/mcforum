@@ -89,7 +89,7 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 		//}
 		replyResults := BuildComments(replies, currentUser, false, true)
 		ret.Replies = &web.CursorResult{
-			Results: replyResults,
+			Items:   replyResults,
 			Cursor:  strconv.FormatInt(nextCursor, 10),
 			HasMore: comment.CommentCount > repliesLimit,
 		}

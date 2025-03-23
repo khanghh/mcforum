@@ -30,10 +30,10 @@
 
             <div>
               <load-more-async
-                v-slot="{ results }"
+                v-slot="{ items }"
                 url="/api/topic/user/topics"
                 :params="{ userId: user.id }">
-                <topic-list :topics="results" :show-avatar="false" />
+                <topic-list :topics="items" :show-avatar="false" />
               </load-more-async>
             </div>
           </div>
@@ -44,13 +44,13 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const route = useRoute();
-const user = await useHttpGet(`/api/user/${route.params.userId}`);
-const activeTab = ref("topics");
+const i18n = useI18n()
+const route = useRoute()
+const user = await useHttpGet(`/api/user/${route.params.userId}`)
+const activeTab = ref('topics')
 useHead({
   title: useSiteTitle(i18n.t('page.profile', { nickname: user.nickname })),
-});
+})
 </script>
 
 <style lang="scss" scoped>

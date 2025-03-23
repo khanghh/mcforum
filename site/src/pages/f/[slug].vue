@@ -7,7 +7,9 @@
             <forum-sidebar />
           </div>
           <div class="topics-main">
-            <load-more-async v-slot="{ items }" url="/api/topic/topics">
+            <load-more-async
+              v-slot="{ items }"
+              :url="apiUrl">
               <topic-list :topics="items" show-sticky />
             </load-more-async>
           </div>
@@ -24,9 +26,23 @@
 </template>
 
 <script setup>
+const route = useRoute()
+
+const slug = route.params.slug || 'whats-new'
+
+const apiUrl = computed(() => `/api/forum/${slug}`)
+
 useHead({
-  title: useSiteTitle(),
+  title: useSiteTitle('test'),
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: useSiteDescription(),
+    },
+    { hid: 'keywords', name: 'keywords', content: useSiteKeywords() },
+  ],
 })
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>

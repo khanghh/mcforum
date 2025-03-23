@@ -8,10 +8,10 @@
           </div>
           <div class="topics-main">
             <load-more-async
-              v-slot="{ results }"
+              v-slot="{ items }"
               url="/api/topic/tag/topics"
               :params="{ tagId: tagId }">
-              <topic-list :topics="results" />
+              <topic-list :topics="items" />
             </load-more-async>
           </div>
         </div>
@@ -27,21 +27,22 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const route = useRoute();
-const tagId = route.params.id;
-const { data: tag } = await useAsyncData(() => useMyFetch(`/api/tag/${tagId}`));
+const i18n = useI18n()
+const route = useRoute()
+const tagId = route.params.id
+const { data: tag } = await useAsyncData(() => useMyFetch(`/api/tag/${tagId}`))
 
 useHead({
   title: useSiteTitle(i18n.t('page.by_tag', { tag: tag.value.name })),
   meta: [
     {
-      hid: "description",
-      name: "description",
+      hid: 'description',
+      name: 'description',
       content: useSiteDescription(),
     },
-    { hid: "keywords", name: "keywords", content: useSiteKeywords() },
+    { hid: 'keywords', name: 'keywords', content: useSiteKeywords() },
   ],
-});
+})
 </script>
+
 <style lang="scss" scoped></style>

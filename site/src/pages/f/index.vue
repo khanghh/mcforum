@@ -7,8 +7,8 @@
             <forum-sidebar />
           </div>
           <div class="topics-main">
-            <load-more-async v-slot="{ results }" url="/api/topic/topics">
-              <topic-list :topics="results" show-sticky />
+            <load-more-async v-slot="{ items }" url="/api/topic/topics">
+              <topic-list :topics="items" show-sticky />
             </load-more-async>
           </div>
         </div>
@@ -24,10 +24,10 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 useHead({
   title: useSiteTitle(i18n.t('page.topics')),
-});
+})
 </script>
 
 <style scoped></style>

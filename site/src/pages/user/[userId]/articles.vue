@@ -30,10 +30,10 @@
 
             <div>
               <load-more-async
-                v-slot="{ results }"
+                v-slot="{ items }"
                 url="/api/article/user/articles"
                 :params="{ userId: user.id }">
-                <article-list :articles="results" />
+                <article-list :articles="items" />
               </load-more-async>
             </div>
           </div>
@@ -44,16 +44,15 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const route = useRoute();
-const user = await useHttpGet(`/api/user/${route.params.userId}`);
+const i18n = useI18n()
+const route = useRoute()
+const user = await useHttpGet(`/api/user/${route.params.userId}`)
 
 useHead({
   title: useSiteTitle(i18n.t('page.profile', { nickname: user.nickname })),
-});
+})
 
-
-const activeTab = ref("articles");
+const activeTab = ref('articles')
 </script>
 
 <style lang="scss" scoped>

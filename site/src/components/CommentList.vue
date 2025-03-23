@@ -1,7 +1,7 @@
 <template>
   <div class="comments">
-    <load-more-async ref="loadMore" v-slot="{ results }" :params="{ entityType, entityId }" url="/api/comment/comments">
-      <div v-for="comment in results" :key="comment.id" class="comment">
+    <load-more-async ref="loadMore" v-slot="{ items }" :params="{ entityType, entityId }" url="/api/comment/comments">
+      <div v-for="comment in items" :key="comment.id" class="comment">
         <div class="comment-item-left">
           <my-avatar :user="comment.user" :size="40" has-border />
         </div>
@@ -12,7 +12,8 @@
             </nuxt-link>
             <div class="comment-meta-right">
               <time class="comment-time">
-                {{ usePrettyDate(comment.createTime) }}</time>
+                {{ usePrettyDate(comment.createTime) }}
+              </time>
               <span v-if="comment.ipLocation" class="comment-ip-area">IP属地{{ comment.ipLocation }}</span>
             </div>
           </div>
@@ -34,8 +35,10 @@
             <div class="comment-action-item" :class="{ active: reply.commentId === comment.id }"
               @click="switchShowReply(comment)">
               <icon name="MessageSquareMore" />
-              <span>&nbsp;
-                {{ reply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}</span>
+              <span>
+                &nbsp;
+                {{ reply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+              </span>
             </div>
           </div>
           <div v-if="reply.commentId === comment.id" class="comment-reply-form">

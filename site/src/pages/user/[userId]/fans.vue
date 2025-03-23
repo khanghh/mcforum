@@ -30,10 +30,10 @@
 
             <div>
               <load-more-async
-                v-slot="{ results }"
+                v-slot="{ items }"
                 url="/api/fans/fans"
                 :params="{ userId: user.id }">
-                <user-follow-list :users="results" />
+                <user-follow-list :users="items" />
               </load-more-async>
             </div>
           </div>
@@ -44,14 +44,14 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const route = useRoute();
-const user = await useHttpGet(`/api/user/${route.params.userId}`);
-const activeTab = ref("fans");
+const i18n = useI18n()
+const route = useRoute()
+const user = await useHttpGet(`/api/user/${route.params.userId}`)
+const activeTab = ref('fans')
 
 useHead({
   title: useSiteTitle(i18n.t('widget.title.followers'), user.nickname),
-});
+})
 </script>
 
 <style lang="scss" scoped>
