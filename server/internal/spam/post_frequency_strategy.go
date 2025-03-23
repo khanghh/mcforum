@@ -1,8 +1,8 @@
 package spam
 
 import (
-	"bbs-go/internal/models"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
 	"errors"
 	"time"
 
@@ -17,7 +17,7 @@ func (PostFrequencyStrategy) Name() string {
 	return "PostFrequencyStrategy"
 }
 
-func (PostFrequencyStrategy) CheckTopic(user *models.User, topic models.CreateTopicForm) error {
+func (PostFrequencyStrategy) CheckTopic(user *model.User, topic model.CreateTopicForm) error {
 	// 注册时间超过24小时
 	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {
 		return nil
@@ -28,17 +28,17 @@ func (PostFrequencyStrategy) CheckTopic(user *models.User, topic models.CreateTo
 		maxCountInOneDay     int64 = 3 // 一天内最高发帖量
 	)
 
-	if repositories.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour*24)))) >= maxCountInOneDay {
 		return errors.New("发表太快了，请休息一会儿")
 	}
 
-	if repositories.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour)))) >= maxCountInOneHour {
 		return errors.New("发表太快了，请休息一会儿")
 	}
 
-	if repositories.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Minute*10)))) >= maxCountInTenMinutes {
 		return errors.New("发表太快了，请休息一会儿")
 	}
@@ -46,7 +46,7 @@ func (PostFrequencyStrategy) CheckTopic(user *models.User, topic models.CreateTo
 	return nil
 }
 
-func (s PostFrequencyStrategy) CheckArticle(user *models.User, form models.CreateArticleForm) error {
+func (s PostFrequencyStrategy) CheckArticle(user *model.User, form model.CreateArticleForm) error {
 	// 注册时间超过24小时
 	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {
 		return nil
@@ -57,17 +57,17 @@ func (s PostFrequencyStrategy) CheckArticle(user *models.User, form models.Creat
 		maxCountInOneDay     int64 = 3 // 一天内最高发帖量
 	)
 
-	if repositories.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour*24)))) >= maxCountInOneDay {
 		return errors.New("发表太快了，请休息一会儿")
 	}
 
-	if repositories.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour)))) >= maxCountInOneHour {
 		return errors.New("发表太快了，请休息一会儿")
 	}
 
-	if repositories.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Minute*10)))) >= maxCountInTenMinutes {
 		return errors.New("发表太快了，请休息一会儿")
 	}
@@ -75,7 +75,7 @@ func (s PostFrequencyStrategy) CheckArticle(user *models.User, form models.Creat
 	return nil
 }
 
-func (s PostFrequencyStrategy) CheckComment(user *models.User, form models.CreateCommentForm) error {
+func (s PostFrequencyStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
 	// 注册时间超过24小时
 	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {
 		return nil
@@ -87,17 +87,17 @@ func (s PostFrequencyStrategy) CheckComment(user *models.User, form models.Creat
 		maxCountInOneDay     int64 = 1 // 一天内最高发帖量
 	)
 
-	if repositories.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour*24)))) >= maxCountInOneDay {
 		return errors.New("发表太快了，请休息一会儿")
 	}
 
-	if repositories.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour)))) >= maxCountInOneHour {
 		return errors.New("发表太快了，请休息一会儿")
 	}
 
-	if repositories.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Minute*10)))) >= maxCountInTenMinutes {
 		return errors.New("发表太快了，请休息一会儿")
 	}

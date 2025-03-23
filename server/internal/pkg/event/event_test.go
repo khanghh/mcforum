@@ -1,7 +1,7 @@
 package event
 
 import (
-	"bbs-go/internal/models"
+	"bbs-go/internal/model"
 	"fmt"
 	"reflect"
 	"testing"
@@ -13,15 +13,15 @@ import (
 func TestEvent(t *testing.T) {
 	//var w sync.WaitGroup
 	//w.Add(1)
-	RegHandler(reflect.TypeOf(models.User{}), func(i interface{}) {
+	RegHandler(reflect.TypeOf(model.User{}), func(i interface{}) {
 		fmt.Println("处理用户1")
 		fmt.Println(jsons.ToStr(i))
 	})
-	RegHandler(reflect.TypeOf(models.User{}), func(i interface{}) {
+	RegHandler(reflect.TypeOf(model.User{}), func(i interface{}) {
 		fmt.Println("处理用户2")
 		fmt.Println(jsons.ToStr(i))
 	})
-	Send(models.User{
+	Send(model.User{
 		Username: sqls.SqlNullString("test"),
 	})
 	//w.Wait()

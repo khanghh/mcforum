@@ -8,8 +8,8 @@ import (
 
 	"github.com/goburrow/cache"
 
-	"bbs-go/internal/models"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
 )
 
 type sysConfigCache struct {
@@ -22,7 +22,7 @@ func newSysConfigCache() *sysConfigCache {
 	return &sysConfigCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (cache.Value, error) {
-				val := repositories.SysConfigRepository.GetByKey(sqls.DB(), "")
+				val := repository.SysConfigRepository.GetByKey(sqls.DB(), "")
 				if val != nil {
 					return val, nil
 				}
@@ -34,13 +34,13 @@ func newSysConfigCache() *sysConfigCache {
 	}
 }
 
-func (c *sysConfigCache) Get(key string) *models.SysConfig {
+func (c *sysConfigCache) Get(key string) *model.SysConfig {
 	val, err := c.cache.Get(key)
 	if err != nil {
 		return nil
 	}
 	if val != nil {
-		return val.(*models.SysConfig)
+		return val.(*model.SysConfig)
 	}
 	return nil
 }

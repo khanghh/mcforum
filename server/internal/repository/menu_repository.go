@@ -1,0 +1,102 @@
+package repository
+
+import (
+	"bbs-go/internal/model"
+
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
+	"gorm.io/gorm"
+)
+
+var MenuRepository = newMenuRepository()
+
+func newMenuRepository() *menuRepository {
+	return &menuRepository{}
+}
+
+type menuRepository struct {
+}
+
+func (r *menuRepository) Get(db *gorm.DB, id int64) *model.Menu {
+	ret := &model.Menu{}
+	if err := db.First(ret, "id = ?", id).Error; err != nil {
+		return nil
+	}
+	return ret
+}
+
+func (r *menuRepository) Take(db *gorm.DB, where ...interface{}) *model.Menu {
+	ret := &model.Menu{}
+	if err := db.Take(ret, where...).Error; err != nil {
+		return nil
+	}
+	return ret
+}
+
+func (r *menuRepository) Find(db *gorm.DB, cnd *sqls.Cnd) (list []model.Menu) {
+	cnd.Find(db, &list)
+	return
+}
+
+func (r *menuRepository) FindOne(db *gorm.DB, cnd *sqls.Cnd) *model.Menu {
+	ret := &model.Menu{}
+	if err := cnd.FindOne(db, &ret); err != nil {
+		return nil
+	}
+	return ret
+}
+
+func (r *menuRepository) FindPageByParams(db *gorm.DB, params *params.QueryParams) (list []model.Menu, paging *sqls.Paging) {
+	return r.FindPageByCnd(db, &params.Cnd)
+}
+
+func (r *menuRepository) FindPageByCnd(db *gorm.DB, cnd *sqls.Cnd) (list []model.Menu, paging *sqls.Paging) {
+	cnd.Find(db, &list)
+	count := cnd.Count(db, &model.Menu{})
+
+	paging = &sqls.Paging{
+		Page:  cnd.Paging.Page,
+		Limit: cnd.Paging.Limit,
+		Total: count,
+	}
+	return
+}
+
+func (r *menuRepository) FindBySql(db *gorm.DB, sqlStr string, paramArr ...interface{}) (list []model.Menu) {
+	db.Raw(sqlStr, paramArr...).Scan(&list)
+	return
+}
+
+func (r *menuRepository) CountBySql(db *gorm.DB, sqlStr string, paramArr ...interface{}) (count int64) {
+	db.Raw(sqlStr, paramArr...).Count(&count)
+	return
+}
+
+func (r *menuRepository) Count(db *gorm.DB, cnd *sqls.Cnd) int64 {
+	return cnd.Count(db, &model.Menu{})
+}
+
+func (r *menuRepository) Create(db *gorm.DB, t *model.Menu) (err error) {
+	err = db.Create(t).Error
+	return
+}
+
+func (r *menuRepository) Update(db *gorm.DB, t *model.Menu) (err error) {
+	err = db.Save(t).Error
+	return
+}
+
+func (r *menuRepository) Updates(db *gorm.DB, id int64, columns map[string]interface{}) (err error) {
+	err = db.Model(&model.Menu{}).Where("id = ?", id).Updates(columns).Error
+	return
+}
+
+func (r *menuRepository) UpdateColumn(db *gorm.DB, id int64, name string, value interface{}) (err error) {
+	err = db.Model(&model.Menu{}).Where("id = ?", id).UpdateColumn(name, value).Error
+	return
+}
+
+func (r *menuRepository) Delete(db *gorm.DB, id int64) {
+	db.Delete(&model.Menu{}, "id = ?", id)
+}

@@ -2,7 +2,7 @@ package server
 
 import (
 	"bbs-go/internal/locale"
-	"bbs-go/internal/models"
+	"bbs-go/internal/model"
 	"bbs-go/internal/pkg/config"
 	"bbs-go/internal/pkg/iplocator"
 	"bbs-go/internal/pkg/search"
@@ -85,7 +85,7 @@ func initDB() {
 		sqlDB.SetConnMaxLifetime(time.Duration(conf.ConnMaxLifetimeSeconds) * time.Second)
 	}
 
-	if err := db.AutoMigrate(models.Models...); nil != err {
+	if err := db.AutoMigrate(model.Models...); nil != err {
 		slog.Error(err.Error(), slog.Any("error", err))
 	}
 

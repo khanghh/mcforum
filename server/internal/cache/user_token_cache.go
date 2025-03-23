@@ -8,8 +8,8 @@ import (
 
 	"github.com/goburrow/cache"
 
-	"bbs-go/internal/models"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
 )
 
 var UserTokenCache = newUserTokenCache()
@@ -22,7 +22,7 @@ func newUserTokenCache() *userTokenCache {
 	return &userTokenCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (value cache.Value, e error) {
-				value = repositories.UserTokenRepository.GetByToken(sqls.DB(), key.(string))
+				value = repository.UserTokenRepository.GetByToken(sqls.DB(), key.(string))
 				if value == nil {
 					e = errors.New("数据不存在")
 				}
@@ -34,7 +34,7 @@ func newUserTokenCache() *userTokenCache {
 	}
 }
 
-func (c *userTokenCache) Get(token string) *models.UserToken {
+func (c *userTokenCache) Get(token string) *model.UserToken {
 	if len(token) == 0 {
 		return nil
 	}
@@ -43,7 +43,7 @@ func (c *userTokenCache) Get(token string) *models.UserToken {
 		return nil
 	}
 	if val != nil {
-		return val.(*models.UserToken)
+		return val.(*model.UserToken)
 	}
 	return nil
 }

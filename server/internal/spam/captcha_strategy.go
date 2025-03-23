@@ -1,9 +1,9 @@
 package spam
 
 import (
-	"bbs-go/internal/models"
+	"bbs-go/internal/model"
 	"bbs-go/internal/pkg/errs"
-	"bbs-go/internal/services"
+	"bbs-go/internal/service"
 
 	"github.com/dchest/captcha"
 )
@@ -14,17 +14,17 @@ func (CaptchaStrategy) Name() string {
 	return "CaptchaStrategy"
 }
 
-func (CaptchaStrategy) CheckTopic(user *models.User, form models.CreateTopicForm) error {
-	if services.SysConfigService.IsEnabledTopicCaptcha() && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
+func (CaptchaStrategy) CheckTopic(user *model.User, form model.CreateTopicForm) error {
+	if service.SysConfigService.IsEnabledTopicCaptcha() && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
 		return errs.CaptchaError
 	}
 	return nil
 }
 
-func (CaptchaStrategy) CheckArticle(user *models.User, form models.CreateArticleForm) error {
+func (CaptchaStrategy) CheckArticle(user *model.User, form model.CreateArticleForm) error {
 	return nil
 }
 
-func (CaptchaStrategy) CheckComment(user *models.User, form models.CreateCommentForm) error {
+func (CaptchaStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
 	return nil
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"bbs-go/internal/server"
-	_ "bbs-go/internal/services/eventhandler"
+	_ "bbs-go/internal/service/eventhandler"
 )
 
 func main() {

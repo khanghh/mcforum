@@ -9,8 +9,8 @@ import (
 
 	"github.com/goburrow/cache"
 
-	"bbs-go/internal/models"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
 )
 
 type tagCache struct {
@@ -23,7 +23,7 @@ func newTagCache() *tagCache {
 	return &tagCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (value cache.Value, e error) {
-				value = repositories.TagRepository.Get(sqls.DB(), key2Int64(key))
+				value = repository.TagRepository.Get(sqls.DB(), key2Int64(key))
 				if value == nil {
 					e = errors.New("数据不存在")
 				}
@@ -35,19 +35,19 @@ func newTagCache() *tagCache {
 	}
 }
 
-func (c *tagCache) Get(tagId int64) *models.Tag {
+func (c *tagCache) Get(tagId int64) *model.Tag {
 	val, err := c.cache.Get(tagId)
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return nil
 	}
 	if val != nil {
-		return val.(*models.Tag)
+		return val.(*model.Tag)
 	}
 	return nil
 }
 
-func (c *tagCache) GetList(tagIds []int64) (tags []models.Tag) {
+func (c *tagCache) GetList(tagIds []int64) (tags []model.Tag) {
 	if len(tagIds) == 0 {
 		return nil
 	}

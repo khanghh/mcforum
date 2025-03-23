@@ -1,8 +1,8 @@
 package cache
 
 import (
-	"bbs-go/internal/models"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
 	"log/slog"
 	"time"
 
@@ -21,7 +21,7 @@ func newForbiddenWordCache() *forbiddenWordCache {
 	return &forbiddenWordCache{
 		cache: cache.NewLoadingCache(
 			func(_ cache.Key) (value cache.Value, e error) {
-				value = repositories.ForbiddenWordRepository.Find(sqls.DB(), sqls.NewCnd())
+				value = repository.ForbiddenWordRepository.Find(sqls.DB(), sqls.NewCnd())
 				return
 			},
 			cache.WithMaximumSize(1000),
@@ -30,13 +30,13 @@ func newForbiddenWordCache() *forbiddenWordCache {
 	}
 }
 
-func (c *forbiddenWordCache) Get() []models.ForbiddenWord {
+func (c *forbiddenWordCache) Get() []model.ForbiddenWord {
 	val, err := c.cache.Get("_")
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return nil
 	}
-	return val.([]models.ForbiddenWord)
+	return val.([]model.ForbiddenWord)
 }
 
 func (c *forbiddenWordCache) Invalidate() {

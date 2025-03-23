@@ -8,7 +8,7 @@ import (
 
 	"github.com/goburrow/cache"
 
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/repository"
 )
 
 type articleTagCache struct {
@@ -21,7 +21,7 @@ func newArticleTagCache() *articleTagCache {
 	return &articleTagCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (value cache.Value, e error) {
-				articleTags := repositories.ArticleTagRepository.FindByArticleId(sqls.DB(), key2Int64(key))
+				articleTags := repository.ArticleTagRepository.FindByArticleId(sqls.DB(), key2Int64(key))
 				if len(articleTags) > 0 {
 					var tagIds []int64
 					for _, articleTag := range articleTags {

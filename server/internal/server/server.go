@@ -1,8 +1,8 @@
 package server
 
 import (
-	"bbs-go/internal/controllers/admin"
-	"bbs-go/internal/controllers/api"
+	"bbs-go/internal/controller/admin"
+	"bbs-go/internal/controller/api"
 	"bbs-go/internal/middleware"
 	"bbs-go/internal/pkg/config"
 	"log/slog"

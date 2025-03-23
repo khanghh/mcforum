@@ -1,7 +1,7 @@
 package sitemap
 
 import (
-	"bbs-go/internal/models/constants"
+	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/bbsurls"
 	"bbs-go/internal/pkg/uploader"
 	"bytes"
@@ -14,9 +14,9 @@ import (
 
 	"github.com/ikeikeikeike/go-sitemap-generator/v2/stm"
 
-	"bbs-go/internal/models"
+	"bbs-go/internal/model"
 	"bbs-go/internal/pkg/config"
-	"bbs-go/internal/services"
+	"bbs-go/internal/service"
 )
 
 const (
@@ -82,7 +82,7 @@ func Generate() {
 	// 	dateTo   = dates.NowTimestamp()
 	// )
 
-	services.ArticleService.ScanDesc(func(articles []models.Article) {
+	service.ArticleService.ScanDesc(func(articles []model.Article) {
 		for _, article := range articles {
 			if article.Status == constants.StatusOK {
 				articleUrl := bbsurls.ArticleUrl(article.Id)
@@ -96,7 +96,7 @@ func Generate() {
 		}
 	})
 
-	services.TopicService.ScanDesc(func(topics []models.Topic) {
+	service.TopicService.ScanDesc(func(topics []model.Topic) {
 		for _, topic := range topics {
 			if topic.Status == constants.StatusOK {
 				topicUrl := bbsurls.TopicUrl(topic.Id)
@@ -110,7 +110,7 @@ func Generate() {
 		}
 	})
 
-	services.TagService.Scan(func(tags []models.Tag) {
+	service.TagService.Scan(func(tags []model.Tag) {
 		for _, tag := range tags {
 			tagUrl := bbsurls.TagArticlesUrl(tag.Id)
 			sm.Add(stm.URL{
@@ -121,7 +121,7 @@ func Generate() {
 		}
 	})
 
-	services.UserService.Scan(func(users []models.User) {
+	service.UserService.Scan(func(users []model.User) {
 		for _, user := range users {
 			sm.Add(stm.URL{
 				{"loc", bbsurls.UserUrl(user.Id)},

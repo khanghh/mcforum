@@ -1,0 +1,109 @@
+package service
+
+import (
+	"bbs-go/internal/model/constants"
+	"strings"
+
+	"bbs-go/sqls"
+	"bbs-go/web/params"
+
+	"bbs-go/internal/cache"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
+)
+
+var TagService = newTagService()
+
+func newTagService() *tagService {
+	return &tagService{}
+}
+
+type tagService struct {
+}
+
+func (s *tagService) Get(id int64) *model.Tag {
+	return repository.TagRepository.Get(sqls.DB(), id)
+}
+
+func (s *tagService) Take(where ...interface{}) *model.Tag {
+	return repository.TagRepository.Take(sqls.DB(), where...)
+}
+
+func (s *tagService) Find(cnd *sqls.Cnd) []model.Tag {
+	return repository.TagRepository.Find(sqls.DB(), cnd)
+}
+
+func (s *tagService) FindOne(cnd *sqls.Cnd) *model.Tag {
+	return repository.TagRepository.FindOne(sqls.DB(), cnd)
+}
+
+func (s *tagService) FindPageByParams(params *params.QueryParams) (list []model.Tag, paging *sqls.Paging) {
+	return repository.TagRepository.FindPageByParams(sqls.DB(), params)
+}
+
+func (s *tagService) FindPageByCnd(cnd *sqls.Cnd) (list []model.Tag, paging *sqls.Paging) {
+	return repository.TagRepository.FindPageByCnd(sqls.DB(), cnd)
+}
+
+func (s *tagService) Create(t *model.Tag) error {
+	return repository.TagRepository.Create(sqls.DB(), t)
+}
+
+func (s *tagService) Update(t *model.Tag) error {
+	if err := repository.TagRepository.Update(sqls.DB(), t); err != nil {
+		return err
+	}
+	cache.TagCache.Invalidate(t.Id)
+	return nil
+}
+
+// func (s *tagService) Updates(id int64, columns map[string]interface{}) error {
+// 	return repositories.TagRepository.Updates(sqls.DB(), id, columns)
+// }
+//
+// func (s *tagService) UpdateColumn(id int64, name string, value interface{}) error {
+// 	return repositories.TagRepository.UpdateColumn(sqls.DB(), id, name, value)
+// }
+//
+// func (s *tagService) Delete(id int64) {
+// 	repositories.TagRepository.Delete(sqls.DB(), id)
+// }
+
+// 自动完成
+func (s *tagService) Autocomplete(input string) []model.Tag {
+	input = strings.TrimSpace(input)
+	if len(input) == 0 {
+		return nil
+	}
+	return repository.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ? and name like ?",
+		constants.StatusOK, "%"+input+"%").Limit(6))
+}
+
+func (s *tagService) GetOrCreate(name string) (*model.Tag, error) {
+	return repository.TagRepository.GetOrCreate(sqls.DB(), name)
+}
+
+func (s *tagService) GetByName(name string) *model.Tag {
+	return repository.TagRepository.GetByName(name)
+}
+
+func (s *tagService) GetTags() []model.Tag {
+	return repository.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ?", constants.StatusOK))
+}
+
+func (s *tagService) GetTagInIds(tagIds []int64) []model.Tag {
+	return repository.TagRepository.GetTagInIds(tagIds)
+}
+
+// 扫描
+func (s *tagService) Scan(callback func(tags []model.Tag)) {
+	var cursor int64
+	for {
+		list := repository.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("id > ?", cursor).Asc("id").Limit(100))
+		if len(list) == 0 {
+			break
+		}
+		cursor = list[len(list)-1].Id
+		callback(list)
+	}
+}

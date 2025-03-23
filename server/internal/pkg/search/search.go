@@ -2,10 +2,10 @@ package search
 
 import (
 	"bbs-go/internal/cache"
-	"bbs-go/internal/models"
+	"bbs-go/internal/model"
 	html2 "bbs-go/internal/pkg/html"
 	"bbs-go/internal/pkg/markdown"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/repository"
 	"html"
 	"log/slog"
 	"math"
@@ -33,7 +33,7 @@ func Init(indexPath string) {
 	}
 }
 
-func NewTopicDoc(topic *models.Topic) *TopicDocument {
+func NewTopicDoc(topic *model.Topic) *TopicDocument {
 	if topic == nil {
 		return nil
 	}
@@ -72,8 +72,8 @@ func NewTopicDoc(topic *models.Topic) *TopicDocument {
 	return doc
 }
 
-func getTopicTags(topicId int64) []models.Tag {
-	topicTags := repositories.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().Where("topic_id = ?", topicId))
+func getTopicTags(topicId int64) []model.Tag {
+	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().Where("topic_id = ?", topicId))
 
 	var tagIds []int64
 	for _, topicTag := range topicTags {
@@ -83,7 +83,7 @@ func getTopicTags(topicId int64) []models.Tag {
 }
 
 // IndexData 索引数据
-func UpdateTopicIndex(topic *models.Topic) {
+func UpdateTopicIndex(topic *model.Topic) {
 	doc := NewTopicDoc(topic)
 	if doc == nil {
 		return

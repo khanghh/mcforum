@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"bbs-go/internal/models/constants"
+	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/urls"
-	"bbs-go/internal/services"
+	"bbs-go/internal/service"
 	"fmt"
 
 	"bbs-go/web"
@@ -35,7 +35,7 @@ func AdminAuth(ctx iris.Context) {
 		return
 	}
 
-	user := services.UserTokenService.GetCurrent(ctx)
+	user := service.UserTokenService.GetCurrent(ctx)
 	if user == nil {
 		notLogin(ctx)
 		return

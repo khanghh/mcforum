@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"bbs-go/internal/models"
-	"bbs-go/internal/repositories"
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
 
 	"bbs-go/common/dates"
 	"bbs-go/sqls"
@@ -25,7 +25,7 @@ func newUserCache() *userCache {
 	return &userCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (value cache.Value, e error) {
-				value = repositories.UserRepository.Get(sqls.DB(), key2Int64(key))
+				value = repository.UserRepository.Get(sqls.DB(), key2Int64(key))
 				if value == nil {
 					e = errors.New("数据不存在")
 				}
@@ -36,7 +36,7 @@ func newUserCache() *userCache {
 		),
 		scoreRankCache: cache.NewLoadingCache(
 			func(key cache.Key) (value cache.Value, e error) {
-				value = repositories.UserRepository.Find(sqls.DB(), sqls.NewCnd().Desc("score").Limit(10))
+				value = repository.UserRepository.Find(sqls.DB(), sqls.NewCnd().Desc("score").Limit(10))
 				if value == nil {
 					e = errors.New("数据不存在")
 				}
@@ -48,7 +48,7 @@ func newUserCache() *userCache {
 		checkInRankCache: cache.NewLoadingCache(
 			func(key cache.Key) (value cache.Value, e error) {
 				today := dates.GetDay(time.Now())
-				value = repositories.CheckInRepository.Find(sqls.DB(),
+				value = repository.CheckInRepository.Find(sqls.DB(),
 					sqls.NewCnd().Eq("latest_day_name", today).Asc("update_time").Limit(10))
 				return
 			},
@@ -58,7 +58,7 @@ func newUserCache() *userCache {
 	}
 }
 
-func (c *userCache) Get(userId int64) *models.User {
+func (c *userCache) Get(userId int64) *model.User {
 	if userId <= 0 {
 		return nil
 	}
@@ -66,28 +66,28 @@ func (c *userCache) Get(userId int64) *models.User {
 	if err != nil {
 		return nil
 	}
-	return val.(*models.User)
+	return val.(*model.User)
 }
 
 func (c *userCache) Invalidate(userId int64) {
 	c.cache.Invalidate(userId)
 }
 
-func (c *userCache) GetScoreRank() []models.User {
+func (c *userCache) GetScoreRank() []model.User {
 	val, err := c.scoreRankCache.Get("data")
 	if err != nil {
 		return nil
 	}
-	return val.([]models.User)
+	return val.([]model.User)
 }
 
-func (c *userCache) GetCheckInRank() []models.CheckIn {
+func (c *userCache) GetCheckInRank() []model.CheckIn {
 	today := dates.GetDay(time.Now())
 	val, err := c.checkInRankCache.Get(today)
 	if err != nil {
 		return nil
 	}
-	return val.([]models.CheckIn)
+	return val.([]model.CheckIn)
 }
 
 func (c *userCache) RefreshCheckInRank() {

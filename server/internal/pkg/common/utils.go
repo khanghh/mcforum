@@ -1,7 +1,7 @@
 package common
 
 import (
-	"bbs-go/internal/models/constants"
+	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/html"
 	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/pkg/text"
