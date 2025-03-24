@@ -163,6 +163,8 @@ export default {
     content_deleted: 'The collected content is no longer valid.',
     no_data_available: 'No data available',
     no_more_content: 'No more content',
+    action_success: '{action} successfully',
+    action_failure: '{action} failure. {error}',
   },
   form: {
     button: {

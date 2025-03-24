@@ -121,38 +121,65 @@ func (s *sysConfigService) setSingle(db *gorm.DB, key, value, name, description 
 	}
 }
 
+func (s *sysConfigService) GetSiteTitle() string {
+	return cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
+}
+
+func (s *sysConfigService) GetSiteDescription() string {
+	return cache.SysConfigCache.GetValue(constants.SysConfigSiteDescription)
+}
+
+func (s *sysConfigService) GetSiteKeywords() []string {
+	str := cache.SysConfigCache.GetValue(constants.SysConfigSiteKeywords)
+	var keywords []string
+	if strs.IsNotBlank(str) {
+		if err := jsons.Parse(str, &keywords); err != nil {
+			slog.Error("Failed to get system config", "key", constants.SysConfigSiteKeywords, "error", err)
+		}
+	}
+	return keywords
+}
+
+func (s *sysConfigService) GetSiteNofitication() string {
+	return cache.SysConfigCache.GetValue(constants.SysConfigSiteNotification)
+}
+
+func (s *sysConfigService) GetRecommendTags() []string {
+	str := cache.SysConfigCache.GetValue(constants.SysConfigRecommendTags)
+	var recommendTags []string
+	if strs.IsNotBlank(str) {
+		if err := jsons.Parse(str, &recommendTags); err != nil {
+			slog.Error("Failed to get system config", "key", constants.SysConfigRecommendTags, "error", err)
+		}
+	}
+	return recommendTags
+}
+
 func (s *sysConfigService) GetTokenExpireDays() int {
 	tokenExpireDaysStr := cache.SysConfigCache.GetValue(constants.SysConfigTokenExpireDays)
 	tokenExpireDays, err := strconv.Atoi(tokenExpireDaysStr)
-	if err != nil {
-		tokenExpireDays = constants.DefaultTokenExpireDays
-	}
-	if tokenExpireDays <= 0 {
-		tokenExpireDays = constants.DefaultTokenExpireDays
+	if tokenExpireDays <= 0 || err != nil {
+		return constants.DefaultTokenExpireDays
 	}
 	return tokenExpireDays
 }
 
 func (s *sysConfigService) GetLoginMethod() model.LoginMethod {
-	loginMethodStr := cache.SysConfigCache.GetValue(constants.SysConfigLoginMethod)
+	str := cache.SysConfigCache.GetValue(constants.SysConfigLoginMethod)
 
-	useDefault := true
-	var loginMethod model.LoginMethod
-	if strs.IsNotBlank(loginMethodStr) {
-		if err := jsons.Parse(loginMethodStr, &loginMethod); err != nil {
-			slog.Warn("登录方式数据错误", err)
-		} else {
-			useDefault = false
+	if strs.IsNotBlank(str) {
+		var loginMethod model.LoginMethod
+		err := jsons.Parse(str, &loginMethod)
+		if err == nil {
+			return loginMethod
 		}
+		slog.Error("Failed to get system config", "key", constants.SysConfigLoginMethod, "error", err)
 	}
-	if useDefault {
-		loginMethod = model.LoginMethod{
-			Password: true,
-			QQ:       true,
-			Github:   true,
-		}
+	return model.LoginMethod{
+		Password: true,
+		QQ:       true,
+		Github:   true,
 	}
-	return loginMethod
 }
 
 func (s *sysConfigService) IsCreateTopicEmailVerified() bool {
@@ -195,39 +222,45 @@ func (s *sysConfigService) GetSiteNavs() []model.ActionLink {
 	var siteNavsArr []model.ActionLink
 	if strs.IsNotBlank(siteNavs) {
 		if err := jsons.Parse(siteNavs, &siteNavsArr); err != nil {
-			slog.Warn("站点导航数据错误", slog.Any("err", err))
+			slog.Error("Failed to get system config", "key", constants.SysConfigSiteNavs, "error", err)
 		}
 	}
 	return siteNavsArr
 }
 
+func (s *sysConfigService) GetUserObserveSeconds() int {
+	userObserveSecondsStr := cache.SysConfigCache.GetValue(constants.SysConfigUserObserveSeconds)
+	userObserveSeconds, _ := strconv.Atoi(userObserveSecondsStr)
+	return userObserveSeconds
+}
+
 func (s *sysConfigService) GetModules() model.ModulesConfig {
 	str := cache.SysConfigCache.GetValue(constants.SysConfigModules)
 
-	useDefault := true
-	var modulesConfig model.ModulesConfig
 	if strs.IsNotBlank(str) {
-		if err := jsons.Parse(str, &modulesConfig); err != nil {
-			slog.Warn("启用模块配置错误", err)
-		} else {
-			useDefault = false
+		var modulesConfig model.ModulesConfig
+		err := jsons.Parse(str, &modulesConfig)
+		if err == nil {
+			return modulesConfig
 		}
+		slog.Error("Failed to get system config", "key", constants.SysConfigModules, "error", err)
 	}
-	if useDefault {
-		modulesConfig = model.ModulesConfig{
-			Tweet:   true,
-			Topic:   true,
-			Article: true,
-		}
+	return model.ModulesConfig{
+		Tweet:   true,
+		Topic:   true,
+		Article: true,
 	}
-	return modulesConfig
 }
 
 // GetEmailWhitelist 邮箱白名单
 func (s *sysConfigService) GetEmailWhitelist() []string {
 	str := cache.SysConfigCache.GetValue(constants.SysConfigEmailWhitelist)
 	var emailWhitelist []string
-	_ = jsons.Parse(str, &emailWhitelist)
+	if strs.IsNotBlank(str) {
+		if err := jsons.Parse(str, &emailWhitelist); err != nil {
+			slog.Error("Failed to get system config", "key", constants.SysConfigEmailWhitelist, "error", err)
+		}
+	}
 	return emailWhitelist
 }
 
@@ -247,78 +280,6 @@ func (s *sysConfigService) GetDefaultForumId() int64 {
 		slog.Error("Failed to get system config", "key", constants.SysConfigScoreConfig, "error", err)
 	}
 	return forumId
-}
-
-func (s *sysConfigService) GetConfig() []model.SysConfig {
-	return s.GetAll()
-	// var (
-	// 	siteTitle                  = cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
-	// 	siteDescription            = cache.SysConfigCache.GetValue(constants.SysConfigSiteDescription)
-	// 	siteKeywords               = cache.SysConfigCache.GetValue(constants.SysConfigSiteKeywords)
-	// 	siteNotification           = cache.SysConfigCache.GetValue(constants.SysConfigSiteNotification)
-	// 	recommendTags              = cache.SysConfigCache.GetValue(constants.SysConfigRecommendTags)
-	// 	urlRedirect                = cache.SysConfigCache.GetValue(constants.SysConfigUrlRedirect)
-	// 	scoreConfigStr             = cache.SysConfigCache.GetValue(constants.SysConfigScoreConfig)
-	// 	defaultNodeIdStr           = cache.SysConfigCache.GetValue(constants.SysConfigDefaultNodeId)
-	// 	topicCaptcha               = cache.SysConfigCache.GetValue(constants.SysConfigTopicCaptcha)
-	// 	userObserveSecondsStr      = cache.SysConfigCache.GetValue(constants.SysConfigUserObserveSeconds)
-	// 	siteNavs                   = s.GetSiteNavs()
-	// 	loginMethod                = s.GetLoginMethod()
-	// 	createTopicEmailVerified   = s.IsCreateTopicEmailVerified()
-	// 	createArticleEmailVerified = s.IsCreateArticleEmailVerified()
-	// 	createCommentEmailVerified = s.IsCreateCommentEmailVerified()
-	// 	enableHideContent          = s.IsEnableHideContent()
-	// 	articlePending             = s.IsArticlePending()
-	// )
-
-	// var siteKeywordsArr []string
-	// if strs.IsNotBlank(siteKeywords) {
-	// 	if err := jsons.Parse(siteKeywords, &siteKeywordsArr); err != nil {
-	// 		slog.Warn("站点关键词数据错误", slog.Any("err", err))
-	// 	}
-	// }
-
-	// var recommendTagsArr []string
-	// if strs.IsNotBlank(recommendTags) {
-	// 	if err := jsons.Parse(recommendTags, &recommendTagsArr); err != nil {
-	// 		slog.Warn("推荐标签数据错误", slog.Any("err", err))
-	// 	}
-	// }
-
-	// var scoreConfig models.ScoreConfig
-	// if strs.IsNotBlank(scoreConfigStr) {
-	// 	if err := jsons.Parse(scoreConfigStr, &scoreConfig); err != nil {
-	// 		slog.Warn("积分配置错误", slog.Any("err", err))
-	// 	}
-	// }
-
-	// var (
-	// 	defaultNodeId      = numbers.ToInt64(defaultNodeIdStr)
-	// 	userObserveSeconds = numbers.ToInt(userObserveSecondsStr)
-	// )
-
-	// return &models.SysConfig{
-	// 	SiteTitle:                  siteTitle,
-	// 	SiteDescription:            siteDescription,
-	// 	SiteKeywords:               siteKeywordsArr,
-	// 	SiteNavs:                   siteNavs,
-	// 	SiteNotification:           siteNotification,
-	// 	RecommendTags:              recommendTagsArr,
-	// 	UrlRedirect:                strings.ToLower(urlRedirect) == "true",
-	// 	ScoreConfig:                scoreConfig,
-	// 	DefaultNodeId:              defaultNodeId,
-	// 	ArticlePending:             articlePending,
-	// 	TopicCaptcha:               strings.ToLower(topicCaptcha) == "true",
-	// 	UserObserveSeconds:         userObserveSeconds,
-	// 	TokenExpireDays:            s.GetTokenExpireDays(),
-	// 	LoginMethod:                loginMethod,
-	// 	CreateTopicEmailVerified:   createTopicEmailVerified,
-	// 	CreateArticleEmailVerified: createArticleEmailVerified,
-	// 	CreateCommentEmailVerified: createCommentEmailVerified,
-	// 	EnableHideContent:          enableHideContent,
-	// 	Modules:                    s.GetModules(),
-	// 	EmailWhitelist:             s.GetEmailWhitelist(),
-	// }
 }
 
 func (s *sysConfigService) GetStr(key, def string) (value string) {

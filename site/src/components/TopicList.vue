@@ -25,12 +25,12 @@
         <div class="topic-content" :class="{ 'topic-tweet': topic.type === 1 }">
           <template v-if="topic.type === 0">
             <h1 class="topic-title">
-              <nuxt-link :to="`/topic/${topic.id}`">
+              <nuxt-link :to="`/t/${topic.slug}`">
                 {{ topic.title }}
               </nuxt-link>
             </h1>
             <nuxt-link
-              :to="`/topic/${topic.id}`"
+              :to="`/t/${topic.slug}`"
               class="topic-summary">
               {{ topic.summary }}
             </nuxt-link>
@@ -38,7 +38,7 @@
           <template v-if="topic.type === 1">
             <nuxt-link
               v-if="topic.content"
-              :to="`/topic/${topic.id}`"
+              :to="`/t/${topic.slug}`"
               class="topic-summary">
               {{ topic.content }}
             </nuxt-link>
@@ -47,7 +47,7 @@
               class="topic-image-list">
               <li v-for="(image, index) in topic.imageList" :key="index">
                 <nuxt-link
-                  :to="`/topic/${topic.id}`"
+                  :to="`/t/${topic.slug}`"
                   class="image-item">
                   <img :src="image.preview" />
                 </nuxt-link>
@@ -62,14 +62,14 @@
               {{ topic.liked ? $t('feed.actions.liked') : $t('feed.actions.like') }}
               <span v-if="topic.likeCount > 0">{{ topic.likeCount }}</span>
             </div>
-            <div class="btn" @click="toTopicDetail(topic.id)">
+            <div class="btn" @click="toTopicDetail(topic.slug)">
               <icon name="MessageSquareMore" size="1em" />
               {{ $t('feed.actions.comment') }}
               <span v-if="topic.commentCount > 0">
                 {{ topic.commentCount }}
               </span>
             </div>
-            <div class="btn" @click="toTopicDetail(topic.id)">
+            <div class="btn" @click="toTopicDetail(topic.slug)">
               <icon name="BookOpenText" size="1em" />
               {{ $t('feed.actions.view') }}
               <span v-if="topic.viewCount > 0">{{ topic.viewCount }}</span>
@@ -107,7 +107,7 @@ defineProps({
 async function like(topic) {
   try {
     if (topic.liked) {
-      await useHttpPostForm('/api/like/unlike', {
+      await useHttpPostForm(`/api/topics/${topic.slug}/unlike`, {
         body: {
           entityType: 'topic',
           entityId: topic.id,
@@ -118,7 +118,7 @@ async function like(topic) {
       useMsgSuccess(i18n.t('message.unliked_success'))
     }
     else {
-      await useHttpPostForm('/api/like/like', {
+      await useHttpPostForm(`/api/topics/${topic.slug}/like`, {
         body: {
           entityType: 'topic',
           entityId: topic.id,
@@ -135,7 +135,7 @@ async function like(topic) {
 }
 
 async function toTopicDetail(topicId) {
-  useLinkTo(`/topic/${topicId}`)
+  useLinkTo(`/t/${topicId}`)
 }
 </script>
 

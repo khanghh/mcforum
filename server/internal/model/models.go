@@ -208,8 +208,9 @@ type Forum struct {
 // 话题节点
 type Topic struct {
 	Model
+	Slug              string              `gorm:"size:128;not null:default:'untitled'" json:"slug" form:"slug"`                    // 名称
 	Type              constants.TopicType `gorm:"type:int(11);not null:default:0" json:"type" form:"type"`                         // 类型
-	NodeId            int64               `gorm:"not null;index:idx_node_id;" json:"nodeId" form:"nodeId"`                         // 节点编号
+	ForumId           int64               `gorm:"not null;index:idx_forum_id;" json:"forumId" form:"forumId"`                      // 节点编号
 	UserId            int64               `gorm:"not null;index:idx_topic_user_id;" json:"userId" form:"userId"`                   // 用户
 	Title             string              `gorm:"size:128" json:"title" form:"title"`                                              // 标题
 	Content           string              `gorm:"type:longtext" json:"content" form:"content"`                                     // 内容

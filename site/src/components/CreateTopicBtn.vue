@@ -42,10 +42,10 @@ const modules = ref([
 function handlePostCommand(cmd) {
   const router = useRouter()
   if (cmd === 'topic') {
-    router.push('/topic/create')
+    router.push('/t/create')
   }
   else if (cmd === 'tweet') {
-    router.push('/topic/create?type=1')
+    router.push('/t/create?type=1')
   }
   else if (cmd === 'article') {
     router.push('/article/create')

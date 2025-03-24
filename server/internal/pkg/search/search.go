@@ -39,7 +39,7 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 	}
 	doc := &TopicDocument{
 		Id:         topic.Id,
-		NodeId:     topic.NodeId,
+		NodeId:     topic.ForumId,
 		UserId:     topic.UserId,
 		Title:      topic.Title,
 		Status:     topic.Status,

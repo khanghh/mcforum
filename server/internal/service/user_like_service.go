@@ -124,9 +124,8 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 }
 
 func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
-	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New("话题不存在")
+	if !s.Exists(userId, constants.EntityTopic, topicId) {
+		return nil
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {

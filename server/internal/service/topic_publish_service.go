@@ -33,7 +33,7 @@ func (s *topicPublishService) Publish(userId int64, form model.CreateTopicForm) 
 	topic := &model.Topic{
 		Type:            form.Type,
 		UserId:          userId,
-		NodeId:          form.NodeId,
+		ForumId:         form.NodeId,
 		Title:           form.Title,
 		Content:         form.Content,
 		HideContent:     form.HideContent,

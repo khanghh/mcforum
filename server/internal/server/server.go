@@ -58,14 +58,14 @@ func NewServer() {
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
 	apiRoute.Configure(func(m *mvc.Application) {
-		apiRoute.Party("/topics").Handle(new(api.TopicsController))
-		apiRoute.Party("/forums").Handle(new(api.ForumsController))
+		apiRoute.Party("/topics").Handle(new(api.TopicController))
+		apiRoute.Party("/forums").Handle(new(api.ForumController))
 		apiRoute.Party("/login").Handle(new(api.LoginController))
-		apiRoute.Party("/user").Handle(new(api.UsersController))
+		apiRoute.Party("/user").Handle(new(api.UserController))
 		apiRoute.Party("/tag").Handle(new(api.TagController))
 		apiRoute.Party("/comment").Handle(new(api.CommentController))
 		apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
-		apiRoute.Party("/like").Handle(new(api.LikeController))
+		// apiRoute.Party("/like").Handle(new(api.LikeController))
 		apiRoute.Party("/checkin").Handle(new(api.CheckinController))
 		apiRoute.Party("/config").Handle(new(api.ConfigController))
 		apiRoute.Party("/upload").Handle(new(api.UploadController))
@@ -84,7 +84,7 @@ func NewServer() {
 		m.Party("/tag").Handle(new(admin.TagController))
 		m.Party("/comment").Handle(new(admin.CommentController))
 		m.Party("/favorite").Handle(new(admin.FavoriteController))
-		m.Party("/topic").Handle(new(admin.TopicController))
+		m.Party("/topics").Handle(new(admin.TopicController))
 		m.Party("/topic-node").Handle(new(admin.ForumController))
 		m.Party("/sys-config").Handle(new(admin.SysConfigController))
 		m.Party("/link").Handle(new(admin.LinkController))
@@ -98,7 +98,9 @@ func NewServer() {
 	})
 
 	for _, route := range app.GetRoutes() {
-		fmt.Println(route.Path)
+		if route.Method != iris.MethodOptions {
+			fmt.Printf("%s\t\t%s\n", route.Method, route.Path)
+		}
 	}
 
 	if err := app.Listen(":"+conf.Port,

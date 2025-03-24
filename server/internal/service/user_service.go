@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/bbsurls"
 	"bbs-go/internal/pkg/email"
@@ -352,7 +353,7 @@ func (s *userService) SetEmail(userId int64, email string) error {
 	}
 	user := s.Get(userId)
 	if user == nil {
-		return errors.New("用户不存在")
+		return errors.New(locale.T("user.does_not_exists"))
 	}
 	if user.Email.String == email {
 		// 用户邮箱没做变更
@@ -440,7 +441,7 @@ func (s *userService) SyncUserCount() {
 func (s *userService) SendEmailVerifyEmail(userId int64) error {
 	user := s.Get(userId)
 	if user == nil {
-		return errors.New("用户不存在")
+		return errors.New(locale.T("user.does_not_exists"))
 	}
 	if user.EmailVerified {
 		return errors.New("用户邮箱已验证")
@@ -593,7 +594,7 @@ func (s *userService) addScore(userId int64, score int, sourceType, sourceId, de
 	}
 	user := s.Get(userId)
 	if user == nil {
-		return errors.New("用户不存在")
+		return errors.New(locale.T("user.does_not_exists"))
 	}
 	if err := s.Updates(userId, map[string]interface{}{
 		"score":       gorm.Expr("score + ?", score),

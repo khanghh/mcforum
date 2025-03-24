@@ -5,6 +5,7 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/service"
+	"fmt"
 	"html"
 
 	"bbs-go/common/arrays"
@@ -57,6 +58,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 
 	rsp.Id = topic.Id
 	rsp.Type = topic.Type
+	rsp.Slug = fmt.Sprintf("%s.%d", topic.Slug, topic.Id)
 	rsp.Title = topic.Title
 	rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
 	rsp.LastCommentTime = topic.LastCommentTime
@@ -92,8 +94,8 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		rsp.ImageList = BuildImageList(topic.ImageList)
 	}
 
-	if topic.NodeId > 0 {
-		node := service.ForumService.Get(topic.NodeId)
+	if topic.ForumId > 0 {
+		node := service.ForumService.Get(topic.ForumId)
 		rsp.Forum = BuildForum(node)
 	}
 

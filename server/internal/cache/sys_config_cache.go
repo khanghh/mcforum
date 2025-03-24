@@ -22,11 +22,11 @@ func newSysConfigCache() *sysConfigCache {
 	return &sysConfigCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (cache.Value, error) {
-				val := repository.SysConfigRepository.GetByKey(sqls.DB(), "")
+				val := repository.SysConfigRepository.GetByKey(sqls.DB(), key.(string))
 				if val != nil {
 					return val, nil
 				}
-				return nil, errors.New("数据不存在")
+				return nil, errors.New("config key not found")
 			},
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),

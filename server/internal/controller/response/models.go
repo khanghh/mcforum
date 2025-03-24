@@ -1,6 +1,7 @@
 package response
 
 import (
+	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"time"
 
@@ -84,7 +85,7 @@ type ForumResponse struct {
 type SearchTopicResponse struct {
 	Id         int64          `json:"id"`
 	User       *UserInfo      `json:"user"`
-	Forum      *ForumResponse `json:"node"`
+	Forum      *ForumResponse `json:"forum"`
 	Tags       *[]TagResponse `json:"tags"`
 	Title      string         `json:"title"`
 	Summary    string         `json:"summary"`
@@ -94,9 +95,10 @@ type SearchTopicResponse struct {
 // 帖子列表返回实体
 type TopicResponse struct {
 	Id              int64               `json:"id"`
+	Slug            string              `json:"slug"`
 	Type            constants.TopicType `json:"type"`
 	User            *UserInfo           `json:"user"`
-	Forum           *ForumResponse      `json:"node"`
+	Forum           *ForumResponse      `json:"forum"`
 	Tags            *[]TagResponse      `json:"tags"`
 	Title           string              `json:"title"`
 	Summary         string              `json:"summary"`
@@ -195,4 +197,30 @@ type MenuTreeResponse struct {
 	MenuResponse
 	Level    int                `json:"level"`
 	Children []MenuTreeResponse `json:"children"`
+}
+
+// SysConfigResponse
+//
+//	配置返回结构体
+type SysConfigResponse struct {
+	SiteTitle                  string              `json:"siteTitle"`
+	SiteDescription            string              `json:"siteDescription"`
+	SiteKeywords               []string            `json:"siteKeywords"`
+	SiteNavs                   []model.ActionLink  `json:"siteNavs"`
+	SiteNotification           string              `json:"siteNotification"`
+	RecommendTags              []string            `json:"recommendTags"`
+	UrlRedirect                bool                `json:"urlRedirect"`
+	ScoreConfig                model.ScoreConfig   `json:"scoreConfig"`
+	DefaultForumId             int64               `json:"defaultNodeId"`
+	ArticlePending             bool                `json:"articlePending"`
+	TopicCaptcha               bool                `json:"topicCaptcha"`
+	UserObserveSeconds         int                 `json:"userObserveSeconds"`
+	TokenExpireDays            int                 `json:"tokenExpireDays"`
+	LoginMethod                model.LoginMethod   `json:"loginMethod"`
+	CreateTopicEmailVerified   bool                `json:"createTopicEmailVerified"`
+	CreateArticleEmailVerified bool                `json:"createArticleEmailVerified"`
+	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified"`
+	EnableHideContent          bool                `json:"enableHideContent"`
+	Modules                    model.ModulesConfig `json:"modules"`
+	EmailWhitelist             []string            `json:"emailWhitelist"` // 邮箱白名单
 }

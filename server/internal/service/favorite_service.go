@@ -94,6 +94,11 @@ func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	return s.addFavorite(userId, constants.EntityTopic, topicId)
 }
 
+// AddTopicFavorite 收藏主题
+func (s *favoriteService) RemoveTopicFavorite(userId, topicId int64) error {
+	return s.removeFavorite(userId, constants.EntityTopic, topicId)
+}
+
 func (s *favoriteService) addFavorite(userId int64, entityType string, entityId int64) error {
 	if s.IsFavorited(userId, entityType, entityId) { // 已经收藏
 		return nil
@@ -113,5 +118,18 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 		EntityId:   entityId,
 		EntityType: entityType,
 	})
+	return nil
+}
+
+func (s *favoriteService) removeFavorite(userId int64, entityType string, entityId int64) error {
+	tmp := s.GetBy(userId, entityType, entityId)
+	if tmp != nil {
+		repository.FavoriteRepository.Delete(sqls.DB(), tmp.Id)
+		event.Send(event.UserUnfavoriteEvent{
+			UserId:     userId,
+			EntityId:   entityId,
+			EntityType: entityType,
+		})
+	}
 	return nil
 }

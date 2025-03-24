@@ -7,8 +7,7 @@
     <span class="el-dropdown-link">{{ $t('publish.manage') }}</span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item
-          v-for="item in menus"
+        <el-dropdown-item v-for="item in menus"
           :key="item.command"
           :command="item.command">
           {{ item.label }}
@@ -37,8 +36,7 @@ const isOwner = userIsOwner(userStore.user)
 const isAdmin = userIsAdmin(userStore.user)
 
 const menus = computed(() => {
-  const isTopicOwner
-    = userStore.user && userStore.user.id === topic.value.user.id
+  const isTopicOwner = userStore.user && userStore.user.id === topic.value.user.id
   const items = []
   if (isTopicOwner && topic.value.type === 0) {
     items.push({
@@ -87,10 +85,10 @@ async function handleCommand(command) {
     deleteTopic()
   }
   else if (command === 'recommend') {
-    switchRecommend()
+    toggleRecommended()
   }
   else if (command === 'pin') {
-    toggleTopicPin()
+    togglePinned()
   }
   else if (command === 'forbidden7Days') {
     await forbidden(7)
@@ -102,6 +100,7 @@ async function handleCommand(command) {
     console.log('click on item ' + command)
   }
 }
+
 async function forbidden(days) {
   try {
     await useHttpPostForm('/api/user/forbidden', {
@@ -116,65 +115,49 @@ async function forbidden(days) {
     useMsgError(i18n.t('message.mute_user_failure', { error: e }))
   }
 }
+
 function deleteTopic() {
   useConfirm(i18n.t('dialog.message.confirm_delete_post')).then(function () {
-    useHttpPost(`/api/topic/delete/${topic.value.id}`)
-      .then(() => {
-        useMsg({
-          message: i18n.t('message.delete_success'),
-          onClose() {
-            useLinkTo('/topics')
-          },
-        })
+    useHttpPost(`/api/topic/delete/${topic.value.id}`).then(() => {
+      useMsg({
+        message: i18n.t('message.delete_success'),
+        onClose() {
+          useLinkTo('/topics')
+        },
       })
-      .catch((e) => {
-        useMsgError(i18n.t('message.delete_success', { error: (e.message || e) }))
-      })
+    }).catch((e) => {
+      useMsgError(i18n.t('message.delete_success', { error: (e.message || e) }))
+    })
   })
 }
+
 function editTopic() {
-  useLinkTo(`/topic/edit/${topic.value.id}`)
+  useLinkTo(`/t/edit/${topic.value.id}`)
 }
-function switchRecommend() {
+
+function toggleRecommended() {
   const action = topic.value.recommend ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    const recommend = !topic.value.recommend
-    useHttpPostForm(`/api/topic/recommend/${topic.value.id}`, {
-      body: {
-        recommend,
-      },
+    useHttpPostForm(`/api/topic/${topic.value.slug}/${topic.value.recommend ? 'unrecommened' : 'recommend'}`).then(() => {
+      topic.value.recommend = !topic.value.recommend
+      emits('update:modelValue', topic.value)
+      useMsgSuccess({ message: i18n.t('message.action_success', { action }) })
+    }).catch((e) => {
+      useMsgError(i18n.t('message.action_failure', { action, error: e.message || e }))
     })
-      .then(() => {
-        topic.value.recommend = recommend
-        emits('update:modelValue', topic.value)
-        useMsgSuccess({
-          message: `${action}成功`,
-        })
-      })
-      .catch((e) => {
-        useMsgError(`${action}失败：` + (e.message || e))
-      })
   })
 }
-function toggleTopicPin() {
+
+function togglePinned() {
   const action = topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    const pinned = !topic.value.pinned
-    useHttpPostForm(`/api/topic/${topic.value.id}`, {
-      body: {
-        pinned: pinned,
-      },
+    useHttpPostForm(`/api/topics/${topic.value.slug}/${topic.value.pinned ? 'unpin' : 'pin'}`).then(() => {
+      topic.value.pinned = !topic.value.pinned
+      emits('update:modelValue', topic.value)
+      useMsgSuccess({ message: i18n.t('message.action_success', { action: action }) })
+    }).catch((e) => {
+      useMsgError(i18n.t('message.action_failure', { action: action, error: e.message || e }))
     })
-      .then(() => {
-        topic.value.pinned = pinned
-        emits('update:modelValue', topic.value)
-        useMsgSuccess({
-          message: `${action}成功`,
-        })
-      })
-      .catch((e) => {
-        useMsgError(`${action}失败：` + (e.message || e))
-      })
   })
 }
 </script>

@@ -10,8 +10,10 @@
             <strong>
               <nuxt-link
                 to="/user/profile/account"
-                style="color: var(--text-link-color)"> {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings')
-                }}</nuxt-link>
+                style="color: var(--text-link-color)">
+                {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings')
+                }}
+              </nuxt-link>
             </strong>
           </i18n-t>
         </div>
@@ -66,7 +68,7 @@
             <simple-editor
               ref="simpleEditorComponent"
               v-model:content="postForm.content"
-              v-model:imageList="postForm.imageList" />
+              v-model:image-list="postForm.imageList" />
           </div>
         </div>
 
@@ -100,8 +102,10 @@
             <a
               :class="{ 'is-loading': publishing }"
               class="button is-success"
-              @click="createTopic">{{ postForm.type === 1 ? $t('form.button.post_status') :
-                $t('form.button.post_topic') }}</a>
+              @click="createTopic">
+              {{ postForm.type === 1 ? $t('form.button.post_status')
+                : $t('form.button.post_topic') }}
+            </a>
           </div>
         </div>
       </div>
@@ -110,114 +114,115 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 definePageMeta({
-  middleware: "auth",
-});
+  middleware: 'auth',
+})
 
-const userStore = useUserStore();
-const configStore = useConfigStore();
-const route = useRoute();
-const router = useRouter();
+const userStore = useUserStore()
+const configStore = useConfigStore()
+const route = useRoute()
+const router = useRouter()
 
-const nodeId =
-  parseInt(route.query.nodeId) || configStore.config.defaultNodeId || 0;
+const nodeId
+  = parseInt(route.query.nodeId) || configStore.config.defaultNodeId || 0
 
 const postForm = ref({
   type: Number.parseInt(route.query.type) || 0,
   nodeId: nodeId,
-  title: "",
+  title: '',
   tags: [],
-  content: "",
-  hideContent: "",
+  content: '',
+  hideContent: '',
   imageList: [],
 
-  captchaId: "",
-  captchaUrl: "",
-  captchaCode: "",
-});
-const publishing = ref(false);
-const simpleEditorComponent = ref(null);
+  captchaId: '',
+  captchaUrl: '',
+  captchaCode: '',
+})
+const publishing = ref(false)
+const simpleEditorComponent = ref(null)
 
 const isNeedEmailVerify = computed(() => {
   return (
     configStore.config.createTopicEmailVerified && !userStore.user.emailVerified
-  );
-});
+  )
+})
 
 const isEnableHideContent = computed(() => {
-  return configStore.config.enableHideContent;
-});
+  return configStore.config.enableHideContent
+})
 
 const topicCaptchaEnabled = computed(() => {
-  return configStore.config.topicCaptcha;
-});
+  return configStore.config.topicCaptcha
+})
 
-const { data: nodes } = useAsyncData("nodes", () =>
-  useMyFetch("/api/topic/nodes")
-);
+const { data: nodes } = useAsyncData('nodes', () =>
+  useMyFetch('/api/topic/nodes'),
+)
 
-init();
+init()
 
 watch(
   () => route.query,
   (newQuery, oldQuery) => {
-    // eslint-disable-next-line no-console
     // console.log(newQuery, oldQuery);
 
-    init();
+    init()
   },
-  { deep: true }
-);
+  { deep: true },
+)
 
 onMounted(() => {
-  showCaptcha();
-});
+  showCaptcha()
+})
 
 function init() {
-  postForm.value.type = Number.parseInt(route.query.type) || 0;
+  postForm.value.type = Number.parseInt(route.query.type) || 0
   useHead({
-    title: postForm.value.type === 0 ? i18n.t('page.create_topic') : i18n.t('page.post_status')
-  });
+    title: postForm.value.type === 0 ? i18n.t('page.create_topic') : i18n.t('page.post_status'),
+  })
 }
 
 async function createTopic() {
   if (publishing.value) {
-    return;
+    return
   }
 
   if (postForm.value.type === 1) {
     if (simpleEditorComponent.value.loading) {
-      useMsgWarning("图片上传中,请稍后重试...");
-      return;
+      useMsgWarning('图片上传中,请稍后重试...')
+      return
     }
   }
 
-  publishing.value = true;
+  publishing.value = true
   try {
-    const topic = await useHttpPost("/api/topic/create", {
+    const topic = await useHttpPost('/api/topic/create', {
       body: postForm.value,
-    });
-    router.push(`/topic/${topic.id}`);
-  } catch (e) {
-    showCaptcha();
-    useMsgError(e.message || e);
-    publishing.value = false;
+    })
+    router.push(`/t/${topic.slug}`)
+  }
+  catch (e) {
+    showCaptcha()
+    useMsgError(e.message || e)
+    publishing.value = false
   }
 }
 
 async function showCaptcha() {
   if (topicCaptchaEnabled.value) {
     try {
-      const ret = await useHttpGet("/api/captcha/request", {
+      const ret = await useHttpGet('/api/captcha/request', {
         params: {
-          captchaId: postForm.value.captchaId || "",
+          captchaId: postForm.value.captchaId || '',
         },
-      });
-      postForm.value.captchaId = ret.captchaId;
-      postForm.value.captchaUrl = ret.captchaUrl;
-    } catch (e) {
-      useMsgError(e.message || e);
+      })
+      postForm.value.captchaId = ret.captchaId
+      postForm.value.captchaUrl = ret.captchaUrl
+    }
+    catch (e) {
+      useMsgError(e.message || e)
     }
   }
 }

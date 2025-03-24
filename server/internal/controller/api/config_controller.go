@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/iris/v12"
 
+	"bbs-go/internal/controller/response"
 	"bbs-go/internal/service"
 )
 
@@ -13,6 +14,6 @@ type ConfigController struct {
 }
 
 func (c *ConfigController) GetConfigs() *web.JsonResult {
-	config := service.SysConfigService.GetConfig()
-	return web.JsonData(config)
+	configs := service.SysConfigService.GetAll()
+	return web.JsonData(response.BuildSysConfigResponse(configs))
 }

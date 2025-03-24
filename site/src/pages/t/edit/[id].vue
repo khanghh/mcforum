@@ -12,7 +12,7 @@
               v-for="node in nodes"
               :key="node.id"
               class="topic-tag"
-              :class="{ selected: postForm.nodeId === node.id }"
+              :class="{ selected: true }"
               @click="postForm.nodeId = node.id">
               <span>{{ node.name }}</span>
             </div>
@@ -86,13 +86,17 @@ const isEnableHideContent = computed(() => {
   return configStore.config.enableHideContent
 })
 
-const { data: nodes } = useAsyncData('nodes', () =>
-  useMyFetch('/api/topic/nodes'),
-)
+const nodes = computed(() => ([{
+  id: 1,
+  name: 'aaa',
+}]))
+// const { data: nodes } = useAsyncData('nodes', () =>
+//   useMyFetch('/api/topic/nodes'),
+// )
 
 const { data: postForm } = useAsyncData(() => {
   publishing.value = false
-  return useMyFetch(`/api/topic/edit/${route.params.id}`)
+  return useMyFetch(`/api/topics/edit/${route.params.id}`)
 })
 
 async function submitCreate() {

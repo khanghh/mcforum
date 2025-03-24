@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/event"
 	"bbs-go/internal/pkg/search"
@@ -158,10 +159,10 @@ func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content
 }
 
 // 推荐
-func (s *topicService) SetRecommend(topicId int64, recommend bool) error {
+func (s *topicService) SetRecommended(topicId int64, recommend bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New("帖子不存在")
+		return errors.New(locale.T("topic.does_not_exists"))
 	}
 	if topic.Recommend == recommend { // 推荐状态没变更
 		return nil
@@ -444,10 +445,10 @@ func (s *topicService) GetPinnedTopics(nodeId int64, limit int) []model.Topic {
 	}
 }
 
-func (s *topicService) PinTopic(topicId int64, pinned bool) error {
+func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New("话题不存在")
+		return errors.New("internal server error")
 	}
 	if topic.Pinned == pinned {
 		return nil

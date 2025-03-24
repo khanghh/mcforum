@@ -88,10 +88,10 @@
               <!-- 节点、标签 -->
               <div class="topic-tags">
                 <nuxt-link
-                  v-if="topic.node"
-                  :to="`/topics/node/${topic.node.id}`"
+                  v-if="topic.forum"
+                  :to="`/f/${topic.forum.slug}`"
                   class="topic-tag">
-                  {{ topic.node.name }}
+                  {{ topic.forum.name }}
                 </nuxt-link>
                 <nuxt-link
                   v-for="tag in topic.tags"
@@ -126,7 +126,7 @@
                     </span>
                   </div>
                 </div>
-                <div class="action" @click="like(topic)">
+                <div class="action" @click="toggleLike(topic)">
                   <icon name="ThumbsUp" color="#1c71d8" :filled="liked" />
                   <div class="action-text">
                     <span>{{ $t('feed.like_count') }}</span>
@@ -135,7 +135,7 @@
                     </span>
                   </div>
                 </div>
-                <div class="action" @click="addFavorite(topic.id)">
+                <div class="action" @click="toggleFavorite(topic.id)">
                   <icon name="Star" color="#f6d32d" :filled="topic.favorited" />
                   <div class="action-text">
                     <span>{{ $t('feed.actions.favorite') }}</span>
@@ -163,20 +163,14 @@
 <script setup>
 const i18n = useI18n()
 const route = useRoute()
-const hideContent = ref(null)
+const slug = route.params.slug
 
 const { data: topic } = await useAsyncData('topic', () =>
-  useMyFetch(`/api/topic/${route.params.id}`),
+  useMyFetch(`/api/topics/${slug}`),
 )
 
-const { data: liked } = await useAsyncData('liked', () => {
-  return useMyFetch('/api/like/liked', {
-    params: {
-      entityType: 'topic',
-      entityId: route.params.id,
-    },
-  })
-})
+const hideContent = ref(null)
+const liked = ref(topic.value?.liked || false)
 
 const { data: likeUsers, refresh: refreshLikeUsers } = await useAsyncData(
   () => {
@@ -203,29 +197,18 @@ const isPending = computed(() => {
   return topic.value.status === 2
 })
 
-async function like() {
+async function toggleLike() {
   try {
     if (liked.value) {
-      await useHttpPostForm('/api/like/unlike', {
-        body: {
-          entityType: 'topic',
-          entityId: topic.value.id,
-        },
-      })
+      await useHttpPostForm(`/api/topics/${slug}/unlike`)
       liked.value = false
-      topic.value.likeCount
-        = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
+      topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
 
       useMsgSuccess(i18n.t('message.unliked_success'))
       await refreshLikeUsers()
     }
     else {
-      await useHttpPostForm('/api/like/like', {
-        body: {
-          entityType: 'topic',
-          entityId: topic.value.id,
-        },
-      })
+      await useHttpPostForm(`/api/topics/${slug}/like`)
       liked.value = true
       topic.value.likeCount++
 
@@ -238,25 +221,15 @@ async function like() {
   }
 }
 
-async function addFavorite(topicId) {
+async function toggleFavorite() {
   try {
     if (topic.value.favorited) {
-      await useHttpPostForm('/api/favorite/delete', {
-        body: {
-          entityType: 'topic',
-          entityId: topicId,
-        },
-      })
+      await useHttpPostForm(`/api/topics/${slug}/unfavorite`)
       topic.value.favorited = false
       useMsgSuccess(i18n.t('message.removed_from_favorite'))
     }
     else {
-      await useHttpPostForm('/api/favorite/add', {
-        body: {
-          entityType: 'topic',
-          entityId: topicId,
-        },
-      })
+      await useHttpPostForm(`/api/topics/${slug}/favorite`)
       topic.value.favorited = true
       useMsgSuccess(i18n.t('message.added_to_favorite'))
     }

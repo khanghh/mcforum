@@ -42,6 +42,12 @@ type UserFavoriteEvent struct {
 	EntityType string `json:"entityType"`
 }
 
+type UserUnfavoriteEvent struct {
+	UserId     int64  `json:"userId"`
+	EntityId   int64  `json:"entityId"`
+	EntityType string `json:"entityType"`
+}
+
 type CommentCreateEvent struct {
 	UserId    int64 `json:"userId"`
 	CommentId int64 `json:"commentId"`

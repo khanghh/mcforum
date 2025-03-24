@@ -17,11 +17,11 @@ import (
 	"bbs-go/internal/service"
 )
 
-type ForumsController struct {
+type ForumController struct {
 	Ctx iris.Context
 }
 
-func (c *ForumsController) GetMenu() *web.JsonResult {
+func (c *ForumController) GetMenu() *web.JsonResult {
 	forumList := []response.ForumResponse{
 		{
 			Name: locale.T("nav.whats-new"),
@@ -42,19 +42,19 @@ func (c *ForumsController) GetMenu() *web.JsonResult {
 }
 
 // 节点
-func (c *ForumsController) GetList() *web.JsonResult {
+func (c *ForumController) GetList() *web.JsonResult {
 	nodes := response.BuildForumList(service.ForumService.GetAll())
 	return web.JsonData(nodes)
 }
 
 // 节点信息
-func (c *ForumsController) GetNode() *web.JsonResult {
+func (c *ForumController) GetNode() *web.JsonResult {
 	nodeId := params.FormValueInt64Default(c.Ctx, "nodeId", 0)
 	node := service.ForumService.Get(nodeId)
 	return web.JsonData(response.BuildForum(node))
 }
 
-func (c *ForumsController) GetWhatsNew() (*web.JsonResult, int) {
+func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -74,7 +74,7 @@ func (c *ForumsController) GetWhatsNew() (*web.JsonResult, int) {
 	return web.JsonCursorData(response.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
 }
 
-func (c *ForumsController) GetRecommended() *web.JsonResult {
+func (c *ForumController) GetRecommended() *web.JsonResult {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -94,7 +94,7 @@ func (c *ForumsController) GetRecommended() *web.JsonResult {
 	return web.JsonCursorData(response.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
-func (c *ForumsController) GetFollowed() (*web.JsonResult, int) {
+func (c *ForumController) GetFollowed() (*web.JsonResult, int) {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -118,7 +118,7 @@ func (c *ForumsController) GetFollowed() (*web.JsonResult, int) {
 }
 
 // // 帖子列表
-func (c *ForumsController) GetBy(slug string) (*web.JsonResult, int) {
+func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -145,7 +145,7 @@ func (c *ForumsController) GetBy(slug string) (*web.JsonResult, int) {
 }
 
 // 标签帖子列表
-func (c *ForumsController) GetTagTopics() *web.JsonResult {
+func (c *ForumController) GetTagTopics() *web.JsonResult {
 	var (
 		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
@@ -159,7 +159,7 @@ func (c *ForumsController) GetTagTopics() *web.JsonResult {
 }
 
 // 最新话题
-func (c *ForumsController) GetNewest() *web.JsonResult {
+func (c *ForumController) GetNewest() *web.JsonResult {
 	topics := service.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
 	return web.JsonData(response.BuildSimpleTopics(topics, nil))
 }
