@@ -22,25 +22,25 @@ import (
 	"bbs-go/internal/service"
 )
 
-type TopicController struct {
+type TopicsController struct {
 	Ctx iris.Context
 }
 
 // 节点
-func (c *TopicController) GetNodes() *web.JsonResult {
+func (c *TopicsController) GetNodes() *web.JsonResult {
 	nodes := response.BuildForumList(service.ForumService.GetAll())
 	return web.JsonData(nodes)
 }
 
 // 节点信息
-func (c *TopicController) GetNode() *web.JsonResult {
+func (c *TopicsController) GetNode() *web.JsonResult {
 	nodeId := params.FormValueInt64Default(c.Ctx, "nodeId", 0)
 	node := service.ForumService.Get(nodeId)
 	return web.JsonData(response.BuildForum(node))
 }
 
 // 发表帖子
-func (c *TopicController) PostCreate() *web.JsonResult {
+func (c *TopicsController) PostCreate() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -59,7 +59,7 @@ func (c *TopicController) PostCreate() *web.JsonResult {
 }
 
 // 编辑时获取详情
-func (c *TopicController) GetEditBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) GetEditBy(topicId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -97,7 +97,7 @@ func (c *TopicController) GetEditBy(topicId int64) *web.JsonResult {
 }
 
 // 编辑帖子
-func (c *TopicController) PostEditBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) PostEditBy(topicId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -132,7 +132,7 @@ func (c *TopicController) PostEditBy(topicId int64) *web.JsonResult {
 }
 
 // 删除帖子
-func (c *TopicController) PostDeleteBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) PostDeleteBy(topicId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -155,7 +155,7 @@ func (c *TopicController) PostDeleteBy(topicId int64) *web.JsonResult {
 }
 
 // PostRecommendBy 设为推荐
-func (c *TopicController) PostRecommendBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) PostRecommendBy(topicId int64) *web.JsonResult {
 	recommend, err := params.FormValueBool(c.Ctx, "recommend")
 	if err != nil {
 		return web.JsonError(err)
@@ -176,7 +176,7 @@ func (c *TopicController) PostRecommendBy(topicId int64) *web.JsonResult {
 }
 
 // 帖子详情
-func (c *TopicController) GetBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) GetBy(topicId int64) *web.JsonResult {
 	topic := service.TopicService.Get(topicId)
 	if topic == nil || topic.Status == constants.StatusDeleted {
 		return web.JsonErrorMsg("帖子不存在")
@@ -199,7 +199,7 @@ func (c *TopicController) GetBy(topicId int64) *web.JsonResult {
 }
 
 // 点赞用户
-func (c *TopicController) GetRecentlikesBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) GetRecentlikesBy(topicId int64) *web.JsonResult {
 	likes := service.UserLikeService.Recent(constants.EntityTopic, topicId, 5)
 	var users []response.UserInfo
 	for _, like := range likes {
@@ -212,14 +212,14 @@ func (c *TopicController) GetRecentlikesBy(topicId int64) *web.JsonResult {
 }
 
 // 最新帖子
-func (c *TopicController) GetRecent() *web.JsonResult {
+func (c *TopicsController) GetRecent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	topics := service.TopicService.Find(sqls.NewCnd().Where("status = ?", constants.StatusOK).Desc("id").Limit(10))
 	return web.JsonData(response.BuildSimpleTopics(topics, user))
 }
 
 // 用户帖子列表
-func (c *TopicController) GetUserTopics() *web.JsonResult {
+func (c *TopicsController) GetUserTopics() *web.JsonResult {
 	userId, err := params.FormValueInt64(c.Ctx, "userId")
 	if err != nil {
 		return web.JsonError(err)
@@ -231,7 +231,7 @@ func (c *TopicController) GetUserTopics() *web.JsonResult {
 }
 
 // 标签帖子列表
-func (c *TopicController) GetTagTopics() *web.JsonResult {
+func (c *TopicsController) GetTagTopics() *web.JsonResult {
 	var (
 		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
@@ -245,7 +245,7 @@ func (c *TopicController) GetTagTopics() *web.JsonResult {
 }
 
 // 收藏
-func (c *TopicController) GetFavoriteBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) GetFavoriteBy(topicId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -258,7 +258,7 @@ func (c *TopicController) GetFavoriteBy(topicId int64) *web.JsonResult {
 }
 
 // 推荐话题列表（目前逻辑为取最近50条数据随机展示）
-func (c *TopicController) GetRecommend() *web.JsonResult {
+func (c *TopicsController) GetRecommend() *web.JsonResult {
 	topics := cache.TopicCache.GetRecommendTopics()
 	if len(topics) == 0 {
 		return web.JsonSuccess()
@@ -278,13 +278,13 @@ func (c *TopicController) GetRecommend() *web.JsonResult {
 }
 
 // 最新话题
-func (c *TopicController) GetNewest() *web.JsonResult {
+func (c *TopicsController) GetNewest() *web.JsonResult {
 	topics := service.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
 	return web.JsonData(response.BuildSimpleTopics(topics, nil))
 }
 
 // 设置置顶
-func (c *TopicController) PostStickyBy(topicId int64) *web.JsonResult {
+func (c *TopicsController) PostBy(topicId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -294,15 +294,15 @@ func (c *TopicController) PostStickyBy(topicId int64) *web.JsonResult {
 	}
 
 	var (
-		sticky = params.FormValueBoolDefault(c.Ctx, "sticky", false) // 是否指定
+		pinned = params.FormValueBoolDefault(c.Ctx, "pinned", false) // 是否指定
 	)
-	if err := service.TopicService.SetSticky(topicId, sticky); err != nil {
+	if err := service.TopicService.PinTopic(topicId, pinned); err != nil {
 		return web.JsonError(err)
 	}
 	return web.JsonSuccess()
 }
 
-func (c *TopicController) GetHide_content() *web.JsonResult {
+func (c *TopicsController) GetHide_content() *web.JsonResult {
 	topicId := params.FormValueInt64Default(c.Ctx, "topicId", 0)
 	var (
 		exists      = false // 是否有隐藏内容

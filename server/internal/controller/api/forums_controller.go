@@ -17,11 +17,11 @@ import (
 	"bbs-go/internal/service"
 )
 
-type ForumController struct {
+type ForumsController struct {
 	Ctx iris.Context
 }
 
-func (c *ForumController) GetMenu() *web.JsonResult {
+func (c *ForumsController) GetMenu() *web.JsonResult {
 	forumList := []response.ForumResponse{
 		{
 			Name: locale.T("nav.whats-new"),
@@ -33,7 +33,7 @@ func (c *ForumController) GetMenu() *web.JsonResult {
 		},
 		{
 			Name: locale.T("nav.followed"),
-			Slug: "feed",
+			Slug: "followed",
 		},
 	}
 	realNodes := response.BuildForumList(service.ForumService.GetAll())
@@ -42,19 +42,19 @@ func (c *ForumController) GetMenu() *web.JsonResult {
 }
 
 // 节点
-func (c *ForumController) GetList() *web.JsonResult {
+func (c *ForumsController) GetList() *web.JsonResult {
 	nodes := response.BuildForumList(service.ForumService.GetAll())
 	return web.JsonData(nodes)
 }
 
 // 节点信息
-func (c *ForumController) GetNode() *web.JsonResult {
+func (c *ForumsController) GetNode() *web.JsonResult {
 	nodeId := params.FormValueInt64Default(c.Ctx, "nodeId", 0)
 	node := service.ForumService.Get(nodeId)
 	return web.JsonData(response.BuildForum(node))
 }
 
-func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
+func (c *ForumsController) GetWhatsNew() (*web.JsonResult, int) {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -62,31 +62,31 @@ func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
 
 	var temp []model.Topic
 	if cursor <= 0 {
-		stickyTopics := service.TopicService.GetStickyTopics(0, 3)
-		temp = append(temp, stickyTopics...)
+		pinnedTopics := service.TopicService.GetPinnedTopics(0, 3)
+		temp = append(temp, pinnedTopics...)
 	}
 	topics, cursor, hasMore := service.TopicService.GetTopics(user, 1, cursor)
 	for _, topic := range topics {
-		topic.Sticky = false // 正常列表不要渲染置顶
+		topic.Pinned = false // 正常列表不要渲染置顶
 		temp = append(temp, topic)
 	}
 	list := common.Distinct(temp, func(t model.Topic) any { return t.Id })
 	return web.JsonCursorData(response.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
 }
 
-func (c *ForumController) GetRecommended() *web.JsonResult {
+func (c *ForumsController) GetRecommended() *web.JsonResult {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
 	)
 	var temp []model.Topic
 	if cursor <= 0 {
-		stickyTopics := service.TopicService.GetStickyTopics(0, 3)
-		temp = append(temp, stickyTopics...)
+		pinnedTopics := service.TopicService.GetPinnedTopics(0, 3)
+		temp = append(temp, pinnedTopics...)
 	}
 	topics, cursor, hasMore := service.TopicService.GetRecommendedTopics(cursor)
 	for _, topic := range topics {
-		if !topic.Sticky {
+		if !topic.Pinned {
 			temp = append(temp, topic)
 		}
 	}
@@ -94,14 +94,14 @@ func (c *ForumController) GetRecommended() *web.JsonResult {
 	return web.JsonCursorData(response.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
-func (c *ForumController) GetFollowed() (*web.JsonResult, int) {
+func (c *ForumsController) GetFollowed() (*web.JsonResult, int) {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
 	)
 	var temp []model.Topic
 	if cursor <= 0 {
-		pinnedTopics := service.TopicService.GetStickyTopics(0, 3)
+		pinnedTopics := service.TopicService.GetPinnedTopics(0, 3)
 		for _, topic := range pinnedTopics {
 			if topic.Recommend {
 				temp = append(temp, topic)
@@ -110,7 +110,7 @@ func (c *ForumController) GetFollowed() (*web.JsonResult, int) {
 	}
 	topics, cursor, hasMore := service.TopicService.GetFollowedAuthorsTopics(user.Id, cursor)
 	for _, topic := range topics {
-		if !topic.Sticky {
+		if !topic.Pinned {
 			temp = append(temp, topic)
 		}
 	}
@@ -118,7 +118,7 @@ func (c *ForumController) GetFollowed() (*web.JsonResult, int) {
 }
 
 // // 帖子列表
-func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
+func (c *ForumsController) GetBy(slug string) (*web.JsonResult, int) {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -131,12 +131,12 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 
 	var temp []model.Topic
 	if cursor <= 0 {
-		stickyTopics := service.TopicService.GetStickyTopics(forum.Id, 3)
-		temp = append(temp, stickyTopics...)
+		pinnedTopics := service.TopicService.GetPinnedTopics(forum.Id, 3)
+		temp = append(temp, pinnedTopics...)
 	}
 	topics, cursor, hasMore := service.TopicService.GetTopics(user, forum.Id, cursor)
 	for _, topic := range topics {
-		if !topic.Sticky {
+		if !topic.Pinned {
 			temp = append(temp, topic)
 		}
 	}
@@ -145,7 +145,7 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 }
 
 // 标签帖子列表
-func (c *ForumController) GetTagTopics() *web.JsonResult {
+func (c *ForumsController) GetTagTopics() *web.JsonResult {
 	var (
 		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
@@ -159,7 +159,7 @@ func (c *ForumController) GetTagTopics() *web.JsonResult {
 }
 
 // 最新话题
-func (c *ForumController) GetNewest() *web.JsonResult {
+func (c *ForumsController) GetNewest() *web.JsonResult {
 	topics := service.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
 	return web.JsonData(response.BuildSimpleTopics(topics, nil))
 }

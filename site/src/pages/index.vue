@@ -7,8 +7,8 @@
             <forum-sidebar />
           </div>
           <div class="topics-main">
-            <load-more-async v-slot="{ items }" url="/api/topic/topics">
-              <topic-list :topics="items" show-sticky />
+            <load-more-async v-slot="{ items }" url="/api/forums/whats-new">
+              <topic-list :topics="items" show-pinned />
             </load-more-async>
           </div>
         </div>

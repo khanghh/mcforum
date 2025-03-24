@@ -8,7 +8,7 @@
           </div>
           <div class="topics-main">
             <load-more-async v-slot="{ items }" url="/api/topic/topics">
-              <topic-list :topics="items" show-sticky />
+              <topic-list :topics="items" show-pinned />
             </load-more-async>
           </div>
         </div>

@@ -5,6 +5,7 @@ import (
 	"bbs-go/internal/controller/api"
 	"bbs-go/internal/middleware"
 	"bbs-go/internal/pkg/config"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -57,10 +58,10 @@ func NewServer() {
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
 	apiRoute.Configure(func(m *mvc.Application) {
-		apiRoute.Party("/topic").Handle(new(api.TopicController))
-		apiRoute.Party("/forum").Handle(new(api.ForumController))
+		apiRoute.Party("/topics").Handle(new(api.TopicsController))
+		apiRoute.Party("/forums").Handle(new(api.ForumsController))
 		apiRoute.Party("/login").Handle(new(api.LoginController))
-		apiRoute.Party("/user").Handle(new(api.UserController))
+		apiRoute.Party("/user").Handle(new(api.UsersController))
 		apiRoute.Party("/tag").Handle(new(api.TagController))
 		apiRoute.Party("/comment").Handle(new(api.CommentController))
 		apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
@@ -95,6 +96,10 @@ func NewServer() {
 		m.Party("/role").Handle(new(admin.RoleController))
 		m.Party("/menu").Handle(new(admin.MenuController))
 	})
+
+	for _, route := range app.GetRoutes() {
+		fmt.Println(route.Path)
+	}
 
 	if err := app.Listen(":"+conf.Port,
 		iris.WithConfiguration(iris.Configuration{

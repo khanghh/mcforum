@@ -60,8 +60,8 @@ const menus = computed(() => {
   }
   if (isOwner || isAdmin) {
     items.push({
-      command: 'sticky',
-      label: topic.value.sticky ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin'),
+      command: 'pin',
+      label: topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin'),
     })
   }
   if (isOwner || isAdmin) {
@@ -89,8 +89,8 @@ async function handleCommand(command) {
   else if (command === 'recommend') {
     switchRecommend()
   }
-  else if (command === 'sticky') {
-    switchSticky()
+  else if (command === 'pin') {
+    toggleTopicPin()
   }
   else if (command === 'forbidden7Days') {
     await forbidden(7)
@@ -156,17 +156,17 @@ function switchRecommend() {
       })
   })
 }
-function switchSticky() {
-  const action = topic.value.sticky ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
+function toggleTopicPin() {
+  const action = topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    const sticky = !topic.value.sticky
-    useHttpPostForm(`/api/topic/sticky/${topic.value.id}`, {
+    const pinned = !topic.value.pinned
+    useHttpPostForm(`/api/topic/${topic.value.id}`, {
       body: {
-        sticky,
+        pinned: pinned,
       },
     })
       .then(() => {
-        topic.value.sticky = sticky
+        topic.value.pinned = pinned
         emits('update:modelValue', topic.value)
         useMsgSuccess({
           message: `${action}成功`,

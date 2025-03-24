@@ -24,12 +24,12 @@ import (
 	"bbs-go/internal/service"
 )
 
-type UserController struct {
+type UsersController struct {
 	Ctx iris.Context
 }
 
 // 获取当前登录用户
-func (c *UserController) GetCurrent() *web.JsonResult {
+func (c *UsersController) GetCurrent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user != nil {
 		return web.JsonData(response.BuildUserProfile(user))
@@ -38,7 +38,7 @@ func (c *UserController) GetCurrent() *web.JsonResult {
 }
 
 // 用户详情
-func (c *UserController) GetBy(userId int64) *web.JsonResult {
+func (c *UsersController) GetBy(userId int64) *web.JsonResult {
 	user := cache.UserCache.Get(userId)
 	if user != nil && user.Status != constants.StatusDeleted {
 		return web.JsonData(response.BuildUserDetail(user))
@@ -47,7 +47,7 @@ func (c *UserController) GetBy(userId int64) *web.JsonResult {
 }
 
 // 修改用户资料
-func (c *UserController) PostEditBy(userId int64) *web.JsonResult {
+func (c *UsersController) PostEditBy(userId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -102,7 +102,7 @@ func (c *UserController) PostEditBy(userId int64) *web.JsonResult {
 }
 
 // 修改头像
-func (c *UserController) PostUpdateAvatar() *web.JsonResult {
+func (c *UsersController) PostUpdateAvatar() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -118,7 +118,7 @@ func (c *UserController) PostUpdateAvatar() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-func (c *UserController) PostUpdateNickname() *web.JsonResult {
+func (c *UsersController) PostUpdateNickname() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -134,7 +134,7 @@ func (c *UserController) PostUpdateNickname() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-func (c *UserController) PostUpdateDescription() *web.JsonResult {
+func (c *UsersController) PostUpdateDescription() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -147,7 +147,7 @@ func (c *UserController) PostUpdateDescription() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-func (c *UserController) PostUpdateGender() *web.JsonResult {
+func (c *UsersController) PostUpdateGender() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -160,7 +160,7 @@ func (c *UserController) PostUpdateGender() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-func (c *UserController) PostUpdateBirthday() *web.JsonResult {
+func (c *UsersController) PostUpdateBirthday() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -174,7 +174,7 @@ func (c *UserController) PostUpdateBirthday() *web.JsonResult {
 }
 
 // 设置用户名
-func (c *UserController) PostSetUsername() *web.JsonResult {
+func (c *UsersController) PostSetUsername() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -188,7 +188,7 @@ func (c *UserController) PostSetUsername() *web.JsonResult {
 }
 
 // 设置邮箱
-func (c *UserController) PostSetEmail() *web.JsonResult {
+func (c *UsersController) PostSetEmail() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -202,7 +202,7 @@ func (c *UserController) PostSetEmail() *web.JsonResult {
 }
 
 // 设置密码
-func (c *UserController) PostSetPassword() *web.JsonResult {
+func (c *UsersController) PostSetPassword() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -217,7 +217,7 @@ func (c *UserController) PostSetPassword() *web.JsonResult {
 }
 
 // 修改密码
-func (c *UserController) PostUpdatePassword() *web.JsonResult {
+func (c *UsersController) PostUpdatePassword() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -234,7 +234,7 @@ func (c *UserController) PostUpdatePassword() *web.JsonResult {
 }
 
 // 设置背景图
-func (c *UserController) PostSet_background_image() *web.JsonResult {
+func (c *UsersController) PostSet_background_image() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -250,7 +250,7 @@ func (c *UserController) PostSet_background_image() *web.JsonResult {
 }
 
 // 用户收藏
-func (c *UserController) GetFavorites() *web.JsonResult {
+func (c *UsersController) GetFavorites() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 
@@ -279,7 +279,7 @@ func (c *UserController) GetFavorites() *web.JsonResult {
 }
 
 // 获取最近3条未读消息
-func (c *UserController) GetMsgrecent() *web.JsonResult {
+func (c *UsersController) GetMsgrecent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	var count int64 = 0
 	var messages []model.Message
@@ -292,7 +292,7 @@ func (c *UserController) GetMsgrecent() *web.JsonResult {
 }
 
 // 用户消息
-func (c *UserController) GetMessages() *web.JsonResult {
+func (c *UsersController) GetMessages() *web.JsonResult {
 	user, err := service.UserTokenService.CheckLogin(c.Ctx)
 	if err != nil {
 		return web.JsonError(errs.NotLogin)
@@ -324,7 +324,7 @@ func (c *UserController) GetMessages() *web.JsonResult {
 }
 
 // 用户积分记录
-func (c *UserController) GetScore_logs() *web.JsonResult {
+func (c *UsersController) GetScore_logs() *web.JsonResult {
 	user, err := service.UserTokenService.CheckLogin(c.Ctx)
 	if err != nil {
 		return web.JsonError(err)
@@ -352,7 +352,7 @@ func (c *UserController) GetScore_logs() *web.JsonResult {
 }
 
 // 积分排行
-func (c *UserController) GetScoreRank() *web.JsonResult {
+func (c *UsersController) GetScoreRank() *web.JsonResult {
 	users := cache.UserCache.GetScoreRank()
 	var results []*response.UserInfo
 	for _, user := range users {
@@ -362,7 +362,7 @@ func (c *UserController) GetScoreRank() *web.JsonResult {
 }
 
 // 禁言
-func (c *UserController) PostForbidden() *web.JsonResult {
+func (c *UsersController) PostForbidden() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -392,7 +392,7 @@ func (c *UserController) PostForbidden() *web.JsonResult {
 }
 
 // PostEmailVerify 请求邮箱验证邮件
-func (c *UserController) PostSend_verify_email() *web.JsonResult {
+func (c *UsersController) PostSend_verify_email() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
@@ -404,7 +404,7 @@ func (c *UserController) PostSend_verify_email() *web.JsonResult {
 }
 
 // PostVerify_email 获取邮箱验证码
-func (c *UserController) PostVerify_email() *web.JsonResult {
+func (c *UsersController) PostVerify_email() *web.JsonResult {
 	token := params.FormValue(c.Ctx, "token")
 	if strs.IsBlank(token) {
 		return web.JsonErrorMsg("Illegal request")

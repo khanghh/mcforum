@@ -11,7 +11,7 @@
               ref="loader"
               v-slot="{ items }"
               :url="apiUrl">
-              <topic-list :topics="items" show-sticky />
+              <topic-list :topics="items" show-pinned />
             </load-more-async>
           </div>
         </div>
@@ -32,7 +32,8 @@ const route = useRoute()
 const loader = ref(null)
 const slug = route.params.slug || 'whats-new'
 
-const apiUrl = computed(() => `/api/forum/${slug}`)
+const apiUrl = computed(() => `/api/forums/${slug}`)
+
 const updateItems = (newItems) => {
   topics.value = newItems
   console.log('Updated topics:', topics.value)

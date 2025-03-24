@@ -16,7 +16,7 @@
             </nuxt-link>
           </div>
           <div class="icons">
-            <span v-if="showSticky && topic.sticky" class="topic-sticky-icon">{{ $t('feed.pinned') }}</span>
+            <span v-if="showPinned && topic.pinned" class="topic-pinned-icon">{{ $t('feed.pinned') }}</span>
           </div>
         </div>
         <div class="topic-time">
@@ -98,7 +98,7 @@ defineProps({
     type: Boolean,
     default: true,
   },
-  showSticky: {
+  showPinned: {
     type: Boolean,
     default: false,
   },
@@ -239,7 +239,7 @@ async function toTopicDetail(topicId) {
         .icons {
           display: flex;
 
-          .topic-sticky-icon {
+          .topic-pinned-icon {
             color: var(--color-red);
             border: 1px solid var(--color-red);
             border-radius: 2px;

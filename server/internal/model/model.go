@@ -217,8 +217,8 @@ type Topic struct {
 	HideContent       string              `gorm:"type:longtext" json:"hideContent" form:"hideContent"`                             // 回复可见内容
 	Recommend         bool                `gorm:"not null;index:idx_recommend" json:"recommend" form:"recommend"`                  // 是否推荐
 	RecommendTime     int64               `gorm:"not null" json:"recommendTime" form:"recommendTime"`                              // 推荐时间
-	Sticky            bool                `gorm:"not null;index:idx_sticky_sticky_time" json:"sticky" form:"sticky"`               // 置顶
-	StickyTime        int64               `gorm:"not null;index:idx_sticky_sticky_time" json:"stickyTime" form:"stickyTime"`       // 置顶时间
+	Pinned            bool                `gorm:"not null;index:idx_pinned_time" json:"pinned" form:"pinned"`                      // 置顶
+	PinnedTime        int64               `gorm:"not null;index:idx_pinned_time" json:"pinnedTime" form:"pinnedTime"`              // 置顶时间
 	ViewCount         int64               `gorm:"not null" json:"viewCount" form:"viewCount"`                                      // 查看数量
 	CommentCount      int64               `gorm:"not null" json:"commentCount" form:"commentCount"`                                // 跟帖数量
 	LikeCount         int64               `gorm:"not null" json:"likeCount" form:"likeCount"`                                      // 点赞数量

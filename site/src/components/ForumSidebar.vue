@@ -21,12 +21,10 @@
 import iconNode from '~/assets/images/node.png'
 
 const route = useRoute()
-const slug = route.params.slug
-
-const envStore = useEnvStore()
+const slug = route.params.slug || 'whats-new'
 
 const { data: forums } = await useAsyncData('forums', () =>
-  useMyFetch(`/api/forum/menu`),
+  useMyFetch(`/api/forums/menu`),
 )
 
 function forumLogo(forum) {

@@ -434,32 +434,32 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []model.Topic
 	return
 }
 
-func (s *topicService) GetStickyTopics(nodeId int64, limit int) []model.Topic {
+func (s *topicService) GetPinnedTopics(nodeId int64, limit int) []model.Topic {
 	if nodeId > 0 {
-		return s.Find(sqls.NewCnd().Where("node_id = ? and sticky = true and status = ?",
-			nodeId, constants.StatusOK).Desc("sticky_time").Limit(limit))
+		return s.Find(sqls.NewCnd().Where("node_id = ? and pinned = true and status = ?",
+			nodeId, constants.StatusOK).Desc("pinned_time").Limit(limit))
 	} else {
-		return s.Find(sqls.NewCnd().Where("sticky = true and status = ?",
-			constants.StatusOK).Desc("sticky_time").Limit(limit))
+		return s.Find(sqls.NewCnd().Where("pinned = true and status = ?",
+			constants.StatusOK).Desc("pinned_time").Limit(limit))
 	}
 }
 
-func (s *topicService) SetSticky(topicId int64, sticky bool) error {
+func (s *topicService) PinTopic(topicId int64, pinned bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
 		return errors.New("话题不存在")
 	}
-	if topic.Sticky == sticky {
+	if topic.Pinned == pinned {
 		return nil
 	}
-	if sticky {
+	if pinned {
 		return s.Updates(topicId, map[string]interface{}{
-			"sticky":      true,
-			"sticky_time": dates.NowTimestamp(),
+			"pinned":      true,
+			"pinned_time": dates.NowTimestamp(),
 		})
 	} else {
 		return s.Updates(topicId, map[string]interface{}{
-			"sticky": false,
+			"pinned": false,
 		})
 	}
 }
