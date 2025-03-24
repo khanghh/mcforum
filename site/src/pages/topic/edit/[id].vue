@@ -1,8 +1,10 @@
 <template>
   <section class="main">
     <div class="container">
-      <div class="topic-create-form" v-if="postForm">
-        <div class="topic-form-title">{{ $t('page.edit_topic') }}</div>
+      <div v-if="postForm" class="topic-create-form">
+        <div class="topic-form-title">
+          {{ $t('page.edit_topic') }}
+        </div>
 
         <div class="field">
           <div class="control">
@@ -67,38 +69,37 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 definePageMeta({
-  middleware: "auth",
-});
+  middleware: 'auth',
+})
 
 useHead({
   title: useSiteTitle(i18n.t('page.edit_topic')),
-});
+})
 
-const route = useRoute();
-const publishing = ref(false);
-const configStore = useConfigStore();
+const route = useRoute()
+const publishing = ref(false)
+const configStore = useConfigStore()
 
 const isEnableHideContent = computed(() => {
-  return configStore.config.enableHideContent;
-});
+  return configStore.config.enableHideContent
+})
 
-const { data: nodes } = useAsyncData("nodes", () =>
-  useMyFetch("/api/topic/nodes")
-);
+const { data: nodes } = useAsyncData('nodes', () =>
+  useMyFetch('/api/topic/nodes'),
+)
 
 const { data: postForm } = useAsyncData(() => {
   publishing.value = false
   return useMyFetch(`/api/topic/edit/${route.params.id}`)
-});
-
+})
 
 async function submitCreate() {
   if (publishing.value) {
-    return;
+    return
   }
-  publishing.value = true;
+  publishing.value = true
 
   try {
     useHttpPostForm(`/api/topic/edit/${postForm.value.id}`, {
@@ -107,21 +108,21 @@ async function submitCreate() {
         title: postForm.value.title,
         content: postForm.value.content,
         hideContent: postForm.value.hideContent,
-        tags: postForm.value.tags ? postForm.value.tags.join(",") : "",
+        tags: postForm.value.tags ? postForm.value.tags.join(',') : '',
       },
-    });
+    })
     useMsg({
-      message: "修改成功",
+      message: '修改成功',
       onClose() {
-        useLinkTo(`/topic/${postForm.value.id}`);
+        useLinkTo(`/topic/${postForm.value.id}`)
       },
-    });
-  } catch (e) {
-    publishing.value = false;
-    useMsgError("提交失败：" + (e.message || e));
+    })
+  }
+  catch (e) {
+    publishing.value = false
+    useMsgError('提交失败：' + (e.message || e))
   }
 }
-
 </script>
 
 <style lang="scss" scoped></style>

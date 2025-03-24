@@ -29,6 +29,7 @@ export default defineNuxtConfig({
         // See IntersectionObserver documentation
       },
     }],
+    '@nuxt/eslint',
   ],
 
   plugins: [
@@ -79,6 +80,12 @@ export default defineNuxtConfig({
       '/admin/**': {
         proxy: `${import.meta.env.SERVER_URL}/admin/**`,
       },
+    },
+  },
+
+  eslint: {
+    config: {
+      stylistic: true,
     },
   },
 

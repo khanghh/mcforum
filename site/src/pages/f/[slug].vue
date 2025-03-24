@@ -8,6 +8,7 @@
           </div>
           <div class="topics-main">
             <load-more-async
+              ref="loader"
               v-slot="{ items }"
               :url="apiUrl">
               <topic-list :topics="items" show-sticky />
@@ -28,9 +29,14 @@
 <script setup>
 const route = useRoute()
 
+const loader = ref(null)
 const slug = route.params.slug || 'whats-new'
 
 const apiUrl = computed(() => `/api/forum/${slug}`)
+const updateItems = (newItems) => {
+  topics.value = newItems
+  console.log('Updated topics:', topics.value)
+}
 
 useHead({
   title: useSiteTitle('test'),

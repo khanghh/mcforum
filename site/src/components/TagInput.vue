@@ -36,7 +36,8 @@
               :class="{ active: index === selectIndex }"
               class="tag-item"
               @click="selectTag(index)"
-              v-text="item" />
+              v-text="item">
+            </div>
           </section>
         </div>
       </div>

@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useConfigStore = defineStore("config", {
+export const useConfigStore = defineStore('config', {
   state: () => ({
     config: {},
   }),
@@ -10,12 +10,12 @@ export const useConfigStore = defineStore("config", {
     //   return this.doubleCounter + 1
     // },
     isEnabledArticle(state) {
-      return state.config.modules.article || true;
+      return state.config.modules.article || true
     },
   },
   actions: {
     async fetchConfig() {
-      this.config = await useHttpGet("/api/config/configs");
+      this.config = await useHttpGet('/api/config/configs')
     },
   },
-});
+})

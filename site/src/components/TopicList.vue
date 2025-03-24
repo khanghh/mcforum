@@ -76,7 +76,7 @@
             </div>
           </div>
           <div class="topic-tags">
-            <nuxt-link v-if="topic.node" class="topic-tag" :to="`/topics/node/${topic.node.id}`" :alt="topic.node.name">
+            <nuxt-link v-if="topic.node" class="topic-tag" :to="`/f/${topic.node.slug}`" :alt="topic.node.name">
               {{ topic.node.name }}
             </nuxt-link>
           </div>

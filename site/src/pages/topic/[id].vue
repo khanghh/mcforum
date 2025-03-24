@@ -34,7 +34,9 @@
                       {{ $t('feed.published_on') }}
                       <time
                         :datetime="usePrettyDate(topic.createTime)"
-                        itemprop="datePublished">{{ usePrettyDate(topic.createTime) }}</time>
+                        itemprop="datePublished">
+                        {{ usePrettyDate(topic.createTime) }}
+                      </time>
                     </span>
                     <span v-if="topic.ipLocation" class="meta-item">{{ topic.ipLocation }}</span>
                   </div>
@@ -159,109 +161,113 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const route = useRoute();
-const hideContent = ref(null);
+const i18n = useI18n()
+const route = useRoute()
+const hideContent = ref(null)
 
-const { data: topic } = await useAsyncData("topic", () =>
-  useMyFetch(`/api/topic/${route.params.id}`)
-);
+const { data: topic } = await useAsyncData('topic', () =>
+  useMyFetch(`/api/topic/${route.params.id}`),
+)
 
-const { data: liked } = await useAsyncData("liked", () => {
-  return useMyFetch("/api/like/liked", {
+const { data: liked } = await useAsyncData('liked', () => {
+  return useMyFetch('/api/like/liked', {
     params: {
-      entityType: "topic",
+      entityType: 'topic',
       entityId: route.params.id,
     },
-  });
-});
+  })
+})
 
 const { data: likeUsers, refresh: refreshLikeUsers } = await useAsyncData(
   () => {
-    return useMyFetch(`/api/topic/recentlikes/${route.params.id}`);
-  }
-);
+    return useMyFetch(`/api/topic/recentlikes/${route.params.id}`)
+  },
+)
 
 const imageUrls = computed(() => {
   if (!topic.value.imageList || !topic.value.imageList.length) {
-    return [];
+    return []
   }
-  const ret = [];
+  const ret = []
   for (let i = 0; i < topic.value.imageList.length; i++) {
-    ret.push(topic.value.imageList[i].url);
+    ret.push(topic.value.imageList[i].url)
   }
-  return ret;
-});
+  return ret
+})
 
 useHead({
   title: useTopicSiteTitle(topic.value),
-});
+})
 
 const isPending = computed(() => {
-  return topic.value.status === 2;
-});
+  return topic.value.status === 2
+})
 
 async function like() {
   try {
     if (liked.value) {
-      await useHttpPostForm("/api/like/unlike", {
+      await useHttpPostForm('/api/like/unlike', {
         body: {
-          entityType: "topic",
+          entityType: 'topic',
           entityId: topic.value.id,
         },
-      });
-      liked.value = false;
-      topic.value.likeCount =
-        topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0;
+      })
+      liked.value = false
+      topic.value.likeCount
+        = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
 
-      useMsgSuccess(i18n.t('message.unliked_success'));
-      await refreshLikeUsers();
-    } else {
-      await useHttpPostForm("/api/like/like", {
-        body: {
-          entityType: "topic",
-          entityId: topic.value.id,
-        },
-      });
-      liked.value = true;
-      topic.value.likeCount++;
-
-      useMsgSuccess(i18n.t('message.liked_success'));
-      await refreshLikeUsers();
+      useMsgSuccess(i18n.t('message.unliked_success'))
+      await refreshLikeUsers()
     }
-  } catch (e) {
-    useCatchError(e);
+    else {
+      await useHttpPostForm('/api/like/like', {
+        body: {
+          entityType: 'topic',
+          entityId: topic.value.id,
+        },
+      })
+      liked.value = true
+      topic.value.likeCount++
+
+      useMsgSuccess(i18n.t('message.liked_success'))
+      await refreshLikeUsers()
+    }
+  }
+  catch (e) {
+    useCatchError(e)
   }
 }
 
 async function addFavorite(topicId) {
   try {
     if (topic.value.favorited) {
-      await useHttpPostForm("/api/favorite/delete", {
+      await useHttpPostForm('/api/favorite/delete', {
         body: {
-          entityType: "topic",
+          entityType: 'topic',
           entityId: topicId,
         },
-      });
-      topic.value.favorited = false;
-      useMsgSuccess(i18n.t('message.removed_from_favorite'));
-    } else {
-      await useHttpPostForm("/api/favorite/add", {
-        body: {
-          entityType: "topic",
-          entityId: topicId,
-        },
-      });
-      topic.value.favorited = true;
-      useMsgSuccess(i18n.t('message.added_to_favorite'));
+      })
+      topic.value.favorited = false
+      useMsgSuccess(i18n.t('message.removed_from_favorite'))
     }
-  } catch (e) {
-    useCatchError(e);
+    else {
+      await useHttpPostForm('/api/favorite/add', {
+        body: {
+          entityType: 'topic',
+          entityId: topicId,
+        },
+      })
+      topic.value.favorited = true
+      useMsgSuccess(i18n.t('message.added_to_favorite'))
+    }
+  }
+  catch (e) {
+    useCatchError(e)
   }
 }
 
 async function commentCreated() {
-  console.log("commentCreated...");
+  console.log('commentCreated...')
 }
 </script>
 

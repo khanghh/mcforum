@@ -36,38 +36,38 @@
 </template>
 
 <script setup>
-const { data: nodes } = await useAsyncData("nodes", () => {
-  return useMyFetch("/api/topic/nodes");
-});
+const { data: nodes } = await useAsyncData('nodes', () => {
+  return useMyFetch('/api/topic/nodes')
+})
 
-const route = useRoute();
-const router = useRouter();
-const nodeId = ref(parseInt(route.query.nodeId) || 0);
-const timeRange = ref(parseInt(route.query.timeRange) || 0);
+const route = useRoute()
+const router = useRouter()
+const nodeId = ref(parseInt(route.query.nodeId) || 0)
+const timeRange = ref(parseInt(route.query.timeRange) || 0)
 
 const setNodeId = (changeNodeId) => {
-  nodeId.value = changeNodeId;
-  setQuery("nodeId", changeNodeId);
-};
+  nodeId.value = changeNodeId
+  setQuery('nodeId', changeNodeId)
+}
 
 const setTimeRange = () => {
-  setQuery("timeRange", timeRange.value);
-};
+  setQuery('timeRange', timeRange.value)
+}
 
 const setQuery = (key, value) => {
-  const currentQuery = { ...route.query };
+  const currentQuery = { ...route.query }
 
   const newQuery = {
     ...currentQuery,
-  };
+  }
 
-  newQuery[key] = value;
+  newQuery[key] = value
 
   router.push({
-    path: "/search",
+    path: '/search',
     query: newQuery,
-  });
-};
+  })
+}
 </script>
 
 <style lang="scss" scoped>
