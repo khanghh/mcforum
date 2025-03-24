@@ -8,6 +8,7 @@ import (
 
 	"github.com/kataras/iris/v12"
 
+	"bbs-go/internal/controller/response"
 	"bbs-go/internal/service"
 )
 
@@ -23,14 +24,14 @@ func (c *SysConfigController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *SysConfigController) AnyList() *web.JsonResult {
+func (c *SysConfigController) GetList() *web.JsonResult {
 	list, paging := service.SysConfigService.FindPageByParams(params.NewQueryParams(c.Ctx).PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }
 
 func (c *SysConfigController) GetAll() *web.JsonResult {
-	config := service.SysConfigService.GetConfig()
-	return web.JsonData(config)
+	configs := service.SysConfigService.GetAll()
+	return web.JsonData(response.BuildSysConfigResponse(configs))
 }
 
 func (c *SysConfigController) PostSave() *web.JsonResult {

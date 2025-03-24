@@ -26,7 +26,7 @@ func (c *RoleController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *RoleController) AnyList() *web.JsonResult {
+func (c *RoleController) GetList() *web.JsonResult {
 	list, paging := service.RoleService.FindPageByCnd(params.NewPagedSqlCnd(c.Ctx,
 		params.QueryFilter{
 			ParamName: "id",

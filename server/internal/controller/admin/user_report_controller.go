@@ -23,7 +23,7 @@ func (c *UserReportController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *UserReportController) AnyList() *web.JsonResult {
+func (c *UserReportController) GetList() *web.JsonResult {
 	list, paging := service.UserReportService.FindPageByParams(params.NewQueryParams(c.Ctx).PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }

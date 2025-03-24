@@ -23,7 +23,7 @@ func (c *CheckInController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *CheckInController) AnyList() *web.JsonResult {
+func (c *CheckInController) GetList() *web.JsonResult {
 	list, paging := service.CheckInService.FindPageByParams(params.NewQueryParams(c.Ctx).PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }

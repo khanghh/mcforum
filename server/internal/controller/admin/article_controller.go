@@ -38,7 +38,7 @@ func (c *ArticleController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *ArticleController) AnyList() *web.JsonResult {
+func (c *ArticleController) GetList() *web.JsonResult {
 	var (
 		id     = params.FormValueInt64Default(c.Ctx, "id", 0)
 		userId = params.FormValueInt64Default(c.Ctx, "userId", 0)

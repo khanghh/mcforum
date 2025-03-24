@@ -24,7 +24,7 @@ func (c *FavoriteController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *FavoriteController) AnyList() *web.JsonResult {
+func (c *FavoriteController) GetList() *web.JsonResult {
 	list, paging := service.FavoriteService.FindPageByParams(params.NewQueryParams(c.Ctx).PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }

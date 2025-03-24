@@ -35,7 +35,7 @@ func (c *UserController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(c.buildUserItem(t, true))
 }
 
-func (c *UserController) AnyList() *web.JsonResult {
+func (c *UserController) GetList() *web.JsonResult {
 	list, paging := service.UserService.FindPageByParams(params.NewQueryParams(c.Ctx).
 		EqByReq("id").
 		LikeByReq("nickname").

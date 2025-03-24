@@ -24,7 +24,7 @@ func (c *UserScoreLogController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *UserScoreLogController) AnyList() *web.JsonResult {
+func (c *UserScoreLogController) GetList() *web.JsonResult {
 	list, paging := service.UserScoreLogService.FindPageByParams(params.NewQueryParams(c.Ctx).
 		EqByReq("user_id").EqByReq("source_type").EqByReq("source_id").EqByReq("type").PageByReq().Desc("id"))
 

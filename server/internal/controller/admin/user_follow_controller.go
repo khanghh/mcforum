@@ -23,7 +23,7 @@ func (c *UserFollowController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *UserFollowController) AnyList() *web.JsonResult {
+func (c *UserFollowController) GetList() *web.JsonResult {
 	list, paging := service.UserFollowService.FindPageByParams(params.NewQueryParams(c.Ctx).PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }

@@ -26,7 +26,7 @@ func (c *TopicController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *TopicController) AnyList() *web.JsonResult {
+func (c *TopicController) GetList() *web.JsonResult {
 	list, paging := service.TopicService.FindPageByParams(params.NewQueryParams(c.Ctx).
 		EqByReq("id").EqByReq("user_id").EqByReq("status").EqByReq("recommend").LikeByReq("title").PageByReq().Desc("id"))
 
@@ -47,7 +47,7 @@ func (c *TopicController) PostRecommend() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	err = service.TopicService.SetRecommend(id, true)
+	err = service.TopicService.SetRecommended(id, true)
 	if err != nil {
 		return web.JsonError(err)
 	}
@@ -60,7 +60,7 @@ func (c *TopicController) DeleteRecommend() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	err = service.TopicService.SetRecommend(id, false)
+	err = service.TopicService.SetRecommended(id, false)
 	if err != nil {
 		return web.JsonError(err)
 	}

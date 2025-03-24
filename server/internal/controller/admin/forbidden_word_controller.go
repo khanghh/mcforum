@@ -24,7 +24,7 @@ func (c *ForbiddenWordController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *ForbiddenWordController) AnyList() *web.JsonResult {
+func (c *ForbiddenWordController) GetList() *web.JsonResult {
 	list, paging := service.ForbiddenWordService.FindPageByParams(params.NewQueryParams(c.Ctx).EqByReq("type").LikeByReq("word").EqByReq("status").PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }

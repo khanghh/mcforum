@@ -35,7 +35,7 @@ func (c *MenuController) GetTree() *web.JsonResult {
 	return web.JsonData(response.BuildMenuSimpleTree(0, list))
 }
 
-func (c *MenuController) AnyList() *web.JsonResult {
+func (c *MenuController) GetList() *web.JsonResult {
 	list := service.MenuService.Find(params.NewSqlCnd(c.Ctx,
 		params.QueryFilter{
 			ParamName: "status",

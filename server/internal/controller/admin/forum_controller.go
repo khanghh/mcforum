@@ -25,7 +25,7 @@ func (c *ForumController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *ForumController) AnyList() *web.JsonResult {
+func (c *ForumController) GetList() *web.JsonResult {
 	list, paging := service.ForumService.FindPageByCnd(params.NewPagedSqlCnd(c.Ctx,
 		params.QueryFilter{
 			ParamName: "name",

@@ -29,7 +29,7 @@ func (c *TagController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *TagController) AnyList() *web.JsonResult {
+func (c *TagController) GetList() *web.JsonResult {
 	list, paging := service.TagService.FindPageByParams(params.NewQueryParams(c.Ctx).
 		LikeByReq("id").
 		LikeByReq("name").

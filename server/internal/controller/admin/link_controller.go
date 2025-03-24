@@ -25,7 +25,7 @@ func (c *LinkController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *LinkController) AnyList() *web.JsonResult {
+func (c *LinkController) GetList() *web.JsonResult {
 	list, paging := service.LinkService.FindPageByParams(params.NewQueryParams(c.Ctx).EqByReq("status").LikeByReq("title").LikeByReq("url").PageByReq().Desc("id"))
 	return web.JsonData(&web.PageResult{Results: list, Page: paging})
 }

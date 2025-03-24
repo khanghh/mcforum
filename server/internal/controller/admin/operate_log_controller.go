@@ -22,7 +22,7 @@ func (c *OperateLogController) GetBy(id int64) *web.JsonResult {
 	return web.JsonData(t)
 }
 
-func (c *OperateLogController) AnyList() *web.JsonResult {
+func (c *OperateLogController) GetList() *web.JsonResult {
 	list, paging := service.OperateLogService.FindPageByParams(params.NewQueryParams(c.Ctx).
 		EqByReq("user_id").EqByReq("op_type").EqByReq("data_type").EqByReq("data_id").
 		PageByReq().Desc("id"))
