@@ -9,12 +9,12 @@
         <div class="field">
           <div class="control">
             <div
-              v-for="node in nodes"
-              :key="node.id"
+              v-for="forum in forums"
+              :key="forum.id"
               class="topic-tag"
-              :class="{ selected: true }"
-              @click="postForm.nodeId = node.id">
-              <span>{{ node.name }}</span>
+              :class="{ selected: postForm.forumId === forum.id }"
+              @click="postForm.forumId = forum.id">
+              <span>{{ forum.name }}</span>
             </div>
           </div>
         </div>
@@ -86,13 +86,9 @@ const isEnableHideContent = computed(() => {
   return configStore.config.enableHideContent
 })
 
-const nodes = computed(() => ([{
-  id: 1,
-  name: 'aaa',
-}]))
-// const { data: nodes } = useAsyncData('nodes', () =>
-//   useMyFetch('/api/topic/nodes'),
-// )
+const { data: forums } = useAsyncData('forums', () =>
+  useMyFetch('/api/forums/list'),
+)
 
 const { data: postForm } = useAsyncData(() => {
   publishing.value = false
@@ -108,7 +104,7 @@ async function submitCreate() {
   try {
     useHttpPostForm(`/api/topic/edit/${postForm.value.id}`, {
       body: {
-        nodeId: postForm.value.nodeId,
+        forumId: postForm.value.forumId,
         title: postForm.value.title,
         content: postForm.value.content,
         hideContent: postForm.value.hideContent,

@@ -8,9 +8,9 @@
         :class="{ active: forum.slug === slug }">
         <nuxt-link :to="forumUrl(forum.slug)">
           <img
-            class="node-logo"
+            class="forum-logo"
             :src="forumLogo(forum)">
-          <span class="node-name">{{ forum.name }}</span>
+          <span>{{ forum.name }}</span>
         </nuxt-link>
       </li>
     </ul>
@@ -28,7 +28,16 @@ const { data: forums } = await useAsyncData('forums', () =>
 )
 
 function forumLogo(forum) {
-  return iconNode
+  if (forum.slug === 'whats-new') {
+    return '/images/new.png'
+  }
+  if (forum.slug === 'recommended') {
+    return '/images/recommend.png'
+  }
+  if (forum.slug === 'followed') {
+    return '/images/feed.png'
+  }
+  return forum.logo || iconNode
 }
 
 function forumUrl(slug) {
@@ -99,12 +108,11 @@ function forumUrl(slug) {
         align-items: center;
 
         //justify-content: center;
-        .node-logo {
+        .forum-logo {
           width: 24px;
           height: 24px;
           border-radius: 4px;
           margin-right: 10px;
-          background-color: var(--bg-color);
         }
       }
     }

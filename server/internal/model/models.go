@@ -216,8 +216,8 @@ type Topic struct {
 	Content           string              `gorm:"type:longtext" json:"content" form:"content"`                                     // 内容
 	ImageList         string              `gorm:"type:longtext" json:"imageList" form:"imageList"`                                 // 图片
 	HideContent       string              `gorm:"type:longtext" json:"hideContent" form:"hideContent"`                             // 回复可见内容
-	Recommend         bool                `gorm:"not null;index:idx_recommend" json:"recommend" form:"recommend"`                  // 是否推荐
-	RecommendTime     int64               `gorm:"not null" json:"recommendTime" form:"recommendTime"`                              // 推荐时间
+	Recommended       bool                `gorm:"not null;index:idx_recommend" json:"recommended" form:"recommended"`              // 是否推荐
+	RecommendedTime   int64               `gorm:"not null" json:"recommendedTime" form:"recommendedTime"`                          // 推荐时间
 	Pinned            bool                `gorm:"not null;index:idx_pinned_time" json:"pinned" form:"pinned"`                      // 置顶
 	PinnedTime        int64               `gorm:"not null;index:idx_pinned_time" json:"pinnedTime" form:"pinnedTime"`              // 置顶时间
 	ViewCount         int64               `gorm:"not null" json:"viewCount" form:"viewCount"`                                      // 查看数量

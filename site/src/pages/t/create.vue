@@ -1,7 +1,7 @@
 <template>
   <section class="main">
     <div class="container">
-      <article v-if="!isNeedEmailVerify" class="message is-warning">
+      <article v-if="isNeedEmailVerify" class="message is-warning">
         <div class="message-header">
           <p>{{ $t('publish.verify_email_title') }}</p>
         </div>
@@ -26,12 +26,12 @@
         <div class="field">
           <div class="control">
             <div
-              v-for="node in nodes"
-              :key="node.id"
+              v-for="forum in forums"
+              :key="forum.id"
               class="topic-tag"
-              :class="{ selected: postForm.nodeId === node.id }"
-              @click="postForm.nodeId = node.id">
-              <span>{{ node.name }}</span>
+              :class="{ selected: postForm.forumId === forum.id }"
+              @click="postForm.forumId = forum.id">
+              <span>{{ forum.name }}</span>
             </div>
           </div>
         </div>
@@ -124,12 +124,11 @@ const configStore = useConfigStore()
 const route = useRoute()
 const router = useRouter()
 
-const nodeId
-  = parseInt(route.query.nodeId) || configStore.config.defaultNodeId || 0
+const forumId = parseInt(route.query.forumId) || configStore.config.defaultForumId || 0
 
 const postForm = ref({
   type: Number.parseInt(route.query.type) || 0,
-  nodeId: nodeId,
+  forumId: forumId,
   title: '',
   tags: [],
   content: '',
@@ -157,8 +156,8 @@ const topicCaptchaEnabled = computed(() => {
   return configStore.config.topicCaptcha
 })
 
-const { data: nodes } = useAsyncData('nodes', () =>
-  useMyFetch('/api/topic/nodes'),
+const { data: forums } = useAsyncData('forums', () =>
+  useMyFetch('/api/forums/list'),
 )
 
 init()
@@ -198,7 +197,7 @@ async function createTopic() {
 
   publishing.value = true
   try {
-    const topic = await useHttpPost('/api/topic/create', {
+    const topic = await useHttpPost('/api/topics/create', {
       body: postForm.value,
     })
     router.push(`/t/${topic.slug}`)

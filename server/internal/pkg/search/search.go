@@ -43,7 +43,7 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 		UserId:     topic.UserId,
 		Title:      topic.Title,
 		Status:     topic.Status,
-		Recommend:  topic.Recommend,
+		Recommend:  topic.Recommended,
 		CreateTime: topic.CreateTime,
 	}
 

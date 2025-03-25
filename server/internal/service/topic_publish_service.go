@@ -33,8 +33,9 @@ func (s *topicPublishService) Publish(userId int64, form model.CreateTopicForm) 
 	topic := &model.Topic{
 		Type:            form.Type,
 		UserId:          userId,
-		ForumId:         form.NodeId,
+		ForumId:         form.ForumId,
 		Title:           form.Title,
+		Slug:            form.Slug,
 		Content:         form.Content,
 		HideContent:     form.HideContent,
 		Status:          constants.StatusOK,
@@ -137,13 +138,13 @@ func (s topicPublishService) _CheckParams(userId int64, form model.CreateTopicFo
 		}
 	}
 
-	if form.NodeId <= 0 {
-		form.NodeId = SysConfigService.GetDefaultForumId()
-		if form.NodeId <= 0 {
+	if form.ForumId <= 0 {
+		form.ForumId = SysConfigService.GetDefaultForumId()
+		if form.ForumId <= 0 {
 			return errors.New("请选择节点")
 		}
 	}
-	node := repository.ForumRepository.Get(sqls.DB(), form.NodeId)
+	node := repository.ForumRepository.Get(sqls.DB(), form.ForumId)
 	if node == nil || node.Status != constants.StatusOK {
 		return errors.New("节点不存在")
 	}

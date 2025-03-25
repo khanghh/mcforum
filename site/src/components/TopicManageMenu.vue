@@ -118,15 +118,15 @@ async function forbidden(days) {
 
 function deleteTopic() {
   useConfirm(i18n.t('dialog.message.confirm_delete_post')).then(function () {
-    useHttpPost(`/api/topic/delete/${topic.value.id}`).then(() => {
+    useHttpPost(`/api/topics/${topic.value.id}/delete`).then(() => {
       useMsg({
         message: i18n.t('message.delete_success'),
         onClose() {
-          useLinkTo('/topics')
+          useLinkTo('/')
         },
       })
     }).catch((e) => {
-      useMsgError(i18n.t('message.delete_success', { error: (e.message || e) }))
+      useMsgError(i18n.t('message.delete_failure', { error: (e.message || e) }))
     })
   })
 }
@@ -138,7 +138,7 @@ function editTopic() {
 function toggleRecommended() {
   const action = topic.value.recommend ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    useHttpPostForm(`/api/topic/${topic.value.slug}/${topic.value.recommend ? 'unrecommened' : 'recommend'}`).then(() => {
+    useHttpPostForm(`/api/topics/${topic.value.slug}/${topic.value.recommend ? 'unrecommend' : 'recommend'}`).then(() => {
       topic.value.recommend = !topic.value.recommend
       emits('update:modelValue', topic.value)
       useMsgSuccess({ message: i18n.t('message.action_success', { action }) })

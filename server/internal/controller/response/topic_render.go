@@ -66,8 +66,8 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 	rsp.ViewCount = topic.ViewCount
 	rsp.CommentCount = topic.CommentCount
 	rsp.LikeCount = topic.LikeCount
-	rsp.Recommend = topic.Recommend
-	rsp.RecommendTime = topic.RecommendTime
+	rsp.Recommend = topic.Recommended
+	rsp.RecommendTime = topic.RecommendedTime
 	rsp.Pinned = topic.Pinned
 	rsp.PinnedTime = topic.PinnedTime
 	rsp.Status = topic.Status

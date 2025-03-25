@@ -30,8 +30,8 @@ export default {
     action: {
       edit: 'chỉnh sửa',
       delete: 'xóa',
-      recommend: 'gợi ý',
-      unrecommend: 'bỏ gợi ý',
+      recommend: 'đề xuất',
+      unrecommend: 'bỏ đề xuất',
       pin: 'ghim',
       unpin: 'bỏ ghim',
     },
@@ -164,6 +164,7 @@ export default {
     no_more_content: 'Không còn nội dung',
     action_success: '{action} thành công ',
     action_failure: '{action} thất bại. {error}',
+    please_enter_comment: 'Vui lòng nhập nội dung bình luận',
   },
   form: {
     button: {

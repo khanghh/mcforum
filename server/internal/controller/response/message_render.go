@@ -1,6 +1,7 @@
 package response
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/bbsurls"
@@ -16,7 +17,7 @@ func BuildMessage(msg *model.Message) *MessageResponse {
 
 	from := BuildUserInfoDefaultIfNull(msg.FromId)
 	if msg.FromId <= 0 {
-		from.Nickname = "系统通知"
+		from.Nickname = locale.T("system.user")
 	}
 	detailUrl := getMessageDetailUrl(msg)
 	resp := &MessageResponse{

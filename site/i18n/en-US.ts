@@ -165,6 +165,7 @@ export default {
     no_more_content: 'No more content',
     action_success: '{action} successfully',
     action_failure: '{action} failure. {error}',
+    please_enter_comment: 'Please enter a comment',
   },
   form: {
     button: {

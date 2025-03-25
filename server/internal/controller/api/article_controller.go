@@ -2,6 +2,7 @@ package api
 
 import (
 	"bbs-go/internal/controller/response"
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/bbsurls"
 	"bbs-go/internal/pkg/errs"
@@ -99,7 +100,7 @@ func (c *ArticleController) GetEditBy(articleId int64) *web.JsonResult {
 
 	article := service.ArticleService.Get(articleId)
 	if article == nil || article.Status == constants.StatusDeleted {
-		return web.JsonErrorMsg("话题不存在或已被删除")
+		return web.JsonErrorMsg(locale.T("topic.not_found"))
 	}
 
 	// 非作者、且非管理员

@@ -18,7 +18,7 @@ type CreateTopicForm struct {
 	Type        constants.TopicType `json:"type"`
 	CaptchaId   string              `json:"captchaId"`
 	CaptchaCode string              `json:"captchaCode"`
-	NodeId      int64               `json:"nodeId"`
+	ForumId     int64               `json:"forumId"`
 	Title       string              `json:"title"`
 	Content     string              `json:"content"`
 	HideContent string              `json:"hideContent"`
@@ -26,6 +26,7 @@ type CreateTopicForm struct {
 	ImageList   []ImageDTO          `json:"imageList"`
 	UserAgent   string              `json:"userAgent"`
 	Ip          string              `json:"ip"`
+	Slug        string
 }
 
 type CreateArticleForm struct {
@@ -66,7 +67,7 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 			Type:        constants.TopicType(params.FormValueIntDefault(ctx, "type", int(constants.TopicTypeTopic))),
 			CaptchaId:   params.FormValue(ctx, "captchaId"),
 			CaptchaCode: params.FormValue(ctx, "captchaCode"),
-			NodeId:      params.FormValueInt64Default(ctx, "nodeId", 0),
+			ForumId:     params.FormValueInt64Default(ctx, "nodeId", 0),
 			Title:       strings.TrimSpace(params.FormValue(ctx, "title")),
 			Content:     strings.TrimSpace(params.FormValue(ctx, "content")),
 			HideContent: strings.TrimSpace(params.FormValue(ctx, "hideContent")),

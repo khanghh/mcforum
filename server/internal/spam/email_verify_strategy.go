@@ -4,6 +4,7 @@ import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
+	"fmt"
 )
 
 type EmailVerifyStrategy struct{}
@@ -13,6 +14,7 @@ func (EmailVerifyStrategy) Name() string {
 }
 
 func (EmailVerifyStrategy) CheckTopic(user *model.User, form model.CreateTopicForm) error {
+	fmt.Println("EmailVerified", user.EmailVerified)
 	if service.SysConfigService.IsCreateTopicEmailVerified() && !user.EmailVerified {
 		return errs.EmailNotVerified
 	}

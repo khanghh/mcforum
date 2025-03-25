@@ -1,5 +1,23 @@
+<template>
+  <div class="comment-form">
+    <div class="comment-create">
+      <div ref="commentEditor" class="comment-input-wrapper">
+        <div v-if="quote" class="comment-quote-info">
+          {{ $t('feed.replied_to') }}：
+          <label v-text="quote.user.nickname" />
+          <icon name="X" @click="cancelReply" />
+        </div>
+        <text-editor ref="simpleEditor" v-model="value" @submit="create" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
 const i18n = useI18n()
+const route = useRoute()
+const slug = route.params.slug
+
 const props = defineProps({
   entityType: {
     type: String,
@@ -10,6 +28,7 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emits = defineEmits(['created'])
 const value = ref({
   content: '', // 内容
@@ -22,19 +41,18 @@ const simpleEditor = ref(null) // 编辑器组件
 
 async function create() {
   if (!value.value.content) {
-    useMsgError('请输入评论内容')
+    useMsgError(i18n.t('message.please_enter_comment'))
     return
   }
   if (sending.value) {
     return
   }
   if (simpleEditor.value && simpleEditor.value.isOnUpload()) {
-    useMsgWarning('正在上传中...请上传完成后提交')
     return
   }
   sending.value = true
   try {
-    const data = await useHttpPostForm('/api/comment/create', {
+    const data = await useHttpPostForm(`/api/topics/${slug}/comments`, {
       body: {
         contentType: props.contentType,
         entityType: props.entityType,
@@ -74,21 +92,6 @@ function cancelReply() {
   quote.value = null
 }
 </script>
-
-<template>
-  <div class="comment-form">
-    <div class="comment-create">
-      <div ref="commentEditor" class="comment-input-wrapper">
-        <div v-if="quote" class="comment-quote-info">
-          {{ $t('feed.replied_to') }}：
-          <label v-text="quote.user.nickname" />
-          <icon name="X" @click="cancelReply" />
-        </div>
-        <text-editor ref="simpleEditor" v-model="value" @submit="create" />
-      </div>
-    </div>
-  </div>
-</template>
 
 <style scoped lang="scss">
 .comment-form {

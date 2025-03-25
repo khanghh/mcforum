@@ -44,7 +44,7 @@ func (c *UserController) GetBy(userId int64) *web.JsonResult {
 	if user != nil && user.Status != constants.StatusDeleted {
 		return web.JsonData(response.BuildUserDetail(user))
 	}
-	return web.JsonErrorMsg(locale.T("user.does_not_exists"))
+	return web.JsonErrorMsg(locale.T("user.not_found"))
 }
 
 // 修改用户资料

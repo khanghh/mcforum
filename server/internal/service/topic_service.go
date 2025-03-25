@@ -114,18 +114,18 @@ func (s *topicService) Undelete(id int64) error {
 }
 
 // 更新
-func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content, hideContent string) error {
-	if len(title) == 0 {
-		return errors.New("标题不能为空")
+func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, content, hideContent string) error {
+	if title == "" {
+		return errors.New(locale.T("topic.edit.title_required"))
 	}
 
 	if strs.RuneLen(title) > 128 {
-		return errors.New("标题长度不能超过128")
+		return errors.New(locale.T("topic.edit.title_max_length_exceeded"))
 	}
 
-	node := repository.ForumRepository.Get(sqls.DB(), nodeId)
+	node := repository.ForumRepository.Get(sqls.DB(), forumId)
 	if node == nil || node.Status != constants.StatusOK {
-		return errors.New("节点不存在")
+		return errors.New(locale.T("forum.not_found"))
 	}
 
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
@@ -134,8 +134,9 @@ func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content
 			err    error
 		)
 		if err = repository.TopicRepository.Updates(sqls.DB(), topicId, map[string]interface{}{
-			"node_id":      nodeId,
+			"forum_id":     forumId,
 			"title":        title,
+			"slug":         slug,
 			"content":      content,
 			"hide_content": hideContent,
 		}); err != nil {
@@ -162,20 +163,20 @@ func (s *topicService) Edit(topicId, nodeId int64, tags []string, title, content
 func (s *topicService) SetRecommended(topicId int64, recommend bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New(locale.T("topic.does_not_exists"))
+		return errors.New(locale.T("topic.not_found"))
 	}
-	if topic.Recommend == recommend { // 推荐状态没变更
+	if topic.Recommended == recommend { // 推荐状态没变更
 		return nil
 	}
 	if recommend {
 		if err := s.Updates(topicId, map[string]interface{}{
-			"recommend":      recommend,
-			"recommend_time": dates.NowTimestamp(),
+			"recommended":      recommend,
+			"recommended_time": dates.NowTimestamp(),
 		}); err != nil {
 			return err
 		}
 	} else {
-		if err := s.UpdateColumn(topicId, "recommend", recommend); err != nil {
+		if err := s.UpdateColumn(topicId, "recommended", recommend); err != nil {
 			return err
 		}
 	}
@@ -204,27 +205,38 @@ func (s *topicService) GetTopicTags(topicId int64) []model.Tag {
 }
 
 // GetTopics 帖子列表（最新、推荐、关注、节点）
-func (s *topicService) GetTopics(user *model.User, nodeId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
-	if nodeId == constants.NodeIdFollow {
-		if user != nil {
-			return s.GetFollowedAuthorsTopics(user.Id, cursor)
-		}
-		return
-	} else {
-		return s._GetNodeTopics(nodeId, cursor)
+// func (s *topicService) GetTopics(user *model.User, forumId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
+// 	if forumId == constants.NodeIdFollow {
+// 		if user != nil {
+// 			return s.GetFollowedTopics(user.Id, cursor)
+// 		}
+// 		return
+// 	} else {
+// 		return s.GetForumTopics(forumId, cursor)
+// 	}
+// }
+
+// GetForumTopics 帖子列表（最新、推荐、节点）
+func (s *topicService) GetForumTopics(forumId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
+	const limit = 20
+	cnd := sqls.NewCnd().Eq("forum_id", forumId)
+	if cursor > 0 {
+		cnd.Lt("last_comment_time", cursor)
 	}
+	cnd.Eq("status", constants.StatusOK).Desc("last_comment_time").Limit(limit)
+	topics = repository.TopicRepository.Find(sqls.DB(), cnd)
+	if len(topics) > 0 {
+		nextCursor = topics[len(topics)-1].LastCommentTime
+		hasMore = len(topics) >= limit
+	} else {
+		nextCursor = cursor
+	}
+	return
 }
 
-// _GetNodeTopics 帖子列表（最新、推荐、节点）
-func (s *topicService) _GetNodeTopics(nodeId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
+func (s *topicService) GetNewestTopics(cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 	const limit = 20
 	cnd := sqls.NewCnd()
-	if nodeId > 0 {
-		cnd.Eq("node_id", nodeId)
-	}
-	if nodeId == constants.NodeIdRecommend {
-		cnd.Eq("recommend", true)
-	}
 	if cursor > 0 {
 		cnd.Lt("last_comment_time", cursor)
 	}
@@ -241,7 +253,7 @@ func (s *topicService) _GetNodeTopics(nodeId, cursor int64) (topics []model.Topi
 
 func (s *topicService) GetRecommendedTopics(cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 	const limit = 20
-	cnd := sqls.NewCnd().Eq("recommend", true)
+	cnd := sqls.NewCnd().Eq("recommended", true)
 	if cursor > 0 {
 		cnd.Lt("last_comment_time", cursor)
 	}
@@ -257,7 +269,7 @@ func (s *topicService) GetRecommendedTopics(cursor int64) (topics []model.Topic,
 }
 
 // _GetFollowTopics 关注帖子列表
-func (s *topicService) GetFollowedAuthorsTopics(userId int64, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
+func (s *topicService) GetFollowedTopics(userId int64, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 	const limit = 20
 	cnd := sqls.NewCnd().Eq("user_id", userId)
 	cnd.Eq("data_type", constants.EntityTopic)
@@ -279,7 +291,6 @@ func (s *topicService) GetFollowedAuthorsTopics(userId int64, cursor int64) (top
 		topicIds = append(topicIds, item.DataId)
 	}
 	topics = TopicService.GetTopicByIds(topicIds)
-
 	return
 }
 
@@ -435,10 +446,10 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []model.Topic
 	return
 }
 
-func (s *topicService) GetPinnedTopics(nodeId int64, limit int) []model.Topic {
-	if nodeId > 0 {
-		return s.Find(sqls.NewCnd().Where("node_id = ? and pinned = true and status = ?",
-			nodeId, constants.StatusOK).Desc("pinned_time").Limit(limit))
+func (s *topicService) GetPinnedTopics(forumId int64, limit int) []model.Topic {
+	if forumId > 0 {
+		return s.Find(sqls.NewCnd().Where("forum_id = ? and pinned = true and status = ?",
+			forumId, constants.StatusOK).Desc("pinned_time").Limit(limit))
 	} else {
 		return s.Find(sqls.NewCnd().Where("pinned = true and status = ?",
 			constants.StatusOK).Desc("pinned_time").Limit(limit))

@@ -21,12 +21,12 @@ type userTokenCache struct {
 func newUserTokenCache() *userTokenCache {
 	return &userTokenCache{
 		cache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = repository.UserTokenRepository.GetByToken(sqls.DB(), key.(string))
-				if value == nil {
-					e = errors.New("数据不存在")
+			func(key cache.Key) (cache.Value, error) {
+				val := repository.UserTokenRepository.GetByToken(sqls.DB(), key.(string))
+				if val != nil {
+					return val, nil
 				}
-				return
+				return nil, errors.New("cache miss")
 			},
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(60*time.Minute),

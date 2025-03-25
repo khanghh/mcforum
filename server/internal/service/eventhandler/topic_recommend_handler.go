@@ -1,6 +1,7 @@
 package eventhandler
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/event"
 	"bbs-go/internal/pkg/msg"
@@ -29,8 +30,8 @@ func sendTopicRecommendMsg(topicId int64) {
 	var (
 		from         int64 = 0
 		to                 = topic.UserId
-		title              = "你的话题被设为推荐"
-		quoteContent       = "《" + topic.GetTitle() + "》"
+		title              = locale.T("system.message.topic_recommended")
+		quoteContent       = topic.GetTitle()
 	)
 	service.MessageService.SendMsg(from, to, msg.TypeTopicRecommend, title, "", quoteContent,
 		&msg.TopicRecommendExtraData{
