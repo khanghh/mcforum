@@ -1,10 +1,12 @@
 package middleware
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/urls"
 	"bbs-go/internal/service"
+	"errors"
 	"fmt"
 
 	"bbs-go/web"
@@ -68,7 +70,7 @@ func notLogin(ctx iris.Context) {
 
 // noPermission 无权限返回
 func noPermission(ctx iris.Context) {
-	_ = ctx.JSON(web.JsonErrorCode(2, "无权限"))
+	_ = ctx.JSON(web.JsonErrorCode(iris.StatusForbidden, errors.New(locale.T("system.message.permission_denied"))))
 	ctx.StopExecution()
 }
 

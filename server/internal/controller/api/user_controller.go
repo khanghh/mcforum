@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/errs"
@@ -33,7 +33,7 @@ type UserController struct {
 func (c *UserController) GetCurrent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user != nil {
-		return web.JsonData(response.BuildUserProfile(user))
+		return web.JsonData(payload.BuildUserProfile(user))
 	}
 	return web.JsonSuccess()
 }
@@ -42,7 +42,7 @@ func (c *UserController) GetCurrent() *web.JsonResult {
 func (c *UserController) GetBy(userId int64) *web.JsonResult {
 	user := cache.UserCache.Get(userId)
 	if user != nil && user.Status != constants.StatusDeleted {
-		return web.JsonData(response.BuildUserDetail(user))
+		return web.JsonData(payload.BuildUserDetail(user))
 	}
 	return web.JsonErrorMsg(locale.T("user.not_found"))
 }
@@ -276,7 +276,7 @@ func (c *UserController) GetFavorites() *web.JsonResult {
 		hasMore = len(favorites) >= limit
 	}
 
-	return web.JsonCursorData(response.BuildFavorites(favorites), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildFavorites(favorites), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // 获取最近3条未读消息
@@ -289,7 +289,7 @@ func (c *UserController) GetMsgrecent() *web.JsonResult {
 		messages = service.MessageService.Find(sqls.NewCnd().Eq("user_id", user.Id).
 			Eq("status", msg.StatusUnread).Limit(3).Desc("id"))
 	}
-	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", response.BuildMessages(messages)).JsonResult()
+	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", payload.BuildMessages(messages)).JsonResult()
 }
 
 // 用户消息
@@ -321,7 +321,7 @@ func (c *UserController) GetMessages() *web.JsonResult {
 	// 全部标记为已读
 	service.MessageService.MarkRead(user.Id)
 
-	return web.JsonCursorData(response.BuildMessages(list), cast.ToString(nextCursor), hasMore)
+	return web.JsonCursorData(payload.BuildMessages(list), cast.ToString(nextCursor), hasMore)
 }
 
 // 用户积分记录
@@ -355,9 +355,9 @@ func (c *UserController) GetScore_logs() *web.JsonResult {
 // 积分排行
 func (c *UserController) GetScoreRank() *web.JsonResult {
 	users := cache.UserCache.GetScoreRank()
-	var results []*response.UserInfo
+	var results []*payload.UserInfo
 	for _, user := range users {
-		results = append(results, response.BuildUserInfo(&user))
+		results = append(results, payload.BuildUserInfo(&user))
 	}
 	return web.JsonData(results)
 }

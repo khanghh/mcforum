@@ -165,6 +165,7 @@ export default {
     action_success: '{action} thành công ',
     action_failure: '{action} thất bại. {error}',
     please_enter_comment: 'Vui lòng nhập nội dung bình luận',
+    offline: 'Bạn đang ngoại tuyến.',
   },
   form: {
     button: {

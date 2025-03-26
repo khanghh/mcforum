@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/cache"
@@ -7,6 +7,7 @@ import (
 	"bbs-go/internal/pkg/bbsurls"
 	"strconv"
 	"strings"
+	"time"
 
 	"bbs-go/common/dates"
 	"bbs-go/common/strs"
@@ -14,6 +15,46 @@ import (
 
 	"github.com/spf13/cast"
 )
+
+// UserInfo 用户简单信息
+type UserInfo struct {
+	Id           int64      `json:"id"`
+	Type         int        `json:"type"`
+	Nickname     string     `json:"nickname"`
+	Avatar       string     `json:"avatar"`
+	SmallAvatar  string     `json:"smallAvatar"`
+	Gender       string     `json:"gender"`
+	Birthday     *time.Time `json:"birthday"`
+	TopicCount   int        `json:"topicCount"`   // 话题数量
+	CommentCount int        `json:"commentCount"` // 跟帖数量
+	FansCount    int        `json:"fansCount"`    // 粉丝数量
+	FollowCount  int        `json:"followCount"`  // 关注数量
+	Score        int        `json:"score"`        // 积分
+	Description  string     `json:"description"`
+	CreateTime   int64      `json:"createTime"`
+
+	Forbidden bool `json:"forbidden"` // 是否禁言
+	Followed  bool `json:"followed"`  // 是否关注
+}
+
+// UserDetail 用户详细信息
+type UserDetail struct {
+	UserInfo
+	Username             string `json:"username"`
+	BackgroundImage      string `json:"backgroundImage"`
+	SmallBackgroundImage string `json:"smallBackgroundImage"`
+	HomePage             string `json:"homePage"`
+	Status               int    `json:"status"`
+}
+
+// UserProfile 用户个人信息
+type UserProfile struct {
+	UserDetail
+	Roles         []string `json:"roles"`
+	PasswordSet   bool     `json:"passwordSet"` // 密码已设置
+	Email         string   `json:"email"`
+	EmailVerified bool     `json:"emailVerified"`
+}
 
 func BuildUserInfoDefaultIfNull(id int64) *UserInfo {
 	user := cache.UserCache.Get(id)

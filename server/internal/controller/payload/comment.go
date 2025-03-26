@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/model"
@@ -11,6 +11,26 @@ import (
 	"bbs-go/common/arrays"
 	"bbs-go/web"
 )
+
+// CommentResponse 评论返回数据
+type CommentResponse struct {
+	Id           int64             `json:"id"`
+	User         *UserInfo         `json:"user"`
+	EntityType   string            `json:"entityType"`
+	EntityId     int64             `json:"entityId"`
+	ContentType  string            `json:"contentType"`
+	Content      string            `json:"content"`
+	ImageList    []ImageInfo       `json:"imageList"`
+	LikeCount    int64             `json:"likeCount"`
+	CommentCount int64             `json:"commentCount"`
+	Liked        bool              `json:"liked"`
+	QuoteId      int64             `json:"quoteId"`
+	Quote        *CommentResponse  `json:"quote"`
+	Replies      *web.CursorResult `json:"replies"`
+	IpLocation   string            `json:"ipLocation"`
+	Status       int               `json:"status"`
+	CreateTime   int64             `json:"createTime"`
+}
 
 func BuildComment(comment *model.Comment) *CommentResponse {
 	return doBuildComment(comment, nil, true, true)

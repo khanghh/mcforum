@@ -3,7 +3,9 @@
     <div class="container">
       <div class="main-body no-bg">
         <div class="widget signin">
-          <div class="widget-header">{{ $t('page.signup') }}</div>
+          <div class="widget-header">
+            {{ $t('page.signup') }}
+          </div>
           <div class="widget-content">
             <div class="field">
               <label class="label">{{ $t('form.label.username') }}</label>
@@ -71,9 +73,10 @@
             </div>
 
             <div class="field">
-
               <div class="control">
-                <button class="button is-link" @click="signup">{{ $t('form.button.signup') }}</button>
+                <button class="button is-link" @click="signup">
+                  {{ $t('form.button.signup') }}
+                </button>
                 <a class="button is-text" @click="toSignin">
                   {{ $t('links.already_have_account') }}
                 </a>
@@ -91,60 +94,60 @@ const i18n = useI18n()
 
 useHead({
   title: useSiteTitle(i18n.t('page.signup')),
-});
+})
 
-const route = useRoute();
+const route = useRoute()
 const form = reactive({
-  nickname: "",
-  email: "",
-  password: "",
-  rePassword: "",
-  captchaId: "",
-  captchaUrl: "",
-  captchaCode: "",
-  redirect: route.query.redirect || "",
-});
+  nickname: '',
+  email: '',
+  password: '',
+  rePassword: '',
+  captchaId: '',
+  captchaUrl: '',
+  captchaCode: '',
+  redirect: route.query.redirect || '',
+})
 
-refreshCaptcha();
+refreshCaptcha()
 
 async function refreshCaptcha() {
   try {
     const { data: captcha } = await useAsyncData(() => {
-      return useMyFetch("/api/captcha/request", {
+      return useHttpGet('/api/captcha/request', {
         params: {
           captchaId: form.captchaId,
         },
-      });
-    });
+      })
+    })
 
-    form.captchaId = captcha.value.captchaId;
-    form.captchaUrl = captcha.value.captchaUrl;
-    form.captchaCode = "";
+    form.captchaId = captcha.value.captchaId
+    form.captchaUrl = captcha.value.captchaUrl
+    form.captchaCode = ''
   } catch (e) {
-    useCatchError(e);
+    useCatchError(e)
   }
 }
 
 async function signup() {
   try {
-    const userStore = useUserStore();
-    const { user, redirect } = await userStore.signup(form);
+    const userStore = useUserStore()
+    const { user, redirect } = await userStore.signup(form)
     if (redirect) {
-      useLinkTo(redirect);
+      useLinkTo(redirect)
     } else {
-      useLinkTo(`/user/${user.id}`);
+      useLinkTo(`/user/${user.id}`)
     }
   } catch (err) {
-    useCatchError(err);
-    await refreshCaptcha();
+    useCatchError(err)
+    await refreshCaptcha()
   }
 }
 
 function toSignin() {
   if (form.redirect) {
-    useLinkTo(`/user/signin?redirect=${encodeURIComponent(form.redirect)}`);
+    useLinkTo(`/user/signin?redirect=${encodeURIComponent(form.redirect)}`)
   } else {
-    useLinkTo("/user/signin");
+    useLinkTo('/user/signin')
   }
 }
 </script>

@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/model"
@@ -7,6 +7,12 @@ import (
 	"bbs-go/common/jsons"
 	"bbs-go/common/strs"
 )
+
+// 图片
+type ImageInfo struct {
+	Url     string `json:"url"`
+	Preview string `json:"preview"`
+}
 
 func BuildImageList(imageListStr string) (imageList []ImageInfo) {
 	if strs.IsNotBlank(imageListStr) {

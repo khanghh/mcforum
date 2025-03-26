@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/search"
@@ -41,5 +41,5 @@ func (c *SearchController) GetTopic() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return web.JsonCursorData(response.BuildSearchTopics(list), cast.ToString(cursor+1), len(list) >= limit)
+	return web.JsonCursorData(payload.BuildSearchTopics(list), cast.ToString(cursor+1), len(list) >= limit)
 }

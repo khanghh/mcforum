@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/model"
@@ -11,6 +11,33 @@ import (
 	"bbs-go/common/arrays"
 	"bbs-go/common/strs"
 )
+
+// 帖子列表返回实体
+type TopicResponse struct {
+	Id              int64               `json:"id"`
+	Slug            string              `json:"slug"`
+	Type            constants.TopicType `json:"type"`
+	User            *UserInfo           `json:"user"`
+	Forum           *ForumResponse      `json:"forum"`
+	Tags            *[]TagResponse      `json:"tags"`
+	Title           string              `json:"title"`
+	Summary         string              `json:"summary"`
+	Content         string              `json:"content"`
+	ImageList       []ImageInfo         `json:"imageList"`
+	LastCommentTime int64               `json:"lastCommentTime"`
+	ViewCount       int64               `json:"viewCount"`
+	CommentCount    int64               `json:"commentCount"`
+	LikeCount       int64               `json:"likeCount"`
+	Liked           bool                `json:"liked"`
+	CreateTime      int64               `json:"createTime"`
+	Recommend       bool                `json:"recommend"`
+	RecommendTime   int64               `json:"recommendTime"`
+	Pinned          bool                `json:"pinned"`
+	PinnedTime      int64               `json:"pinnedTime"`
+	Status          int                 `json:"status"`
+	Favorited       bool                `json:"favorited"`
+	IpLocation      string              `json:"ipLocation"`
+}
 
 func BuildTopic(topic *model.Topic, currentUser *model.User) *TopicResponse {
 	resp := _buildTopic(topic, true)

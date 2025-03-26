@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
 	"strconv"
@@ -74,9 +74,9 @@ func (c *FansController) GetFans() *web.JsonResult {
 		followedSet = service.UserFollowService.IsFollowedUsers(current.Id, userIds...)
 	}
 
-	var itemList []*response.UserInfo
+	var itemList []*payload.UserInfo
 	for _, id := range userIds {
-		item := response.BuildUserInfoDefaultIfNull(id)
+		item := payload.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
@@ -101,9 +101,9 @@ func (c *FansController) GetFollowed() *web.JsonResult {
 		}
 	}
 
-	var itemList []*response.UserInfo
+	var itemList []*payload.UserInfo
 	for _, id := range userIds {
-		item := response.BuildUserInfoDefaultIfNull(id)
+		item := payload.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
@@ -120,9 +120,9 @@ func (c *FansController) GetRecentFans() *web.JsonResult {
 		followedSet = service.UserFollowService.IsFollowedUsers(current.Id, userIds...)
 	}
 
-	var itemList []*response.UserInfo
+	var itemList []*payload.UserInfo
 	for _, id := range userIds {
-		item := response.BuildUserInfoDefaultIfNull(id)
+		item := payload.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
@@ -146,9 +146,9 @@ func (c *FansController) GetRecentFollow() *web.JsonResult {
 		}
 	}
 
-	var itemList []*response.UserInfo
+	var itemList []*payload.UserInfo
 	for _, id := range userIds {
-		item := response.BuildUserInfoDefaultIfNull(id)
+		item := payload.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}

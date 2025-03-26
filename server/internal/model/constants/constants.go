@@ -128,11 +128,9 @@ const (
 	ForumFeed        = "feed"
 )
 
-type Gender string
-
 const (
-	GenderMale   Gender = "Male"
-	GenderFemale Gender = "Female"
+	GenderMale   = "Male"
+	GenderFemale = "Female"
 )
 
 // 模块

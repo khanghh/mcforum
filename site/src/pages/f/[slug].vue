@@ -34,11 +34,6 @@ const slug = route.params.slug || 'whats-new'
 
 const apiUrl = computed(() => `/api/forums/${slug}`)
 
-const updateItems = (newItems) => {
-  topics.value = newItems
-  console.log('Updated topics:', topics.value)
-}
-
 useHead({
   title: useSiteTitle('test'),
   meta: [

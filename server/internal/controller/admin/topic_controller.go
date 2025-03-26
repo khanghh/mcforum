@@ -8,7 +8,7 @@ import (
 
 	"github.com/kataras/iris/v12"
 
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
@@ -32,7 +32,7 @@ func (c *TopicController) GetList() *web.JsonResult {
 
 	var results []map[string]interface{}
 	for _, topic := range list {
-		item := response.BuildSimpleTopic(&topic)
+		item := payload.BuildSimpleTopic(&topic)
 		builder := web.NewRspBuilder(item)
 		builder.Put("status", topic.Status)
 		results = append(results, builder.Build())

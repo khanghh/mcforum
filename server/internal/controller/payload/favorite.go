@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/model"
@@ -12,6 +12,19 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+// 收藏返回数据
+type FavoriteResponse struct {
+	Id         int64     `json:"id"`
+	EntityType string    `json:"entityType"`
+	EntityId   int64     `json:"entityId"`
+	Deleted    bool      `json:"deleted"`
+	Title      string    `json:"title"`
+	Content    string    `json:"content"`
+	User       *UserInfo `json:"user"`
+	Url        string    `json:"url"`
+	CreateTime int64     `json:"createTime"`
+}
 
 func BuildFavorite(favorite *model.Favorite) *FavoriteResponse {
 	rsp := &FavoriteResponse{}

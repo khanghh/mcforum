@@ -18,7 +18,7 @@ const props = defineProps({
 const emits = defineEmits(['onFollowed'])
 
 const { data: followed } = await useAsyncData(`followed:${props.userId}`, () =>
-  useMyFetch(`/api/fans/isfollowed?userId=${props.userId}`),
+  useHttpGet(`/api/fans/isfollowed?userId=${props.userId}`),
 )
 
 async function follow() {
@@ -36,8 +36,7 @@ async function follow() {
       followed.value = false
       emits('onFollowed', props.userId, false)
       // useMsgSuccess("取消关注成功");
-    }
-    else {
+    } else {
       await useHttpPostForm('/api/fans/follow', {
         body: {
           userId: props.userId,
@@ -47,8 +46,7 @@ async function follow() {
       emits('onFollowed', props.userId, true)
       // useMsgSuccess("关注成功");
     }
-  }
-  catch (e) {
+  } catch (e) {
     useMsgError(e.message || e)
   }
 }

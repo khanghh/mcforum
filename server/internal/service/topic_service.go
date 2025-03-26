@@ -159,40 +159,6 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 	return err
 }
 
-// 推荐
-func (s *topicService) SetRecommended(topicId int64, recommend bool) error {
-	topic := s.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New(locale.T("topic.not_found"))
-	}
-	if topic.Recommended == recommend { // 推荐状态没变更
-		return nil
-	}
-	if recommend {
-		if err := s.Updates(topicId, map[string]interface{}{
-			"recommended":      recommend,
-			"recommended_time": dates.NowTimestamp(),
-		}); err != nil {
-			return err
-		}
-	} else {
-		if err := s.UpdateColumn(topicId, "recommended", recommend); err != nil {
-			return err
-		}
-	}
-
-	// 发送事件
-	event.Send(event.TopicRecommendEvent{
-		TopicId:   topicId,
-		Recommend: recommend,
-	})
-
-	// 添加索引
-	search.UpdateTopicIndex(s.Get(topicId))
-
-	return nil
-}
-
 // GetTopicTags 话题的标签
 func (s *topicService) GetTopicTags(topicId int64) []model.Tag {
 	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().Where("topic_id = ?", topicId))
@@ -457,13 +423,6 @@ func (s *topicService) GetPinnedTopics(forumId int64, limit int) []model.Topic {
 }
 
 func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
-	topic := s.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New("internal server error")
-	}
-	if topic.Pinned == pinned {
-		return nil
-	}
 	if pinned {
 		return s.Updates(topicId, map[string]interface{}{
 			"pinned":      true,
@@ -474,4 +433,38 @@ func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
 			"pinned": false,
 		})
 	}
+}
+
+// 推荐
+func (s *topicService) SetRecommended(topicId int64, recommend bool) error {
+	topic := s.Get(topicId)
+	if topic == nil || topic.Status != constants.StatusOK {
+		return errors.New(locale.T("topic.not_found"))
+	}
+	if topic.Recommended == recommend { // 推荐状态没变更
+		return nil
+	}
+	if recommend {
+		if err := s.Updates(topicId, map[string]interface{}{
+			"recommended":      recommend,
+			"recommended_time": dates.NowTimestamp(),
+		}); err != nil {
+			return err
+		}
+	} else {
+		if err := s.UpdateColumn(topicId, "recommended", recommend); err != nil {
+			return err
+		}
+	}
+
+	// 发送事件
+	event.Send(event.TopicRecommendEvent{
+		TopicId:   topicId,
+		Recommend: recommend,
+	})
+
+	// 添加索引
+	search.UpdateTopicIndex(s.Get(topicId))
+
+	return nil
 }

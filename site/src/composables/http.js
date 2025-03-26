@@ -20,95 +20,17 @@ function applyOptions(options = {}) {
   return options
 }
 
-// useFetch 封装
-export function useMyFetch(url, options = {}) {
-  options = applyOptions(options)
-
-  return new Promise((resolve, reject) => {
-    useFetch(url, options)
-      .then(({ data, status, refresh, execute, error }) => {
-        if (error.value) {
-          reject(error.value)
-          return
-        }
-        if (data.value == null) {
-          reject(new Error(`请求错误 ${url}`))
-          return
-        }
-        if (data.value.success) {
-          // TODO 这里如果数据是空，那么返回一个空对象
-          if (data.value.data === null || data.value.data === undefined) {
-            resolve(data.value.data || {})
-          }
-          else {
-            resolve(data.value.data)
-          }
-        }
-        else {
-          reject(data.value)
-        }
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
-}
-
-// POST请求
-export function useMyFetchPost(url, { body } = {}) {
-  return useMyFetch(url, {
-    method: 'POST',
-    body,
-  })
-}
-
-// POST请求(application/x-www-form-urlencoded)
-export function useMyFetchPostForm(url, { body = {} } = {}) {
-  let bodyData = ''
-  if (body && typeof body === 'object') {
-    for (const name in body) {
-      if (bodyData.length > 0) {
-        bodyData += '&'
-      }
-      bodyData += `${encodeURIComponent(name)}=${encodeURIComponent(
-        body[name],
-      )}`
-    }
-  }
-  return useMyFetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: bodyData,
-  })
-}
-
-// POST请求(multipart/form-data)
-export function useMyFetchPostMultipart(url, { body = {} } = {}) {
-  const formData = new FormData()
-  if (body && typeof body === 'object') {
-    for (const name in body) {
-      formData.append(name, body[name])
-    }
-  }
-
-  return useMyFetch(url, {
-    method: 'POST',
-    body: formData,
-  })
-}
-
 export function useHttp(url, options = {}) {
   options = applyOptions(options)
-
+  if (options.headers?.['Content-Type'] === 'application/x-www-form-urlencoded' && options.body) {
+    options.body = new URLSearchParams(options.body).toString()
+  }
   return new Promise((resolve, reject) => {
     $fetch(url, options)
       .then((resp) => {
-        if (resp.success) {
+        if (!resp.error) {
           resolve(resp.data)
-        }
-        else {
+        } else {
           reject(resp)
         }
       })
@@ -118,39 +40,55 @@ export function useHttp(url, options = {}) {
   })
 }
 
-export function useHttpGet(url, { params } = {}) {
+export function useHttpPost(url, options = {}) {
   return useHttp(url, {
-    method: 'GET',
-    params,
+    ...options,
+    method: 'POST',
   })
 }
 
-export function useHttpPost(url, { body } = {}) {
+export function useHttpGet(url, options = {}) {
   return useHttp(url, {
-    method: 'POST',
+    ...options,
+    method: 'GET',
+  })
+}
+
+export function useHttpDelete(url, options = {}) {
+  return useHttp(url, {
+    ...options,
+    method: 'DELETE',
+  })
+}
+
+export function useHttpPutForm(url, { body } = {}) {
+  return useHttp(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  })
+}
+
+export function useHttpPatchForm(url, { body } = {}) {
+  return useHttp(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
     body,
   })
 }
 
 // POST请求(application/x-www-form-urlencoded)
 export function useHttpPostForm(url, { body = {} } = {}) {
-  let bodyData = ''
-  if (body && typeof body === 'object') {
-    for (const name in body) {
-      if (bodyData.length > 0) {
-        bodyData += '&'
-      }
-      bodyData += `${encodeURIComponent(name)}=${encodeURIComponent(
-        body[name],
-      )}`
-    }
-  }
   return useHttp(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: bodyData,
+    body,
   })
 }
 

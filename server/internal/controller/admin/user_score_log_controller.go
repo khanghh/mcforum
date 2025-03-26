@@ -8,7 +8,7 @@ import (
 
 	"github.com/kataras/iris/v12"
 
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/service"
 )
 
@@ -30,7 +30,7 @@ func (c *UserScoreLogController) GetList() *web.JsonResult {
 
 	var results []map[string]interface{}
 	for _, userScoreLog := range list {
-		user := response.BuildUserInfoDefaultIfNull(userScoreLog.UserId)
+		user := payload.BuildUserInfoDefaultIfNull(userScoreLog.UserId)
 		item := web.NewRspBuilder(userScoreLog).Put("user", user).Build()
 		results = append(results, item)
 	}

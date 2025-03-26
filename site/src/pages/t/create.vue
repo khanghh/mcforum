@@ -157,7 +157,7 @@ const topicCaptchaEnabled = computed(() => {
 })
 
 const { data: forums } = useAsyncData('forums', () =>
-  useMyFetch('/api/forums/list'),
+  useHttpGet('/api/forums/list'),
 )
 
 init()
@@ -197,12 +197,11 @@ async function createTopic() {
 
   publishing.value = true
   try {
-    const topic = await useHttpPost('/api/topics/create', {
+    const topic = await useHttpPost('/api/topics', {
       body: postForm.value,
     })
     router.push(`/t/${topic.slug}`)
-  }
-  catch (e) {
+  } catch (e) {
     showCaptcha()
     useMsgError(e.message || e)
     publishing.value = false
@@ -219,8 +218,7 @@ async function showCaptcha() {
       })
       postForm.value.captchaId = ret.captchaId
       postForm.value.captchaUrl = ret.captchaUrl
-    }
-    catch (e) {
+    } catch (e) {
       useMsgError(e.message || e)
     }
   }

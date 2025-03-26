@@ -1,3 +1,39 @@
+<template>
+  <div>
+    <MyHeader />
+    <section class="main">
+      <div class="container">
+        <div class="error">
+          <div>
+            <img src="~/assets/images/logo.png" style="max-width: 100px" />
+          </div>
+          <div class="description">
+            <div v-if="error">
+              {{ error }}
+            </div>
+
+            <template v-else>
+              <div v-if="error.statusCode === 404">
+                页面没找到
+              </div>
+              <div v-if="error.statusCode === 403">
+                Forbidden
+              </div>
+              <div v-else>
+                {{ error.statusCode }} 异常
+              </div>
+            </template>
+          </div>
+          <div class="report">
+            <a @click="handleError">{{ $t('links.return_home') }}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <MyFooter />
+  </div>
+</template>
+
 <script setup>
 defineProps({
   //   {
@@ -22,42 +58,6 @@ const handleError = () => {
   clearError({ redirect: '/' })
 }
 </script>
-
-<template>
-  <div>
-    <MyHeader />
-    <section class="main">
-      <div class="container">
-        <div class="error">
-          <div>
-            <img src="~/assets/images/logo.png" style="max-width: 100px" />
-          </div>
-          <div class="description">
-            <div v-if="error.message">
-              {{ error.message }}
-            </div>
-
-            <template v-else>
-              <div v-if="error.statusCode === 404">
-                页面没找到
-              </div>
-              <div v-if="error.statusCode === 403">
-                Forbidden
-              </div>
-              <div v-else>
-                {{ error.statusCode }} 异常
-              </div>
-            </template>
-          </div>
-          <div class="report">
-            <a @click="handleError">{{ $t('links.return_home') }}</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <MyFooter />
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .error {

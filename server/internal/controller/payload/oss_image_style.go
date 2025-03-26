@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/pkg/config"

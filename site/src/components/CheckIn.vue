@@ -88,10 +88,10 @@ const user = computed(() => {
 })
 
 const { data: checkIn, refresh: refreshCheckIn } = await useAsyncData(() =>
-  useMyFetch(`/api/checkin/checkin`),
+  useHttpGet(`/api/checkin/checkin`),
 )
 const { data: checkInRank, refresh: refreshCheckInRank } = await useAsyncData(
-  () => useMyFetch(`/api/checkin/rank`),
+  () => useHttpGet(`/api/checkin/rank`),
 )
 
 async function doCheckIn() {
@@ -100,8 +100,7 @@ async function doCheckIn() {
     useMsgSuccess(i18n.t('widget.check_in.success'))
     refreshCheckIn()
     refreshCheckInRank()
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }

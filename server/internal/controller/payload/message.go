@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/locale"
@@ -9,6 +9,21 @@ import (
 
 	"github.com/tidwall/gjson"
 )
+
+// 消息
+type MessageResponse struct {
+	Id           int64     `json:"id"`
+	From         *UserInfo `json:"from"`    // 消息发送人
+	UserId       int64     `json:"userId"`  // 消息接收人编号
+	Title        string    `json:"title"`   // 标题
+	Content      string    `json:"content"` // 消息内容
+	QuoteContent string    `json:"quoteContent"`
+	Type         int       `json:"type"`
+	DetailUrl    string    `json:"detailUrl"` // 消息详情url
+	ExtraData    string    `json:"extraData"`
+	Status       int       `json:"status"`
+	CreateTime   int64     `json:"createTime"`
+}
 
 func BuildMessage(msg *model.Message) *MessageResponse {
 	if msg == nil {

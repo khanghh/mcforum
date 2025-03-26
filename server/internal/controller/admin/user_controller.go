@@ -87,7 +87,7 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 	user.Email = sqls.SqlNullString(email)
 	user.Nickname = nickname
 	user.Avatar = avatar
-	user.Gender = constants.Gender(gender)
+	user.Gender = gender
 	user.HomePage = homePage
 	user.Description = description
 	user.Status = status

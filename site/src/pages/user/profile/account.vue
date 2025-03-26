@@ -13,9 +13,13 @@
     <div class="widget-content">
       <div class="settings">
         <div class="settings-item">
-          <div class="settings-item-title">{{ $t('form.label.username') }}</div>
+          <div class="settings-item-title">
+            {{ $t('form.label.username') }}
+          </div>
           <div class="settings-item-input">
-            <div class="input-value">{{ user.username }}</div>
+            <div class="input-value">
+              {{ user.username }}
+            </div>
             <div class="action-box">
               <a v-if="!user.username" @click="showUsernameDialog">{{ $t('form.button.set') }}</a>
             </div>
@@ -23,24 +27,32 @@
         </div>
 
         <div class="settings-item">
-          <div class="settings-item-title">{{ $t('form.label.email') }}</div>
+          <div class="settings-item-title">
+            {{ $t('form.label.email') }}
+          </div>
           <div class="settings-item-input">
             <div class="input-value">
               <span>{{ user.email }}</span>
               <span
                 v-if="user.emailVerified"
-                style="margin-left: 4px; font-size: 80%">({{ $t('settings.email_verified') }})</span>
+                style="margin-left: 4px; font-size: 80%">
+                ({{ $t('settings.email_verified') }})
+              </span>
             </div>
             <div class="action-box">
               <a @click="showEmailDialog"> {{ $t('form.button.change') }} </a>
               <a v-if="user.email && !user.emailVerified"
-                @click="requestEmailVerify">{{ $t('form.button.verify') }}</a>
+                @click="requestEmailVerify">
+                {{ $t('form.button.verify') }}
+              </a>
             </div>
           </div>
         </div>
 
         <div class="settings-item">
-          <div class="settings-item-title">{{ $t('form.label.password') }}</div>
+          <div class="settings-item-title">
+            {{ $t('form.label.password') }}
+          </div>
           <div class="settings-item-input">
             <div class="input-value">
               {{ user.passwordSet ? $t('profile.settings.password_set') : $t('profile.settings.password_not_set') }}
@@ -168,124 +180,125 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 definePageMeta({
-  middleware: ["auth"],
-  layout: "profile",
-});
+  middleware: ['auth'],
+  layout: 'profile',
+})
 
 useHead({
   title: useSiteTitle(i18n.t('page.account_settings')),
-});
+})
 
-const { data: user, refresh: userRefresh } = await useAsyncData("user", () =>
-  useMyFetch("/api/user/current")
-);
+const { data: user, refresh: userRefresh } = await useAsyncData('user', () =>
+  useHttpGet('/api/user/current'),
+)
 
-const usernameDialog = ref(null);
-const usernameDialogVisible = ref(false);
+const usernameDialog = ref(null)
+const usernameDialogVisible = ref(false)
 const usernameForm = reactive({
-  username: user.value ? user.value.username : "",
-});
+  username: user.value ? user.value.username : '',
+})
 function showUsernameDialog() {
-  usernameDialog.value.show();
+  usernameDialog.value.show()
 }
 async function setUsername() {
   try {
-    await useHttpPostForm("/api/user/set/username", {
+    await useHttpPostForm('/api/user/set/username', {
       body: {
         username: usernameForm.username,
       },
-    });
-    await userRefresh();
-    useMsgSuccess(i18n.t('message.set_username_success'));
-    usernameDialog.value.close();
+    })
+    await userRefresh()
+    useMsgSuccess(i18n.t('message.set_username_success'))
+    usernameDialog.value.close()
   } catch (err) {
-    useMsgError(i18n.t('message.set_username_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.set_username_failure', { error: (err.message || err) }))
   }
 }
 
-const emailDialog = ref(null);
-const emailDialogVisible = ref(false);
+const emailDialog = ref(null)
+const emailDialogVisible = ref(false)
 const emailForm = reactive({
-  email: user.value ? user.value.email : "",
-});
+  email: user.value ? user.value.email : '',
+})
 function showEmailDialog() {
-  emailDialog.value.show();
+  emailDialog.value.show()
 }
 async function setEmail() {
   try {
-    await useHttpPostForm("/api/user/set/email", {
+    await useHttpPostForm('/api/user/set/email', {
       body: {
         email: emailForm.email,
       },
-    });
-    await userRefresh();
-    useMsgSuccess(i18n.t('message.email_update_success'));
-    emailDialog.value.close();
+    })
+    await userRefresh()
+    useMsgSuccess(i18n.t('message.email_update_success'))
+    emailDialog.value.close()
   } catch (err) {
-    useMsgError(i18n.t('message.email_update_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.email_update_failure', { error: (err.message || err) }))
   }
 }
 
 async function requestEmailVerify() {
-  const loading = useLoading();
+  const loading = useLoading()
   try {
-    await useHttpPost("/api/user/send_verify_email");
+    await useHttpPost('/api/user/send_verify_email')
     useMsgSuccess(
-      i18n.t('message.verify_email_sent')
-    );
+      i18n.t('message.verify_email_sent'),
+    )
   } catch (err) {
-    useMsgError(i18n.t('message.verify_email_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.verify_email_failure', { error: (err.message || err) }))
   } finally {
-    loading.close();
+    loading.close()
   }
 }
 
-const updatePasswordDialog = ref(null);
-const updatePasswordDialogVisible = ref(false);
+const updatePasswordDialog = ref(null)
+const updatePasswordDialogVisible = ref(false)
 const updatePasswordForm = reactive({
-  password: "",
-  rePassword: "",
-});
+  password: '',
+  rePassword: '',
+})
 function showUpdatePasswordDialog() {
-  updatePasswordDialog.value.show();
+  updatePasswordDialog.value.show()
 }
 async function updatePassword() {
   try {
-    await useHttpPostForm("/api/user/update/password", {
+    await useHttpPostForm('/api/user/update/password', {
       body: updatePasswordForm,
-    });
-    await userRefresh();
-    useMsgSuccess(i18n.t('message.password_update_success'));
-    updatePasswordDialog.value.close();
+    })
+    await userRefresh()
+    useMsgSuccess(i18n.t('message.password_update_success'))
+    updatePasswordDialog.value.close()
   } catch (err) {
-    useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }))
   }
 }
 
-const setPasswordDialog = ref(null);
-const setPasswordDialogVisible = ref(false);
+const setPasswordDialog = ref(null)
+const setPasswordDialogVisible = ref(false)
 const setPasswordForm = reactive({
-  password: "",
-  rePassword: "",
-});
+  password: '',
+  rePassword: '',
+})
 function showSetPasswordDialog() {
-  setPasswordDialog.value.show();
+  setPasswordDialog.value.show()
 }
 async function setPassword() {
   try {
-    await useHttpPostForm("/api/user/set/password", {
+    await useHttpPostForm('/api/user/set/password', {
       body: setPasswordForm,
-    });
-    await userRefresh();
-    useMsgSuccess(i18n.t('message.password_update_success'));
-    setPasswordDialog.value.close();
+    })
+    await userRefresh()
+    useMsgSuccess(i18n.t('message.password_update_success'))
+    setPasswordDialog.value.close()
   } catch (err) {
-    useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }));
+    useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }))
   }
 }
 </script>
+
 <style lang="scss" scoped>
 .field {
   margin-bottom: 10px;

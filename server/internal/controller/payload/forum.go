@@ -1,6 +1,14 @@
-package response
+package payload
 
 import "bbs-go/internal/model"
+
+type ForumResponse struct {
+	Id          int64  `json:"id"`
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+	Logo        string `json:"logo"`
+	Description string `json:"description"`
+}
 
 func BuildForum(forum *model.Forum) *ForumResponse {
 	if forum == nil {

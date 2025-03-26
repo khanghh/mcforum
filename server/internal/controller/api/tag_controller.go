@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model/constants"
 
 	"bbs-go/sqls"
@@ -24,7 +24,7 @@ func (c *TagController) GetBy(tagId int64) *web.JsonResult {
 	if tag == nil {
 		return web.JsonErrorMsg("标签不存在")
 	}
-	return web.JsonData(response.BuildTag(tag))
+	return web.JsonData(payload.BuildTag(tag))
 }
 
 // 标签列表
@@ -34,7 +34,7 @@ func (c *TagController) GetTags() *web.JsonResult {
 		Eq("status", constants.StatusOK).
 		Page(page, 200).Desc("id"))
 
-	return web.JsonPageData(response.BuildTags(tags), paging)
+	return web.JsonPageData(payload.BuildTags(tags), paging)
 }
 
 // 标签自动完成

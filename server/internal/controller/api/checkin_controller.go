@@ -2,7 +2,7 @@ package api
 
 import (
 	"bbs-go/internal/cache"
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/service"
 	"time"
 
@@ -52,7 +52,7 @@ func (c *CheckinController) GetRank() *web.JsonResult {
 	var itemList []map[string]interface{}
 	for _, checkIn := range list {
 		itemList = append(itemList, web.NewRspBuilder(checkIn).
-			Put("user", response.BuildUserInfoDefaultIfNull(checkIn.UserId)).
+			Put("user", payload.BuildUserInfoDefaultIfNull(checkIn.UserId)).
 			Build())
 	}
 	return web.JsonData(itemList)

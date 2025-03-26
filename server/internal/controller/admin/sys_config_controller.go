@@ -8,7 +8,7 @@ import (
 
 	"github.com/kataras/iris/v12"
 
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/service"
 )
 
@@ -31,7 +31,7 @@ func (c *SysConfigController) GetList() *web.JsonResult {
 
 func (c *SysConfigController) GetAll() *web.JsonResult {
 	configs := service.SysConfigService.GetAll()
-	return web.JsonData(response.BuildSysConfigResponse(configs))
+	return web.JsonData(payload.BuildSysConfigResponse(configs))
 }
 
 func (c *SysConfigController) PostSave() *web.JsonResult {

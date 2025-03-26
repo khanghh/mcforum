@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
@@ -60,7 +60,7 @@ func (c *CommentController) GetComments() *web.JsonResult {
 	}
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	comments, cursor, hasMore := service.CommentService.GetComments(entityType, entityId, cursor)
-	return web.JsonCursorData(response.BuildComments(comments, currentUser, true, false), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildComments(comments, currentUser, true, false), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 func (c *CommentController) GetReplies() *web.JsonResult {
@@ -70,7 +70,7 @@ func (c *CommentController) GetReplies() *web.JsonResult {
 	)
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	comments, cursor, hasMore := service.CommentService.GetReplies(commentId, cursor, 10)
-	return web.JsonCursorData(response.BuildComments(comments, currentUser, false, true), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildComments(comments, currentUser, false, true), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 func (c *CommentController) PostCreate() *web.JsonResult {
@@ -88,5 +88,5 @@ func (c *CommentController) PostCreate() *web.JsonResult {
 		return web.JsonError(err)
 	}
 
-	return web.JsonData(response.BuildComment(comment))
+	return web.JsonData(payload.BuildComment(comment))
 }

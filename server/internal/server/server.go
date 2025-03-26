@@ -31,7 +31,7 @@ func NewServer() {
 		AllowedOrigins:   conf.AllowedOrigins,
 		AllowCredentials: true,
 		MaxAge:           600,
-		AllowedMethods:   []string{iris.MethodGet, iris.MethodPost, iris.MethodOptions, iris.MethodHead, iris.MethodDelete, iris.MethodPut},
+		AllowedMethods:   []string{iris.MethodOptions, iris.MethodHead, iris.MethodGet, iris.MethodPost, iris.MethodPut, iris.MethodPatch, iris.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 	}))
 	app.AllowMethods(iris.MethodOptions)
@@ -40,7 +40,7 @@ func NewServer() {
 		path := ctx.Path()
 		var err error
 		if strings.Contains(path, "/api/admin/") {
-			err = ctx.JSON(web.JsonErrorCode(ctx.GetStatusCode(), "Http error"))
+			err = ctx.JSON(web.JsonErrorCodeMsg(ctx.GetStatusCode(), "Http error"))
 		}
 		if err != nil {
 			slog.Error(err.Error(), slog.Any("err", err))
@@ -58,22 +58,23 @@ func NewServer() {
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
 	apiRoute.Configure(func(m *mvc.Application) {
+		apiRoute.Party("/login").Handle(new(api.LoginController))
+		apiRoute.Party("/me").Handle(new(api.MeController))
+		apiRoute.Party("/user").Handle(new(api.UserController))
 		apiRoute.Party("/topics").Handle(new(api.TopicController))
 		apiRoute.Party("/forums").Handle(new(api.ForumController))
-		apiRoute.Party("/login").Handle(new(api.LoginController))
-		apiRoute.Party("/user").Handle(new(api.UserController))
 		apiRoute.Party("/tag").Handle(new(api.TagController))
-		apiRoute.Party("/comment").Handle(new(api.CommentController))
-		apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
+		// apiRoute.Party("/comment").Handle(new(api.CommentController))
+		// apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
 		// apiRoute.Party("/like").Handle(new(api.LikeController))
-		apiRoute.Party("/checkin").Handle(new(api.CheckinController))
+		// apiRoute.Party("/checkin").Handle(new(api.CheckinController))
 		apiRoute.Party("/config").Handle(new(api.ConfigController))
 		apiRoute.Party("/upload").Handle(new(api.UploadController))
 		apiRoute.Party("/link").Handle(new(api.LinkController))
 		apiRoute.Party("/captcha").Handle(new(api.CaptchaController))
 		apiRoute.Party("/search").Handle(new(api.SearchController))
-		apiRoute.Party("/fans").Handle(new(api.FansController))
-		apiRoute.Party("/user-report").Handle(new(api.UserReportController))
+		// apiRoute.Party("/fans").Handle(new(api.FansController))
+		// apiRoute.Party("/user-report").Handle(new(api.UserReportController))
 	})
 
 	// admin

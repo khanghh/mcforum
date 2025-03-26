@@ -80,23 +80,17 @@ const menus = computed(() => {
 async function handleCommand(command) {
   if (command === 'edit') {
     editTopic()
-  }
-  else if (command === 'delete') {
+  } else if (command === 'delete') {
     deleteTopic()
-  }
-  else if (command === 'recommend') {
+  } else if (command === 'recommend') {
     toggleRecommended()
-  }
-  else if (command === 'pin') {
+  } else if (command === 'pin') {
     togglePinned()
-  }
-  else if (command === 'forbidden7Days') {
+  } else if (command === 'forbidden7Days') {
     await forbidden(7)
-  }
-  else if (command === 'forbiddenForever') {
+  } else if (command === 'forbiddenForever') {
     await forbidden(-1)
-  }
-  else {
+  } else {
     console.log('click on item ' + command)
   }
 }
@@ -110,8 +104,7 @@ async function forbidden(days) {
       },
     })
     useMsgSuccess(i18n.t('message.mute_user_success'))
-  }
-  catch (e) {
+  } catch (e) {
     useMsgError(i18n.t('message.mute_user_failure', { error: e }))
   }
 }
@@ -136,10 +129,12 @@ function editTopic() {
 }
 
 function toggleRecommended() {
-  const action = topic.value.recommend ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
+  const action = topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    useHttpPostForm(`/api/topics/${topic.value.slug}/${topic.value.recommend ? 'unrecommend' : 'recommend'}`).then(() => {
-      topic.value.recommend = !topic.value.recommend
+    useHttpPatchForm(`/api/topics/${topic.value.slug}`, {
+      body: { recommended: !topic.value.recommended },
+    }).then(() => {
+      topic.value.recommended = !topic.value.recommended
       emits('update:modelValue', topic.value)
       useMsgSuccess({ message: i18n.t('message.action_success', { action }) })
     }).catch((e) => {
@@ -151,7 +146,9 @@ function toggleRecommended() {
 function togglePinned() {
   const action = topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    useHttpPostForm(`/api/topics/${topic.value.slug}/${topic.value.pinned ? 'unpin' : 'pin'}`).then(() => {
+    useHttpPatchForm(`/api/topics/${topic.value.slug}`, {
+      body: { pinned: !topic.value.pinned },
+    }).then(() => {
       topic.value.pinned = !topic.value.pinned
       emits('update:modelValue', topic.value)
       useMsgSuccess({ message: i18n.t('message.action_success', { action: action }) })

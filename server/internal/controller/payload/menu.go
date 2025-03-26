@@ -1,6 +1,32 @@
-package response
+package payload
 
 import "bbs-go/internal/model"
+
+type MenuResponse struct {
+	Id         int64  `json:"id"`
+	ParentId   *int64 `json:"parentId"`
+	Name       string `json:"name"`
+	Title      string `json:"title"`
+	Icon       string `json:"icon"`
+	Path       string `json:"path"`
+	SortNo     int    `json:"sortNo"`
+	Status     int    `json:"status"`
+	CreateTime int64  `json:"createTime"`
+	UpdateTime int64  `json:"updateTime"`
+}
+
+type MenuTreeResponse struct {
+	MenuResponse
+	Level    int                `json:"level"`
+	Children []MenuTreeResponse `json:"children"`
+}
+
+type TreeNode struct {
+	Id       int64      `json:"id"`
+	Key      int64      `json:"key"`
+	Title    string     `json:"title"`
+	Children []TreeNode `json:"children"`
+}
 
 func BuildMenu(element *model.Menu) MenuResponse {
 	item := MenuResponse{

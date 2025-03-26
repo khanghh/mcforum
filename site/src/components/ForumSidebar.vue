@@ -24,7 +24,7 @@ const route = useRoute()
 const slug = route.params.slug || 'whats-new'
 
 const { data: forums } = await useAsyncData('forums', () =>
-  useMyFetch(`/api/forums/menu`),
+  useHttpGet(`/api/forums/menu`),
 )
 
 function forumLogo(forum) {

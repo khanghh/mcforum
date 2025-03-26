@@ -166,7 +166,7 @@ const route = useRoute()
 const slug = route.params.slug
 
 const { data: topic } = await useAsyncData('topic', () =>
-  useMyFetch(`/api/topics/${slug}`),
+  useHttpGet(`/api/topics/${slug}`),
 )
 
 const hideContent = ref(null)
@@ -174,7 +174,7 @@ const liked = ref(topic.value?.liked || false)
 
 const { data: likeUsers, refresh: refreshLikeUsers } = await useAsyncData(
   () => {
-    return useMyFetch(`/api/topic/recentlikes/${route.params.id}`)
+    return useHttpGet(`/api/topic/recentlikes/${route.params.id}`)
   },
 )
 
@@ -206,8 +206,7 @@ async function toggleLike() {
 
       useMsgSuccess(i18n.t('message.unliked_success'))
       await refreshLikeUsers()
-    }
-    else {
+    } else {
       await useHttpPostForm(`/api/topics/${slug}/like`)
       liked.value = true
       topic.value.likeCount++
@@ -215,8 +214,7 @@ async function toggleLike() {
       useMsgSuccess(i18n.t('message.liked_success'))
       await refreshLikeUsers()
     }
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }
@@ -227,14 +225,12 @@ async function toggleFavorite() {
       await useHttpPostForm(`/api/topics/${slug}/unfavorite`)
       topic.value.favorited = false
       useMsgSuccess(i18n.t('message.removed_from_favorite'))
-    }
-    else {
+    } else {
       await useHttpPostForm(`/api/topics/${slug}/favorite`)
       topic.value.favorited = true
       useMsgSuccess(i18n.t('message.added_to_favorite'))
     }
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }

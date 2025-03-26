@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/common/numbers"
@@ -7,6 +7,32 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 )
+
+// SysConfigResponse
+//
+//	配置返回结构体
+type SysConfigResponse struct {
+	SiteTitle                  string              `json:"siteTitle"`
+	SiteDescription            string              `json:"siteDescription"`
+	SiteKeywords               []string            `json:"siteKeywords"`
+	SiteNavs                   []model.ActionLink  `json:"siteNavs"`
+	SiteNotification           string              `json:"siteNotification"`
+	RecommendTags              []string            `json:"recommendTags"`
+	UrlRedirect                bool                `json:"urlRedirect"`
+	ScoreConfig                model.ScoreConfig   `json:"scoreConfig"`
+	DefaultForumId             int64               `json:"defaultNodeId"`
+	ArticlePending             bool                `json:"articlePending"`
+	TopicCaptcha               bool                `json:"topicCaptcha"`
+	UserObserveSeconds         int                 `json:"userObserveSeconds"`
+	TokenExpireDays            int                 `json:"tokenExpireDays"`
+	LoginMethod                model.LoginMethod   `json:"loginMethod"`
+	CreateTopicEmailVerified   bool                `json:"createTopicEmailVerified"`
+	CreateArticleEmailVerified bool                `json:"createArticleEmailVerified"`
+	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified"`
+	EnableHideContent          bool                `json:"enableHideContent"`
+	Modules                    model.ModulesConfig `json:"modules"`
+	EmailWhitelist             []string            `json:"emailWhitelist"` // 邮箱白名单
+}
 
 func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 	var (

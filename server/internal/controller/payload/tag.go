@@ -1,6 +1,11 @@
-package response
+package payload
 
 import "bbs-go/internal/model"
+
+type TagResponse struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}
 
 func BuildTag(tag *model.Tag) *TagResponse {
 	if tag == nil {

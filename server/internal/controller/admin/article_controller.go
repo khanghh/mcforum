@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/sitemap"
 	"strconv"
@@ -64,7 +64,7 @@ func (c *ArticleController) buildArticles(articles []model.Article) []map[string
 		builder := web.NewRspBuilderExcludes(article, "content")
 
 		// 用户
-		builder = builder.Put("user", response.BuildUserInfoDefaultIfNull(article.UserId))
+		builder = builder.Put("user", payload.BuildUserInfoDefaultIfNull(article.UserId))
 
 		// 简介
 		builder.Put("summary", common.GetSummary(article.ContentType, article.Content))
@@ -72,10 +72,10 @@ func (c *ArticleController) buildArticles(articles []model.Article) []map[string
 		// 标签
 		tagIds := cache.ArticleTagCache.Get(article.Id)
 		tags := cache.TagCache.GetList(tagIds)
-		builder.Put("tags", response.BuildTags(tags))
+		builder.Put("tags", payload.BuildTags(tags))
 
 		// 封面
-		builder.Put("cover", response.BuildImage(article.Cover))
+		builder.Put("cover", payload.BuildImage(article.Cover))
 
 		results = append(results, builder.Build())
 	}
@@ -119,7 +119,7 @@ func (c *ArticleController) PostUpdate() *web.JsonResult {
 func (c *ArticleController) GetTags() *web.JsonResult {
 	articleId := params.FormValueInt64Default(c.Ctx, "articleId", 0)
 	tags := service.ArticleService.GetArticleTags(articleId)
-	return web.JsonData(response.BuildTags(tags))
+	return web.JsonData(payload.BuildTags(tags))
 }
 
 func (c *ArticleController) PostTags() *web.JsonResult {
@@ -128,7 +128,7 @@ func (c *ArticleController) PostTags() *web.JsonResult {
 		tags      = params.FormValueStringArray(c.Ctx, "tags")
 	)
 	service.ArticleService.PutTags(articleId, tags)
-	return web.JsonData(response.BuildTags(service.ArticleService.GetArticleTags(articleId)))
+	return web.JsonData(payload.BuildTags(service.ArticleService.GetArticleTags(articleId)))
 }
 
 func (c *ArticleController) PostDelete() *web.JsonResult {

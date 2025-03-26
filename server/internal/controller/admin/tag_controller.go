@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model/constants"
 	"strconv"
 	"strings"
@@ -102,17 +102,17 @@ func (c *TagController) GetAutocomplete() *web.JsonResult {
 	} else {
 		tags = service.TagService.Find(sqls.NewCnd().Desc("id").Limit(10))
 	}
-	return web.JsonData(response.BuildTags(tags))
+	return web.JsonData(payload.BuildTags(tags))
 }
 
 // 根据标签编号批量获取
 func (c *TagController) GetTags() *web.JsonResult {
 	tagIds := params.FormValueInt64Array(c.Ctx, "tagIds")
-	var tags *[]response.TagResponse
+	var tags *[]payload.TagResponse
 	if len(tagIds) > 0 {
 		tagArr := service.TagService.Find(sqls.NewCnd().In("id", tagIds))
 		if len(tagArr) > 0 {
-			tags = response.BuildTags(tagArr)
+			tags = payload.BuildTags(tagArr)
 		}
 	}
 	return web.JsonData(tags)

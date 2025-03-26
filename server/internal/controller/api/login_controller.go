@@ -6,7 +6,7 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/kataras/iris/v12"
 
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
 )
@@ -38,7 +38,7 @@ func (c *LoginController) PostSignup() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return response.BuildLoginSuccess(c.Ctx, user, redirect)
+	return payload.BuildLoginSuccess(c.Ctx, user, redirect)
 }
 
 // 用户名密码登录
@@ -62,7 +62,7 @@ func (c *LoginController) PostSignin() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return response.BuildLoginSuccess(c.Ctx, user, redirect)
+	return payload.BuildLoginSuccess(c.Ctx, user, redirect)
 }
 
 // 退出登录

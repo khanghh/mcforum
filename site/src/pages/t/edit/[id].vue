@@ -87,12 +87,12 @@ const isEnableHideContent = computed(() => {
 })
 
 const { data: forums } = useAsyncData('forums', () =>
-  useMyFetch('/api/forums/list'),
+  useHttpGet('/api/forums/list'),
 )
 
 const { data: postForm } = useAsyncData(() => {
   publishing.value = false
-  return useMyFetch(`/api/topics/edit/${route.params.id}`)
+  return useHttpGet(`/api/topics/edit/${route.params.id}`)
 })
 
 async function submitCreate() {
@@ -117,8 +117,7 @@ async function submitCreate() {
         useLinkTo(`/topic/${postForm.value.id}`)
       },
     })
-  }
-  catch (e) {
+  } catch (e) {
     publishing.value = false
     useMsgError('提交失败：' + (e.message || e))
   }

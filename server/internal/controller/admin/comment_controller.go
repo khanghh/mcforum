@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"bbs-go/internal/controller/response"
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/markdown"
@@ -62,7 +62,7 @@ func (c *CommentController) GetList() *web.JsonResult {
 		builder := web.NewRspBuilder(comment)
 
 		// 用户
-		builder = builder.Put("user", response.BuildUserInfoDefaultIfNull(comment.UserId))
+		builder = builder.Put("user", payload.BuildUserInfoDefaultIfNull(comment.UserId))
 
 		// 内容
 		if comment.ContentType == constants.ContentTypeMarkdown {

@@ -1,4 +1,4 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/cache"
@@ -9,6 +9,27 @@ import (
 	"bbs-go/internal/pkg/text"
 	"bbs-go/internal/service"
 )
+
+type ArticleResponse struct {
+	ArticleSimpleResponse
+	Content string `json:"content"`
+}
+
+type ArticleSimpleResponse struct {
+	Id           int64          `json:"id"`
+	User         *UserInfo      `json:"user"`
+	Tags         *[]TagResponse `json:"tags"`
+	Title        string         `json:"title"`
+	Summary      string         `json:"summary"`
+	Cover        *ImageInfo     `json:"cover"`
+	SourceUrl    string         `json:"sourceUrl"`
+	ViewCount    int64          `json:"viewCount"`
+	CommentCount int64          `json:"commentCount"`
+	LikeCount    int64          `json:"likeCount"`
+	CreateTime   int64          `json:"createTime"`
+	Status       int            `json:"status"`
+	Favorited    bool           `json:"favorited"`
+}
 
 func BuildArticle(article *model.Article, currentUser *model.User) *ArticleResponse {
 	if article == nil {

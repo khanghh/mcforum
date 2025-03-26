@@ -57,7 +57,7 @@ const empty = computed(() => {
 })
 
 const { data: first } = await useAsyncData(() => {
-  return useMyFetch(props.url, {
+  return useHttpGet(props.url, {
     params: props.params || {},
   })
 })
@@ -74,11 +74,9 @@ async function loadMore() {
       params: filters,
     })
     renderData(data)
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err)
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }

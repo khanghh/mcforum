@@ -1,9 +1,19 @@
-package response
+package payload
 
 import (
 	"bbs-go/internal/pkg/search"
 	"bbs-go/internal/service"
 )
+
+type SearchTopicResponse struct {
+	Id         int64          `json:"id"`
+	User       *UserInfo      `json:"user"`
+	Forum      *ForumResponse `json:"forum"`
+	Tags       *[]TagResponse `json:"tags"`
+	Title      string         `json:"title"`
+	Summary    string         `json:"summary"`
+	CreateTime int64          `json:"createTime"`
+}
 
 func BuildSearchTopics(docs []search.TopicDocument) []SearchTopicResponse {
 	var items []SearchTopicResponse
