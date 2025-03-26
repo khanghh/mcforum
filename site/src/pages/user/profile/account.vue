@@ -36,7 +36,7 @@
               <span
                 v-if="user.emailVerified"
                 style="margin-left: 4px; font-size: 80%">
-                ({{ $t('settings.email_verified') }})
+                ({{ $t('profile.settings.email_verified') }})
               </span>
             </div>
             <div class="action-box">

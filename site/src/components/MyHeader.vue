@@ -25,10 +25,6 @@
             <!-- <nuxt-link to="/search">xxxx</nuxt-link> -->
           </div>
 
-          <div v-if="user" class="navbar-item">
-            <create-topic-btn />
-          </div>
-
           <div v-if="user" class="navbar-item dropdown is-hoverable is-right msg-notice">
             <msg-notice />
           </div>

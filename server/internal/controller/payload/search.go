@@ -9,7 +9,7 @@ type SearchTopicResponse struct {
 	Id         int64          `json:"id"`
 	User       *UserInfo      `json:"user"`
 	Forum      *ForumResponse `json:"forum"`
-	Tags       *[]TagResponse `json:"tags"`
+	Tags       []string       `json:"tags"`
 	Title      string         `json:"title"`
 	Summary    string         `json:"summary"`
 	CreateTime int64          `json:"createTime"`
@@ -37,7 +37,6 @@ func BuildSearchTopic(doc search.TopicDocument) SearchTopicResponse {
 		rsp.Forum = BuildForum(node)
 	}
 
-	tags := service.TopicService.GetTopicTags(doc.Id)
-	rsp.Tags = BuildTags(tags)
+	rsp.Tags = service.TopicService.GetTopicTags(doc.Id)
 	return rsp
 }

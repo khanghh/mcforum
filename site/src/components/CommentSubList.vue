@@ -114,8 +114,7 @@ async function like(comment) {
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
-    }
-    else {
+    } else {
       await useHttpPostForm('/api/like/like', {
         body: {
           entityType: 'comment',
@@ -126,8 +125,7 @@ async function like(comment) {
       comment.likeCount = comment.likeCount + 1
       useMsgSuccess(i18n.t('message.liked_success'))
     }
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }
@@ -140,8 +138,7 @@ function switchShowReply(comment) {
 
   if (reply.value.quoteId === comment.id) {
     hideReply(comment)
-  }
-  else {
+  } else {
     reply.value.quoteId = comment.id
     setTimeout(() => {
       $refs[`editor${comment.id}`][0].focus()
@@ -171,8 +168,7 @@ async function submitReply(/* parent */) {
     hideReply()
     emit('reply', ret)
     useMsgSuccess(i18n.t('message.comment_success'))
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }

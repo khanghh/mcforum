@@ -166,6 +166,7 @@ export default {
     action_success: '{action} successfully',
     action_failure: '{action} failure. {error}',
     please_enter_comment: 'Please enter a comment',
+    offline: 'You are offline',
   },
   form: {
     button: {

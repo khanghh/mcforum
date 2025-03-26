@@ -4,7 +4,6 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/spam"
 	"bytes"
@@ -100,7 +99,7 @@ func generateSlug(title string) string {
 // }
 
 // POST /topics -> create topic
-func (c *TopicController) PostBy() *web.JsonResult {
+func (c *TopicController) Post() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -123,7 +122,7 @@ func (c *TopicController) PostBy() *web.JsonResult {
 func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonErrorCodeMsg(iris.StatusNotFound, locale.T("topic.not_found"))
+		return web.JsonError(service.ErrTopicNotFound)
 	}
 
 	// 审核中文章控制展示
@@ -131,10 +130,10 @@ func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 	if topic.Status == constants.StatusReview {
 		if user != nil {
 			if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
-				return web.JsonErrorCodeMsg(iris.StatusForbidden, "文章审核中")
+				return web.JsonError(service.ErrForbidden)
 			}
 		} else {
-			return web.JsonErrorCodeMsg(iris.StatusForbidden, "文章审核中")
+			return web.JsonError(service.ErrForbidden)
 		}
 	}
 
@@ -142,11 +141,39 @@ func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
+// GET /topics/{slug}/edit
+func (c *TopicController) GetByEdit(slugId string) *web.JsonResult {
+	topic, err := c.getTopicBySlugId(slugId)
+	if topic == nil || err != nil {
+		return web.JsonError(service.ErrTopicNotFound)
+	}
+
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserId != user.Id) {
+		return web.JsonError(service.ErrForbidden)
+	}
+
+	if topic.Status == constants.StatusReview && !user.IsOwnerOrAdmin() {
+		return web.JsonErrorMsg(locale.T("topic.not_editable"))
+	}
+
+	// revision := params.FormValueInt64Default(c.Ctx, "revision", 0)
+
+	tags := service.TopicService.GetTopicTags(topic.Id)
+	return web.NewEmptyRspBuilder().
+		Put("id", topic.Id).
+		Put("forumId", topic.ForumId).
+		Put("title", topic.Title).
+		Put("content", topic.Content).
+		Put("tags", tags).
+		JsonResult()
+}
+
 // PUT /topics/{slug} // edit topic
 func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonErrorCodeMsg(iris.StatusNotFound, locale.T("topic.not_found"))
+		return web.JsonError(service.ErrTopicNotFound)
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
@@ -155,15 +182,14 @@ func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	}
 
 	// 非作者、且非管理员
-	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
-		return web.JsonErrorCodeMsg(iris.StatusForbidden, locale.T("system.message.permission_denied"))
+	if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
+		return web.JsonError(service.ErrForbidden)
 	}
 
 	topic.ForumId = params.FormValueInt64Default(c.Ctx, "forumId", topic.ForumId)
 	topic.Title = strings.TrimSpace(params.FormValueDefault(c.Ctx, "title", topic.Title))
 	topic.Slug = generateSlug(topic.Title)
 	topic.Content = strings.TrimSpace(params.FormValueDefault(c.Ctx, "content", topic.Content))
-	topic.HideContent = strings.TrimSpace(params.FormValueDefault(c.Ctx, "hideContent", topic.HideContent))
 	tags := params.FormValueStringArray(c.Ctx, "tags")
 
 	err = service.TopicService.Edit(topic.Id, topic.ForumId, tags, topic.Title, topic.Slug, topic.Content, topic.HideContent)
@@ -175,11 +201,28 @@ func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
+func (c *TopicController) setTopicPinned(topicId int64, pinned bool) (*web.JsonResult, error) {
+	err := service.TopicService.SetTopicPinned(topicId, pinned)
+	if err != nil {
+		return nil, err
+	}
+	return web.JsonSuccess(), nil
+}
+
+func (c *TopicController) setTopicRecommended(topicId int64, recommended bool) (*web.JsonResult, error) {
+	fmt.Println("setTopicRecommended", topicId, recommended)
+	err := service.TopicService.SetTopicRecommended(topicId, recommended)
+	if err != nil {
+		return nil, err
+	}
+	return web.JsonSuccess(), nil
+}
+
 // PATCH /topics/{slugId} => pin/unpin, recommend/unrecommend
-func (c *TopicController) PatchBy(slugId string) *web.JsonResult {
+func (c *TopicController) PatchBy(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonErrorCodeMsg(iris.StatusNotFound, locale.T("topic.not_found"))
+		return web.JsonError(service.ErrTopicNotFound), nil
 	}
 	var (
 		pinned      = params.FormValueBoolDefault(c.Ctx, "pinned", topic.Pinned)
@@ -188,45 +231,38 @@ func (c *TopicController) PatchBy(slugId string) *web.JsonResult {
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-		return web.JsonErrorCodeMsg(iris.StatusForbidden, locale.T("system.message.permission_denied"))
+		return web.JsonError(service.ErrForbidden), nil
 	}
 
 	if pinned != topic.Pinned {
-		err = service.TopicService.SetTopicPinned(topic.Id, pinned)
+		return c.setTopicPinned(topic.Id, pinned)
 	} else if recommended != topic.Recommended {
-		err = service.TopicService.SetRecommended(topic.Id, recommended)
-	} else {
-		return web.JsonErrorCodeMsg(iris.StatusBadRequest, locale.T("system.message.invalid_request"))
+		return c.setTopicRecommended(topic.Id, recommended)
 	}
-	if err == nil {
-		return web.JsonSuccess()
-	} else if service.IsDatabaseError(err) {
-		return web.JsonError(err)
-	}
-	return web.JsonErrorCodeMsg(iris.StatusInternalServerError, locale.T("system.errors.internal_server_error"))
+	return nil, service.ErrBadRequest
 }
 
 // DELETE /topics/{slug}
-func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, int) {
+func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
-		return web.JsonError(err), iris.StatusUnauthorized
+		return web.JsonError(service.ErrUnauthorized), nil
 	}
 
 	topic := service.TopicService.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return web.JsonSuccess(), iris.StatusBadRequest
+		return web.JsonError(service.ErrBadRequest), nil
 	}
 
 	// 非作者、且非管理员
 	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
-		return web.JsonErrorMsg("permission denied"), iris.StatusForbidden
+		return web.JsonError(service.ErrForbidden), nil
 	}
 
 	if err := service.TopicService.Delete(topicId, user.Id, c.Ctx.Request()); err != nil {
-		return web.JsonError(err), iris.StatusInternalServerError
+		return nil, err
 	}
-	return web.JsonSuccess(), iris.StatusOK
+	return web.JsonSuccess(), nil
 }
 
 // // P/topics/{slug}/edit
@@ -268,38 +304,37 @@ func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, int) {
 // }
 
 // PUT /topics/{slugId}/reactions
-func (c *TopicController) PutByReactions(slugId string) (*web.JsonResult, int) {
+func (c *TopicController) PutByReactions(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
-		return web.JsonErrorMsg("not found"), iris.StatusNotFound
+		return web.JsonError(service.ErrTopicNotFound), nil
 	}
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(errs.NotLogin), iris.StatusUnauthorized
+		return web.JsonError(service.ErrUnauthorized), nil
 	}
 	err = service.UserLikeService.TopicLike(user.Id, topic.Id)
 	if err != nil {
-		fmt.Println(err)
-		return web.JsonError(err), iris.StatusInternalServerError
+		return nil, err
 	}
-	return web.JsonSuccess(), iris.StatusOK
+	return web.JsonSuccess(), nil
 }
 
 // DELETE /topics/{slugId}/reactions/{userId}
-func (c *TopicController) DeleteByReactions(slugId string) (*web.JsonResult, int) {
+func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
-		return web.JsonErrorMsg("not found"), iris.StatusNotFound
+		return web.JsonError(service.ErrTopicNotFound), nil
 	}
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(errs.NotLogin), iris.StatusUnauthorized
+		return web.JsonError(service.ErrUnauthorized), nil
 	}
 	err = service.UserLikeService.TopicUnLike(user.Id, topic.Id)
 	if err != nil {
-		return web.JsonError(err), iris.StatusInternalServerError
+		return nil, err
 	}
-	return web.JsonSuccess(), iris.StatusOK
+	return web.JsonSuccess(), nil
 }
 
 // POST /topics/{slugId}/unpin

@@ -29,6 +29,7 @@ export default {
   publish: {
     action: {
       edit: 'chỉnh sửa',
+      save: 'lưu bài đăng',
       delete: 'xóa',
       recommend: 'đề xuất',
       unrecommend: 'bỏ đề xuất',
@@ -40,7 +41,7 @@ export default {
     enter_title: 'Nhập tiêu đề',
     article_under_review: 'Bài viết đang được kiểm duyệt',
     verify_email_title: 'Vui lòng xác minh email của bạn trước',
-    verify_email_action: 'Trước khi tạo chủ đề, vui lòng truy cập {0} và thiết lập email để hoàn tất xác minh.',
+    verify_email_action: 'Trước khi thực hiện, vui lòng truy cập {0} và thiết lập email để hoàn tất xác minh.',
     enter_post_content: 'Nhập nội dung bạn muốn đăng...',
     add_some_tags: 'Thêm một số thẻ',
     recommended_tags: 'Thẻ được đề xuất',
@@ -112,6 +113,7 @@ export default {
     edit_topic: 'Chỉnh sửa chủ đề',
     edit_article: 'Chỉnh sửa bài viết',
     by_tag: 'Thẻ {tag}',
+    not_found: 'Không tìm thấy trang',
   },
   links: {
     back_to_profile: 'Quay lại hồ sơ',
@@ -165,6 +167,7 @@ export default {
     action_success: '{action} thành công ',
     action_failure: '{action} thất bại. {error}',
     please_enter_comment: 'Vui lòng nhập nội dung bình luận',
+    page_not_found: 'Trang bạn tìm kiếm không tồn tại hoặc đã bị xóa, {0}',
     offline: 'Bạn đang ngoại tuyến.',
   },
   form: {
@@ -225,7 +228,6 @@ export default {
       confirm_delete_article: 'Bạn có chắc chắn muốn xóa bài viết này?',
       confirm_delete_post: 'Bạn có chắc chắn muốn xóa bài đăng này?',
       confirm_action_post: 'Bạn có chắc chắn muốn {action} bài đăng này?',
-      confirm_pin_post: 'Bạn có chắc chắn muốn ghim bài đăng này?',
     },
     button: {
       cancel: 'Hủy',

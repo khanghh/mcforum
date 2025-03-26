@@ -61,20 +61,14 @@ func (s *topicPublishService) Publish(userId int64, form model.CreateTopicForm) 
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		var (
-			tagIds []int64
-			err    error
-		)
+		var err error
 		// 帖子
 		if err := repository.TopicRepository.Create(tx, topic); err != nil {
 			return err
 		}
 
 		// 标签
-		if tagIds, err = repository.TagRepository.GetOrCreates(tx, form.Tags); err != nil {
-			return err
-		}
-		if err = repository.TopicTagRepository.AddTopicTags(tx, topic.Id, tagIds); err != nil {
+		if err = repository.TopicTagRepository.AddTopicTags(tx, topic.Id, form.Tags); err != nil {
 			return err
 		}
 

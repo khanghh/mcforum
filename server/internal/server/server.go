@@ -34,7 +34,6 @@ func NewServer() {
 		AllowedMethods:   []string{iris.MethodOptions, iris.MethodHead, iris.MethodGet, iris.MethodPost, iris.MethodPut, iris.MethodPatch, iris.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 	}))
-	app.AllowMethods(iris.MethodOptions)
 
 	app.OnAnyErrorCode(func(ctx iris.Context) {
 		path := ctx.Path()
@@ -57,13 +56,14 @@ func NewServer() {
 
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
+	apiRoute.HandleError(middleware.ErrorHandler)
 	apiRoute.Configure(func(m *mvc.Application) {
 		apiRoute.Party("/login").Handle(new(api.LoginController))
 		apiRoute.Party("/me").Handle(new(api.MeController))
 		apiRoute.Party("/user").Handle(new(api.UserController))
 		apiRoute.Party("/topics").Handle(new(api.TopicController))
 		apiRoute.Party("/forums").Handle(new(api.ForumController))
-		apiRoute.Party("/tag").Handle(new(api.TagController))
+		// apiRoute.Party("/tag").Handle(new(api.TagController))
 		// apiRoute.Party("/comment").Handle(new(api.CommentController))
 		// apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
 		// apiRoute.Party("/like").Handle(new(api.LikeController))
@@ -82,7 +82,7 @@ func NewServer() {
 		m.Router.Use(middleware.AdminAuth)
 		m.Party("/common").Handle(new(admin.CommonController))
 		m.Party("/user").Handle(new(admin.UserController))
-		m.Party("/tag").Handle(new(admin.TagController))
+		// m.Party("/tag").Handle(new(admin.TagController))
 		m.Party("/comment").Handle(new(admin.CommentController))
 		m.Party("/favorite").Handle(new(admin.FavoriteController))
 		m.Party("/topics").Handle(new(admin.TopicController))

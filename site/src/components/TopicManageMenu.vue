@@ -29,7 +29,7 @@ const props = defineProps({
 
 const topic = ref(props.modelValue)
 
-const emits = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'onSwitchEditMode'])
 
 const userStore = useUserStore()
 const isOwner = userIsOwner(userStore.user)
@@ -38,10 +38,10 @@ const isAdmin = userIsAdmin(userStore.user)
 const menus = computed(() => {
   const isTopicOwner = userStore.user && userStore.user.id === topic.value.user.id
   const items = []
-  if (isTopicOwner && topic.value.type === 0) {
+  if (isTopicOwner) {
     items.push({
       command: 'edit',
-      label: i18n.t('publish.action.edit'),
+      label: topic.value.editing ? i18n.t('publish.action.save') : i18n.t('publish.action.edit'),
     })
   }
   if (isTopicOwner || isOwner || isAdmin) {
@@ -53,7 +53,7 @@ const menus = computed(() => {
   if (isOwner || isAdmin) {
     items.push({
       command: 'recommend',
-      label: topic.value.recommend ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend'),
+      label: topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend'),
     })
   }
   if (isOwner || isAdmin) {
@@ -79,7 +79,7 @@ const menus = computed(() => {
 
 async function handleCommand(command) {
   if (command === 'edit') {
-    editTopic()
+    toggleEditing()
   } else if (command === 'delete') {
     deleteTopic()
   } else if (command === 'recommend') {
@@ -111,7 +111,7 @@ async function forbidden(days) {
 
 function deleteTopic() {
   useConfirm(i18n.t('dialog.message.confirm_delete_post')).then(function () {
-    useHttpPost(`/api/topics/${topic.value.id}/delete`).then(() => {
+    useHttpDelete(`/api/topics/${topic.value.id}`).then(() => {
       useMsg({
         message: i18n.t('message.delete_success'),
         onClose() {
@@ -124,18 +124,26 @@ function deleteTopic() {
   })
 }
 
-function editTopic() {
-  useLinkTo(`/t/edit/${topic.value.id}`)
+function toggleEditing() {
+  if (topic.value.editing) {
+    const action = i18n.t('publish.action.edit')
+    useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(() => {
+      emit('onSwitchEditMode')
+    })
+  } else {
+    emit('onSwitchEditMode')
+  }
 }
 
 function toggleRecommended() {
   const action = topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
+  console.log(topic.value.recommended)
   useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
     useHttpPatchForm(`/api/topics/${topic.value.slug}`, {
       body: { recommended: !topic.value.recommended },
     }).then(() => {
       topic.value.recommended = !topic.value.recommended
-      emits('update:modelValue', topic.value)
+      emit('update:modelValue', topic.value)
       useMsgSuccess({ message: i18n.t('message.action_success', { action }) })
     }).catch((e) => {
       useMsgError(i18n.t('message.action_failure', { action, error: e.message || e }))
@@ -150,7 +158,7 @@ function togglePinned() {
       body: { pinned: !topic.value.pinned },
     }).then(() => {
       topic.value.pinned = !topic.value.pinned
-      emits('update:modelValue', topic.value)
+      emit('update:modelValue', topic.value)
       useMsgSuccess({ message: i18n.t('message.action_success', { action: action }) })
     }).catch((e) => {
       useMsgError(i18n.t('message.action_failure', { action: action, error: e.message || e }))

@@ -4,6 +4,7 @@
       <div class="left-container">
         <div class="main-content no-padding no-bg topics-wrapper">
           <div class="topics-nav">
+            <create-topic-btn v-if="user" />
             <forum-sidebar />
           </div>
           <div class="topics-main">
@@ -24,9 +25,14 @@
 </template>
 
 <script setup>
+const userStore = useUserStore()
+const { user } = storeToRefs(userStore)
+
 useHead({
   title: useSiteTitle(),
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.topics-nav {}
+</style>

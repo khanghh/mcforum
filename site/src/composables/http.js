@@ -61,34 +61,35 @@ export function useHttpDelete(url, options = {}) {
   })
 }
 
-export function useHttpPutForm(url, { body } = {}) {
+export function useHttpPutForm(url, options = {}) {
+  console.log(options)
   return useHttp(url, {
+    ...options,
     method: 'PUT',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body,
   })
 }
 
-export function useHttpPatchForm(url, { body } = {}) {
+export function useHttpPatchForm(url, options = {}) {
   return useHttp(url, {
+    ...options,
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body,
   })
 }
 
 // POST请求(application/x-www-form-urlencoded)
-export function useHttpPostForm(url, { body = {} } = {}) {
+export function useHttpPostForm(url, options = {}) {
   return useHttp(url, {
+    ...options,
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body,
   })
 }
 

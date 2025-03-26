@@ -89,7 +89,7 @@ func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
 func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New("收藏的话题不存在")
+		return ErrTopicNotFound
 	}
 	return s.addFavorite(userId, constants.EntityTopic, topicId)
 }

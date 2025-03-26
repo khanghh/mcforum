@@ -135,18 +135,18 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 }
 
 // 标签帖子列表
-func (c *ForumController) GetTagTopics() *web.JsonResult {
-	var (
-		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
-		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
-		user       = service.UserTokenService.GetCurrent(c.Ctx)
-	)
-	if err != nil {
-		return web.JsonError(err)
-	}
-	topics, cursor, hasMore := service.TopicService.GetTagTopics(tagId, cursor)
-	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
-}
+// func (c *ForumController) GetTagTopics() *web.JsonResult {
+// 	var (
+// 		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
+// 		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
+// 		user       = service.UserTokenService.GetCurrent(c.Ctx)
+// 	)
+// 	if err != nil {
+// 		return web.JsonError(err)
+// 	}
+// 	topics, cursor, hasMore := service.TopicService.GetTagTopics(tagId, cursor)
+// 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+// }
 
 // 最新话题
 func (c *ForumController) GetNewest() *web.JsonResult {

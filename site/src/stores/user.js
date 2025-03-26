@@ -17,16 +17,10 @@ export const useUserStore = defineStore('user', {
     async signin(body) {
       const { user, token, redirect } = await useHttpPostForm(
         '/api/login/signin',
-        {
-          body: body,
-        },
+        { body },
       )
       this.user = user
-      return {
-        user,
-        token,
-        redirect,
-      }
+      return { user, token, redirect }
     },
     async signout() {
       await useHttpGet('/api/login/signout')
@@ -35,16 +29,10 @@ export const useUserStore = defineStore('user', {
     async signup(form) {
       const { user, token, redirect } = await useHttpPostForm(
         '/api/login/signup',
-        {
-          body: form,
-        },
+        { body: form },
       )
       this.user = user
-      return {
-        user,
-        token,
-        redirect,
-      }
+      return { user, token, redirect }
     },
   },
 })

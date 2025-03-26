@@ -4,6 +4,7 @@
       <div class="left-container">
         <div class="main-content no-padding no-bg topics-wrapper">
           <div class="topics-nav">
+            <create-topic-btn v-if="user" />
             <forum-sidebar />
           </div>
           <div class="topics-main">
@@ -28,9 +29,11 @@
 
 <script setup>
 const route = useRoute()
+const userStore = useUserStore()
 
-const loader = ref(null)
 const slug = route.params.slug || 'whats-new'
+const { user } = storeToRefs(userStore)
+const loader = ref(null)
 
 const apiUrl = computed(() => `/api/forums/${slug}`)
 

@@ -1,218 +1,142 @@
 <template>
-  <div>
-    <section class="main">
-      <div v-if="isPending" class="container main-container">
-        <div
-          class="notification is-warning"
-          style="width: 100%; margin: 20px 0">
-          {{ $t('message.post_under_review') }}
-        </div>
+  <section v-if="topic != null" class="main">
+    <div v-if="isPending" class="container main-container">
+      <div class="notification is-warning"
+        style="width: 100%; margin: 20px 0">
+        {{ $t('message.post_under_review') }}
       </div>
-      <div class="container main-container left-main size-360">
-        <div class="left-container">
-          <div class="main-content no-padding no-bg">
-            <article
-              class="topic-detail"
-              itemscope
-              itemtype="http://schema.org/BlogPosting">
-              <div class="topic-header">
-                <div class="topic-header-left">
-                  <my-avatar :user="topic.user" :size="45" />
-                </div>
-                <div class="topic-header-center">
-                  <div class="topic-nickname" itemprop="headline">
-                    <nuxt-link
-                      itemprop="author"
-                      itemscope
-                      itemtype="http://schema.org/Person"
-                      :to="`/user/${topic.user.id}`">
-                      {{ topic.user.nickname }}
-                    </nuxt-link>
-                  </div>
-                  <div class="topic-meta">
-                    <span class="meta-item">
-                      {{ $t('feed.published_on') }}
-                      <time
-                        :datetime="usePrettyDate(topic.createTime)"
-                        itemprop="datePublished">
-                        {{ usePrettyDate(topic.createTime) }}
-                      </time>
-                    </span>
-                    <span v-if="topic.ipLocation" class="meta-item">{{ topic.ipLocation }}</span>
-                  </div>
-                </div>
-                <div class="topic-header-right">
-                  <topic-manage-menu v-model="topic" />
-                </div>
-              </div>
+    </div>
+    <div class="container main-container left-main size-360">
+      <div class="left-container">
+        <article class="topic-detail" itemscope itemtype="http://schema.org/BlogPosting">
+          <div class="topic-header">
+            <div class="topic-header-left">
+              <my-avatar :user="topic.user" :size="45" />
+            </div>
 
-              <!-- 内容 -->
-              <div
-                class="topic-content content"
-                :class="{
-                  'topic-tweet': topic.type === 1,
-                }"
-                itemprop="articleBody">
-                <h1 v-if="topic.title" class="topic-title" itemprop="headline">
-                  {{ topic.title }}
-                </h1>
-                <div class="topic-content-detail line-numbers" v-html="topic.content" />
-                <ul v-if="topic.imageList && topic.imageList.length" class="topic-image-list">
-                  <li v-for="(image, index) in topic.imageList" :key="index">
-                    <div class="image-item">
-                      <el-image
-                        :src="image.preview"
-                        :preview-src-list="imageUrls"
-                        :initial-index="index" />
-                    </div>
-                  </li>
-                </ul>
-
-                <div v-if="hideContent && hideContent.exists" class="topic-content-detail hide-content">
-                  <div v-if="hideContent.show" class="widget has-border">
-                    <div class="widget-header">
-                      <span>
-                        <icon name="LockOpen" />
-                        <span>{{ $t('publish.hidden_content_unlocked') }}</span>
-                      </span>
-                    </div>
-                    <div class="widget-content" v-html="hideContent.content" />
-                  </div>
-                  <div v-else class="hide-content-tip">
-                    <icon name="Lock" />
-                    <span>{{ $t('publish.hidden_content_locked') }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 节点、标签 -->
-              <div class="topic-tags">
+            <div class="topic-header-center">
+              <div class="topic-nickname" itemprop="headline">
                 <nuxt-link
-                  v-if="topic.forum"
-                  :to="`/f/${topic.forum.slug}`"
-                  class="topic-tag">
-                  {{ topic.forum.name }}
-                </nuxt-link>
-                <nuxt-link
-                  v-for="tag in topic.tags"
-                  :key="tag.id"
-                  :to="`/topics/tag/${tag.id}`"
-                  class="topic-tag">
-                  #{{ tag.name }}
+                  itemprop="author"
+                  itemscope
+                  itemtype="http://schema.org/Person"
+                  :to="`/user/${topic.user.id}`">
+                  {{ topic.user.nickname }}
                 </nuxt-link>
               </div>
-
-              <!-- 点赞用户列表 -->
-              <div
-                v-if="likeUsers && likeUsers.length"
-                class="topic-like-users">
-                <my-avatar
-                  v-for="likeUser in likeUsers"
-                  :key="likeUser.id"
-                  :user="likeUser"
-                  :size="24"
-                  has-border />
-                <span class="like-count">{{ topic.likeCount }}</span>
+              <div class="topic-meta">
+                <span class="meta-item">
+                  {{ $t('feed.published_on') }}
+                  <time
+                    :datetime="usePrettyDate(topic.createTime)"
+                    itemprop="datePublished">
+                    {{ usePrettyDate(topic.createTime) }}
+                  </time>
+                </span>
+                <span v-if="topic.ipLocation" class="meta-item">{{ topic.ipLocation }}</span>
               </div>
+            </div>
 
-              <!-- 功能按钮 -->
-              <div class="topic-actions">
-                <div class="action disabled">
-                  <icon name="BookOpenText" size="1em" />
-                  <div class="action-text">
-                    <span>{{ $t('feed.view_count') }}</span>
-                    <span v-if="topic.viewCount > 0" class="action-text">
-                      ({{ topic.viewCount }})
-                    </span>
-                  </div>
-                </div>
-                <div class="action" @click="toggleLike(topic)">
-                  <icon name="ThumbsUp" color="#1c71d8" :filled="liked" />
-                  <div class="action-text">
-                    <span>{{ $t('feed.like_count') }}</span>
-                    <span v-if="topic.likeCount > 0">
-                      ({{ topic.likeCount }})
-                    </span>
-                  </div>
-                </div>
-                <div class="action" @click="toggleFavorite(topic.id)">
-                  <icon name="Star" color="#f6d32d" :filled="topic.favorited" />
-                  <div class="action-text">
-                    <span>{{ $t('feed.actions.favorite') }}</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <!-- 评论 -->
-            <comment
-              :entity-id="topic.id"
-              :comment-count="topic.commentCount"
-              entity-type="topic"
-              @created="commentCreated" />
+            <div class="topic-header-right">
+              <topic-manage-menu v-model="topic" @onSwitchEditMode="onSwitchEditMode" />
+            </div>
           </div>
-        </div>
-        <div class="right-container">
-          <user-info :user="topic.user" />
-        </div>
+
+          <div class="topic-content content" itemprop="articleBody">
+            <topic-content v-model="topic" :editing="topic.editing" />
+          </div>
+
+          <div class="topic-tags">
+            <nuxt-link
+              v-if="topic.forum"
+              :to="`/f/${topic.forum.slug}`"
+              class="topic-tag">
+              {{ topic.forum.name }}
+            </nuxt-link>
+            <nuxt-link
+              v-for="tag in topic.tags"
+              :key="tag.name"
+              :to="`/tags/${tag}`"
+              class="topic-tag">
+              #{{ tag }}
+            </nuxt-link>
+          </div>
+
+          <div class="topic-actions">
+            <div class="action disabled">
+              <icon name="BookOpenText" size="1em" />
+              <div class="action-text">
+                <span>{{ $t('feed.view_count') }}</span>
+                <span v-if="topic.viewCount > 0" class="action-text">
+                  ({{ topic.viewCount }})
+                </span>
+              </div>
+            </div>
+            <div class="action" @click="toggleLike(topic)">
+              <icon name="ThumbsUp" color="#1c71d8" :filled="liked" />
+              <div class="action-text">
+                <span>{{ $t('feed.like_count') }}</span>
+                <span v-if="topic.likeCount > 0">
+                  ({{ topic.likeCount }})
+                </span>
+              </div>
+            </div>
+            <div class="action" @click="toggleFavorite(topic.id)">
+              <icon name="Star" color="#f6d32d" :filled="topic.favorited" />
+              <div class="action-text">
+                <span>{{ $t('feed.actions.favorite') }}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 评论 -->
+        <comment :entity-id="topic.id"
+          :comment-count="topic.commentCount"
+          entity-type="topic" />
       </div>
-    </section>
-  </div>
+      <div class="right-container">
+        <user-info :user="topic.user" />
+      </div>
+    </div>
+  </section>
+  <not-found v-else />
 </template>
 
 <script setup>
 const i18n = useI18n()
 const route = useRoute()
+const userStore = useUserStore()
+
 const slug = route.params.slug
+const user = userStore.user
 
 const { data: topic } = await useAsyncData('topic', () =>
   useHttpGet(`/api/topics/${slug}`),
 )
 
-const hideContent = ref(null)
-const liked = ref(topic.value?.liked || false)
-
-const { data: likeUsers, refresh: refreshLikeUsers } = await useAsyncData(
-  () => {
-    return useHttpGet(`/api/topic/recentlikes/${route.params.id}`)
-  },
-)
-
-const imageUrls = computed(() => {
-  if (!topic.value.imageList || !topic.value.imageList.length) {
-    return []
-  }
-  const ret = []
-  for (let i = 0; i < topic.value.imageList.length; i++) {
-    ret.push(topic.value.imageList[i].url)
-  }
-  return ret
-})
-
 useHead({
-  title: useTopicSiteTitle(topic.value),
+  title: topic.value ? useTopicSiteTitle(topic.value) : i18n.t('page.not_found'),
 })
-
 const isPending = computed(() => {
   return topic.value.status === 2
 })
 
+const liked = ref(topic.value?.liked || false)
 async function toggleLike() {
   try {
     if (liked.value) {
-      await useHttpPostForm(`/api/topics/${slug}/unlike`)
+      await useHttpDelete(`/api/topics/${slug}/reactions/${user.id}`)
       liked.value = false
       topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
-
       useMsgSuccess(i18n.t('message.unliked_success'))
-      await refreshLikeUsers()
     } else {
-      await useHttpPostForm(`/api/topics/${slug}/like`)
+      await useHttpPutForm(`/api/topics/${slug}/reactions`, {
+        body: { type: 'like' },
+      })
       liked.value = true
       topic.value.likeCount++
-
       useMsgSuccess(i18n.t('message.liked_success'))
-      await refreshLikeUsers()
     }
   } catch (e) {
     useCatchError(e)
@@ -222,11 +146,13 @@ async function toggleLike() {
 async function toggleFavorite() {
   try {
     if (topic.value.favorited) {
-      await useHttpPostForm(`/api/topics/${slug}/unfavorite`)
+      await useHttpDelete(`/api/me/favorites/${topic.value.id}`)
       topic.value.favorited = false
       useMsgSuccess(i18n.t('message.removed_from_favorite'))
     } else {
-      await useHttpPostForm(`/api/topics/${slug}/favorite`)
+      await useHttpPutForm(`/api/me/favorites`, {
+        body: { topicId: topic.value.id },
+      })
       topic.value.favorited = true
       useMsgSuccess(i18n.t('message.added_to_favorite'))
     }
@@ -235,8 +161,31 @@ async function toggleFavorite() {
   }
 }
 
-async function commentCreated() {
-  console.log('commentCreated...')
+async function onSwitchEditMode() {
+  if (topic.value.editing) {
+    useHttpPutForm(`/api/topics/${topic.value.slug}`, {
+      body: {
+        forumId: topic.value.forumId,
+        title: topic.value.title,
+        content: topic.value.content,
+        tags: topic.value.tags,
+        imageList: [],
+      },
+    }).then((tmp) => {
+      topic.value.content = tmp.content
+      topic.value.editing = false
+      useLinkTo(`/t/${tmp.slug}`)
+    }).catch((err) => {
+      alert(err)
+    })
+  } else {
+    useHttpGet(`/api/topics/${topic.value.slug}/edit`).then((tmp) => {
+      topic.value.content = tmp.content
+      topic.value.editing = true
+    }).catch((err) => {
+      alert(err)
+    })
+  }
 }
 </script>
 

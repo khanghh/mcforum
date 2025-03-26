@@ -16,7 +16,7 @@ func init() {
 func handleTopicRecommend(i interface{}) {
 	e := i.(event.TopicRecommendEvent)
 
-	if e.Recommend {
+	if e.Recommended {
 		sendTopicRecommendMsg(e.TopicId)
 	}
 }

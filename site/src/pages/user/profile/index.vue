@@ -96,52 +96,53 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 definePageMeta({
-  middleware: ["auth"],
-  layout: "profile",
-});
+  middleware: ['auth'],
+  layout: 'profile',
+})
 
 useHead({
   title: useSiteTitle(i18n.t('page.personal_info')),
-});
+})
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 const user = computed(() => {
-  return userStore.user;
-});
+  return userStore.user
+})
 
 const form = ref({
-  nickname: "",
-  avatar: "",
-  homePage: "",
-  description: "",
-});
+  nickname: '',
+  avatar: '',
+  homePage: '',
+  description: '',
+})
 
 if (user.value != null) {
-  form.value.nickname = user.value.nickname;
-  form.value.avatar = user.value.avatar;
-  form.value.homePage = user.value.homePage;
-  form.value.description = user.value.description;
+  form.value.nickname = user.value.nickname
+  form.value.avatar = user.value.avatar
+  form.value.homePage = user.value.homePage
+  form.value.description = user.value.description
 }
 
 async function submitForm() {
   try {
     await useHttpPostForm(`/api/user/edit/${user.value.id}`, {
       body: form.value,
-    });
-    await reload();
-    useMsgSuccess(i18n.t('message.profile_update_success'));
+    })
+    await reload()
+    useMsgSuccess(i18n.t('message.profile_update_success'))
   } catch (e) {
-    console.error(e);
-    useMsgError(i18n.t('message.profile_update_failure', { error: (e.message || e) }));
+    console.error(e)
+    useMsgError(i18n.t('message.profile_update_failure', { error: (e.message || e) }))
   }
 }
 async function reload() {
-  user.value = await useHttpGet("/api/user/current");
-  form.value = { ...user.value };
+  user.value = await useHttpGet('/api/user/current')
+  form.value = { ...user.value }
 }
 </script>
+
 <style lang="scss" scoped>
 .widget-header {
   padding: 18px 0;

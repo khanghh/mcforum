@@ -23,8 +23,7 @@ export function useSiteKeywords() {
 export function useTopicSiteTitle(topic) {
   if (topic.type === 0) {
     return useSiteTitle(topic.title)
-  }
-  else {
+  } else {
     return useSiteTitle(topic.content)
   }
 }

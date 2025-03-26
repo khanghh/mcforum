@@ -54,6 +54,6 @@ type CommentCreateEvent struct {
 }
 
 type TopicRecommendEvent struct {
-	TopicId   int64 `json:"topicId"`
-	Recommend bool  `json:"recommend"`
+	TopicId     int64 `json:"topicId"`
+	Recommended bool  `json:"recommended"`
 }

@@ -19,23 +19,23 @@
 </template>
 
 <script setup>
-const i18n = useI18n();
-const route = useRoute();
-const url = route.query.url || "";
-const temp = url.toLowerCase();
-const autoRedirectTime = 5000;
+const i18n = useI18n()
+const route = useRoute()
+const url = route.query.url || ''
+const temp = url.toLowerCase()
+const autoRedirectTime = 5000
 
-if (!temp.startsWith("http://") && !temp.startsWith("https://")) {
+if (!temp.startsWith('http://') && !temp.startsWith('https://')) {
   throw createError({
     statusCode: 500,
-    message: i18n.t('message.internal_server_error')
-  });
+    message: i18n.t('message.internal_server_error'),
+  })
 }
 onMounted(() => {
   setTimeout(() => {
-    window.location.href = url;
-  }, autoRedirectTime);
-});
+    window.location.href = url
+  }, autoRedirectTime)
+})
 </script>
 
 <style lang="scss" scoped>

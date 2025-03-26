@@ -19,7 +19,7 @@ type TopicResponse struct {
 	Type            constants.TopicType `json:"type"`
 	User            *UserInfo           `json:"user"`
 	Forum           *ForumResponse      `json:"forum"`
-	Tags            *[]TagResponse      `json:"tags"`
+	Tags            []string            `json:"tags"`
 	Title           string              `json:"title"`
 	Summary         string              `json:"summary"`
 	Content         string              `json:"content"`
@@ -30,8 +30,8 @@ type TopicResponse struct {
 	LikeCount       int64               `json:"likeCount"`
 	Liked           bool                `json:"liked"`
 	CreateTime      int64               `json:"createTime"`
-	Recommend       bool                `json:"recommend"`
-	RecommendTime   int64               `json:"recommendTime"`
+	Recommended     bool                `json:"recommended"`
+	RecommendedTime int64               `json:"recommendedTime"`
 	Pinned          bool                `json:"pinned"`
 	PinnedTime      int64               `json:"pinnedTime"`
 	Status          int                 `json:"status"`
@@ -93,8 +93,8 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 	rsp.ViewCount = topic.ViewCount
 	rsp.CommentCount = topic.CommentCount
 	rsp.LikeCount = topic.LikeCount
-	rsp.Recommend = topic.Recommended
-	rsp.RecommendTime = topic.RecommendedTime
+	rsp.Recommended = topic.Recommended
+	rsp.RecommendedTime = topic.RecommendedTime
 	rsp.Pinned = topic.Pinned
 	rsp.PinnedTime = topic.PinnedTime
 	rsp.Status = topic.Status
@@ -126,8 +126,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		rsp.Forum = BuildForum(node)
 	}
 
-	tags := service.TopicService.GetTopicTags(topic.Id)
-	rsp.Tags = BuildTags(tags)
+	rsp.Tags = service.TopicService.GetTopicTags(topic.Id)
 
 	return rsp
 }

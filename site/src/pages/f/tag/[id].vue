@@ -4,6 +4,7 @@
       <div class="left-container">
         <div class="main-content no-padding no-bg topics-wrapper">
           <div class="topics-nav">
+            <create-topic-btn v-if="user" />
             <forum-sidebar />
           </div>
           <div class="topics-main">
@@ -29,7 +30,10 @@
 <script setup>
 const i18n = useI18n()
 const route = useRoute()
+const userStore = useUserStore()
+
 const tagId = route.params.id
+const { user } = storeToRefs(userStore)
 const { data: tag } = await useAsyncData(() => useHttpGet(`/api/tag/${tagId}`))
 
 useHead({

@@ -1,8 +1,10 @@
 package service
 
 import (
+	"bbs-go/internal/locale"
 	"errors"
 
+	"github.com/kataras/iris/v12"
 	"gorm.io/gorm"
 )
 
@@ -44,3 +46,24 @@ func IsDatabaseError(err error) bool {
 
 	return false
 }
+
+type ResponseError struct {
+	code    int
+	message string
+}
+
+func (e ResponseError) Code() int {
+	return e.code
+}
+
+func (e ResponseError) Error() string {
+	return e.message
+}
+
+var (
+	ErrTopicNotFound  = ResponseError{iris.StatusNotFound, locale.T("topic.not_found")}
+	ErrForbidden      = ResponseError{iris.StatusForbidden, locale.T("system.message.permission_denied")}
+	ErrUnauthorized   = ResponseError{iris.StatusUnauthorized, locale.T("system.message.unauthorized")}
+	ErrBadRequest     = ResponseError{iris.StatusBadRequest, locale.T("system.message.invalid_request")}
+	ErrInternalServer = ResponseError{iris.StatusInternalServerError, locale.T("system.message.internal_server_error")}
+)

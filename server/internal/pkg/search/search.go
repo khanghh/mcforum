@@ -5,7 +5,6 @@ import (
 	"bbs-go/internal/model"
 	html2 "bbs-go/internal/pkg/html"
 	"bbs-go/internal/pkg/markdown"
-	"bbs-go/internal/repository"
 	"html"
 	"log/slog"
 	"math"
@@ -38,13 +37,13 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 		return nil
 	}
 	doc := &TopicDocument{
-		Id:         topic.Id,
-		NodeId:     topic.ForumId,
-		UserId:     topic.UserId,
-		Title:      topic.Title,
-		Status:     topic.Status,
-		Recommend:  topic.Recommended,
-		CreateTime: topic.CreateTime,
+		Id:          topic.Id,
+		NodeId:      topic.ForumId,
+		UserId:      topic.UserId,
+		Title:       topic.Title,
+		Status:      topic.Status,
+		Recommended: topic.Recommended,
+		CreateTime:  topic.CreateTime,
 	}
 
 	// 处理内容
@@ -60,26 +59,7 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 		doc.Nickname = user.Nickname
 	}
 
-	// 处理标签
-	tags := getTopicTags(topic.Id)
-	var tagsArr []string
-	for _, tag := range tags {
-		tagsArr = append(tagsArr, tag.Name)
-	}
-	tagsArr = append(tagsArr, "hello")
-	doc.Tags = tagsArr
-
 	return doc
-}
-
-func getTopicTags(topicId int64) []model.Tag {
-	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().Where("topic_id = ?", topicId))
-
-	var tagIds []int64
-	for _, topicTag := range topicTags {
-		tagIds = append(tagIds, topicTag.TagId)
-	}
-	return cache.TagCache.GetList(tagIds)
 }
 
 // IndexData 索引数据
@@ -114,7 +94,7 @@ func SearchTopic(keyword string, nodeId int64, timeRange, page, limit int) (docs
 	if nodeId != 0 {
 		if nodeId == -1 { // 推荐
 			boolFieldQuery := bleve.NewBoolFieldQuery(true)
-			boolFieldQuery.SetField("recommend")
+			boolFieldQuery.SetField("recommended")
 			query.AddMust(boolFieldQuery)
 		} else {
 			f := float64(nodeId)

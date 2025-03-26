@@ -88,6 +88,9 @@
 
 <script setup>
 const i18n = useI18n()
+const userStore = useUserStore()
+const user = userStore.user
+
 defineProps({
   topics: {
     type: Array,
@@ -107,29 +110,19 @@ defineProps({
 async function like(topic) {
   try {
     if (topic.liked) {
-      await useHttpPostForm(`/api/topics/${topic.slug}/unlike`, {
-        body: {
-          entityType: 'topic',
-          entityId: topic.id,
-        },
-      })
+      await useHttpDelete(`/api/topics/${topic.slug}/reactions/${user.id}`)
       topic.liked = false
       topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
-    }
-    else {
-      await useHttpPostForm(`/api/topics/${topic.slug}/like`, {
-        body: {
-          entityType: 'topic',
-          entityId: topic.id,
-        },
+    } else {
+      await useHttpPutForm(`/api/topics/${topic.slug}/reactions`, {
+        body: { type: 'like' },
       })
       topic.liked = true
       topic.likeCount++
       useMsgSuccess(i18n.t('message.liked_success'))
     }
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }

@@ -16,7 +16,6 @@ import (
 
 	"gorm.io/gorm"
 
-	"bbs-go/internal/cache"
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
 )
@@ -129,10 +128,7 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 	}
 
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		var (
-			tagIds []int64
-			err    error
-		)
+		var err error
 		if err = repository.TopicRepository.Updates(sqls.DB(), topicId, map[string]interface{}{
 			"forum_id":     forumId,
 			"title":        title,
@@ -143,13 +139,8 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 			return err
 		}
 
-		// 创建帖子对应标签
-		if tagIds, err = repository.TagRepository.GetOrCreates(tx, tags); err != nil {
-			return err
-		}
-
-		repository.TopicTagRepository.DeleteTopicTags(tx, topicId)      // 先删掉所有的标签
-		repository.TopicTagRepository.AddTopicTags(tx, topicId, tagIds) // 然后重新添加标签
+		repository.TopicTagRepository.DeleteTopicTags(tx, topicId)    // 先删掉所有的标签
+		repository.TopicTagRepository.AddTopicTags(tx, topicId, tags) // 然后重新添加标签
 		return nil
 	})
 
@@ -160,14 +151,13 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 }
 
 // GetTopicTags 话题的标签
-func (s *topicService) GetTopicTags(topicId int64) []model.Tag {
+func (s *topicService) GetTopicTags(topicId int64) []string {
 	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().Where("topic_id = ?", topicId))
-
-	var tagIds []int64
-	for _, topicTag := range topicTags {
-		tagIds = append(tagIds, topicTag.TagId)
+	tagNames := make([]string, len(topicTags))
+	for i, topicTag := range topicTags {
+		tagNames[i] = topicTag.Tag
 	}
-	return cache.TagCache.GetList(tagIds)
+	return tagNames
 }
 
 // GetTopics 帖子列表（最新、推荐、关注、节点）
@@ -260,35 +250,35 @@ func (s *topicService) GetFollowedTopics(userId int64, cursor int64) (topics []m
 	return
 }
 
-// 指定标签下话题列表
-func (s *topicService) GetTagTopics(tagId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
-	limit := 20
-	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
-		Eq("tag_id", tagId).
-		Eq("status", constants.StatusOK).
-		Desc("last_comment_time").Limit(limit))
-	if len(topicTags) > 0 {
-		nextCursor = topicTags[len(topicTags)-1].LastCommentTime
+// // 指定标签下话题列表
+// func (s *topicService) GetTagTopics(tagId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
+// 	limit := 20
+// 	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
+// 		Eq("tag_id", tagId).
+// 		Eq("status", constants.StatusOK).
+// 		Desc("last_comment_time").Limit(limit))
+// 	if len(topicTags) > 0 {
+// 		nextCursor = topicTags[len(topicTags)-1].LastCommentTime
 
-		var topicIds []int64
-		for _, topicTag := range topicTags {
-			topicIds = append(topicIds, topicTag.TopicId)
-		}
+// 		var topicIds []int64
+// 		for _, topicTag := range topicTags {
+// 			topicIds = append(topicIds, topicTag.TopicId)
+// 		}
 
-		topicsMap := s.GetTopicInIds(topicIds)
-		if topicsMap != nil {
-			for _, topicTag := range topicTags {
-				if topic, found := topicsMap[topicTag.TopicId]; found {
-					topics = append(topics, topic)
-				}
-			}
-		}
-	} else {
-		nextCursor = cursor
-	}
-	hasMore = len(topicTags) >= limit
-	return
-}
+// 		topicsMap := s.GetTopicInIds(topicIds)
+// 		if topicsMap != nil {
+// 			for _, topicTag := range topicTags {
+// 				if topic, found := topicsMap[topicTag.TopicId]; found {
+// 					topics = append(topics, topic)
+// 				}
+// 			}
+// 		}
+// 	} else {
+// 		nextCursor = cursor
+// 	}
+// 	hasMore = len(topicTags) >= limit
+// 	return
+// }
 
 func (s *topicService) GetTopicByIds(topicIds []int64) (topics []model.Topic) {
 	topicsMap := s.GetTopicInIds(topicIds)
@@ -436,31 +426,31 @@ func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
 }
 
 // 推荐
-func (s *topicService) SetRecommended(topicId int64, recommend bool) error {
+func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
 		return errors.New(locale.T("topic.not_found"))
 	}
-	if topic.Recommended == recommend { // 推荐状态没变更
+	if topic.Recommended == recommended { // 推荐状态没变更
 		return nil
 	}
-	if recommend {
+	if recommended {
 		if err := s.Updates(topicId, map[string]interface{}{
-			"recommended":      recommend,
+			"recommended":      recommended,
 			"recommended_time": dates.NowTimestamp(),
 		}); err != nil {
 			return err
 		}
 	} else {
-		if err := s.UpdateColumn(topicId, "recommended", recommend); err != nil {
+		if err := s.UpdateColumn(topicId, "recommended", recommended); err != nil {
 			return err
 		}
 	}
 
 	// 发送事件
 	event.Send(event.TopicRecommendEvent{
-		TopicId:   topicId,
-		Recommend: recommend,
+		TopicId:     topicId,
+		Recommended: recommended,
 	})
 
 	// 添加索引

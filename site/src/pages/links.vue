@@ -1,9 +1,9 @@
 <script setup>
-const i18n = useI18n();
+const i18n = useI18n()
 useHead({
   title: i18n.t('widget.title.links'),
-});
-const links = await useHttpGet("/api/link/list");
+})
+const links = await useHttpGet('/api/link/list')
 </script>
 
 <template>
@@ -11,7 +11,9 @@ const links = await useHttpGet("/api/link/list");
     <div class="container">
       <div class="main-body">
         <div class="widget">
-          <div class="widget-header">{{ $t('widget.title.links') }}</div>
+          <div class="widget-header">
+            {{ $t('widget.title.links') }}
+          </div>
           <div class="widget-content">
             <ul class="links">
               <li v-for="link in links" :key="link.id" class="link">
@@ -24,7 +26,9 @@ const links = await useHttpGet("/api/link/list");
                     :href="link.url"
                     :title="link.title"
                     class="link-title"
-                    target="_blank">{{ link.title }}</a>
+                    target="_blank">
+                    {{ link.title }}
+                  </a>
                   <p class="link-summary">
                     {{ link.summary }}
                   </p>

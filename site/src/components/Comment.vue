@@ -14,33 +14,33 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
-});
-const emits = defineEmits(['created']);
-const userStore = useUserStore();
-const configStore = useConfigStore();
+})
+const emits = defineEmits(['created'])
+const userStore = useUserStore()
+const configStore = useConfigStore()
 const user = computed(() => {
-  return userStore.user;
-});
+  return userStore.user
+})
 
 const isLogin = computed(() => {
-  return userStore.user !== null;
-});
+  return userStore.user !== null
+})
 
 const config = computed(() => {
-  return configStore.config;
-});
+  return configStore.config
+})
 
-const input = ref(null);
-const list = ref(null);
+const input = ref(null)
+const list = ref(null)
 
 // 是否需要先邮箱认证
 const isNeedEmailVerify = computed(() => {
-  return config.createCommentEmailVerified && user && user.emailVerified;
-});
+  return config.value.createCommentEmailVerified && user && user.value.emailVerified
+})
 
 function commentCreated(data) {
-  list.value.append(data);
-  emits('created', data);
+  list.value.append(data)
+  emits('created', data)
 }
 function reply(quote) {
   // this.$refs.input.reply(quote)
@@ -60,10 +60,15 @@ function reply(quote) {
     <template v-if="isLogin">
       <div v-if="isNeedEmailVerify" class="comment-not-login">
         <div class="comment-login-div">
-          请先前往
-          <nuxt-link style="font-weight: 700" to="/user/profile/account">
-            个人中心 &gt; 账号设置
-          </nuxt-link>页面设置邮箱，并完成邮箱认证。
+          <i18n-t keypath="publish.verify_email_action" tag="p">
+            <strong>
+              <nuxt-link
+                to="/user/profile/account"
+                style="color: var(--text-link-color)">
+                {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings') }}
+              </nuxt-link>
+            </strong>
+          </i18n-t>
         </div>
       </div>
       <template v-else>
@@ -111,10 +116,6 @@ function reply(quote) {
       border-radius: 3px;
       padding: 0 10px;
 
-      a {
-        margin-left: 10px;
-        margin-right: 10px;
-      }
     }
   }
 }
