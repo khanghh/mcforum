@@ -72,12 +72,10 @@ async function create() {
     quote.value = null
     simpleEditor.value.clear()
     useMsgSuccess(i18n.t('message.comment_success'))
-  }
-  catch (e) {
+  } catch (e) {
     console.error(e)
     useMsgError(e.message || e)
-  }
-  finally {
+  } finally {
     sending.value = false
   }
 }

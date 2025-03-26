@@ -6,7 +6,7 @@
         {{ $t('message.post_under_review') }}
       </div>
     </div>
-    <div class="container main-container left-main size-360">
+    <div class="container main-container left-main size-300">
       <div class="left-container">
         <article class="topic-detail" itemscope itemtype="http://schema.org/BlogPosting">
           <div class="topic-header">

@@ -1,6 +1,6 @@
 <template>
   <section class="main">
-    <div class="container main-container left-main size-320">
+    <div class="container main-container left-main size-300">
       <div class="left-container">
         <div class="main-content">
           <search-topics-nav />

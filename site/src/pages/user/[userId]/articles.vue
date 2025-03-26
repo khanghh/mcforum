@@ -3,7 +3,7 @@
     <div class="container">
       <user-profile :user="user" />
 
-      <div class="container main-container right-main size-320">
+      <div class="container main-container right-main size-300">
         <user-center-sidebar :user="user" />
         <div class="right-container">
           <div class="tabs-warp">

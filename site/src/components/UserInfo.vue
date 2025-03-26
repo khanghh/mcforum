@@ -36,10 +36,6 @@ export default {
           <span>{{ $t('profile.info.comments') }}</span><br />
           <b>{{ user.commentCount }}</b>
         </li>
-        <li>
-          <span>{{ $t('profile.info.user_id') }}</span><br />
-          <b>{{ user.id }}</b>
-        </li>
       </ul>
     </div>
   </div>
