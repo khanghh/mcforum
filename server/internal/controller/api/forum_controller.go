@@ -3,7 +3,6 @@ package api
 import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/locale"
-	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/common"
 	"strconv"
 
@@ -45,13 +44,6 @@ func (c *ForumController) GetMenu() *web.JsonResult {
 func (c *ForumController) GetList() *web.JsonResult {
 	nodes := payload.BuildForumList(service.ForumService.GetAll())
 	return web.JsonData(nodes)
-}
-
-// 节点信息
-func (c *ForumController) GetNode() *web.JsonResult {
-	nodeId := params.FormValueInt64Default(c.Ctx, "nodeId", 0)
-	node := service.ForumService.Get(nodeId)
-	return web.JsonData(payload.BuildForum(node))
 }
 
 func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
@@ -132,24 +124,4 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 	}
 	list := common.Distinct(temp, func(t model.Topic) any { return t.Id })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
-}
-
-// 标签帖子列表
-// func (c *ForumController) GetTagTopics() *web.JsonResult {
-// 	var (
-// 		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
-// 		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
-// 		user       = service.UserTokenService.GetCurrent(c.Ctx)
-// 	)
-// 	if err != nil {
-// 		return web.JsonError(err)
-// 	}
-// 	topics, cursor, hasMore := service.TopicService.GetTagTopics(tagId, cursor)
-// 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
-// }
-
-// 最新话题
-func (c *ForumController) GetNewest() *web.JsonResult {
-	topics := service.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
-	return web.JsonData(payload.BuildSimpleTopics(topics, nil))
 }

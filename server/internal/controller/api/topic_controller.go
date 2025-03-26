@@ -4,7 +4,6 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/spam"
 	"bytes"
 	"fmt"
@@ -13,7 +12,6 @@ import (
 	"unicode"
 
 	"bbs-go/common/numbers"
-	"bbs-go/common/strs"
 	"bbs-go/sqls"
 	"bbs-go/web"
 	"bbs-go/web/params"
@@ -265,44 +263,6 @@ func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 	return web.JsonSuccess(), nil
 }
 
-// // P/topics/{slug}/edit
-// func (c *TopicController) GetEditBy(topicId int64) (*web.JsonResult, int) {
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	if err := service.UserService.CheckPostStatus(user); err != nil {
-// 		return web.JsonError(err), iris.StatusForbidden
-// 	}
-
-// 	topic := service.TopicService.Get(topicId)
-// 	if topic == nil || topic.Status != constants.StatusOK {
-// 		return web.JsonErrorMsg(locale.T("topic.not_found")), iris.StatusNotFound
-// 	}
-// 	if topic.Type != constants.TopicTypeTopic {
-// 		return web.JsonErrorMsg(locale.T("topic.not_editable")), iris.StatusForbidden
-// 	}
-
-// 	// 非作者、且非管理员
-// 	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
-// 		return web.JsonErrorMsg(locale.T("system.message.permission_denied")), iris.StatusForbidden
-// 	}
-
-// 	tags := service.TopicService.GetTopicTags(topicId)
-// 	var tagNames []string
-// 	if len(tags) > 0 {
-// 		for _, tag := range tags {
-// 			tagNames = append(tagNames, tag.Name)
-// 		}
-// 	}
-
-// 	return web.NewEmptyRspBuilder().
-// 		Put("id", topic.Id).
-// 		Put("title", topic.Title).
-// 		Put("forumId", topic.ForumId).
-// 		Put("content", topic.Content).
-// 		Put("hideContent", topic.HideContent).
-// 		Put("tags", tagNames).
-// 		JsonResult(), iris.StatusOK
-// }
-
 // PUT /topics/{slugId}/reactions
 func (c *TopicController) PutByReactions(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
@@ -473,26 +433,26 @@ func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web
 // 	return web.JsonData(response.BuildSimpleTopics(topics, nil))
 // }
 
-func (c *TopicController) GetHide_content() *web.JsonResult {
-	topicId := params.FormValueInt64Default(c.Ctx, "topicId", 0)
-	var (
-		exists      = false // 是否有隐藏内容
-		show        = false // 是否显示隐藏内容
-		hideContent = ""    // 隐藏内容
-	)
-	topic := service.TopicService.Get(topicId)
-	if topic != nil && topic.Status == constants.StatusOK && strs.IsNotBlank(topic.HideContent) {
-		exists = true
-		if user := service.UserTokenService.GetCurrent(c.Ctx); user != nil {
-			if user.Id == topic.UserId || service.CommentService.IsCommented(user.Id, constants.EntityTopic, topic.Id) {
-				show = true
-				hideContent = markdown.ToHTML(topic.HideContent)
-			}
-		}
-	}
-	return web.JsonData(map[string]interface{}{
-		"exists":  exists,
-		"show":    show,
-		"content": hideContent,
-	})
-}
+// func (c *TopicController) GetHide_content() *web.JsonResult {
+// 	topicId := params.FormValueInt64Default(c.Ctx, "topicId", 0)
+// 	var (
+// 		exists      = false // 是否有隐藏内容
+// 		show        = false // 是否显示隐藏内容
+// 		hideContent = ""    // 隐藏内容
+// 	)
+// 	topic := service.TopicService.Get(topicId)
+// 	if topic != nil && topic.Status == constants.StatusOK && strs.IsNotBlank(topic.HideContent) {
+// 		exists = true
+// 		if user := service.UserTokenService.GetCurrent(c.Ctx); user != nil {
+// 			if user.Id == topic.UserId || service.CommentService.IsCommented(user.Id, constants.EntityTopic, topic.Id) {
+// 				show = true
+// 				hideContent = markdown.ToHTML(topic.HideContent)
+// 			}
+// 		}
+// 	}
+// 	return web.JsonData(map[string]interface{}{
+// 		"exists":  exists,
+// 		"show":    show,
+// 		"content": hideContent,
+// 	})
+// }
