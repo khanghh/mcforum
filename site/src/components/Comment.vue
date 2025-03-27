@@ -1,13 +1,48 @@
+<template>
+  <div class="comment-component">
+    <div class="comment-header">
+      <span v-if="commentCount > 0">{{ commentCount }} {{ $t('feed.comment_count') }}</span>
+      <span v-else>{{ $t('feed.actions.comment') }}</span>
+    </div>
+
+    <template v-if="isLogin">
+      <div v-if="isNeedEmailVerify" class="comment-not-login">
+        <div class="comment-login-div">
+          <i18n-t keypath="publish.verify_email_action" tag="p">
+            <strong>
+              <nuxt-link
+                to="/user/profile/account"
+                style="color: var(--text-link-color)">
+                {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings') }}
+              </nuxt-link>
+            </strong>
+          </i18n-t>
+        </div>
+      </div>
+      <template v-else>
+        <CommentInput ref="input" :entity-id="entityId" :entity-type="entityType" @created="commentCreated" />
+      </template>
+    </template>
+    <div v-else class="comment-not-login">
+      <div class="comment-login-div">
+        <i18n-t keypath="message.please_login_to_comment" tag="label" for="page.signin">
+          <a style="font-weight: 700" @click="useToSignIn()">{{ $t('page.signin') }}</a>
+        </i18n-t>
+      </div>
+    </div>
+
+    <CommentList ref="list" :entity-id="entityId" :entity-type="entityType" @reply="reply" />
+  </div>
+</template>
+
 <script setup>
 const props = defineProps({
   entityType: {
     type: String,
-    default: '',
     required: true,
   },
   entityId: {
     type: Number,
-    default: 0,
     required: true,
   },
   commentCount: {
@@ -45,47 +80,7 @@ function commentCreated(data) {
 function reply(quote) {
   // this.$refs.input.reply(quote)
 }
-// function toLogin() {
-//   toSignin()
-// }
 </script>
-
-<template>
-  <div class="comment-component">
-    <div class="comment-header">
-      <span v-if="commentCount > 0">{{ commentCount }} {{ $t('feed.comment_count') }}</span>
-      <span v-else>{{ $t('feed.actions.comment') }}</span>
-    </div>
-
-    <template v-if="isLogin">
-      <div v-if="isNeedEmailVerify" class="comment-not-login">
-        <div class="comment-login-div">
-          <i18n-t keypath="publish.verify_email_action" tag="p">
-            <strong>
-              <nuxt-link
-                to="/user/profile/account"
-                style="color: var(--text-link-color)">
-                {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings') }}
-              </nuxt-link>
-            </strong>
-          </i18n-t>
-        </div>
-      </div>
-      <template v-else>
-        <comment-input ref="input" :entity-id="entityId" :entity-type="entityType" @created="commentCreated" />
-      </template>
-    </template>
-    <div v-else class="comment-not-login">
-      <div class="comment-login-div">
-        <i18n-t keypath="message.please_login_to_comment" tag="label" for="page.signin">
-          <a style="font-weight: 700" @click="useToSignIn()">{{ $t('page.signin') }}</a>
-        </i18n-t>
-      </div>
-    </div>
-
-    <comment-list ref="list" :entity-id="entityId" :entity-type="entityType" @reply="reply" />
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .comment-component {

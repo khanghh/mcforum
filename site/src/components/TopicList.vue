@@ -115,7 +115,7 @@ async function like(topic) {
       topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
-      await useHttpPutForm(`/api/topics/${topic.slug}/reactions`, {
+      await useHttpPostForm(`/api/topics/${topic.slug}/reactions`, {
         body: { type: 'like' },
       })
       topic.liked = true

@@ -91,9 +91,11 @@
         </article>
 
         <!-- 评论 -->
-        <comment :entity-id="topic.id"
+        <comment
+          :entity-id="topic.id"
           :comment-count="topic.commentCount"
-          entity-type="topic" />
+          entity-type="topic"
+          @created="commentCreated" />
       </div>
       <div class="right-container">
         <user-info :user="topic.user" />
@@ -131,7 +133,7 @@ async function toggleLike() {
       topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
-      await useHttpPutForm(`/api/topics/${slug}/reactions`, {
+      await useHttpPostForm(`/api/topics/${slug}/reactions`, {
         body: { type: 'like' },
       })
       liked.value = true
@@ -186,6 +188,10 @@ async function onSwitchEditMode() {
       alert(err)
     })
   }
+}
+
+function commentCreated() {
+  topic.value.commentCount++
 }
 </script>
 

@@ -1,71 +1,76 @@
 <template>
   <div class="replies">
-    <div v-for="comment in replies.results" :key="comment.id" class="comment">
+    <div v-for="reply in replies.items" :key="reply.id" class="comment">
       <div class="comment-item-left">
-        <my-avatar :user="comment.user" :size="30" has-border />
+        <my-avatar :user="reply.user" :size="30" has-border />
       </div>
       <div class="comment-item-main">
         <div class="comment-meta">
           <div>
-            <nuxt-link :to="`/user/${comment.user.id}`" class="comment-nickname">
-              {{ comment.user.nickname }}
+            <nuxt-link :to="`/user/${reply.user.id}`" class="comment-nickname">
+              {{ reply.user.nickname }}
             </nuxt-link>
-            <template v-if="comment.quote">
+            <template v-if="reply.quote">
               <span>&nbsp;{{ $t('feed.replied_to') }}&nbsp;</span>
-              <nuxt-link :to="`/user/${comment.quote.user.id}`" class="comment-nickname">
-                {{ comment.quote.user.nickname }}
+              <nuxt-link :to="`/user/${reply.quote.user.id}`" class="comment-nickname">
+                {{ reply.quote.user.nickname }}
               </nuxt-link>
             </template>
           </div>
-          <time class="comment-time">{{ usePrettyDate(comment.createTime) }}</time>
+          <time class="comment-time">{{ usePrettyDate(reply.createTime) }}</time>
         </div>
         <div class="comment-content-wrapper">
-          <div v-if="comment.content" class="comment-content content">
-            <div v-text="comment.content" />
+          <div v-if="reply.content" class="comment-content content">
+            <div v-text="reply.content" />
           </div>
-          <div v-if="comment.imageList && comment.imageList.length" class="comment-image-list">
-            <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url">
+          <div v-if="reply.imageList && reply.imageList.length" class="comment-image-list">
+            <img v-for="(image, imageIndex) in reply.imageList" :key="imageIndex" :src="image.url">
           </div>
 
-          <div v-if="comment.quote" class="comment-quote">
-            <div class="comment-quote-content content" v-html="comment.quote.content" />
-            <div v-if="comment.quote.imageList && comment.quote.imageList.length" class="comment-quote-image-list">
-              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url">
+          <div v-if="reply.quote" class="comment-quote">
+            <div class="comment-quote-content content" v-html="reply.quote.content" />
+            <div v-if="reply.quote.imageList && reply.quote.imageList.length" class="comment-quote-image-list">
+              <img v-for="(image, imageIndex) in reply.imageList" :key="imageIndex" :src="image.url">
             </div>
           </div>
         </div>
         <div class="comment-actions">
-          <div class="comment-action-item" :class="{ active: comment.liked }" @click="like(comment)">
-            <icon name="ThumbsUp" :filled="comment.liked" />
-            <span>&nbsp;{{ comment.liked ? $t('feed.actions.liked') : $t('feed.actions.like') }}&nbsp;</span>
-            <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
+          <div class="comment-action-item" :class="{ active: reply.liked }" @click="like(reply)">
+            <icon name="ThumbsUp" :filled="reply.liked" />
+            <span>&nbsp;{{ reply.liked ? $t('feed.actions.liked') : $t('feed.actions.like') }}&nbsp;</span>
+            <span v-if="reply.likeCount > 0">{{ reply.likeCount }}</span>
           </div>
-          <div class="comment-action-item" :class="{ active: reply.quoteId === comment.id }"
-            @click="switchShowReply(comment)">
+          <div class="comment-action-item" :class="{ active: myReply.commentId === reply.id }"
+            @click="switchShowReply(reply)">
             <icon name="MessageSquareMore" />
             <span>
               &nbsp;
-              {{ reply.quoteId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+              {{ myReply.commentId === reply.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
             </span>
           </div>
         </div>
-        <div v-if="reply.quoteId === comment.id" class="comment-reply-form">
-          <text-editor :ref="`editor${comment.id}`" v-model="reply.value" :height="80" @submit="submitReply()" />
+        <div v-if="myReply.commentId === reply.id" class="comment-reply-form">
+          <TextEditor v-model="myReply.input" :height="80" @submit="submitReply()" />
         </div>
       </div>
     </div>
     <div v-if="replies.hasMore === true" class="comment-more">
-      <a @click="loadMore">{{ $t('feed.view_more_replies') }}</a>
+      <a @click="loadMore">{{ $t('feed.actions.view_more_replies') }}</a>
     </div>
   </div>
 </template>
 
 <script setup>
 const i18n = useI18n()
+const userStore = useUserStore()
 
 const props = defineProps({
   commentId: {
     type: Number,
+    required: true,
+  },
+  modelValue: {
+    type: Object,
     required: true,
   },
   data: {
@@ -74,16 +79,9 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['reply'])
-
+const emit = defineEmits(['update:modelValue', 'reply'])
+const myReply = reactive(props.modelValue)
 const replies = ref(props.data)
-const reply = ref({
-  quoteId: 0,
-  value: {
-    content: '',
-    imageList: [],
-  },
-})
 
 const user = computed(() => {
   const userStore = useUserStore()
@@ -91,35 +89,26 @@ const user = computed(() => {
 })
 
 async function loadMore() {
-  const ret = await useHttpGet('/api/comment/replies', {
+  const ret = await useHttpGet(`/api/comments/${props.commentId}/replies`, {
     params: {
-      commentId: props.commentId,
       cursor: replies.value.cursor,
     },
   })
   replies.value.cursor = ret.cursor
   replies.value.hasMore = ret.hasMore
-  replies.value.results.push(...ret.results)
+  replies.value.items.push(...ret.items)
 }
 
 async function like(comment) {
   try {
     if (comment.liked) {
-      await useHttpPostForm('/api/like/unlike', {
-        body: {
-          entityType: 'comment',
-          entityId: comment.id,
-        },
-      })
+      await useHttpDelete(`/api/comments/${comment.id}/reactions/${userStore.user.id}`)
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
-      await useHttpPostForm('/api/like/like', {
-        body: {
-          entityType: 'comment',
-          entityId: comment.id,
-        },
+      await useHttpPostForm(`/api/comments/${comment.id}/reactions`, {
+        body: { type: 'like' },
       })
       comment.liked = true
       comment.likeCount = comment.likeCount + 1
@@ -136,33 +125,25 @@ function switchShowReply(comment) {
     return
   }
 
-  if (reply.value.quoteId === comment.id) {
+  if (myReply.commentId === comment.id) {
     hideReply(comment)
   } else {
-    reply.value.quoteId = comment.id
-    setTimeout(() => {
-      $refs[`editor${comment.id}`][0].focus()
-    }, 0)
+    myReply.commentId = comment.id
   }
 }
 
 function hideReply() {
-  reply.value.quoteId = 0
-  reply.value.value.content = ''
-  reply.value.value.imageList = []
+  myReply.commentId = 0
+  myReply.input.content = ''
+  myReply.input.imageList = []
 }
 
 async function submitReply(/* parent */) {
   try {
-    const ret = await useHttpPostForm('/api/comment/create', {
+    const ret = await useHttpPostForm(`/api/comments/${myReply.commentId}/replies`, {
       body: {
-        entityType: 'comment',
-        entityId: props.commentId,
-        quoteId: reply.value.quoteId,
-        content: reply.value.value.content,
-        imageList: reply.value.value.imageList && reply.value.value.imageList.length
-          ? JSON.stringify(reply.value.value.imageList)
-          : '',
+        content: myReply.input.content || '',
+        imageList: myReply.input.imageList ? JSON.stringify(myReply.input.imageList) : '',
       },
     })
     hideReply()

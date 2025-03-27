@@ -38,7 +38,6 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
   height: {
     type: Number,
@@ -130,6 +129,13 @@ watch(
   },
   { deep: true },
 )
+
+defineExpose({
+  isOnUpload,
+  focus,
+  clear,
+
+})
 </script>
 
 <style lang="scss" scoped>

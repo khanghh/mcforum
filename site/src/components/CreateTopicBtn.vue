@@ -1,6 +1,6 @@
 <template>
   <el-button type="primary" class="publish-btn" size="large" @click="createTopic">
-    <icon name="Plus" />&nbsp;
+    <icon name="SquarePen" />&nbsp;
     {{ $t('navbar.create_topic') }}
   </el-button>
 </template>

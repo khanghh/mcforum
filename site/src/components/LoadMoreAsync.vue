@@ -13,7 +13,7 @@
           <span v-if="loading" class="icon">
             <icon name="LoaderCircle" class="icon-loading" />
           </span>
-          <span>{{ pageData.hasMore ? $t('message.load_more') : $t('message.no_more_content') }}</span>
+          <span>{{ pageData.hasMore ? $t('feed.actions.view_more_replies') : $t('message.no_more_content') }}</span>
         </button>
       </div>
     </template>

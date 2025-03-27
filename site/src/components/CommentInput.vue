@@ -3,7 +3,7 @@
     <div class="comment-create">
       <div ref="commentEditor" class="comment-input-wrapper">
         <div v-if="quote" class="comment-quote-info">
-          {{ $t('feed.replied_to') }}：
+          {{ $t('feed.replied_to') }}
           <label v-text="quote.user.nickname" />
           <icon name="X" @click="cancelReply" />
         </div>
@@ -16,7 +16,6 @@
 <script setup>
 const i18n = useI18n()
 const route = useRoute()
-const slug = route.params.slug
 
 const props = defineProps({
   entityType: {
@@ -52,16 +51,12 @@ async function create() {
   }
   sending.value = true
   try {
-    const data = await useHttpPostForm(`/api/topics/${slug}/comments`, {
+    const data = await useHttpPostForm(`/api/topics/${route.params.slug}/comments`, {
       body: {
-        contentType: props.contentType,
-        entityType: props.entityType,
-        entityId: props.entityId,
         content: value.value.content,
-        imageList:
-          value.value.imageList && value.value.imageList.length
-            ? JSON.stringify(value.value.imageList)
-            : '',
+        imageList: value.value.imageList && value.value.imageList.length
+          ? JSON.stringify(value.value.imageList)
+          : '',
         quoteId: quote.value ? quote.value.id : '',
       },
     })

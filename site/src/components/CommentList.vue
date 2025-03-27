@@ -1,9 +1,9 @@
 <template>
   <div class="comments">
-    <load-more-async ref="loadMore" v-slot="{ items }" :params="{ entityType, entityId }" url="/api/comment/comments">
+    <LoadMoreAsync ref="loadMore" v-slot="{ items }" :url="commentListUrl">
       <div v-for="comment in items" :key="comment.id" class="comment">
         <div class="comment-item-left">
-          <my-avatar :user="comment.user" :size="40" has-border />
+          <MyAvatar :user="comment.user" :size="40" has-border />
         </div>
         <div class="comment-item-main">
           <div class="comment-meta">
@@ -14,7 +14,7 @@
               <time class="comment-time">
                 {{ usePrettyDate(comment.createTime) }}
               </time>
-              <span v-if="comment.ipLocation" class="comment-ip-area">IP属地{{ comment.ipLocation }}</span>
+              <span v-if="comment.ipLocation" class="comment-ip-area">{{ comment.ipLocation }}</span>
             </div>
           </div>
           <div class="comment-content-wrapper">
@@ -32,29 +32,30 @@
               <span>&nbsp;{{ comment.liked ? $t('feed.actions.liked') : $t('feed.actions.like') }}&nbsp;</span>
               <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
             </div>
-            <div class="comment-action-item" :class="{ active: reply.commentId === comment.id }"
+            <div class="comment-action-item" :class="{ active: myReply.commentId === comment.id }"
               @click="switchShowReply(comment)">
               <icon name="MessageSquareMore" />
               <span>
                 &nbsp;
-                {{ reply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+                {{ myReply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
               </span>
             </div>
           </div>
-          <div v-if="reply.commentId === comment.id" class="comment-reply-form">
-            <text-editor :ref="`editor${comment.id}`" v-model="reply.value" :height="100"
-              @submit="submitReply(comment)" />
+          <div v-if="myReply.commentId === comment.id" class="comment-reply-form">
+            <TextEditor v-model="myReply.input" :height="100" @submit="submitReply(comment)" />
           </div>
-          <CommentSubList v-if="comment.replies && comment.replies.results && comment.replies.results.length"
-            :comment-id="comment.id" :data="comment.replies" @reply="onReply(comment, $event)" />
+          <CommentReplyList v-if="comment.replies && comment.replies.items" v-model="myReply" :comment-id="comment.id"
+            :data="comment.replies" @reply="onReply(comment, $event)" />
         </div>
       </div>
-    </load-more-async>
+    </LoadMoreAsync>
   </div>
 </template>
 
 <script setup>
 const i18n = useI18n()
+const route = useRoute()
+
 defineProps({
   entityType: {
     type: String,
@@ -65,13 +66,16 @@ defineProps({
     required: true,
   },
 })
-const reply = reactive({
+
+const myReply = reactive({
   commentId: 0,
-  value: {
+  input: {
     content: '',
     imageList: [],
   },
 })
+
+const commentListUrl = computed(() => `/api/topics/${route.params.slug}/comments`)
 
 const userStore = useUserStore()
 const loadMore = ref(null)
@@ -88,29 +92,20 @@ const append = () => {
 const like = async (comment) => {
   try {
     if (comment.liked) {
-      await useHttpPostForm('/api/like/unlike', {
-        body: {
-          entityType: 'comment',
-          entityId: comment.id,
-        },
+      await useHttpDelete(`/api/comments/${comment.id}/reactions/${userStore.user.id}`, {
       })
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
-    }
-    else {
-      await useHttpPostForm('/api/like/like', {
-        body: {
-          entityType: 'comment',
-          entityId: comment.id,
-        },
+    } else {
+      await useHttpPostForm(`/api/comments/${comment.id}/reactions`, {
+        body: { type: 'like' },
       })
       comment.liked = true
       comment.likeCount = comment.likeCount + 1
       useMsgSuccess(i18n.t('message.liked_success'))
     }
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }
@@ -121,57 +116,45 @@ const switchShowReply = (comment) => {
     return
   }
 
-  if (reply.commentId === comment.id) {
-    hideReply(comment)
-  }
-  else {
-    reply.commentId = comment.id
-    // // TODO
-    // setTimeout(() => {
-    //   this.$refs[`editor${comment.id}`][0].focus();
-    // }, 0);
+  if (myReply.commentId === comment.id) {
+    hideReply()
+  } else {
+    myReply.commentId = comment.id
   }
 }
 
 const hideReply = () => {
-  reply.commentId = 0
-  reply.value.content = ''
-  reply.value.imageList = []
+  myReply.commentId = 0
+  myReply.input.content = ''
+  myReply.input.imageList = []
 }
 
 const submitReply = async (parent) => {
   try {
-    const ret = await useHttpPostForm('/api/comment/create', {
+    const ret = await useHttpPostForm(`/api/comments/${parent.id}/replies`, {
       body: {
-        entityType: 'comment',
-        entityId: parent.id,
-        content: reply.value.content,
-        imageList:
-          reply.value.imageList && reply.value.imageList.length
-            ? JSON.stringify(reply.value.imageList)
-            : '',
+        content: myReply.input.content,
+        imageList: myReply.input.imageList ? JSON.stringify(myReply.input.imageList) : '',
       },
     })
     hideReply()
-    appendReply(parent, ret)
+    prependReply(parent, ret)
     useMsgSuccess(i18n.t('message.comment_success'))
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }
 
 const onReply = (parent, comment) => {
-  appendReply(parent, comment)
+  prependReply(parent, comment)
 }
 
-const appendReply = (parent, comment) => {
-  if (parent.replies && parent.replies.results) {
-    parent.replies.results.push(comment)
-  }
-  else {
+const prependReply = (parent, comment) => {
+  if (parent.replies && parent.replies.items) {
+    parent.replies.items.unshift(comment)
+  } else {
     parent.replies = {
-      results: [comment],
+      items: [comment],
     }
   }
 }
