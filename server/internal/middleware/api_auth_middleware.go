@@ -70,7 +70,7 @@ func notLogin(ctx iris.Context) {
 
 // noPermission 无权限返回
 func noPermission(ctx iris.Context) {
-	_ = ctx.JSON(web.JsonErrorCode(iris.StatusForbidden, errors.New(locale.T("system.message.permission_denied"))))
+	_ = ctx.JSON(web.JsonErrorCode(iris.StatusForbidden, errors.New(locale.T("errors.permission_denied"))))
 	ctx.StopExecution()
 }
 

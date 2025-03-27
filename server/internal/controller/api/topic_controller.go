@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -263,8 +264,8 @@ func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 	return web.JsonSuccess(), nil
 }
 
-// PUT /topics/{slugId}/reactions
-func (c *TopicController) PutByReactions(slugId string) (*web.JsonResult, error) {
+// POST /topics/{slugId}/reactions
+func (c *TopicController) PostByReactions(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
 		return web.JsonError(service.ErrTopicNotFound), nil
@@ -295,6 +296,42 @@ func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
+}
+
+func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) {
+	topic, err := c.getTopicBySlugId(slugId)
+	if err != nil {
+		return web.JsonError(service.ErrTopicNotFound), nil
+	}
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
+	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+	comments, cursor, hasMore := service.CommentService.GetComments(constants.EntityTopic, topic.Id, cursor, 20)
+	resp := payload.BuildComments(comments, currentUser, true, false)
+	return web.JsonCursorData(resp, strconv.FormatInt(cursor, 10), hasMore), nil
+}
+
+func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error) {
+	topic, err := c.getTopicBySlugId(slugId)
+	if err != nil {
+		return web.JsonError(service.ErrTopicNotFound), nil
+	}
+
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if err := service.UserService.CheckPostStatus(user); err != nil {
+		return web.JsonError(err), nil
+	}
+
+	form := model.GetCreateCommentForm(c.Ctx)
+	if err := spam.CheckComment(user, form); err != nil {
+		return web.JsonError(err), nil
+	}
+
+	comment, err := service.CommentService.CreateComment(user.Id, topic.Id, form)
+	if err != nil {
+		return web.JsonError(err), nil
+	}
+
+	return web.JsonData(payload.BuildComment(comment)), nil
 }
 
 // POST /topics/{slugId}/unpin

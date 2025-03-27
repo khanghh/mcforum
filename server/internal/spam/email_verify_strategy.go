@@ -21,13 +21,6 @@ func (EmailVerifyStrategy) CheckTopic(user *model.User, form model.CreateTopicFo
 	return nil
 }
 
-func (EmailVerifyStrategy) CheckArticle(user *model.User, form model.CreateArticleForm) error {
-	if service.SysConfigService.IsCreateArticleEmailVerified() && !user.EmailVerified {
-		return errs.EmailNotVerified
-	}
-	return nil
-}
-
 func (EmailVerifyStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
 	if service.SysConfigService.IsCreateCommentEmailVerified() && !user.EmailVerified {
 		return errs.EmailNotVerified

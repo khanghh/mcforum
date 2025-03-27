@@ -71,30 +71,10 @@ func Generate() {
 		{"changefreq", changefreqHourly},
 	})
 
-	sm.Add(stm.URL{
-		{"loc", bbsurls.AbsUrl("/articles")},
-		{"lastmod", time.Now()},
-		{"changefreq", changefreqAlways},
-	})
-
 	// var (
 	// 	dateFrom = dates.Timestamp(time.Now().AddDate(0, -1, 0))
 	// 	dateTo   = dates.NowTimestamp()
 	// )
-
-	service.ArticleService.ScanDesc(func(articles []model.Article) {
-		for _, article := range articles {
-			if article.Status == constants.StatusOK {
-				articleUrl := bbsurls.ArticleUrl(article.Id)
-				sm.Add(stm.URL{
-					{"loc", articleUrl},
-					{"lastmod", dates.FromTimestamp(article.UpdateTime)},
-					{"changefreq", changefreqMonthly},
-					{"priority", 0.6},
-				})
-			}
-		}
-	})
 
 	service.TopicService.ScanDesc(func(topics []model.Topic) {
 		for _, topic := range topics {

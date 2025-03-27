@@ -66,7 +66,7 @@ func BuildMessages(messages []model.Message) []MessageResponse {
 // getMessageDetailUrl 查看消息详情链接地址
 func getMessageDetailUrl(t *model.Message) string {
 	msgType := msg.Type(t.Type)
-	if msgType == msg.TypeTopicComment || msgType == msg.TypeArticleComment {
+	if msgType == msg.TypeTopicComment {
 		entityType := gjson.Get(t.ExtraData, "entityType")
 		entityId := gjson.Get(t.ExtraData, "entityId")
 		if entityType.String() == constants.EntityArticle {

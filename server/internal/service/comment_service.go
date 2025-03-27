@@ -1,10 +1,10 @@
 package service
 
 import (
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/event"
 	"bbs-go/internal/pkg/iplocator"
-	"errors"
 	"log/slog"
 	"strings"
 
@@ -80,25 +80,17 @@ func (s *commentService) Delete(id int64) error {
 }
 
 // Publish 发表评论
-func (s *commentService) Publish(userId int64, form model.CreateCommentForm) (*model.Comment, error) {
+func (s *commentService) CreateComment(userId int64, topicId int64, form model.CreateCommentForm) (*model.Comment, error) {
 	form.Content = strings.TrimSpace(form.Content)
-	if strs.IsBlank(form.EntityType) {
-		return nil, errors.New("参数非法")
-	}
-	if form.EntityId <= 0 {
-		return nil, errors.New("参数非法")
-	}
 	if strs.IsBlank(form.Content) {
-		return nil, errors.New("请输入评论内容")
+		return nil, NewBadRequestError(locale.T("errors.comment_content_required"))
 	}
 
 	comment := &model.Comment{
 		UserId:      userId,
-		EntityType:  form.EntityType,
-		EntityId:    form.EntityId,
+		TopicId:     topicId,
 		Content:     form.Content,
 		ContentType: constants.ContentTypeText,
-		QuoteId:     form.QuoteId,
 		Status:      constants.StatusOK,
 		UserAgent:   form.UserAgent,
 		Ip:          form.Ip,
@@ -119,31 +111,78 @@ func (s *commentService) Publish(userId int64, form model.CreateCommentForm) (*m
 		if err := repository.CommentRepository.Create(tx, comment); err != nil {
 			return err
 		}
-
-		if form.EntityType == constants.EntityTopic {
-			if err := TopicService.onComment(tx, form.EntityId, comment); err != nil {
-				return err
-			}
-		} else if form.EntityType == constants.EntityComment { // 二级评论
-			if err := s.onComment(tx, comment); err != nil {
-				return err
-			}
-		}
-		return nil
+		return TopicService.onComment(tx, topicId, comment)
 	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	// 用户跟帖计数
-	UserService.IncrCommentCount(userId)
-	// 获得积分
-	UserService.IncrScoreForPostComment(comment)
-	// 发送事件
-	event.Send(event.CommentCreateEvent{
-		UserId:    userId,
-		CommentId: comment.Id,
+	event.Send(event.CommentCreatedEvent{
+		Comment: comment,
+	})
+
+	return comment, nil
+}
+
+func (s *commentService) CreateReply(userId int64, parentId int64, form model.CreateCommentForm) (*model.Comment, error) {
+	form.Content = strings.TrimSpace(form.Content)
+	if strs.IsBlank(form.Content) {
+		return nil, NewBadRequestError(locale.T("errors.comment_content_required"))
+	}
+
+	parentComment := s.Get(parentId)
+	if parentComment == nil {
+		return nil, ErrCommentNotFound
+	}
+	if parentComment.Status != constants.StatusOK {
+		return nil, ErrCommentDeleted
+	}
+
+	quoteComment := s.Get(form.QuoteId)
+	if quoteComment == nil {
+		return nil, ErrCommentNotFound
+	}
+	if quoteComment.Status != constants.StatusOK {
+		return nil, ErrCommentDeleted
+	}
+
+	comment := &model.Comment{
+		UserId:      userId,
+		TopicId:     parentComment.TopicId,
+		ParentId:    parentComment.Id,
+		QuoteId:     form.QuoteId,
+		Content:     form.Content,
+		ContentType: constants.ContentTypeText,
+		Status:      constants.StatusOK,
+		UserAgent:   form.UserAgent,
+		Ip:          form.Ip,
+		IpLocation:  iplocator.IpLocation(form.Ip),
+		CreateTime:  dates.NowTimestamp(),
+	}
+
+	if len(form.ImageList) > 0 {
+		imageListStr, err := jsons.ToStr(form.ImageList)
+		if err == nil {
+			comment.ImageList = imageListStr
+		} else {
+			slog.Error(err.Error(), slog.Any("err", err))
+		}
+	}
+
+	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+		if err := repository.CommentRepository.Create(tx, comment); err != nil {
+			return err
+		}
+		return s.onComment(tx, comment)
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	event.Send(event.CommentCreatedEvent{
+		Comment: comment,
 	})
 
 	return comment, nil
@@ -151,7 +190,7 @@ func (s *commentService) Publish(userId int64, form model.CreateCommentForm) (*m
 
 // onComment 评论被回复（二级评论）
 func (s *commentService) onComment(tx *gorm.DB, comment *model.Comment) error {
-	return repository.CommentRepository.UpdateColumn(tx, comment.EntityId, "comment_count", gorm.Expr("comment_count + 1"))
+	return repository.CommentRepository.UpdateColumn(tx, comment.ParentId, "comment_count", gorm.Expr("comment_count + 1"))
 }
 
 // // 统计数量
@@ -162,8 +201,7 @@ func (s *commentService) onComment(tx *gorm.DB, comment *model.Comment) error {
 // }
 
 // GetComments 列表
-func (s *commentService) GetComments(entityType string, entityId int64, cursor int64) (comments []model.Comment, nextCursor int64, hasMore bool) {
-	limit := 20
+func (s *commentService) GetComments(entityType string, entityId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("entity_type", entityType).Eq("entity_id", entityId).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
@@ -180,18 +218,7 @@ func (s *commentService) GetComments(entityType string, entityId int64, cursor i
 
 // GetReplies 二级回复列表
 func (s *commentService) GetReplies(commentId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("entity_type", constants.EntityComment).Eq("entity_id", commentId).Eq("status", constants.StatusOK).Asc("id").Limit(limit)
-	if cursor > 0 {
-		cnd.Gt("id", cursor)
-	}
-	comments = s.Find(cnd)
-	if len(comments) > 0 {
-		nextCursor = comments[len(comments)-1].Id
-		hasMore = len(comments) >= limit
-	} else {
-		nextCursor = cursor
-	}
-	return
+	return s.GetComments(constants.EntityComment, commentId, cursor, limit)
 }
 
 // ScanByUser 按照用户扫描数据

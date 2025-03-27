@@ -1,7 +1,6 @@
 package server
 
 import (
-	"bbs-go/internal/controller/admin"
 	"bbs-go/internal/controller/api"
 	"bbs-go/internal/middleware"
 	"bbs-go/internal/pkg/config"
@@ -63,8 +62,8 @@ func NewServer() {
 		apiRoute.Party("/user").Handle(new(api.UserController))
 		apiRoute.Party("/topics").Handle(new(api.TopicController))
 		apiRoute.Party("/forums").Handle(new(api.ForumController))
+		apiRoute.Party("/comments").Handle(new(api.CommentController))
 		// apiRoute.Party("/tag").Handle(new(api.TagController))
-		// apiRoute.Party("/comment").Handle(new(api.CommentController))
 		// apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
 		// apiRoute.Party("/like").Handle(new(api.LikeController))
 		// apiRoute.Party("/checkin").Handle(new(api.CheckinController))
@@ -78,25 +77,25 @@ func NewServer() {
 	})
 
 	// admin
-	mvc.Configure(app.Party("/api/admin"), func(m *mvc.Application) {
-		m.Router.Use(middleware.AdminAuth)
-		m.Party("/common").Handle(new(admin.CommonController))
-		m.Party("/user").Handle(new(admin.UserController))
-		// m.Party("/tag").Handle(new(admin.TagController))
-		m.Party("/comment").Handle(new(admin.CommentController))
-		m.Party("/favorite").Handle(new(admin.FavoriteController))
-		m.Party("/topics").Handle(new(admin.TopicController))
-		m.Party("/topic-node").Handle(new(admin.ForumController))
-		m.Party("/sys-config").Handle(new(admin.SysConfigController))
-		m.Party("/link").Handle(new(admin.LinkController))
-		m.Party("/user-score-log").Handle(new(admin.UserScoreLogController))
-		m.Party("/operate-log").Handle(new(admin.OperateLogController))
-		m.Party("/user-report").Handle(new(admin.UserReportController))
-		m.Party("/forbidden-word").Handle(new(admin.ForbiddenWordController))
+	// mvc.Configure(app.Party("/api/admin"), func(m *mvc.Application) {
+	// 	m.Router.Use(middleware.AdminAuth)
+	// 	m.Party("/common").Handle(new(admin.CommonController))
+	// 	m.Party("/user").Handle(new(admin.UserController))
+	// 	// m.Party("/tag").Handle(new(admin.TagController))
+	// 	m.Party("/comment").Handle(new(admin.CommentController))
+	// 	m.Party("/favorite").Handle(new(admin.FavoriteController))
+	// 	m.Party("/topics").Handle(new(admin.TopicController))
+	// 	m.Party("/topic-node").Handle(new(admin.ForumController))
+	// 	m.Party("/sys-config").Handle(new(admin.SysConfigController))
+	// 	m.Party("/link").Handle(new(admin.LinkController))
+	// 	m.Party("/user-score-log").Handle(new(admin.UserScoreLogController))
+	// 	m.Party("/operate-log").Handle(new(admin.OperateLogController))
+	// 	m.Party("/user-report").Handle(new(admin.UserReportController))
+	// 	m.Party("/forbidden-word").Handle(new(admin.ForbiddenWordController))
 
-		m.Party("/role").Handle(new(admin.RoleController))
-		m.Party("/menu").Handle(new(admin.MenuController))
-	})
+	// 	m.Party("/role").Handle(new(admin.RoleController))
+	// 	m.Party("/menu").Handle(new(admin.MenuController))
+	// })
 
 	for _, route := range app.GetRoutes() {
 		if route.Method != iris.MethodOptions {

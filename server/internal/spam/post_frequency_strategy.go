@@ -46,35 +46,6 @@ func (PostFrequencyStrategy) CheckTopic(user *model.User, topic model.CreateTopi
 	return nil
 }
 
-func (s PostFrequencyStrategy) CheckArticle(user *model.User, form model.CreateArticleForm) error {
-	// 注册时间超过24小时
-	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {
-		return nil
-	}
-	var (
-		maxCountInTenMinutes int64 = 1 // 十分钟内最高发帖数量
-		maxCountInOneHour    int64 = 2 // 一小时内最高发帖量
-		maxCountInOneDay     int64 = 3 // 一天内最高发帖量
-	)
-
-	if repository.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
-		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour*24)))) >= maxCountInOneDay {
-		return errors.New("发表太快了，请休息一会儿")
-	}
-
-	if repository.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
-		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour)))) >= maxCountInOneHour {
-		return errors.New("发表太快了，请休息一会儿")
-	}
-
-	if repository.ArticleRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
-		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Minute*10)))) >= maxCountInTenMinutes {
-		return errors.New("发表太快了，请休息一会儿")
-	}
-
-	return nil
-}
-
 func (s PostFrequencyStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
 	// 注册时间超过24小时
 	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {

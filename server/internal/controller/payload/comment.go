@@ -16,15 +16,14 @@ import (
 type CommentResponse struct {
 	Id           int64             `json:"id"`
 	User         *UserInfo         `json:"user"`
-	EntityType   string            `json:"entityType"`
-	EntityId     int64             `json:"entityId"`
+	ParentId     int64             `json:"paerntId,omitempty"`
+	QuoteId      int64             `json:"quoteId,omitempty"`
 	ContentType  string            `json:"contentType"`
 	Content      string            `json:"content"`
 	ImageList    []ImageInfo       `json:"imageList"`
 	LikeCount    int64             `json:"likeCount"`
 	CommentCount int64             `json:"commentCount"`
 	Liked        bool              `json:"liked"`
-	QuoteId      int64             `json:"quoteId"`
 	Quote        *CommentResponse  `json:"quote"`
 	Replies      *web.CursorResult `json:"replies"`
 	IpLocation   string            `json:"ipLocation"`
@@ -38,7 +37,7 @@ func BuildComment(comment *model.Comment) *CommentResponse {
 
 func BuildComments(comments []model.Comment, currentUser *model.User, isBuildReplies, isBuildQuote bool) []CommentResponse {
 	if len(comments) == 0 {
-		return nil
+		return []CommentResponse{}
 	}
 
 	likedCommentIds := getLikedCommentIds(comments, currentUser)
@@ -75,8 +74,7 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 	ret := &CommentResponse{
 		Id:           comment.Id,
 		User:         BuildUserInfoDefaultIfNull(comment.UserId),
-		EntityType:   comment.EntityType,
-		EntityId:     comment.EntityId,
+		ParentId:     comment.ParentId,
 		QuoteId:      comment.QuoteId,
 		LikeCount:    comment.LikeCount,
 		CommentCount: comment.CommentCount,

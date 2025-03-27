@@ -117,13 +117,13 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 	} else if days > 0 {
 		forbiddenEndTime = dates.Timestamp(time.Now().Add(time.Hour * 24 * time.Duration(days)))
 	} else {
-		return errors.New(locale.T("system.message.mute_duration_invalid"))
+		return errors.New(locale.T("errors.mute_duration_invalid"))
 	}
 	if repository.UserRepository.UpdateColumn(sqls.DB(), userId, "forbidden_end_time", forbiddenEndTime) == nil {
 		cache.UserCache.Invalidate(userId)
 		description := ""
 		if strs.IsNotBlank(reason) {
-			description = locale.T("system.message.mute_reason", reason)
+			description = locale.T("ban.ban_reason", reason)
 		}
 		OperateLogService.AddOperateLog(operatorId, constants.OpTypeForbidden, constants.EntityUser, userId,
 			description, r)
@@ -138,15 +138,6 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 					for _, topic := range topics {
 						if topic.Status != constants.StatusDeleted {
 							_ = TopicService.Delete(topic.Id, operatorId, nil)
-						}
-					}
-				})
-
-				// 删除文章
-				ArticleService.ScanByUser(userId, func(articles []model.Article) {
-					for _, article := range articles {
-						if article.Status != constants.StatusDeleted {
-							_ = ArticleService.Delete(article.Id)
 						}
 					}
 				})
@@ -196,7 +187,7 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 
 	// 验证昵称
 	if len(nickname) == 0 {
-		return nil, errors.New(locale.T("system.message.sigup_nickname_required"))
+		return nil, errors.New(locale.T("errors.sigup_nickname_required"))
 	}
 
 	// 验证密码
@@ -211,10 +202,10 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 			return nil, err
 		}
 		if s.GetByEmail(email) != nil {
-			return nil, errors.New(locale.T("system.message.email_taken", email))
+			return nil, errors.New(locale.T("errors.email_taken", email))
 		}
 	} else {
-		return nil, errors.New(locale.T("system.message.sigup_email_required"))
+		return nil, errors.New(locale.T("errors.sigup_email_required"))
 	}
 
 	// 验证用户名
@@ -223,7 +214,7 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 			return nil, err
 		}
 		if s.isUsernameExists(username) {
-			return nil, errors.New(locale.T("system.message.username_taken", username))
+			return nil, errors.New(locale.T("errors.username_taken", username))
 		}
 	}
 
@@ -247,10 +238,10 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 // SignIn 登录
 func (s *userService) SignIn(username, password string) (*model.User, error) {
 	if strs.IsBlank(username) {
-		return nil, errors.New(locale.T("system.message.sigin_email_username_required"))
+		return nil, errors.New(locale.T("errors.sigin_email_username_required"))
 	}
 	if strs.IsBlank(password) {
-		return nil, errors.New(locale.T("system.message.sigin_password_required"))
+		return nil, errors.New(locale.T("errors.sigin_password_required"))
 	}
 	if err := validate.IsPassword(password); err != nil {
 		return nil, err
@@ -262,10 +253,10 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 		user = s.GetByUsername(username)
 	}
 	if user == nil || user.Status != constants.StatusOK {
-		return nil, errors.New(locale.T("system.message.sigin_failure"))
+		return nil, errors.New(locale.T("errors.sigin_failure"))
 	}
 	if !passwd.ValidatePassword(user.Password, password) {
-		return nil, errors.New(locale.T("system.message.sigin_failure"))
+		return nil, errors.New(locale.T("errors.sigin_failure"))
 	}
 	return user, nil
 }
@@ -360,7 +351,7 @@ func (s *userService) SetEmail(userId int64, email string) error {
 		return nil
 	}
 	if s.isEmailExists(email) {
-		return errors.New(locale.T("system.message.email_taken", email))
+		return errors.New(locale.T("errors.email_taken", email))
 	}
 	return s.Updates(userId, map[string]interface{}{
 		"email":          email,
@@ -375,7 +366,7 @@ func (s *userService) SetPassword(userId int64, password, rePassword string) err
 	}
 	user := s.Get(userId)
 	if len(user.Password) > 0 {
-		return errors.New(locale.T("system.message.invalid_request"))
+		return errors.New(locale.T("errors.invalid_request"))
 	}
 	password = passwd.EncodePassword(password)
 	return s.UpdateColumn(userId, "password", password)
@@ -444,7 +435,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 		return errors.New(locale.T("user.not_found"))
 	}
 	if user.EmailVerified {
-		return errors.New(locale.T("system.message.invalid_request"))
+		return errors.New(locale.T("errors.invalid_request"))
 	}
 	if err := validate.IsEmail(user.Email.String); err != nil {
 		return err
@@ -461,7 +452,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 		if !isInWhitelist {
 			// 直接返回，也不抛出异常了，就是不发邮件
 			slog.Error("Verification with this email is not supported", slog.String("email", user.Email.String))
-			return errors.New(locale.T("system.message.email_not_accepted"))
+			return errors.New(locale.T("errors.email_not_accepted"))
 		}
 	}
 	var (
@@ -498,15 +489,15 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 func (s *userService) VerifyEmail(token string) (string, error) {
 	emailCode := EmailCodeService.FindOne(sqls.NewCnd().Eq("token", token))
 	if emailCode == nil || emailCode.Used {
-		return "", errors.New(locale.T("system.message.verify_email_code_invalid"))
+		return "", errors.New(locale.T("errors.verify_email_code_invalid"))
 	}
 
 	user := s.Get(emailCode.UserId)
 	if user == nil || emailCode.Email != user.Email.String {
-		return "", errors.New(locale.T("system.message.captcha_expired"))
+		return "", errors.New(locale.T("errors.captcha_expired"))
 	}
 	if dates.FromTimestamp(emailCode.CreateTime).Add(time.Hour * time.Duration(emailVerifyExpireHour)).Before(time.Now()) {
-		return "", errors.New(locale.T("system.message.verify_email_expired"))
+		return "", errors.New(locale.T("errors.verify_email_expired"))
 	}
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := repository.UserRepository.UpdateColumn(tx, emailCode.UserId, "email_verified", true); err != nil {
@@ -524,13 +515,10 @@ func (s *userService) VerifyEmail(token string) (string, error) {
 // CheckPostStatus 用于在发表内容时检查用户状态
 func (s *userService) CheckPostStatus(user *model.User) error {
 	if user == nil {
-		return errs.NotLogin
+		return ErrUnauthorized
 	}
-	if user.Status != constants.StatusOK {
-		return errs.UserDisabled
-	}
-	if user.IsForbidden() {
-		return errs.ForbiddenError
+	if user.Status != constants.StatusOK || user.IsForbidden() {
+		return ErrForbidden
 	}
 	observeSeconds := SysConfigService.GetInt(constants.SysConfigUserObserveSeconds, 0)
 	if user.InObservationPeriod(observeSeconds) {
@@ -543,11 +531,11 @@ func (s *userService) CheckPostStatus(user *model.User) error {
 func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 	config := SysConfigService.GetPointConfig()
 	if config.PostTopicScore <= 0 {
-		slog.Info(locale.T("system.message.points_config_missing"))
+		slog.Info(locale.T("errors.points_config_missing"))
 		return
 	}
 	err := s.addScore(topic.UserId, config.PostTopicScore, constants.EntityTopic,
-		strconv.FormatInt(topic.Id, 10), locale.T("system.message.points_added_for_comment"))
+		strconv.FormatInt(topic.Id, 10), locale.T("errors.points_added_for_comment"))
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}
@@ -555,13 +543,9 @@ func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 
 // IncrScoreForPostComment 跟帖获积分
 func (s *userService) IncrScoreForPostComment(comment *model.Comment) {
-	// 非话题跟帖，跳过
-	if comment.EntityType != constants.EntityTopic {
-		return
-	}
 	config := SysConfigService.GetPointConfig()
 	if config.PostCommentScore <= 0 {
-		slog.Info(locale.T("system.message.points_config_missing"))
+		slog.Info(locale.T("errors.points_config_missing"))
 		return
 	}
 	err := s.addScore(comment.UserId, config.PostCommentScore, constants.EntityComment, strconv.FormatInt(comment.Id, 10), "发表跟帖")

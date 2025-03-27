@@ -132,8 +132,6 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 		emailTitle = siteTitle + " - 话题被设为推荐"
 	} else if msgType == msg.TypeTopicDelete {
 		emailTitle = siteTitle + " - 话题被删除"
-	} else if msgType == msg.TypeArticleComment {
-		emailTitle = siteTitle + " - 收到文章评论"
 	}
 
 	var from *model.User

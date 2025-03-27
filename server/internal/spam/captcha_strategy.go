@@ -21,10 +21,6 @@ func (CaptchaStrategy) CheckTopic(user *model.User, form model.CreateTopicForm) 
 	return nil
 }
 
-func (CaptchaStrategy) CheckArticle(user *model.User, form model.CreateArticleForm) error {
-	return nil
-}
-
 func (CaptchaStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
 	return nil
 }

@@ -10,11 +10,11 @@ import (
 )
 
 func init() {
-	event.RegHandler(reflect.TypeOf(event.TopicRecommendEvent{}), handleTopicRecommend)
+	event.RegHandler(reflect.TypeOf(event.TopicRecommendedEvent{}), handleTopicRecommend)
 }
 
 func handleTopicRecommend(i interface{}) {
-	e := i.(event.TopicRecommendEvent)
+	e := i.(event.TopicRecommendedEvent)
 
 	if e.Recommended {
 		sendTopicRecommendMsg(e.TopicId)
@@ -30,7 +30,7 @@ func sendTopicRecommendMsg(topicId int64) {
 	var (
 		from         int64 = 0
 		to                 = topic.UserId
-		title              = locale.T("system.message.topic_recommended")
+		title              = locale.T("errors.topic_recommended")
 		quoteContent       = topic.GetTitle()
 	)
 	service.MessageService.SendMsg(from, to, msg.TypeTopicRecommend, title, "", quoteContent,

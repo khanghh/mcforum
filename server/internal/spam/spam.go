@@ -26,19 +26,6 @@ func CheckTopic(user *model.User, form model.CreateTopicForm) error {
 	return nil
 }
 
-func CheckArticle(user *model.User, form model.CreateArticleForm) error {
-	if len(strategies) == 0 {
-		return nil
-	}
-	for _, strategy := range strategies {
-		if err := strategy.CheckArticle(user, form); err != nil {
-			slog.Warn("[Article]命中策略", slog.Any("strategy", strategy.Name()), slog.Any("userId", user.Id))
-			return err
-		}
-	}
-	return nil
-}
-
 func CheckComment(user *model.User, form model.CreateCommentForm) error {
 	if len(strategies) == 0 {
 		return nil

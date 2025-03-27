@@ -202,7 +202,7 @@ func (s *userLikeService) ArticleUnLike(userId int64, articleId int64) error {
 func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	comment := repository.CommentRepository.Get(sqls.DB(), commentId)
 	if comment == nil || comment.Status != constants.StatusOK {
-		return errors.New("评论不存在")
+		return ErrCommentNotFound
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {

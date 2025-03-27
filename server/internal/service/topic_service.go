@@ -448,7 +448,7 @@ func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) erro
 	}
 
 	// 发送事件
-	event.Send(event.TopicRecommendEvent{
+	event.Send(event.TopicRecommendedEvent{
 		TopicId:     topicId,
 		Recommended: recommended,
 	})

@@ -5,12 +5,7 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/bbsurls"
 	"bbs-go/internal/pkg/common"
-	"bbs-go/internal/pkg/text"
 	"bbs-go/internal/service"
-
-	"strings"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 // 收藏返回数据
@@ -32,33 +27,14 @@ func BuildFavorite(favorite *model.Favorite) *FavoriteResponse {
 	rsp.EntityType = favorite.EntityType
 	rsp.CreateTime = favorite.CreateTime
 
-	if favorite.EntityType == constants.EntityArticle {
-		article := service.ArticleService.Get(favorite.EntityId)
-		if article == nil || article.Status != constants.StatusOK {
-			rsp.Deleted = true
-		} else {
-			rsp.Url = bbsurls.ArticleUrl(article.Id)
-			rsp.User = BuildUserInfoDefaultIfNull(article.UserId)
-			rsp.Title = article.Title
-			if article.ContentType == constants.ContentTypeMarkdown {
-				rsp.Content = common.GetMarkdownSummary(article.Content)
-			} else if article.ContentType == constants.ContentTypeHtml {
-				doc, err := goquery.NewDocumentFromReader(strings.NewReader(article.Content))
-				if err == nil {
-					rsp.Content = text.GetSummary(doc.Text(), constants.SummaryLen)
-				}
-			}
-		}
+	topic := service.TopicService.Get(favorite.EntityId)
+	if topic == nil || topic.Status != constants.StatusOK {
+		rsp.Deleted = true
 	} else {
-		topic := service.TopicService.Get(favorite.EntityId)
-		if topic == nil || topic.Status != constants.StatusOK {
-			rsp.Deleted = true
-		} else {
-			rsp.Url = bbsurls.TopicUrl(topic.Id)
-			rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
-			rsp.Title = topic.Title
-			rsp.Content = common.GetMarkdownSummary(topic.Content)
-		}
+		rsp.Url = bbsurls.TopicUrl(topic.Id)
+		rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
+		rsp.Title = topic.Title
+		rsp.Content = common.GetMarkdownSummary(topic.Content)
 	}
 	return rsp
 }

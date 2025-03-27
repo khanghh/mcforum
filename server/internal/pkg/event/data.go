@@ -1,5 +1,7 @@
 package event
 
+import "bbs-go/internal/model"
+
 // FollowEvent 关注
 type FollowEvent struct {
 	UserId  int64 `json:"userId"`
@@ -48,12 +50,11 @@ type UserUnfavoriteEvent struct {
 	EntityType string `json:"entityType"`
 }
 
-type CommentCreateEvent struct {
-	UserId    int64 `json:"userId"`
-	CommentId int64 `json:"commentId"`
+type CommentCreatedEvent struct {
+	Comment *model.Comment
 }
 
-type TopicRecommendEvent struct {
-	TopicId     int64 `json:"topicId"`
-	Recommended bool  `json:"recommended"`
+type TopicRecommendedEvent struct {
+	TopicId     int64
+	Recommended bool
 }
