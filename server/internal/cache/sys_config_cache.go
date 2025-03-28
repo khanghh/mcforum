@@ -26,7 +26,7 @@ func newSysConfigCache() *sysConfigCache {
 				if val != nil {
 					return val, nil
 				}
-				return nil, errors.New("config key not found")
+				return nil, errors.New("not found")
 			},
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),

@@ -32,8 +32,8 @@ func BuildSearchTopic(doc search.TopicDocument) SearchTopicResponse {
 		User:       BuildUserInfoDefaultIfNull(doc.UserId),
 	}
 
-	if doc.NodeId > 0 {
-		node := service.ForumService.Get(doc.NodeId)
+	if doc.ForumId > 0 {
+		node := service.ForumService.Get(doc.ForumId)
 		rsp.Forum = BuildForum(node)
 	}
 

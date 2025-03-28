@@ -1,6 +1,7 @@
 package spam
 
 import (
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
@@ -14,13 +15,13 @@ func (CaptchaStrategy) Name() string {
 	return "CaptchaStrategy"
 }
 
-func (CaptchaStrategy) CheckTopic(user *model.User, form model.CreateTopicForm) error {
+func (CaptchaStrategy) CheckTopic(user *model.User, form payload.CreateTopicForm) error {
 	if service.SysConfigService.IsEnabledTopicCaptcha() && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
 		return errs.CaptchaError
 	}
 	return nil
 }
 
-func (CaptchaStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
+func (CaptchaStrategy) CheckComment(user *model.User, form payload.CreateCommentForm) error {
 	return nil
 }

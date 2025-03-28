@@ -9,15 +9,16 @@ import (
 	"strconv"
 
 	"bbs-go/common/arrays"
+	"bbs-go/common/base62"
 	"bbs-go/web"
 )
 
 // CommentResponse 评论返回数据
 type CommentResponse struct {
-	Id           int64             `json:"id"`
+	Id           string            `json:"id"`
 	User         *UserInfo         `json:"user"`
-	ParentId     int64             `json:"paerntId,omitempty"`
-	QuoteId      int64             `json:"quoteId,omitempty"`
+	ParentId     string            `json:"paerntId,omitempty"`
+	QuoteId      string            `json:"quoteId,omitempty"`
 	ContentType  string            `json:"contentType"`
 	Content      string            `json:"content"`
 	ImageList    []ImageInfo       `json:"imageList"`
@@ -72,10 +73,10 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 	}
 
 	ret := &CommentResponse{
-		Id:           comment.Id,
+		Id:           base62.Encode(comment.Id),
 		User:         BuildUserInfoDefaultIfNull(comment.UserId),
-		ParentId:     comment.ParentId,
-		QuoteId:      comment.QuoteId,
+		ParentId:     base62.Encode(comment.ParentId),
+		QuoteId:      base62.Encode(comment.QuoteId),
 		LikeCount:    comment.LikeCount,
 		CommentCount: comment.CommentCount,
 		ContentType:  comment.ContentType,
@@ -101,10 +102,10 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 	if isBuildReplies && comment.CommentCount > 0 {
 		var repliesLimit int64 = 3
 		replies, nextCursor, _ := service.CommentService.GetReplies(comment.Id, 0, int(repliesLimit))
-		//var replyResults []model.CommentResponse
-		//for _, reply := range replies {
-		//	replyResults = append(replyResults, *doBuildComment(&reply, false, true))
-		//}
+		// var replyResults []*CommentResponse
+		// for _, reply := range replies {
+		// 	replyResults = append(replyResults, doBuildComment(&reply, false, true))
+		// }
 		replyResults := BuildComments(replies, currentUser, false, true)
 		ret.Replies = &web.CursorResult{
 			Items:   replyResults,

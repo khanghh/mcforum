@@ -390,9 +390,9 @@ func (s *userService) UpdatePassword(userId int64, oldPassword, password, rePass
 	return s.UpdateColumn(userId, "password", passwd.EncodePassword(password))
 }
 
-// IncrTopicCount topic_count + 1
-func (s *userService) IncrTopicCount(tx *gorm.DB, userId int64) error {
-	if err := repository.UserRepository.UpdateColumn(sqls.DB(), userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
+// IncreaseTopicCount topic_count + 1
+func (s *userService) IncreaseTopicCount(tx *gorm.DB, userId int64) error {
+	if err := repository.UserRepository.UpdateColumn(tx, userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return err
 	}
@@ -400,19 +400,18 @@ func (s *userService) IncrTopicCount(tx *gorm.DB, userId int64) error {
 	return nil
 }
 
-// IncrCommentCount comment_count + 1
-func (s *userService) IncrCommentCount(userId int64) int {
-	t := repository.UserRepository.Get(sqls.DB(), userId)
+// IncreaseCommentCount comment_count + 1
+func (s *userService) IncreaseCommentCount(tx *gorm.DB, userId int64) error {
+	t := repository.UserRepository.Get(tx, userId)
 	if t == nil {
-		return 0
+		return ErrUserNotFound
 	}
-	commentCount := t.CommentCount + 1
-	if err := repository.UserRepository.UpdateColumn(sqls.DB(), userId, "comment_count", commentCount); err != nil {
+	if err := repository.UserRepository.UpdateColumn(tx, userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
-	} else {
-		cache.UserCache.Invalidate(userId)
+		return err
 	}
-	return commentCount
+	cache.UserCache.Invalidate(userId)
+	return nil
 }
 
 // SyncUserCount 同步用户计数

@@ -32,6 +32,7 @@ var (
 	ErrTopicNotFound   = ResponseError{iris.StatusNotFound, locale.T("topic.not_found")}
 	ErrCommentNotFound = ResponseError{iris.StatusNotFound, locale.T("comment.not_found")}
 	ErrCommentDeleted  = ResponseError{iris.StatusNotFound, locale.T("comment.deleted")}
+	ErrUserNotFound    = ResponseError{iris.StatusNotFound, locale.T("user.not_found")}
 	ErrForbidden       = ResponseError{iris.StatusForbidden, locale.T("errors.permission_denied")}
 	ErrUnauthorized    = ResponseError{iris.StatusUnauthorized, locale.T("errors.unauthorized")}
 	ErrBadRequest      = ResponseError{iris.StatusBadRequest, locale.T("errors.invalid_request")}

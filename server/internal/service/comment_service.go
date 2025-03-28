@@ -5,11 +5,9 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/pkg/event"
 	"bbs-go/internal/pkg/iplocator"
-	"log/slog"
 	"strings"
 
 	"bbs-go/common/dates"
-	"bbs-go/common/jsons"
 	"bbs-go/common/strs"
 	"bbs-go/sqls"
 	"bbs-go/web/params"
@@ -23,6 +21,17 @@ import (
 )
 
 var CommentService = newCommentService()
+
+type CreateCommentArgs struct {
+	UserId    int64
+	TopicId   int64
+	ParentId  int64
+	QuoteId   int64
+	Content   string
+	Images    []string
+	UserAgent string
+	IPAddress string
+}
 
 func newCommentService() *commentService {
 	return &commentService{}
@@ -80,99 +89,37 @@ func (s *commentService) Delete(id int64) error {
 }
 
 // Publish 发表评论
-func (s *commentService) CreateComment(userId int64, topicId int64, form model.CreateCommentForm) (*model.Comment, error) {
-	form.Content = strings.TrimSpace(form.Content)
-	if strs.IsBlank(form.Content) {
-		return nil, NewBadRequestError(locale.T("errors.comment_content_required"))
+func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, error) {
+	args.Content = strings.TrimSpace(args.Content)
+	if strs.IsBlank(args.Content) {
+		return nil, NewBadRequestError(locale.T("system.comment_content_required"))
 	}
 
 	comment := &model.Comment{
-		UserId:      userId,
-		TopicId:     topicId,
-		Content:     form.Content,
+		UserId:      args.UserId,
+		TopicId:     args.TopicId,
+		ParentId:    args.ParentId,
+		QuoteId:     args.QuoteId,
+		Content:     args.Content,
 		ContentType: constants.ContentTypeText,
 		Status:      constants.StatusOK,
-		UserAgent:   form.UserAgent,
-		Ip:          form.Ip,
-		IpLocation:  iplocator.IpLocation(form.Ip),
+		UserAgent:   args.UserAgent,
+		Ip:          args.IPAddress,
+		IpLocation:  iplocator.IpLocation(args.IPAddress),
 		CreateTime:  dates.NowTimestamp(),
 	}
 
-	if len(form.ImageList) > 0 {
-		imageListStr, err := jsons.ToStr(form.ImageList)
-		if err == nil {
-			comment.ImageList = imageListStr
-		} else {
-			slog.Error(err.Error(), slog.Any("err", err))
-		}
+	if len(args.Images) > 0 {
+		comment.ImageList = strings.Join(args.Images, ",")
 	}
 
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := repository.CommentRepository.Create(tx, comment); err != nil {
 			return err
 		}
-		return TopicService.onComment(tx, topicId, comment)
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	event.Send(event.CommentCreatedEvent{
-		Comment: comment,
-	})
-
-	return comment, nil
-}
-
-func (s *commentService) CreateReply(userId int64, parentId int64, form model.CreateCommentForm) (*model.Comment, error) {
-	form.Content = strings.TrimSpace(form.Content)
-	if strs.IsBlank(form.Content) {
-		return nil, NewBadRequestError(locale.T("errors.comment_content_required"))
-	}
-
-	parentComment := s.Get(parentId)
-	if parentComment == nil {
-		return nil, ErrCommentNotFound
-	}
-	if parentComment.Status != constants.StatusOK {
-		return nil, ErrCommentDeleted
-	}
-
-	quoteComment := s.Get(form.QuoteId)
-	if quoteComment == nil {
-		return nil, ErrCommentNotFound
-	}
-	if quoteComment.Status != constants.StatusOK {
-		return nil, ErrCommentDeleted
-	}
-
-	comment := &model.Comment{
-		UserId:      userId,
-		TopicId:     parentComment.TopicId,
-		ParentId:    parentComment.Id,
-		QuoteId:     form.QuoteId,
-		Content:     form.Content,
-		ContentType: constants.ContentTypeText,
-		Status:      constants.StatusOK,
-		UserAgent:   form.UserAgent,
-		Ip:          form.Ip,
-		IpLocation:  iplocator.IpLocation(form.Ip),
-		CreateTime:  dates.NowTimestamp(),
-	}
-
-	if len(form.ImageList) > 0 {
-		imageListStr, err := jsons.ToStr(form.ImageList)
-		if err == nil {
-			comment.ImageList = imageListStr
-		} else {
-			slog.Error(err.Error(), slog.Any("err", err))
-		}
-	}
-
-	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		if err := repository.CommentRepository.Create(tx, comment); err != nil {
-			return err
+		UserService.IncreaseCommentCount(tx, comment.UserId)
+		if comment.ParentId == 0 {
+			return TopicService.onComment(tx, comment)
 		}
 		return s.onComment(tx, comment)
 	})
@@ -193,22 +140,15 @@ func (s *commentService) onComment(tx *gorm.DB, comment *model.Comment) error {
 	return repository.CommentRepository.UpdateColumn(tx, comment.ParentId, "comment_count", gorm.Expr("comment_count + 1"))
 }
 
-// // 统计数量
-// func (s *commentService) Count(entityType string, entityId int64) int64 {
-// 	var count int64 = 0
-// 	sqls.DB().Model(&model.Comment{}).Where("entity_type = ? and entity_id = ?", entityType, entityId).Count(&count)
-// 	return count
-// }
-
 // GetComments 列表
-func (s *commentService) GetComments(entityType string, entityId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("entity_type", entityType).Eq("entity_id", entityId).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
+func (s *commentService) GetComments(topicId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
+	cnd := sqls.NewCnd().Eq("topic_id", topicId).Eq("parent_id", 0).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
 	if cursor > 0 {
-		cnd.Lt("id", cursor)
+		cnd.Lt("create_time", cursor)
 	}
 	comments = repository.CommentRepository.Find(sqls.DB(), cnd)
 	if len(comments) > 0 {
-		nextCursor = comments[len(comments)-1].Id
+		nextCursor = comments[len(comments)-1].CreateTime
 		hasMore = len(comments) >= limit
 	} else {
 		nextCursor = cursor
@@ -218,7 +158,18 @@ func (s *commentService) GetComments(entityType string, entityId int64, cursor i
 
 // GetReplies 二级回复列表
 func (s *commentService) GetReplies(commentId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
-	return s.GetComments(constants.EntityComment, commentId, cursor, limit)
+	cnd := sqls.NewCnd().Eq("parent_id", commentId).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
+	if cursor > 0 {
+		cnd.Lt("create_time", cursor)
+	}
+	comments = repository.CommentRepository.Find(sqls.DB(), cnd)
+	if len(comments) > 0 {
+		nextCursor = comments[len(comments)-1].CreateTime
+		hasMore = len(comments) >= limit
+	} else {
+		nextCursor = cursor
+	}
+	return
 }
 
 // ScanByUser 按照用户扫描数据

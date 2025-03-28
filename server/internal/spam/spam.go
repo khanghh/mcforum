@@ -1,6 +1,7 @@
 package spam
 
 import (
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"log/slog"
 )
@@ -13,7 +14,7 @@ func init() {
 	// strategies = append(strategies, &PostFrequencyStrategy{})
 }
 
-func CheckTopic(user *model.User, form model.CreateTopicForm) error {
+func CheckTopic(user *model.User, form payload.CreateTopicForm) error {
 	if len(strategies) == 0 {
 		return nil
 	}
@@ -26,7 +27,7 @@ func CheckTopic(user *model.User, form model.CreateTopicForm) error {
 	return nil
 }
 
-func CheckComment(user *model.User, form model.CreateCommentForm) error {
+func CheckComment(user *model.User, form payload.CreateCommentForm) error {
 	if len(strategies) == 0 {
 		return nil
 	}

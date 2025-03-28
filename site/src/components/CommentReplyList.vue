@@ -50,7 +50,7 @@
           </div>
         </div>
         <div v-if="myReply.commentId === reply.id" class="comment-reply-form">
-          <TextEditor v-model="myReply.input" :height="80" @submit="submitReply()" />
+          <TextEditor v-model="myReply.input" :height="80" @submit="submitReply(reply)" />
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@ const userStore = useUserStore()
 
 const props = defineProps({
   commentId: {
-    type: Number,
+    type: String,
     required: true,
   },
   modelValue: {
@@ -138,12 +138,13 @@ function hideReply() {
   myReply.input.imageList = []
 }
 
-async function submitReply(/* parent */) {
+async function submitReply(parent) {
   try {
     const ret = await useHttpPostForm(`/api/comments/${myReply.commentId}/replies`, {
       body: {
         content: myReply.input.content || '',
         imageList: myReply.input.imageList ? JSON.stringify(myReply.input.imageList) : '',
+        quoteId: myReply.commentId,
       },
     })
     hideReply()

@@ -82,13 +82,11 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 
 func GetCreateCommentForm(ctx iris.Context) CreateCommentForm {
 	form := CreateCommentForm{
-		EntityType: params.FormValue(ctx, "entityType"),
-		EntityId:   params.FormValueInt64Default(ctx, "entityId", 0),
-		Content:    strings.TrimSpace(params.FormValue(ctx, "content")),
-		ImageList:  GetImageList(ctx, "imageList"),
-		QuoteId:    params.FormValueInt64Default(ctx, "quoteId", 0),
-		UserAgent:  common.GetUserAgent(ctx.Request()),
-		Ip:         common.GetRequestIP(ctx.Request()),
+		QuoteId:   params.FormValueInt64Default(ctx, "quoteId", 0),
+		Content:   strings.TrimSpace(params.FormValue(ctx, "content")),
+		ImageList: GetImageList(ctx, "imageList"),
+		UserAgent: common.GetUserAgent(ctx.Request()),
+		Ip:        common.GetRequestIP(ctx.Request()),
 	}
 	return form
 }

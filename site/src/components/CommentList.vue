@@ -69,6 +69,7 @@ defineProps({
 
 const myReply = reactive({
   commentId: 0,
+  quoteId: 0,
   input: {
     content: '',
     imageList: [],

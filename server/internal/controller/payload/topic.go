@@ -9,6 +9,7 @@ import (
 	"html"
 
 	"bbs-go/common/arrays"
+	"bbs-go/common/base62"
 	"bbs-go/common/strs"
 )
 
@@ -85,7 +86,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 
 	rsp.Id = topic.Id
 	rsp.Type = topic.Type
-	rsp.Slug = fmt.Sprintf("%s.%d", topic.Slug, topic.Id)
+	rsp.Slug = fmt.Sprintf("%s.%s", topic.Slug, base62.Encode(topic.Id))
 	rsp.Title = topic.Title
 	rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
 	rsp.LastCommentTime = topic.LastCommentTime

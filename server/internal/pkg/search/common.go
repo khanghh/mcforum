@@ -11,7 +11,7 @@ import (
 
 type TopicDocument struct {
 	Id          int64    `json:"id"`
-	NodeId      int64    `json:"nodeId"`
+	ForumId     int64    `json:"forumId"`
 	UserId      int64    `json:"userId"`
 	Nickname    string   `json:"nickname"`
 	Title       string   `json:"title"`
@@ -33,7 +33,7 @@ func (t *TopicDocument) ToStr() string {
 func newIndex(indexPath string) bleve.Index {
 	mapping := bleve.NewIndexMapping()
 	mapping.DefaultMapping.AddFieldMappingsAt("id", newNumField())
-	mapping.DefaultMapping.AddFieldMappingsAt("nodeId", newNumField())
+	mapping.DefaultMapping.AddFieldMappingsAt("forumId", newNumField())
 	mapping.DefaultMapping.AddFieldMappingsAt("userId", newNumField())
 	mapping.DefaultMapping.AddFieldMappingsAt("nickname", newTextField())
 	mapping.DefaultMapping.AddFieldMappingsAt("title", newTextField())

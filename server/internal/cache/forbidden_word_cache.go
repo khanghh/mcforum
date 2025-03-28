@@ -20,9 +20,9 @@ var ForbiddenWordCache = newForbiddenWordCache()
 func newForbiddenWordCache() *forbiddenWordCache {
 	return &forbiddenWordCache{
 		cache: cache.NewLoadingCache(
-			func(_ cache.Key) (value cache.Value, e error) {
-				value = repository.ForbiddenWordRepository.Find(sqls.DB(), sqls.NewCnd())
-				return
+			func(_ cache.Key) (cache.Value, error) {
+				words := repository.ForbiddenWordRepository.Find(sqls.DB(), sqls.NewCnd())
+				return words, nil
 			},
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),

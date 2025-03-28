@@ -312,8 +312,8 @@ func (s *topicService) IncrViewCount(topicId int64) {
 }
 
 // 当帖子被评论的时候，更新最后回复时间、回复数量+1
-func (s *topicService) onComment(tx *gorm.DB, topicId int64, comment *model.Comment) error {
-	if err := repository.TopicRepository.Updates(tx, topicId, map[string]interface{}{
+func (s *topicService) onComment(tx *gorm.DB, comment *model.Comment) error {
+	if err := repository.TopicRepository.Updates(tx, comment.TopicId, map[string]interface{}{
 		"last_comment_time":    comment.CreateTime,
 		"last_comment_user_id": comment.UserId,
 		"comment_count":        gorm.Expr("comment_count + 1"),
@@ -321,7 +321,7 @@ func (s *topicService) onComment(tx *gorm.DB, topicId int64, comment *model.Comm
 		return err
 	}
 	if err := tx.Exec("update t_topic_tag set last_comment_time = ?, last_comment_user_id = ? where topic_id = ?",
-		comment.CreateTime, comment.UserId, topicId).Error; err != nil {
+		comment.CreateTime, comment.UserId, comment.TopicId).Error; err != nil {
 		return err
 	}
 	return nil

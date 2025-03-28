@@ -4,15 +4,12 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
+	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/spam"
-	"bytes"
-	"fmt"
-	"net/url"
 	"strconv"
 	"strings"
-	"unicode"
 
-	"bbs-go/common/numbers"
+	"bbs-go/common/base62"
 	"bbs-go/sqls"
 	"bbs-go/web"
 	"bbs-go/web/params"
@@ -33,55 +30,13 @@ func (c *TopicController) getTopicBySlugId(slugId string) (*model.Topic, error) 
 		return nil, nil
 	}
 	topicSlug := parts[0]
-	topicId := numbers.ToInt64(parts[1])
+	topicId := base62.Decode(parts[1])
 	cnd := sqls.NewCnd().
 		Eq("slug", topicSlug).
 		Eq("id", topicId).
 		Eq("status", constants.StatusOK)
 	topic := service.TopicService.FindOne(cnd)
 	return topic, nil
-}
-
-func normalizeVietnamese(input string) string {
-	input = strings.ToLower(input)
-	normalizationMap := map[rune]rune{
-		'á': 'a', 'à': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a', 'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
-		'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
-		'é': 'e', 'è': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e', 'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
-		'í': 'i', 'ì': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
-		'ó': 'o', 'ò': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o', 'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
-		'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
-		'ú': 'u', 'ù': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u', 'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
-		'ý': 'y', 'ỳ': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
-		'đ': 'd',
-	}
-	var result []rune
-	for _, r := range input {
-		if replacement, exists := normalizationMap[r]; exists {
-			result = append(result, replacement)
-		} else {
-			result = append(result, r)
-		}
-	}
-	return string(result)
-}
-
-func generateSlug(title string) string {
-	normalized := normalizeVietnamese(title)
-	var buf bytes.Buffer
-	for _, r := range normalized {
-		if unicode.IsLetter(r) || unicode.IsNumber(r) || r == '-' {
-			buf.WriteRune(r)
-		} else {
-			buf.WriteRune('-')
-		}
-	}
-	cleanStr := buf.String()
-	for strings.Contains(cleanStr, "--") {
-		cleanStr = strings.ReplaceAll(cleanStr, "--", "-")
-	}
-	cleanStr = strings.Trim(cleanStr, "-")
-	return url.PathEscape(cleanStr)
 }
 
 // 节点
@@ -103,14 +58,23 @@ func (c *TopicController) Post() *web.JsonResult {
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
 	}
-	form := model.GetCreateTopicForm(c.Ctx)
-	form.Slug = generateSlug(form.Title)
 
+	form := payload.GetCreateTopicForm(c.Ctx)
 	if err := spam.CheckTopic(user, form); err != nil {
 		return web.JsonError(err)
 	}
 
-	topic, err := service.TopicPublishService.Publish(user.Id, form)
+	topic, err := service.TopicService.Publish(service.PublishTopicArgs{
+		UserId:      user.Id,
+		Title:       form.Title,
+		ForumId:     form.ForumId,
+		Content:     form.Content,
+		HideContent: form.HideContent,
+		Tags:        form.Tags,
+		Images:      form.Images,
+		UserAgent:   common.GetUserAgent(c.Ctx.Request()),
+		IPAddress:   common.GetRequestIP(c.Ctx.Request()),
+	})
 	if err != nil {
 		return web.JsonError(err)
 	}
@@ -180,14 +144,12 @@ func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 		return web.JsonErrorCode(iris.StatusForbidden, err)
 	}
 
-	// 非作者、且非管理员
 	if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
 		return web.JsonError(service.ErrForbidden)
 	}
 
 	topic.ForumId = params.FormValueInt64Default(c.Ctx, "forumId", topic.ForumId)
 	topic.Title = strings.TrimSpace(params.FormValueDefault(c.Ctx, "title", topic.Title))
-	topic.Slug = generateSlug(topic.Title)
 	topic.Content = strings.TrimSpace(params.FormValueDefault(c.Ctx, "content", topic.Content))
 	tags := params.FormValueStringArray(c.Ctx, "tags")
 
@@ -195,7 +157,6 @@ func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	// 操作日志
 	service.OperateLogService.AddOperateLog(user.Id, constants.OpTypeUpdate, constants.EntityTopic, topic.Id, "", c.Ctx.Request())
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
@@ -209,7 +170,6 @@ func (c *TopicController) setTopicPinned(topicId int64, pinned bool) (*web.JsonR
 }
 
 func (c *TopicController) setTopicRecommended(topicId int64, recommended bool) (*web.JsonResult, error) {
-	fmt.Println("setTopicRecommended", topicId, recommended)
 	err := service.TopicService.SetTopicRecommended(topicId, recommended)
 	if err != nil {
 		return nil, err
@@ -298,6 +258,7 @@ func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web
 	return web.JsonSuccess(), nil
 }
 
+// GET /topics/{slugId}/comments
 func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
@@ -305,11 +266,12 @@ func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) 
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
-	comments, cursor, hasMore := service.CommentService.GetComments(constants.EntityTopic, topic.Id, cursor, 20)
+	comments, cursor, hasMore := service.CommentService.GetComments(topic.Id, cursor, 20)
 	resp := payload.BuildComments(comments, currentUser, true, false)
 	return web.JsonCursorData(resp, strconv.FormatInt(cursor, 10), hasMore), nil
 }
 
+// POST /topics/{slugId}/comments
 func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
@@ -321,18 +283,39 @@ func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error)
 		return web.JsonError(err), nil
 	}
 
-	form := model.GetCreateCommentForm(c.Ctx)
+	form := payload.GetCreateCommentForm(c.Ctx)
 	if err := spam.CheckComment(user, form); err != nil {
 		return web.JsonError(err), nil
 	}
 
-	comment, err := service.CommentService.CreateComment(user.Id, topic.Id, form)
+	comment, err := service.CommentService.CreateComment(service.CreateCommentArgs{
+		UserId:    user.Id,
+		TopicId:   topic.Id,
+		Content:   form.Content,
+		Images:    form.Images,
+		UserAgent: common.GetUserAgent(c.Ctx.Request()),
+		IPAddress: common.GetRequestIP(c.Ctx.Request()),
+	})
 	if err != nil {
 		return web.JsonError(err), nil
 	}
 
 	return web.JsonData(payload.BuildComment(comment)), nil
 }
+
+// POST 	/topics/{slugId}/comments/{id}/reactions
+// DELETE 	/topics/{slugId}/comments/{id}/reactions
+// GET 		/topics/{slugId}/comments/{id}/replies
+// func (c *CommentController) PostByReactions(commentId int64) (*web.JsonResult, error) {
+// 	user := service.UserTokenService.GetCurrent(c.Ctx)
+// 	if user == nil {
+// 		return nil, service.ErrForbidden
+// 	}
+// 	if err := service.UserLikeService.CommentLike(user.Id, commentId); err != nil {
+// 		return nil, err
+// 	}
+// 	return web.JsonSuccess(), nil
+// }
 
 // POST /topics/{slugId}/unpin
 // func (c *TopicController) PostByUnpin(slugId string) (*web.JsonResult, int) {

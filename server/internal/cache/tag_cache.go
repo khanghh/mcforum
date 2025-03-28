@@ -22,12 +22,12 @@ var TagCache = newTagCache()
 func newTagCache() *tagCache {
 	return &tagCache{
 		cache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = repository.TagRepository.Get(sqls.DB(), key2Int64(key))
-				if value == nil {
-					e = errors.New("数据不存在")
+			func(key cache.Key) (cache.Value, error) {
+				val := repository.TagRepository.Get(sqls.DB(), key2Int64(key))
+				if val != nil {
+					return val, nil
 				}
-				return
+				return nil, errors.New("")
 			},
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),

@@ -14,10 +14,8 @@ type UnFollowEvent struct {
 	OtherId int64 `json:"otherId"`
 }
 
-type TopicCreateEvent struct {
-	UserId     int64 `json:"userId"`
-	TopicId    int64 `json:"topicId"`
-	CreateTime int64 `json:"createTime"`
+type TopicCreatedEvent struct {
+	Topic *model.Topic
 }
 
 type TopicDeleteEvent struct {

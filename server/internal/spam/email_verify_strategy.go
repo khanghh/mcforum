@@ -1,6 +1,7 @@
 package spam
 
 import (
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
@@ -13,7 +14,7 @@ func (EmailVerifyStrategy) Name() string {
 	return "EmailVerifyStrategy"
 }
 
-func (EmailVerifyStrategy) CheckTopic(user *model.User, form model.CreateTopicForm) error {
+func (EmailVerifyStrategy) CheckTopic(user *model.User, form payload.CreateTopicForm) error {
 	fmt.Println("EmailVerified", user.EmailVerified)
 	if service.SysConfigService.IsCreateTopicEmailVerified() && !user.EmailVerified {
 		return errs.EmailNotVerified
@@ -21,7 +22,7 @@ func (EmailVerifyStrategy) CheckTopic(user *model.User, form model.CreateTopicFo
 	return nil
 }
 
-func (EmailVerifyStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
+func (EmailVerifyStrategy) CheckComment(user *model.User, form payload.CreateCommentForm) error {
 	if service.SysConfigService.IsCreateCommentEmailVerified() && !user.EmailVerified {
 		return errs.EmailNotVerified
 	}

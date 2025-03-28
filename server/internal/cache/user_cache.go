@@ -24,23 +24,23 @@ var UserCache = newUserCache()
 func newUserCache() *userCache {
 	return &userCache{
 		cache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = repository.UserRepository.Get(sqls.DB(), key2Int64(key))
-				if value == nil {
-					e = errors.New("数据不存在")
+			func(key cache.Key) (cache.Value, error) {
+				val := repository.UserRepository.Get(sqls.DB(), key2Int64(key))
+				if val != nil {
+					return val, nil
 				}
-				return
+				return nil, errors.New("not found")
 			},
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),
 		),
 		scoreRankCache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = repository.UserRepository.Find(sqls.DB(), sqls.NewCnd().Desc("score").Limit(10))
-				if value == nil {
-					e = errors.New("数据不存在")
+			func(key cache.Key) (cache.Value, error) {
+				val := repository.UserRepository.Find(sqls.DB(), sqls.NewCnd().Desc("score").Limit(10))
+				if val != nil {
+					return val, nil
 				}
-				return
+				return nil, errors.New("not found")
 			},
 			cache.WithMaximumSize(10),
 			cache.WithRefreshAfterWrite(10*time.Minute),

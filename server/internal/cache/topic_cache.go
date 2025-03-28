@@ -26,13 +26,13 @@ type topicCache struct {
 func newTopicCache() *topicCache {
 	return &topicCache{
 		recommendCache: cache.NewLoadingCache(
-			func(key cache.Key) (value cache.Value, e error) {
-				value = repository.TopicRepository.Find(sqls.DB(),
+			func(key cache.Key) (cache.Value, error) {
+				val := repository.TopicRepository.Find(sqls.DB(),
 					sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(50))
-				if value == nil {
-					e = errors.New("数据不存在")
+				if val != nil {
+					return val, nil
 				}
-				return
+				return nil, errors.New("not found")
 			},
 			cache.WithMaximumSize(10),
 			cache.WithRefreshAfterWrite(30*time.Minute),
