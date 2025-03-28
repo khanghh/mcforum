@@ -2,12 +2,12 @@ package api
 
 import (
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/uploader"
+	"bbs-go/internal/uploader"
 	"io"
 	"log/slog"
 	"strconv"
 
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/kataras/iris/v12"
 

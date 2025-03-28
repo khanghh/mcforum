@@ -1,12 +1,13 @@
 package service
 
 import (
+	"bbs-go/internal/errs"
+	"bbs-go/internal/event"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/event"
-	"bbs-go/internal/pkg/iplocator"
 	"bbs-go/internal/repository"
+	"bbs-go/pkg/iplocator"
 	"log/slog"
 	"strings"
 
@@ -32,15 +33,15 @@ type PublishTopicArgs struct {
 
 func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
 	if strs.IsBlank(args.Title) {
-		return NewBadRequestError(locale.T("topic.title_required"))
+		return errs.NewBadRequestError(locale.T("topic.title_required"))
 	}
 
 	if strs.RuneLen(args.Title) > 128 {
-		return NewBadRequestError(locale.T("topic.title_max_length_exceeded"))
+		return errs.NewBadRequestError(locale.T("topic.title_max_length_exceeded"))
 	}
 
 	if strs.IsBlank(args.Content) {
-		return NewBadRequestError(locale.T("topic.content_required"))
+		return errs.NewBadRequestError(locale.T("topic.content_required"))
 	}
 
 	if args.ForumId <= 0 {
@@ -49,7 +50,7 @@ func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
 
 	forum := repository.ForumRepository.Get(sqls.DB(), args.ForumId)
 	if forum == nil || forum.Status != constants.StatusOK {
-		return NewBadRequestError(locale.T(" forum.not_found"))
+		return errs.NewBadRequestError(locale.T(" forum.not_found"))
 	}
 
 	return nil

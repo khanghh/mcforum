@@ -1,8 +1,8 @@
 package service
 
 import (
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"

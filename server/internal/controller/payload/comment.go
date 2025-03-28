@@ -3,14 +3,14 @@ package payload
 import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/service"
+	"bbs-go/pkg/markdown"
 	"html"
 	"strconv"
 
 	"bbs-go/common/arrays"
 	"bbs-go/common/base62"
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 )
 
 // CommentResponse 评论返回数据
@@ -46,7 +46,7 @@ func BuildComments(comments []model.Comment, currentUser *model.User, isBuildRep
 	var ret []CommentResponse
 	for _, comment := range comments {
 		item := doBuildComment(&comment, currentUser, isBuildReplies, isBuildQuote)
-		item.Liked = arrays.Contains(comment.Id, likedCommentIds)
+		item.Liked = arrays.Contains(likedCommentIds, comment.Id)
 		ret = append(ret, *item)
 	}
 	return ret

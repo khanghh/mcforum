@@ -1,9 +1,10 @@
 package api
 
 import (
+	"bbs-go/internal/errs"
 	"bbs-go/internal/service"
-	"bbs-go/web"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
 )
@@ -16,12 +17,12 @@ type MeController struct {
 func (c *MeController) PutFavorites() (*web.JsonResult, error) {
 	topicId, err := params.FormValueInt64(c.Ctx, "topicId")
 	if err != nil {
-		return web.JsonError(service.ErrBadRequest), nil
+		return web.JsonError(errs.ErrBadRequest), nil
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(service.ErrUnauthorized), nil
+		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
 	err = service.FavoriteService.AddTopicFavorite(user.Id, topicId)
@@ -35,7 +36,7 @@ func (c *MeController) PutFavorites() (*web.JsonResult, error) {
 func (c *MeController) DeleteFavoritesBy(topicId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(service.ErrUnauthorized), nil
+		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
 	err := service.FavoriteService.RemoveTopicFavorite(user.Id, topicId)

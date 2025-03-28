@@ -2,13 +2,13 @@ package model
 
 import (
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/common"
 	"log/slog"
 	"strings"
 
 	"bbs-go/common/jsons"
 	"bbs-go/common/strs"
-	"bbs-go/web/params"
+	"bbs-go/common/utils"
+	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
 	"github.com/tidwall/gjson"
@@ -73,8 +73,8 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 			HideContent: strings.TrimSpace(params.FormValue(ctx, "hideContent")),
 			Tags:        params.FormValueStringArray(ctx, "tags"),
 			ImageList:   GetImageList(ctx, "imageList"),
-			UserAgent:   common.GetUserAgent(ctx.Request()),
-			Ip:          common.GetRequestIP(ctx.Request()),
+			UserAgent:   utils.GetUserAgent(ctx.Request()),
+			Ip:          utils.GetRequestIP(ctx.Request()),
 		}
 	}
 	return *form
@@ -85,8 +85,8 @@ func GetCreateCommentForm(ctx iris.Context) CreateCommentForm {
 		QuoteId:   params.FormValueInt64Default(ctx, "quoteId", 0),
 		Content:   strings.TrimSpace(params.FormValue(ctx, "content")),
 		ImageList: GetImageList(ctx, "imageList"),
-		UserAgent: common.GetUserAgent(ctx.Request()),
-		Ip:        common.GetRequestIP(ctx.Request()),
+		UserAgent: utils.GetUserAgent(ctx.Request()),
+		Ip:        utils.GetRequestIP(ctx.Request()),
 	}
 	return form
 }

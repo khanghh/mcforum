@@ -2,12 +2,12 @@ package api
 
 import (
 	"bbs-go/internal/controller/payload"
-	"bbs-go/internal/pkg/errs"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/service"
 	"strconv"
 
-	"bbs-go/web"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/kataras/iris/v12"

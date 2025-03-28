@@ -2,8 +2,8 @@ package spam
 
 import (
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/model"
-	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
 	"fmt"
 )

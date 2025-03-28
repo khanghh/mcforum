@@ -4,7 +4,7 @@ import (
 	"os"
 	"runtime"
 
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/kataras/iris/v12"
 )

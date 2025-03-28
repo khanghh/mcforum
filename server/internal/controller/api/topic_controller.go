@@ -2,17 +2,18 @@ package api
 
 import (
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/spam"
 	"strconv"
 	"strings"
 
 	"bbs-go/common/base62"
+	"bbs-go/common/utils"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web"
-	"bbs-go/web/params"
 
 	"github.com/kataras/iris/v12"
 
@@ -72,8 +73,8 @@ func (c *TopicController) Post() *web.JsonResult {
 		HideContent: form.HideContent,
 		Tags:        form.Tags,
 		Images:      form.Images,
-		UserAgent:   common.GetUserAgent(c.Ctx.Request()),
-		IPAddress:   common.GetRequestIP(c.Ctx.Request()),
+		UserAgent:   utils.GetUserAgent(c.Ctx.Request()),
+		IPAddress:   utils.GetRequestIP(c.Ctx.Request()),
 	})
 	if err != nil {
 		return web.JsonError(err)
@@ -85,7 +86,7 @@ func (c *TopicController) Post() *web.JsonResult {
 func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonError(service.ErrTopicNotFound)
+		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
 	// 审核中文章控制展示
@@ -93,10 +94,10 @@ func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 	if topic.Status == constants.StatusReview {
 		if user != nil {
 			if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
-				return web.JsonError(service.ErrForbidden)
+				return web.JsonError(errs.ErrForbidden)
 			}
 		} else {
-			return web.JsonError(service.ErrForbidden)
+			return web.JsonError(errs.ErrForbidden)
 		}
 	}
 
@@ -108,12 +109,12 @@ func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 func (c *TopicController) GetByEdit(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonError(service.ErrTopicNotFound)
+		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserId != user.Id) {
-		return web.JsonError(service.ErrForbidden)
+		return web.JsonError(errs.ErrForbidden)
 	}
 
 	if topic.Status == constants.StatusReview && !user.IsOwnerOrAdmin() {
@@ -136,7 +137,7 @@ func (c *TopicController) GetByEdit(slugId string) *web.JsonResult {
 func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonError(service.ErrTopicNotFound)
+		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
@@ -145,7 +146,7 @@ func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	}
 
 	if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
-		return web.JsonError(service.ErrForbidden)
+		return web.JsonError(errs.ErrForbidden)
 	}
 
 	topic.ForumId = params.FormValueInt64Default(c.Ctx, "forumId", topic.ForumId)
@@ -181,7 +182,7 @@ func (c *TopicController) setTopicRecommended(topicId int64, recommended bool) (
 func (c *TopicController) PatchBy(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
-		return web.JsonError(service.ErrTopicNotFound), nil
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 	var (
 		pinned      = params.FormValueBoolDefault(c.Ctx, "pinned", topic.Pinned)
@@ -190,7 +191,7 @@ func (c *TopicController) PatchBy(slugId string) (*web.JsonResult, error) {
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-		return web.JsonError(service.ErrForbidden), nil
+		return web.JsonError(errs.ErrForbidden), nil
 	}
 
 	if pinned != topic.Pinned {
@@ -198,24 +199,24 @@ func (c *TopicController) PatchBy(slugId string) (*web.JsonResult, error) {
 	} else if recommended != topic.Recommended {
 		return c.setTopicRecommended(topic.Id, recommended)
 	}
-	return nil, service.ErrBadRequest
+	return nil, errs.ErrBadRequest
 }
 
 // DELETE /topics/{slug}
 func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
-		return web.JsonError(service.ErrUnauthorized), nil
+		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
 	topic := service.TopicService.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return web.JsonError(service.ErrBadRequest), nil
+		return web.JsonError(errs.ErrBadRequest), nil
 	}
 
 	// 非作者、且非管理员
 	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
-		return web.JsonError(service.ErrForbidden), nil
+		return web.JsonError(errs.ErrForbidden), nil
 	}
 
 	if err := service.TopicService.Delete(topicId, user.Id, c.Ctx.Request()); err != nil {
@@ -228,11 +229,11 @@ func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 func (c *TopicController) PostByReactions(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
-		return web.JsonError(service.ErrTopicNotFound), nil
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(service.ErrUnauthorized), nil
+		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 	err = service.UserLikeService.TopicLike(user.Id, topic.Id)
 	if err != nil {
@@ -245,11 +246,11 @@ func (c *TopicController) PostByReactions(slugId string) (*web.JsonResult, error
 func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
-		return web.JsonError(service.ErrTopicNotFound), nil
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(service.ErrUnauthorized), nil
+		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 	err = service.UserLikeService.TopicUnLike(user.Id, topic.Id)
 	if err != nil {
@@ -262,7 +263,7 @@ func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web
 func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
-		return web.JsonError(service.ErrTopicNotFound), nil
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
@@ -275,7 +276,7 @@ func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) 
 func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
-		return web.JsonError(service.ErrTopicNotFound), nil
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
@@ -293,8 +294,8 @@ func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error)
 		TopicId:   topic.Id,
 		Content:   form.Content,
 		Images:    form.Images,
-		UserAgent: common.GetUserAgent(c.Ctx.Request()),
-		IPAddress: common.GetRequestIP(c.Ctx.Request()),
+		UserAgent: utils.GetUserAgent(c.Ctx.Request()),
+		IPAddress: utils.GetRequestIP(c.Ctx.Request()),
 	})
 	if err != nil {
 		return web.JsonError(err), nil
@@ -309,7 +310,7 @@ func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error)
 // func (c *CommentController) PostByReactions(commentId int64) (*web.JsonResult, error) {
 // 	user := service.UserTokenService.GetCurrent(c.Ctx)
 // 	if user == nil {
-// 		return nil, service.ErrForbidden
+// 		return nil, errs.ErrForbidden
 // 	}
 // 	if err := service.UserLikeService.CommentLike(user.Id, commentId); err != nil {
 // 		return nil, err

@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"bbs-go/common/strs"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 )
 
 var ForbiddenWordService = newForbiddenWordService()

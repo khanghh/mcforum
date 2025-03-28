@@ -1,7 +1,7 @@
 package payload
 
 import (
-	"bbs-go/internal/pkg/search"
+	"bbs-go/internal/search"
 	"bbs-go/internal/service"
 )
 

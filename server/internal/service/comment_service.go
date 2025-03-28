@@ -1,16 +1,17 @@
 package service
 
 import (
+	"bbs-go/internal/errs"
+	"bbs-go/internal/event"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/event"
-	"bbs-go/internal/pkg/iplocator"
+	"bbs-go/pkg/iplocator"
 	"strings"
 
 	"bbs-go/common/dates"
 	"bbs-go/common/strs"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
@@ -92,7 +93,7 @@ func (s *commentService) Delete(id int64) error {
 func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, error) {
 	args.Content = strings.TrimSpace(args.Content)
 	if strs.IsBlank(args.Content) {
-		return nil, NewBadRequestError(locale.T("system.comment_content_required"))
+		return nil, errs.NewBadRequestError(locale.T("system.comment_content_required"))
 	}
 
 	comment := &model.Comment{

@@ -2,14 +2,15 @@ package api
 
 import (
 	"bbs-go/common/base62"
+	"bbs-go/common/utils"
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/spam"
 	"strconv"
 
-	"bbs-go/web"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
 
@@ -55,15 +56,15 @@ func (c *CommentController) PostByReplies(bas62Id string) *web.JsonResult {
 	commentId := base62.Decode(bas62Id)
 	parent := service.CommentService.Get(commentId)
 	if parent == nil {
-		return web.JsonError(service.ErrCommentNotFound)
+		return web.JsonError(errs.ErrCommentNotFound)
 	}
 	if parent.Status != constants.StatusOK {
-		return web.JsonError(service.ErrCommentDeleted)
+		return web.JsonError(errs.ErrCommentDeleted)
 	}
 
 	topic := service.TopicService.Get(parent.TopicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return web.JsonError(service.ErrTopicNotFound)
+		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
 	parentId := parent.Id
@@ -78,8 +79,8 @@ func (c *CommentController) PostByReplies(bas62Id string) *web.JsonResult {
 		QuoteId:   form.QuoteId,
 		Content:   form.Content,
 		Images:    form.Images,
-		UserAgent: common.GetUserAgent(c.Ctx.Request()),
-		IPAddress: common.GetRequestIP(c.Ctx.Request()),
+		UserAgent: utils.GetUserAgent(c.Ctx.Request()),
+		IPAddress: utils.GetRequestIP(c.Ctx.Request()),
 	})
 
 	if err != nil {
@@ -100,7 +101,7 @@ func (c *CommentController) GetByReplies(base62Id string) *web.JsonResult {
 func (c *CommentController) PostByReactions(base62Id string) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return nil, service.ErrForbidden
+		return nil, errs.ErrForbidden
 	}
 	commentId := base62.Decode(base62Id)
 	if err := service.UserLikeService.CommentLike(user.Id, commentId); err != nil {
@@ -112,7 +113,7 @@ func (c *CommentController) PostByReactions(base62Id string) (*web.JsonResult, e
 func (c *CommentController) DeleteByReactionsBy(base62Id string, userId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil || user.Id != userId {
-		return nil, service.ErrForbidden
+		return nil, errs.ErrForbidden
 	}
 
 	commentId := base62.Decode(base62Id)

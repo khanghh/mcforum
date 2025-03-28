@@ -4,13 +4,13 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/markdown"
+	"bbs-go/pkg/markdown"
 	"strconv"
 
 	"bbs-go/common/jsons"
 	"bbs-go/common/strs"
-	"bbs-go/web"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
 

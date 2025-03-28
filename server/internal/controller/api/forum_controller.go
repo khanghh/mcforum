@@ -1,14 +1,14 @@
 package api
 
 import (
+	"bbs-go/common/arrays"
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/locale"
-	"bbs-go/internal/pkg/common"
 	"strconv"
 
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web"
-	"bbs-go/web/params"
 
 	"github.com/kataras/iris/v12"
 
@@ -62,7 +62,7 @@ func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
 		topic.Pinned = false // 正常列表不要渲染置顶
 		temp = append(temp, topic)
 	}
-	list := common.Distinct(temp, func(t model.Topic) any { return t.Id })
+	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
 }
 
@@ -86,7 +86,7 @@ func (c *ForumController) GetRecommended() *web.JsonResult {
 			temp = append(temp, topic)
 		}
 	}
-	list := common.Distinct(temp, func(t model.Topic) any { return t.Id })
+	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
@@ -122,6 +122,6 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 			temp = append(temp, topic)
 		}
 	}
-	list := common.Distinct(temp, func(t model.Topic) any { return t.Id })
+	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
 }

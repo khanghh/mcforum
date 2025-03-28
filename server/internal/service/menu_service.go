@@ -1,13 +1,13 @@
 package service
 
 import (
+	"bbs-go/common/arrays"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/repository"
 
-	"bbs-go/common/arrs"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 )
@@ -103,7 +103,7 @@ func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {
 	}
 
 	for _, menu := range menus {
-		if arrs.Contains(showMenuIds, menu.Id) {
+		if arrays.Contains(showMenuIds, menu.Id) {
 			ret = append(ret, menu)
 		}
 	}

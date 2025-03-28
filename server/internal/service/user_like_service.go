@@ -1,13 +1,14 @@
 package service
 
 import (
+	"bbs-go/internal/errs"
+	"bbs-go/internal/event"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/event"
 	"errors"
 
 	"bbs-go/common/dates"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 
@@ -202,7 +203,7 @@ func (s *userLikeService) ArticleUnLike(userId int64, articleId int64) error {
 func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	comment := repository.CommentRepository.Get(sqls.DB(), commentId)
 	if comment == nil || comment.Status != constants.StatusOK {
-		return ErrCommentNotFound
+		return errs.ErrCommentNotFound
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {

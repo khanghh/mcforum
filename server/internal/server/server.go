@@ -1,15 +1,15 @@
 package server
 
 import (
+	"bbs-go/internal/config"
 	"bbs-go/internal/controller/api"
 	"bbs-go/internal/middleware"
-	"bbs-go/internal/pkg/config"
 	"fmt"
 	"log/slog"
 	"os"
 	"strings"
 
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"

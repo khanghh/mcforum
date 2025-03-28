@@ -1,12 +1,12 @@
 package service
 
 import (
+	"bbs-go/internal/email"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/bbsurls"
-	"bbs-go/internal/pkg/email"
-	"bbs-go/internal/pkg/errs"
-	"bbs-go/internal/pkg/validate"
+	"bbs-go/internal/validate"
+	"bbs-go/pkg/bbsurls"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -17,9 +17,9 @@ import (
 	"bbs-go/common/dates"
 	"bbs-go/common/passwd"
 	"bbs-go/common/strs"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 
@@ -404,7 +404,7 @@ func (s *userService) IncreaseTopicCount(tx *gorm.DB, userId int64) error {
 func (s *userService) IncreaseCommentCount(tx *gorm.DB, userId int64) error {
 	t := repository.UserRepository.Get(tx, userId)
 	if t == nil {
-		return ErrUserNotFound
+		return errs.ErrUserNotFound
 	}
 	if err := repository.UserRepository.UpdateColumn(tx, userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
@@ -514,10 +514,10 @@ func (s *userService) VerifyEmail(token string) (string, error) {
 // CheckPostStatus 用于在发表内容时检查用户状态
 func (s *userService) CheckPostStatus(user *model.User) error {
 	if user == nil {
-		return ErrUnauthorized
+		return errs.ErrUnauthorized
 	}
 	if user.Status != constants.StatusOK || user.IsForbidden() {
-		return ErrForbidden
+		return errs.ErrForbidden
 	}
 	observeSeconds := SysConfigService.GetInt(constants.SysConfigUserObserveSeconds, 0)
 	if user.InObservationPeriod(observeSeconds) {

@@ -1,13 +1,13 @@
 package api
 
 import (
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/dchest/captcha"
 	"github.com/kataras/iris/v12"
 
 	"bbs-go/internal/controller/payload"
-	"bbs-go/internal/pkg/errs"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/service"
 )
 

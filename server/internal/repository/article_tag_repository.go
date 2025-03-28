@@ -2,8 +2,8 @@ package repository
 
 import (
 	"bbs-go/common/dates"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 

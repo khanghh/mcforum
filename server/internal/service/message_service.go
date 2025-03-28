@@ -2,18 +2,18 @@ package service
 
 import (
 	"bbs-go/internal/cache"
+	"bbs-go/internal/email"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/bbsurls"
-	"bbs-go/internal/pkg/email"
-	"bbs-go/internal/pkg/msg"
 	"bbs-go/internal/repository"
+	"bbs-go/pkg/bbsurls"
+	"bbs-go/pkg/msg"
 	"log/slog"
 
 	"bbs-go/common/dates"
 	"bbs-go/common/jsons"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 )
 
 var MessageService = newMessageService()

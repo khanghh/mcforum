@@ -3,9 +3,9 @@ package payload
 import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/bbsurls"
-	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/service"
+	"bbs-go/pkg/bbsurls"
+	"bbs-go/pkg/markdown"
 )
 
 // 收藏返回数据
@@ -34,7 +34,7 @@ func BuildFavorite(favorite *model.Favorite) *FavoriteResponse {
 		rsp.Url = bbsurls.TopicUrl(topic.Id)
 		rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
 		rsp.Title = topic.Title
-		rsp.Content = common.GetMarkdownSummary(topic.Content)
+		rsp.Content = markdown.GetSummary(topic.Content, constants.SummaryLen)
 	}
 	return rsp
 }

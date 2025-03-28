@@ -4,8 +4,8 @@ import (
 	"bbs-go/internal/model/constants"
 	"strings"
 
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"bbs-go/internal/cache"
 	"bbs-go/internal/model"

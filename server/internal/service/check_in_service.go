@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"bbs-go/common/dates"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 )
 
 var CheckInService = newCheckInService()

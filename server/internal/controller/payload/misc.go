@@ -3,7 +3,7 @@ package payload
 import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/bbsurls"
+	"bbs-go/pkg/bbsurls"
 	"strings"
 	"time"
 
@@ -13,7 +13,7 @@ import (
 
 	"bbs-go/common/strs"
 	"bbs-go/common/urls"
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/PuerkitoBio/goquery"
 

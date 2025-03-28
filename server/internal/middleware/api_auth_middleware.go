@@ -1,15 +1,15 @@
 package middleware
 
 import (
+	"bbs-go/common/urls"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/errs"
-	"bbs-go/internal/pkg/urls"
 	"bbs-go/internal/service"
 	"errors"
 	"fmt"
 
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/kataras/iris/v12"
 )

@@ -4,7 +4,7 @@ import (
 	"bbs-go/internal/cache"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/bbsurls"
+	"bbs-go/pkg/bbsurls"
 	"strconv"
 	"strings"
 	"time"

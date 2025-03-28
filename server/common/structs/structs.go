@@ -31,7 +31,7 @@ func fillMap(data map[string]interface{}, keys reflect.Type, values reflect.Valu
 		if keyField.Anonymous {
 			fillMap(data, keyField.Type, valueField, excludes...)
 		} else {
-			if !arrays.ContainsIgnoreCase(keyField.Name, excludes) {
+			if !arrays.ContainsIgnoreCase(excludes, keyField.Name) {
 				jsonTag := keyField.Tag.Get("json")
 				if len(jsonTag) > 0 {
 					data[jsonTag] = valueField.Interface()

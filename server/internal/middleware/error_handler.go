@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"bbs-go/internal/service"
-	"bbs-go/web"
+	"bbs-go/internal/errs"
+	"bbs-go/pkg/web"
 	"log/slog"
 
 	"github.com/kataras/iris/v12"
@@ -11,8 +11,8 @@ import (
 func ErrorHandler(ctx iris.Context, err error) {
 	if err != nil {
 		slog.Debug("Unhandled error occurred", "path", ctx.Path(), "error", err)
-		if service.IsDatabaseError(err) {
-			ctx.JSON(web.JsonError(service.ErrInternalServer))
+		if errs.IsDatabaseError(err) {
+			ctx.JSON(web.JsonError(errs.ErrInternalServer))
 			return
 		}
 		ctx.JSON(web.JsonError(err))

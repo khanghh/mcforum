@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 

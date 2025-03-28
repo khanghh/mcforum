@@ -3,8 +3,8 @@ package repository
 import (
 	"bbs-go/internal/model"
 
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 )

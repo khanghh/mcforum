@@ -1,8 +1,8 @@
 package payload
 
 import (
-	"bbs-go/internal/pkg/config"
-	"bbs-go/internal/pkg/uploader"
+	"bbs-go/internal/config"
+	"bbs-go/internal/uploader"
 	"strings"
 
 	"bbs-go/common/strs"

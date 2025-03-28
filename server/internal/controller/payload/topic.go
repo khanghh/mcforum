@@ -3,8 +3,8 @@ package payload
 import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/markdown"
 	"bbs-go/internal/service"
+	"bbs-go/pkg/markdown"
 	"fmt"
 	"html"
 
@@ -71,7 +71,7 @@ func BuildSimpleTopics(topics []model.Topic, currentUser *model.User) []TopicRes
 	var responses []TopicResponse
 	for _, topic := range topics {
 		item := BuildSimpleTopic(&topic)
-		item.Liked = arrays.Contains(topic.Id, likedTopicIds)
+		item.Liked = arrays.Contains(likedTopicIds, topic.Id)
 		responses = append(responses, *item)
 	}
 	return responses
@@ -110,7 +110,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 			rsp.Content = html.EscapeString(topic.Content)
 		}
 	} else {
-		rsp.Summary = markdown.GetSummary(topic.Content, 128)
+		rsp.Summary = markdown.GetSummary(topic.Content, constants.SummaryLen)
 	}
 
 	if topic.Type == constants.TopicTypeTweet {

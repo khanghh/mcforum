@@ -1,13 +1,13 @@
 package api
 
 import (
+	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/service"
 
 	"bbs-go/common/strs"
-	"bbs-go/web"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
 )

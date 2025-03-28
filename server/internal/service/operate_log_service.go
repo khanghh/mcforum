@@ -2,14 +2,14 @@ package service
 
 import (
 	"bbs-go/internal/model"
-	"bbs-go/internal/pkg/common"
 	"bbs-go/internal/repository"
 	"log/slog"
 	"net/http"
 
 	"bbs-go/common/dates"
+	"bbs-go/common/utils"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 )
 
 var OperateLogService = newOperateLogService()
@@ -81,8 +81,8 @@ func (s *operateLogService) AddOperateLog(userId int64, opType, dataType string,
 		CreateTime:  dates.NowTimestamp(),
 	}
 	if r != nil {
-		operateLog.Ip = common.GetRequestIP(r)
-		operateLog.UserAgent = common.GetUserAgent(r)
+		operateLog.Ip = utils.GetRequestIP(r)
+		operateLog.UserAgent = utils.GetUserAgent(r)
 		operateLog.Referer = r.Header.Get("Referer")
 	}
 	if err := repository.OperateLogRepository.Create(sqls.DB(), operateLog); err != nil {

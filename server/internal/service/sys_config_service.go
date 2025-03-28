@@ -9,8 +9,8 @@ import (
 	"bbs-go/common/dates"
 	"bbs-go/common/jsons"
 	"bbs-go/common/strs"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"github.com/spf13/cast"
 	"github.com/tidwall/gjson"

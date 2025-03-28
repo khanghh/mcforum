@@ -2,20 +2,20 @@ package api
 
 import (
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/errs"
-	"bbs-go/internal/pkg/msg"
-	"bbs-go/internal/pkg/validate"
+	"bbs-go/internal/validate"
+	"bbs-go/pkg/msg"
 	"strconv"
 	"strings"
 	"time"
 
 	"bbs-go/common/dates"
 	"bbs-go/common/strs"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web"
-	"bbs-go/web/params"
 
 	"github.com/kataras/iris/v12"
 	"github.com/spf13/cast"

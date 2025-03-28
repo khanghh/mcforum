@@ -68,7 +68,7 @@ func (u *User) HasRole(role string) bool {
 	if len(roles) == 0 {
 		return false
 	}
-	return arrays.Contains(role, roles)
+	return arrays.Contains(roles, role)
 }
 
 // HasAnyRole 是否有指定的任意角色
@@ -78,7 +78,7 @@ func (u *User) HasAnyRole(roles ...string) bool {
 	}
 	userRoles := strings.Split(u.Roles, ",")
 	for _, role := range userRoles {
-		if arrays.Contains(role, roles) {
+		if arrays.Contains(roles, role) {
 			return true
 		}
 	}

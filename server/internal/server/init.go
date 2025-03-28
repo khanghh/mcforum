@@ -1,12 +1,12 @@
 package server
 
 import (
+	"bbs-go/internal/config"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
-	"bbs-go/internal/pkg/config"
-	"bbs-go/internal/pkg/iplocator"
-	"bbs-go/internal/pkg/search"
 	"bbs-go/internal/scheduler"
+	"bbs-go/internal/search"
+	"bbs-go/pkg/iplocator"
 	"fmt"
 	"log/slog"
 	"os"

@@ -4,9 +4,9 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model/constants"
 
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web"
-	"bbs-go/web/params"
 
 	"github.com/kataras/iris/v12"
 

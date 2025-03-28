@@ -4,10 +4,10 @@ import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
 
-	"bbs-go/common/arrs"
+	"bbs-go/common/arrays"
 	"bbs-go/common/dates"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 )
@@ -97,12 +97,12 @@ func (s *roleMenuService) SaveRoleMenus(roleId int64, menuIds []int64) error {
 			delIds []int64 // 本次需要删除的
 		)
 		for _, menuId := range menuIds {
-			if !arrs.Contains(currentMenuIds, menuId) {
+			if !arrays.Contains(currentMenuIds, menuId) {
 				addIds = append(addIds, menuId)
 			}
 		}
 		for _, menuId := range currentMenuIds {
-			if !arrs.Contains(menuIds, menuId) {
+			if !arrays.Contains(menuIds, menuId) {
 				delIds = append(delIds, menuId)
 			}
 		}

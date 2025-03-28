@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/kataras/iris/v12"
 

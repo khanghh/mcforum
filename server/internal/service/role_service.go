@@ -5,8 +5,8 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/repository"
 
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"gorm.io/gorm"
 )

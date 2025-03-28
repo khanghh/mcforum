@@ -1,11 +1,11 @@
 package api
 
 import (
-	"bbs-go/internal/pkg/bbsurls"
+	"bbs-go/pkg/bbsurls"
 	"log/slog"
 
 	"bbs-go/common/strs"
-	"bbs-go/web"
+	"bbs-go/pkg/web"
 
 	"github.com/dchest/captcha"
 	"github.com/kataras/iris/v12"

@@ -2,9 +2,9 @@ package payload
 
 import (
 	"bbs-go/common/base62"
+	"bbs-go/common/utils"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/common"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web/params"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -45,8 +45,8 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 			HideContent: strings.TrimSpace(params.FormValue(ctx, "hideContent")),
 			Tags:        params.FormValueStringArray(ctx, "tags"),
 			Images:      params.FormValueStringArray(ctx, "images"),
-			UserAgent:   common.GetUserAgent(ctx.Request()),
-			Ip:          common.GetRequestIP(ctx.Request()),
+			UserAgent:   utils.GetUserAgent(ctx.Request()),
+			Ip:          utils.GetRequestIP(ctx.Request()),
 		}
 	}
 	return *form

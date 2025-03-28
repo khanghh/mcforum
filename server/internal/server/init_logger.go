@@ -1,7 +1,7 @@
 package server
 
 import (
-	"bbs-go/internal/pkg/config"
+	"bbs-go/internal/config"
 	"fmt"
 	"io"
 	"log/slog"

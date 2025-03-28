@@ -1,8 +1,8 @@
 package eventhandler
 
 import (
+	"bbs-go/internal/event"
 	"bbs-go/internal/model"
-	"bbs-go/internal/pkg/event"
 	"reflect"
 )
 

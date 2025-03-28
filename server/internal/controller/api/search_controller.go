@@ -4,11 +4,11 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/search"
+	"bbs-go/internal/search"
 	"bbs-go/internal/service"
 
-	"bbs-go/web"
-	"bbs-go/web/params"
+	"bbs-go/pkg/web"
+	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
 	"github.com/spf13/cast"

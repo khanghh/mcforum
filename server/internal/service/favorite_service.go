@@ -1,13 +1,14 @@
 package service
 
 import (
+	"bbs-go/internal/errs"
+	"bbs-go/internal/event"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/event"
 	"errors"
 
 	"bbs-go/common/dates"
+	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
-	"bbs-go/web/params"
 
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
@@ -89,7 +90,7 @@ func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
 func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return ErrTopicNotFound
+		return errs.ErrTopicNotFound
 	}
 	return s.addFavorite(userId, constants.EntityTopic, topicId)
 }

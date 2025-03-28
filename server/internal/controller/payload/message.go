@@ -4,8 +4,8 @@ import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/pkg/bbsurls"
-	"bbs-go/internal/pkg/msg"
+	"bbs-go/pkg/bbsurls"
+	"bbs-go/pkg/msg"
 
 	"github.com/tidwall/gjson"
 )
