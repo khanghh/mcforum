@@ -2,70 +2,33 @@ package server
 
 import (
 	"bbs-go/internal/config"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
 	"bbs-go/internal/scheduler"
 	"bbs-go/internal/search"
 	"bbs-go/pkg/iplocator"
-	"fmt"
 	"log/slog"
-	"os"
-	"strings"
 	"time"
 
-	"bbs-go/common/jsons"
-	"bbs-go/common/strs"
 	"bbs-go/sqls"
 
-	"github.com/kataras/iris/v12/x/errors"
-	"github.com/spf13/viper"
+	_ "bbs-go/internal/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
 
 func Init() {
-	initConfig()
 	initLogger()
 	initDB()
 	initCron()
 	initIpLocator()
 	initSearch()
-	InitLocale()
-}
 
-func initConfig() {
-	env := os.Getenv("BBSGO_ENV")
-	if strs.IsBlank(env) {
-		env = "dev"
-	}
-
-	slog.Info("Load config", slog.String("ENV", env))
-
-	viper.SetConfigName("bbs-go." + env)
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/.bbs-go")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("../../")
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix("BBSGO")
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-
-	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", err))
-	}
-
-	if err := viper.Unmarshal(&config.Instance); err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", err))
-	}
-
-	config.Instance.Env = env
-
-	slog.Info("Load config", slog.String("ENV", env), slog.String("config", jsons.ToJsonStr(config.Instance)))
 }
 
 func initDB() {
-	conf := config.Instance.DB
+	conf := config.Instance().DB
 	db, err := gorm.Open(mysql.Open(conf.Url), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   "t_",
@@ -93,24 +56,15 @@ func initDB() {
 }
 
 func initCron() {
-	if config.Instance.IsProd() {
+	if config.Instance().IsProd() {
 		scheduler.Start()
 	}
 }
 
 func initIpLocator() {
-	iplocator.InitIpLocator(config.Instance.IpDataPath)
+	iplocator.InitIpLocator(config.Instance().IpDataPath)
 }
 
 func initSearch() {
-	search.Init(config.Instance.Search.IndexPath)
-}
-
-func InitLocale() {
-	if config.Instance.Language == "" {
-		panic(errors.New("must spcifiy site language"))
-	}
-	if err := locale.InitLocale(config.Instance.Language); err != nil {
-		panic(err)
-	}
+	search.Init(config.Instance().Search.IndexPath)
 }

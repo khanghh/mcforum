@@ -72,11 +72,11 @@ func SendTemplateEmail(from *model.User, to, subject, title, content, quote stri
 // SendEmail 发送邮件
 func SendEmail(to string, subject, html string) error {
 	var (
-		host      = config.Instance.Smtp.Host
-		port      = config.Instance.Smtp.Port
-		username  = config.Instance.Smtp.Username
-		password  = config.Instance.Smtp.Password
-		ssl       = config.Instance.Smtp.SSL
+		host      = config.Instance().Smtp.Host
+		port      = config.Instance().Smtp.Port
+		username  = config.Instance().Smtp.Username
+		password  = config.Instance().Smtp.Password
+		ssl       = config.Instance().Smtp.SSL
 		addr      = net.JoinHostPort(host, port)
 		auth      = smtp.PlainAuth("", username, password, host)
 		tlsConfig = &tls.Config{
@@ -86,7 +86,7 @@ func SendEmail(to string, subject, html string) error {
 	)
 
 	e := email.NewEmail()
-	e.From = config.Instance.Smtp.Username
+	e.From = config.Instance().Smtp.Username
 	e.To = []string{to}
 	e.Subject = subject
 	e.HTML = []byte(html)

@@ -17,7 +17,7 @@ import (
 )
 
 func initLogger() {
-	conf := config.Instance.Logger
+	conf := config.Instance().Logger
 	var writer io.Writer = os.Stdout
 	if strs.IsNotBlank(conf.Filename) {
 		writer = io.MultiWriter(

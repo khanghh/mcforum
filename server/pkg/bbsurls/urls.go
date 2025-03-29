@@ -14,7 +14,7 @@ func IsInternalUrl(href string) bool {
 	if IsAnchor(href) {
 		return true
 	}
-	u, err := url.Parse(config.Instance.BaseUrl)
+	u, err := url.Parse(config.Instance().BaseUrl)
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return false
@@ -28,7 +28,7 @@ func IsAnchor(href string) bool {
 }
 
 func AbsUrl(path string) string {
-	return config.Instance.BaseUrl + path
+	return config.Instance().BaseUrl + path
 }
 
 // 用户主页

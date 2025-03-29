@@ -12,28 +12,28 @@ func HandleOssImageStyleAvatar(url string) string {
 	if !uploader.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance.Uploader.AliyunOss.StyleAvatar)
+	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StyleAvatar)
 }
 
 func HandleOssImageStyleDetail(url string) string {
 	if !uploader.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance.Uploader.AliyunOss.StyleDetail)
+	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StyleDetail)
 }
 
 func HandleOssImageStyleSmall(url string) string {
 	if !uploader.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance.Uploader.AliyunOss.StyleSmall)
+	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StyleSmall)
 }
 
 func HandleOssImageStylePreview(url string) string {
 	if !uploader.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance.Uploader.AliyunOss.StylePreview)
+	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StylePreview)
 }
 
 func HandleOssImageStyle(url, style string) string {
@@ -46,7 +46,7 @@ func HandleOssImageStyle(url, style string) string {
 	if strings.HasSuffix(strings.ToLower(url), ".gif") {
 		return url
 	}
-	sep := config.Instance.Uploader.AliyunOss.StyleSplitter
+	sep := config.Instance().Uploader.AliyunOss.StyleSplitter
 	if strs.IsBlank(sep) {
 		return url
 	}

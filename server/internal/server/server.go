@@ -20,7 +20,7 @@ import (
 )
 
 func NewServer() {
-	conf := config.Instance
+	conf := config.Instance()
 
 	app := iris.New()
 	app.Logger().SetLevel("info")
@@ -36,11 +36,8 @@ func NewServer() {
 
 	app.OnAnyErrorCode(func(ctx iris.Context) {
 		path := ctx.Path()
-		var err error
 		if strings.Contains(path, "/api/admin/") {
-			err = ctx.JSON(web.JsonErrorCodeMsg(ctx.GetStatusCode(), "Http error"))
-		}
-		if err != nil {
+			err := ctx.JSON(web.JsonErrorCodeMsg(ctx.GetStatusCode(), "Http error"))
 			slog.Error(err.Error(), slog.Any("err", err))
 		}
 	})
@@ -51,7 +48,7 @@ func NewServer() {
 		})
 	})
 
-	app.HandleDir("/admin", "./admin")
+	// app.HandleDir("/admin", "./admin")
 
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
