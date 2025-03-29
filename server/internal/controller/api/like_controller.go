@@ -70,7 +70,7 @@ func (c *LikeController) GetLiked_ids() *web.JsonResult {
 		likedEntityIds []int64
 	)
 	if user != nil {
-		likedEntityIds = service.UserLikeService.IsLiked(user.Id, entityType, entityIds)
+		likedEntityIds = service.UserLikeService.GetUserLikes(user.Id, entityType, entityIds)
 	}
 	return web.JsonData(likedEntityIds)
 }
@@ -84,7 +84,7 @@ func (c *LikeController) GetLiked() *web.JsonResult {
 	if user == nil || strs.IsBlank(entityType) || entityId <= 0 {
 		return web.JsonData(false)
 	} else {
-		liked := service.UserLikeService.Exists(user.Id, entityType, entityId)
+		liked := service.UserLikeService.IsLiked(user.Id, entityType, entityId)
 		return web.JsonData(liked)
 	}
 }

@@ -260,6 +260,7 @@ type UserLike struct {
 	UserId     int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;" json:"userId" form:"userId"`                                            // 用户
 	EntityId   int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"topicId" form:"topicId"`               // 实体编号
 	EntityType string `gorm:"not null;size:32;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"entityType" form:"entityType"` // 实体类型
+	Status     int    `gorm:"type:int(11);not null" json:"status" form:"status"`                                                                 // 状态：0：未读、1：已读
 	CreateTime int64  `json:"createTime" form:"createTime"`                                                                                      // 创建时间
 }
 

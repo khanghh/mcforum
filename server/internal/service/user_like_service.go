@@ -11,6 +11,7 @@ import (
 	"bbs-go/sqls"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
@@ -72,25 +73,46 @@ func (s *userLikeService) Delete(id int64) {
 // 统计数量
 func (s *userLikeService) Count(entityType string, entityId int64) int64 {
 	var count int64 = 0
-	sqls.DB().Model(&model.UserLike{}).Where("entity_id = ?", entityId).Where("entity_type = ?", entityType).Count(&count)
+	sqls.DB().Model(&model.UserLike{}).
+		Where("entity_id = ?", entityId).
+		Where("entity_type = ?", entityType).
+		Where("status = ?", constants.StatusOK).
+		Count(&count)
 	return count
 }
 
 // 最近点赞
 func (s *userLikeService) Recent(entityType string, entityId int64, count int) []model.UserLike {
-	return s.Find(sqls.NewCnd().Eq("entity_id", entityId).Eq("entity_type", entityType).Desc("id").Limit(count))
+	return s.Find(sqls.NewCnd().
+		Eq("entity_id", entityId).
+		Eq("entity_type", entityType).
+		Eq("status", constants.StatusOK).
+		Desc("id").Limit(count),
+	)
 }
 
-// Exists 是否点赞
-func (s *userLikeService) Exists(userId int64, entityType string, entityId int64) bool {
-	return repository.UserLikeRepository.FindOne(sqls.DB(), sqls.NewCnd().Eq("user_id", userId).
-		Eq("entity_id", entityId).Eq("entity_type", entityType)) != nil
+// IsLiked 是否点赞
+func (s *userLikeService) IsLiked(userId int64, entityType string, entityId int64) bool {
+	return repository.UserLikeRepository.FindOne(
+		sqls.DB(),
+		sqls.NewCnd().
+			Eq("user_id", userId).
+			Eq("entity_id", entityId).
+			Eq("entity_type", entityType).
+			Eq("status", constants.StatusOK),
+	) != nil
 }
 
-// 是否点赞，返回已点赞实体编号
-func (s *userLikeService) IsLiked(userId int64, entityType string, entityIds []int64) (likedEntityIds []int64) {
-	list := repository.UserLikeRepository.Find(sqls.DB(), sqls.NewCnd().Eq("user_id", userId).
-		In("entity_id", entityIds).Eq("entity_type", entityType))
+// GetUserLikes filter the given list of enitity ids to get the items liked by user
+func (s *userLikeService) GetUserLikes(userId int64, entityType string, entityIds []int64) (likedEntityIds []int64) {
+	list := repository.UserLikeRepository.Find(
+		sqls.DB(),
+		sqls.NewCnd().
+			Eq("user_id", userId).
+			Eq("entity_type", entityType).
+			In("entity_id", entityIds).
+			Eq("status", constants.StatusOK),
+	)
 	for _, like := range list {
 		likedEntityIds = append(likedEntityIds, like.EntityId)
 	}
@@ -101,7 +123,7 @@ func (s *userLikeService) IsLiked(userId int64, entityType string, entityIds []i
 func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
 	if topic == nil || topic.Status != constants.StatusOK {
-		return errors.New("话题不存在")
+		return errs.ErrTopicNotFound
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
@@ -125,7 +147,7 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 }
 
 func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
-	if !s.Exists(userId, constants.EntityTopic, topicId) {
+	if !s.IsLiked(userId, constants.EntityTopic, topicId) {
 		return nil
 	}
 
@@ -254,19 +276,23 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 }
 
 func (s *userLikeService) like(tx *gorm.DB, userId int64, entityType string, entityId int64) error {
-	// 判断是否已经点赞了
-	if s.Exists(userId, entityType, entityId) {
-		return errors.New("已点赞")
-	}
-	// 点赞
-	return repository.UserLikeRepository.Create(tx, &model.UserLike{
+	like := model.UserLike{
 		UserId:     userId,
 		EntityType: entityType,
 		EntityId:   entityId,
+		Status:     constants.StatusOK,
 		CreateTime: dates.NowTimestamp(),
-	})
+	}
+
+	// Upsert (Insert or Update)
+	return tx.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "entity_id"}, {Name: "entity_type"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{"status": constants.StatusOK}),
+	}).Create(&like).Error
 }
 
 func (s userLikeService) unlike(tx *gorm.DB, userId int64, entityType string, entityId int64) error {
-	return tx.Delete(&model.UserLike{}, "user_id = ? and entity_id = ? and entity_type = ?", userId, entityId, entityType).Error
+	return tx.Model(&model.UserLike{}).
+		Where("user_id = ? AND entity_id = ? AND entity_type = ?", userId, entityId, entityType).
+		Update("status", constants.StatusDeleted).Error
 }

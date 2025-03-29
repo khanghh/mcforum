@@ -43,7 +43,7 @@ type TopicResponse struct {
 func BuildTopic(topic *model.Topic, currentUser *model.User) *TopicResponse {
 	resp := _buildTopic(topic, true)
 	if currentUser != nil {
-		resp.Liked = service.UserLikeService.Exists(currentUser.Id, constants.EntityTopic, topic.Id)
+		resp.Liked = service.UserLikeService.IsLiked(currentUser.Id, constants.EntityTopic, topic.Id)
 		resp.Favorited = service.FavoriteService.IsFavorited(currentUser.Id, constants.EntityTopic, topic.Id)
 	}
 	return resp
@@ -65,7 +65,7 @@ func BuildSimpleTopics(topics []model.Topic, currentUser *model.User) []TopicRes
 		for _, topic := range topics {
 			topicIds = append(topicIds, topic.Id)
 		}
-		likedTopicIds = service.UserLikeService.IsLiked(currentUser.Id, constants.EntityTopic, topicIds)
+		likedTopicIds = service.UserLikeService.GetUserLikes(currentUser.Id, constants.EntityTopic, topicIds)
 	}
 
 	var responses []TopicResponse

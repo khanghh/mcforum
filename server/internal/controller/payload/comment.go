@@ -60,7 +60,7 @@ func getLikedCommentIds(comments []model.Comment, currentUser *model.User) (like
 	for _, comment := range comments {
 		commentIds = append(commentIds, comment.Id)
 	}
-	likedCommentIds = service.UserLikeService.IsLiked(currentUser.Id, constants.EntityComment, commentIds)
+	likedCommentIds = service.UserLikeService.GetUserLikes(currentUser.Id, constants.EntityComment, commentIds)
 	return
 }
 
