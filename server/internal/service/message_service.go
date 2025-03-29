@@ -2,9 +2,9 @@ package service
 
 import (
 	"bbs-go/internal/cache"
-	"bbs-go/internal/email"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
+	"bbs-go/internal/notification"
 	"bbs-go/internal/repository"
 	"bbs-go/pkg/bbsurls"
 	"bbs-go/pkg/msg"
@@ -23,6 +23,17 @@ func newMessageService() *messageService {
 }
 
 type messageService struct {
+}
+
+type SendMessageArgs struct {
+	FromId       int64
+	ToId         int64
+	Title        string
+	Content      string
+	QuoteContent string
+	Type         msg.Type
+	DetailUrl    string
+	ExtraData    interface{}
 }
 
 func (s *messageService) Get(id int64) *model.Message {
@@ -82,17 +93,16 @@ func (s *messageService) MarkRead(userId int64) {
 }
 
 // SendMsg 发送消息
-func (s *messageService) SendMsg(from, to int64, msgType msg.Type,
-	title, content, quoteContent string, extraData interface{}) {
-
+func (s *messageService) SendMsg(args SendMessageArgs) {
 	t := &model.Message{
-		FromId:       from,
-		UserId:       to,
-		Title:        title,
-		Content:      content,
-		QuoteContent: quoteContent,
-		Type:         int(msgType),
-		ExtraData:    jsons.ToJsonStr(extraData),
+		FromId:       args.FromId,
+		UserId:       args.ToId,
+		Title:        args.Title,
+		Content:      args.Content,
+		QuoteContent: args.QuoteContent,
+		Type:         int(args.Type),
+		DetailUrl:    args.DetailUrl,
+		ExtraData:    jsons.ToJsonStr(args.ExtraData),
 		Status:       msg.StatusUnread,
 		CreateTime:   dates.NowTimestamp(),
 	}
@@ -138,7 +148,7 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 	if t.FromId > 0 {
 		from = cache.UserCache.Get(t.FromId)
 	}
-	err := email.SendTemplateEmail(from, user.Email.String, emailTitle, emailTitle, t.Content,
+	err := notification.SendTemplateEmail(from, user.Email.String, emailTitle, emailTitle, t.Content,
 		t.QuoteContent, &model.ActionLink{
 			Title: "点击查看详情",
 			Url:   bbsurls.AbsUrl("/user/messages"),

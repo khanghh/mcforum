@@ -63,7 +63,7 @@ func BuildUserInfoDefaultIfNull(id int64) *UserInfo {
 		user.Id = id
 		user.Type = constants.UserTypeNormal
 		user.Username = sqls.SqlNullString(strconv.FormatInt(id, 10))
-		user.Nickname = "匿名用户" + strconv.FormatInt(id, 10)
+		user.Nickname = "user" + strconv.FormatInt(id, 10)
 		user.CreateTime = dates.NowTimestamp()
 	}
 	return BuildUserInfo(user)

@@ -161,7 +161,7 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 	}
 
 	// 发送mq消息
-	event.Send(event.UnFollowEvent{
+	event.Send(event.UnfollowEvent{
 		UserId:  userId,
 		OtherId: otherId,
 	})

@@ -1,11 +1,12 @@
 package bbsurls
 
 import (
+	"fmt"
 	"log/slog"
 	"net/url"
-	"strconv"
 	"strings"
 
+	"bbs-go/common/base62"
 	"bbs-go/internal/config"
 )
 
@@ -31,24 +32,30 @@ func AbsUrl(path string) string {
 	return config.Instance().BaseUrl + path
 }
 
-// 用户主页
-func UserUrl(userId int64) string {
-	return AbsUrl("/user/" + strconv.FormatInt(userId, 10))
+func UserUrl(username string) string {
+	return "/u/" + username
 }
 
-// 文章详情
-func ArticleUrl(articleId int64) string {
-	return AbsUrl("/article/" + strconv.FormatInt(articleId, 10))
+// 用户主页
+func AbsUserUrl(username string) string {
+	return AbsUrl(UserUrl(username))
+}
+func TagUrl(tagName string) string {
+	return "/tags/" + tagName
 }
 
 // 标签文章列表
-func TagArticlesUrl(tagId int64) string {
-	return AbsUrl("/articles/" + strconv.FormatInt(tagId, 10))
+func AbsTagUrl(tagName string) string {
+	return AbsUrl(TagUrl(tagName))
+}
+
+func TopicUrl(slug string, id int64) string {
+	return fmt.Sprintf("/t/%s.%s", slug, base62.Encode(id))
 }
 
 // 话题详情
-func TopicUrl(topicId int64) string {
-	return AbsUrl("/f/" + strconv.FormatInt(topicId, 10))
+func AbsTopicUrl(slug string, id int64) string {
+	return AbsUrl(TopicUrl(slug, id))
 }
 
 func UrlJoin(parts ...string) string {

@@ -2,6 +2,7 @@ package eventhandler
 
 import (
 	"bbs-go/internal/event"
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/msg"
@@ -14,12 +15,7 @@ func init() {
 
 func handleUserFavorite(i interface{}) {
 	e := i.(event.UserFavoriteEvent)
-
-	if e.EntityType == constants.EntityTopic {
-		sendTopicFavoriteMsg(e.EntityId, e.UserId)
-	} else if e.EntityType == constants.EntityArticle {
-		// TODO
-	}
+	sendTopicFavoriteMsg(e.EntityId, e.UserId)
 }
 
 // sendTopicFavoriteMsg 话题被收藏
@@ -31,15 +27,14 @@ func sendTopicFavoriteMsg(topicId, favoriteUserId int64) {
 	if topic.UserId == favoriteUserId {
 		return
 	}
-	var (
-		from         = favoriteUserId
-		to           = topic.UserId
-		title        = "收藏了你的话题"
-		quoteContent = "《" + topic.GetTitle() + "》"
-	)
-	service.MessageService.SendMsg(from, to, msg.TypeTopicFavorite, title, "", quoteContent,
-		&msg.TopicFavoriteExtraData{
-			TopicId:        topicId,
-			FavoriteUserId: favoriteUserId,
-		})
+	service.MessageService.SendMsg(service.SendMessageArgs{
+		FromId:       favoriteUserId,
+		ToId:         topic.UserId,
+		Title:        locale.T("message.title.topic_favorited"),
+		QuoteContent: topic.GetTitle(),
+		ExtraData: &msg.TopicFavoriteExtraData{
+			TopicId: topicId,
+			UserId:  favoriteUserId,
+		},
+	})
 }

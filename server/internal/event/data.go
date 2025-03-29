@@ -8,8 +8,8 @@ type FollowEvent struct {
 	OtherId int64 `json:"otherId"`
 }
 
-// UnFollowEvent 取消关注
-type UnFollowEvent struct {
+// UnfollowEvent 取消关注
+type UnfollowEvent struct {
 	UserId  int64 `json:"userId"`
 	OtherId int64 `json:"otherId"`
 }
@@ -49,10 +49,11 @@ type UserUnfavoriteEvent struct {
 }
 
 type CommentCreatedEvent struct {
+	Topic   *model.Topic
 	Comment *model.Comment
 }
 
 type TopicRecommendedEvent struct {
-	TopicId     int64
+	Topic       *model.Topic
 	Recommended bool
 }

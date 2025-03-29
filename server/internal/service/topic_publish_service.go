@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bbs-go/internal/cache"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/event"
 	"bbs-go/internal/locale"
@@ -91,9 +92,10 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		if err := repository.TopicRepository.Create(tx, topic); err != nil {
 			return err
 		}
-		if err := UserService.IncreaseTopicCount(tx, args.UserId); err != nil {
+		if err := repository.UserRepository.IncreaseTopicCount(tx, args.UserId); err != nil {
 			return err
 		}
+		cache.UserCache.Invalidate(args.UserId)
 		return repository.TopicTagRepository.AddTopicTags(tx, topic.Id, args.Tags)
 	})
 	if err != nil {

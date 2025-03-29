@@ -1,4 +1,4 @@
-package email
+package notification
 
 import (
 	"bbs-go/internal/model"
@@ -51,7 +51,7 @@ func SendTemplateEmail(from *model.User, to, subject, title, content, quote stri
 	if from != nil {
 		fromLink = &model.ActionLink{
 			Title: from.Nickname,
-			Url:   bbsurls.UserUrl(from.Id),
+			Url:   bbsurls.AbsUserUrl(from.Username.String),
 		}
 	}
 	var b bytes.Buffer

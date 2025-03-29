@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bbs-go/internal/cache"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/event"
 	"bbs-go/internal/locale"
@@ -114,11 +115,21 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 		comment.ImageList = strings.Join(args.Images, ",")
 	}
 
+	topic := TopicService.Get(args.TopicId)
+	if topic == nil || topic.Status != constants.StatusOK {
+		return nil, errs.ErrTopicNotFound
+	}
+
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := repository.CommentRepository.Create(tx, comment); err != nil {
 			return err
 		}
-		UserService.IncreaseCommentCount(tx, comment.UserId)
+
+		if err := repository.UserRepository.IncreaseCommentCount(tx, comment.UserId); err != nil {
+			return err
+		}
+		cache.UserCache.Invalidate(comment.UserId)
+
 		if comment.ParentId == 0 {
 			return TopicService.onComment(tx, comment)
 		}
@@ -130,6 +141,7 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 	}
 
 	event.Send(event.CommentCreatedEvent{
+		Topic:   topic,
 		Comment: comment,
 	})
 

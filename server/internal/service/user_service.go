@@ -1,10 +1,10 @@
 package service
 
 import (
-	"bbs-go/internal/email"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
+	"bbs-go/internal/notification"
 	"bbs-go/internal/validate"
 	"bbs-go/pkg/bbsurls"
 	"errors"
@@ -258,6 +258,7 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 	if !passwd.ValidatePassword(user.Password, password) {
 		return nil, errors.New(locale.T("errors.sigin_failure"))
 	}
+	s.SyncUserCount()
 	return user, nil
 }
 
@@ -391,8 +392,8 @@ func (s *userService) UpdatePassword(userId int64, oldPassword, password, rePass
 }
 
 // IncreaseTopicCount topic_count + 1
-func (s *userService) IncreaseTopicCount(tx *gorm.DB, userId int64) error {
-	if err := repository.UserRepository.UpdateColumn(tx, userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
+func (s *userService) IncreaseTopicCount(userId int64) error {
+	if err := repository.UserRepository.UpdateColumn(sqls.DB(), userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return err
 	}
@@ -401,12 +402,8 @@ func (s *userService) IncreaseTopicCount(tx *gorm.DB, userId int64) error {
 }
 
 // IncreaseCommentCount comment_count + 1
-func (s *userService) IncreaseCommentCount(tx *gorm.DB, userId int64) error {
-	t := repository.UserRepository.Get(tx, userId)
-	if t == nil {
-		return errs.ErrUserNotFound
-	}
-	if err := repository.UserRepository.UpdateColumn(tx, userId, "topic_count", gorm.Expr("topic_count + 1")); err != nil {
+func (s *userService) IncreaseCommentCount(userId int64) error {
+	if err := repository.UserRepository.UpdateColumn(sqls.DB(), userId, "comment_count", gorm.Expr("comment_count + 1")); err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return err
 	}
@@ -477,7 +474,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 		}); err != nil {
 			return nil
 		}
-		if err := email.SendTemplateEmail(nil, user.Email.String, subject, title, content, "", link); err != nil {
+		if err := notification.SendTemplateEmail(nil, user.Email.String, subject, title, content, "", link); err != nil {
 			return err
 		}
 		return nil

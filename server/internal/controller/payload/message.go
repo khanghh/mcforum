@@ -3,11 +3,8 @@ package payload
 import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
-	"bbs-go/internal/model/constants"
 	"bbs-go/pkg/bbsurls"
-	"bbs-go/pkg/msg"
-
-	"github.com/tidwall/gjson"
+	"strings"
 )
 
 // 消息
@@ -34,7 +31,6 @@ func BuildMessage(msg *model.Message) *MessageResponse {
 	if msg.FromId <= 0 {
 		from.Nickname = locale.T("system.user")
 	}
-	detailUrl := getMessageDetailUrl(msg)
 	resp := &MessageResponse{
 		Id:           msg.Id,
 		From:         from,
@@ -43,7 +39,7 @@ func BuildMessage(msg *model.Message) *MessageResponse {
 		Content:      msg.Content,
 		QuoteContent: msg.QuoteContent,
 		Type:         msg.Type,
-		DetailUrl:    detailUrl,
+		DetailUrl:    getDetailUrl(msg.DetailUrl),
 		ExtraData:    msg.ExtraData,
 		Status:       msg.Status,
 		CreateTime:   msg.CreateTime,
@@ -63,33 +59,9 @@ func BuildMessages(messages []model.Message) []MessageResponse {
 	return responses
 }
 
-// getMessageDetailUrl 查看消息详情链接地址
-func getMessageDetailUrl(t *model.Message) string {
-	msgType := msg.Type(t.Type)
-	if msgType == msg.TypeTopicComment {
-		entityType := gjson.Get(t.ExtraData, "entityType")
-		entityId := gjson.Get(t.ExtraData, "entityId")
-		if entityType.String() == constants.EntityArticle {
-			return bbsurls.ArticleUrl(entityId.Int())
-		} else if entityType.String() == constants.EntityTopic {
-			return bbsurls.TopicUrl(entityId.Int())
-		}
-	} else if msgType == msg.TypeCommentReply {
-		entityType := gjson.Get(t.ExtraData, "rootEntityType")
-		entityId := gjson.Get(t.ExtraData, "rootEntityId")
-
-		if entityType.String() == constants.EntityArticle {
-			return bbsurls.ArticleUrl(entityId.Int())
-		} else if entityType.String() == constants.EntityTopic {
-			return bbsurls.TopicUrl(entityId.Int())
-		}
-	} else if msgType == msg.TypeTopicLike ||
-		msgType == msg.TypeTopicFavorite ||
-		msgType == msg.TypeTopicRecommend {
-		topicId := gjson.Get(t.ExtraData, "topicId")
-		if topicId.Exists() && topicId.Int() > 0 {
-			return bbsurls.TopicUrl(topicId.Int())
-		}
+func getDetailUrl(urlOrPath string) string {
+	if strings.HasPrefix(urlOrPath, "http://") || strings.HasPrefix(urlOrPath, "https://") {
+		return urlOrPath
 	}
-	return bbsurls.AbsUrl("/user/messages")
+	return bbsurls.AbsUrl(urlOrPath)
 }

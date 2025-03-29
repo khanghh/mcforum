@@ -273,6 +273,7 @@ type Message struct {
 	Content      string `gorm:"type:text;not null" json:"content" form:"content"`                // 消息内容
 	QuoteContent string `gorm:"type:text" json:"quoteContent" form:"quoteContent"`               // 引用内容
 	Type         int    `gorm:"type:int(11);not null" json:"type" form:"type"`                   // 消息类型
+	DetailUrl    string `gorm:"type:text;not null" json:"detailUrl" form:"detailUrl"`            // Detail url
 	ExtraData    string `gorm:"type:text" json:"extraData" form:"extraData"`                     // 扩展数据
 	Status       int    `gorm:"type:int(11);not null" json:"status" form:"status"`               // 状态：0：未读、1：已读
 	CreateTime   int64  `json:"createTime" form:"createTime"`                                    // 创建时间

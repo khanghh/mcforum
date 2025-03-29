@@ -79,7 +79,7 @@ func GenerateSiteMap() {
 	service.TopicService.ScanDesc(func(topics []model.Topic) {
 		for _, topic := range topics {
 			if topic.Status == constants.StatusOK {
-				topicUrl := bbsurls.TopicUrl(topic.Id)
+				topicUrl := bbsurls.AbsTopicUrl(topic.Slug, topic.Id)
 				sm.Add(stm.URL{
 					{"loc", topicUrl},
 					{"lastmod", dates.FromTimestamp(topic.LastCommentTime)},
@@ -92,7 +92,7 @@ func GenerateSiteMap() {
 
 	service.TagService.Scan(func(tags []model.Tag) {
 		for _, tag := range tags {
-			tagUrl := bbsurls.TagArticlesUrl(tag.Id)
+			tagUrl := bbsurls.AbsTagUrl(tag.Name)
 			sm.Add(stm.URL{
 				{"loc", tagUrl},
 				{"lastmod", time.Now()},
@@ -104,7 +104,7 @@ func GenerateSiteMap() {
 	service.UserService.Scan(func(users []model.User) {
 		for _, user := range users {
 			sm.Add(stm.URL{
-				{"loc", bbsurls.UserUrl(user.Id)},
+				{"loc", bbsurls.AbsUserUrl(user.Username.String)},
 				{"lastmod", time.Now()},
 				{"changefreq", changefreqWeekly},
 			})

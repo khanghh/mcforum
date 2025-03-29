@@ -94,3 +94,11 @@ func (r *userRepository) GetByEmail(db *gorm.DB, email string) *model.User {
 func (r *userRepository) GetByUsername(db *gorm.DB, username string) *model.User {
 	return r.Take(db, "username = ?", username)
 }
+
+func (r *userRepository) IncreaseTopicCount(db *gorm.DB, userId int64) error {
+	return r.UpdateColumn(db, userId, "topic_count", gorm.Expr("topic_count + 1"))
+}
+
+func (r *userRepository) IncreaseCommentCount(db *gorm.DB, userId int64) error {
+	return r.UpdateColumn(db, userId, "comment_count", gorm.Expr("comment_count + 1"))
+}

@@ -4,11 +4,10 @@ import (
 	"errors"
 	"time"
 
+	"bbs-go/internal/repository"
 	"bbs-go/sqls"
 
 	"github.com/goburrow/cache"
-
-	"bbs-go/internal/repository"
 )
 
 type articleTagCache struct {

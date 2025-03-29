@@ -31,7 +31,7 @@ func BuildFavorite(favorite *model.Favorite) *FavoriteResponse {
 	if topic == nil || topic.Status != constants.StatusOK {
 		rsp.Deleted = true
 	} else {
-		rsp.Url = bbsurls.TopicUrl(topic.Id)
+		rsp.Url = bbsurls.AbsTopicUrl(topic.Slug, topic.Id)
 		rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
 		rsp.Title = topic.Title
 		rsp.Content = markdown.GetSummary(topic.Content, constants.SummaryLen)

@@ -10,35 +10,37 @@ type Type int
 
 // 消息类型
 const (
-	TypeTopicComment   Type = 0 // 收到话题评论
-	TypeCommentReply   Type = 1 // 收到他人回复
-	TypeTopicLike      Type = 2 // 收到点赞
-	TypeTopicFavorite  Type = 3 // 话题被收藏
-	TypeTopicRecommend Type = 4 // 话题被设为推荐
-	TypeTopicDelete    Type = 5 // 话题被删除
+	TypeTopicComment   Type = 0
+	TypeCommentReply   Type = 1
+	TypeTopicLike      Type = 2
+	TypeTopicFavorite  Type = 3
+	TypeTopicRecommend Type = 4
+	TypeTopicDelete    Type = 5
+	TypeUserFollow     Type = 6
 )
 
 type TopicLikeExtraData struct {
-	TopicId    int64 `json:"topicId"`
-	LikeUserId int64 `json:"likeUserId"`
+	TopicId int64 `json:"topicId,omitempty"`
+	UserId  int64 `json:"userId,omitempty"`
 }
 
 type TopicFavoriteExtraData struct {
-	TopicId        int64 `json:"topicId"`
-	FavoriteUserId int64 `json:"favoriteUserId"`
+	TopicId int64 `json:"topicId,omitempty"`
+	UserId  int64 `json:"userId,omitempty"`
 }
 
 type TopicRecommendExtraData struct {
-	TopicId int64 `json:"topicId"`
-}
-
-type TopicDeleteExtraData struct {
-	TopicId      int64 `json:"topicId"`
-	DeleteUserId int64 `json:"deleteUserId"`
+	TopicId int64 `json:"topicId,omitempty"`
 }
 
 type CommentExtraData struct {
-	TopicId  string `json:"topicId"`  // 评论实体类型
-	ParentId int64  `json:"parentId"` // 评论实体ID
-	QuoteId  int64  `json:"quoteId"`  // 引用评论ID
+	TopicId  int64 `json:"topicId,omitempty"`
+	ParentId int64 `json:"parentId,omitempty"`
+	QuoteId  int64 `json:"quoteId,omitempty"`
+}
+
+type CommentLikeExtraData struct {
+	UserId    int64 `json:"userId,omitempty"`
+	TopicId   int64 `json:"topicId,omitempty"`
+	CommentId int64 `json:"commentId,omitempty"`
 }
