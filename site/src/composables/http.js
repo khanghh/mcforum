@@ -31,7 +31,7 @@ export function useHttp(url, options = {}) {
         if (!resp.error) {
           resolve(resp.data)
         } else {
-          reject(resp)
+          reject(resp.error)
         }
       })
       .catch((err) => {

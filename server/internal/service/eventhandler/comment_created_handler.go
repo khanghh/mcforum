@@ -94,6 +94,10 @@ func sendQuoteCommentNofitication(e *event.CommentCreatedEvent) {
 		return
 	}
 
+	if e.Comment.UserId == quoteComment.UserId {
+		return
+	}
+
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       e.Comment.UserId,
 		ToId:         quoteComment.UserId,

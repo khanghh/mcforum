@@ -3,11 +3,11 @@ package payload
 import "bbs-go/internal/model"
 
 type ForumResponse struct {
-	Id          int64  `json:"id"`
+	Id          int64  `json:"id,omitempty"`
 	Name        string `json:"name"`
 	Slug        string `json:"slug"`
-	Logo        string `json:"logo"`
-	Description string `json:"description"`
+	Logo        string `json:"logo,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 func BuildForum(forum *model.Forum) *ForumResponse {

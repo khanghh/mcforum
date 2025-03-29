@@ -8,7 +8,7 @@ import (
 const CODE62 = "xPZcjYlmQMXT2KG68ut4gNSd19HfkVDwabCzUvBLRoWJrqyhpisEAO53eI0nF7"
 const CodeLength = 62
 
-var offset int64 = 364544
+var offset int64 = 3645458574
 var CodeMap = map[string]int64{
 	"x": 0, "P": 1, "Z": 2, "c": 3, "j": 4, "Y": 5, "l": 6, "m": 7, "Q": 8, "M": 9,
 	"X": 10, "T": 11, "2": 12, "K": 13, "G": 14, "6": 15, "8": 16, "u": 17, "t": 18, "4": 19,

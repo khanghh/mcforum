@@ -3,6 +3,7 @@ package api
 import (
 	"bbs-go/common/arrays"
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
 	"strconv"
 
@@ -20,24 +21,29 @@ type ForumController struct {
 	Ctx iris.Context
 }
 
-func (c *ForumController) GetMenu() *web.JsonResult {
-	forumList := []payload.ForumResponse{
-		{
-			Name: locale.T("nav.whats-new"),
-			Slug: "whats-new",
-		},
-		{
-			Name: locale.T("nav.recommended"),
-			Slug: "recommended",
-		},
-		{
-			Name: locale.T("nav.followed"),
-			Slug: "followed",
-		},
+var (
+	whatsNewForum = payload.ForumResponse{
+		Name: locale.T("nav.whats-new"),
+		Slug: "whats-new",
+		Logo: "/images/new.png",
 	}
+	recommendedForum = payload.ForumResponse{
+		Name: locale.T("nav.recommended"),
+		Slug: "recommended",
+		Logo: "/images/recommend.png",
+	}
+	followedForum = payload.ForumResponse{
+		Name: locale.T("nav.followed"),
+		Slug: "followed",
+		Logo: "/images/feed.png",
+	}
+)
+
+func (c *ForumController) GetMenu() *web.JsonResult {
+	sidebarMenu := []payload.ForumResponse{whatsNewForum, recommendedForum, followedForum}
 	realNodes := payload.BuildForumList(service.ForumService.GetAll())
-	forumList = append(forumList, realNodes...)
-	return web.JsonData(forumList)
+	sidebarMenu = append(sidebarMenu, realNodes...)
+	return web.JsonData(sidebarMenu)
 }
 
 // 节点
@@ -46,7 +52,7 @@ func (c *ForumController) GetList() *web.JsonResult {
 	return web.JsonData(nodes)
 }
 
-func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
+func (c *ForumController) getWhatsNew() *web.JsonResult {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -63,10 +69,10 @@ func (c *ForumController) GetWhatsNew() (*web.JsonResult, int) {
 		temp = append(temp, topic)
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
-	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
+	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
-func (c *ForumController) GetRecommended() *web.JsonResult {
+func (c *ForumController) getRecommended() *web.JsonResult {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -87,20 +93,31 @@ func (c *ForumController) GetRecommended() *web.JsonResult {
 		}
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
-	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore).
+		SetProperty("forum", recommendedForum)
 }
 
-func (c *ForumController) GetFollowed() (*web.JsonResult, int) {
+func (c *ForumController) getFollowed() *web.JsonResult {
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
 	)
 	topics, cursor, hasMore := service.TopicService.GetFollowedTopics(user.Id, cursor)
-	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
+	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // // 帖子列表
-func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
+func (c *ForumController) GetBy(slug string) *web.JsonResult {
+	if slug == whatsNewForum.Slug {
+		return c.getWhatsNew()
+	}
+	if slug == recommendedForum.Slug {
+		return c.getRecommended()
+	}
+	if slug == followedForum.Slug {
+		return c.getFollowed()
+	}
+
 	var (
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
@@ -108,7 +125,7 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 
 	forum := service.ForumService.FindOne(sqls.NewCnd().Eq("slug", slug))
 	if forum == nil {
-		return web.JsonError(web.NewError(iris.StatusNotFound, "not found")), iris.StatusNotFound
+		return web.JsonError(errs.ErrForumNotFound)
 	}
 
 	var temp []model.Topic
@@ -123,5 +140,23 @@ func (c *ForumController) GetBy(slug string) (*web.JsonResult, int) {
 		}
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
-	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore), iris.StatusOK
+	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
+}
+
+func (c *ForumController) GetByInfo(slug string) *web.JsonResult {
+	if slug == whatsNewForum.Slug {
+		return web.JsonData(whatsNewForum)
+	}
+	if slug == recommendedForum.Slug {
+		return web.JsonData(recommendedForum)
+	}
+	if slug == followedForum.Slug {
+		return web.JsonData(followedForum)
+	}
+
+	forum := service.ForumService.FindOne(sqls.NewCnd().Eq("slug", slug))
+	if forum == nil {
+		return web.JsonError(errs.ErrForumNotFound)
+	}
+	return web.JsonData(payload.BuildForum(forum))
 }

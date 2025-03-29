@@ -28,15 +28,6 @@ const { data: forums } = await useAsyncData('forums', () =>
 )
 
 function forumLogo(forum) {
-  if (forum.slug === 'whats-new') {
-    return '/images/new.png'
-  }
-  if (forum.slug === 'recommended') {
-    return '/images/recommend.png'
-  }
-  if (forum.slug === 'followed') {
-    return '/images/feed.png'
-  }
   return forum.logo || iconNode
 }
 

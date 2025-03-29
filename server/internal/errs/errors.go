@@ -29,6 +29,7 @@ func NewBadRequestError(msg string) error {
 }
 
 var (
+	ErrForumNotFound   = ResponseError{iris.StatusNotFound, locale.T("forum.not_found")}
 	ErrTopicNotFound   = ResponseError{iris.StatusNotFound, locale.T("topic.not_found")}
 	ErrCommentNotFound = ResponseError{iris.StatusNotFound, locale.T("comment.not_found")}
 	ErrCommentDeleted  = ResponseError{iris.StatusNotFound, locale.T("comment.deleted")}
