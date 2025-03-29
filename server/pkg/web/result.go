@@ -10,7 +10,8 @@ type PageResult struct {
 
 // CursorResult Cursor分页返回数据
 type CursorResult struct {
-	Items   interface{} `json:"items"`   // 数据
-	Cursor  string      `json:"cursor"`  // 下一页
-	HasMore bool        `json:"hasMore"` // 是否还有数据
+	Metadata interface{} `json:"metadata,omitempty"`
+	Items    interface{} `json:"items"`   // 数据
+	Cursor   string      `json:"cursor"`  // 下一页
+	HasMore  bool        `json:"hasMore"` // 是否还有数据
 }

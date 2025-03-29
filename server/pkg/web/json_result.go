@@ -18,6 +18,7 @@ type JsonResult struct {
 	StatusCode int
 	Data       interface{}
 	Error      error
+	Properties map[string]interface{}
 }
 
 type jsonErrorMarshaling struct {
@@ -25,21 +26,34 @@ type jsonErrorMarshaling struct {
 	Message string `json:"message"`
 }
 
-type jsonResultMarshaling struct {
-	ApiVersion string                 `json:"apiVersion,omitempty"`
-	Context    string                 `json:"context,omitempty"`
-	Id         string                 `json:"id,omitempty"`
-	Method     string                 `json:"method,omitempty"`
-	Params     map[string]interface{} `json:"params,omitempty"`
-	Data       interface{}            `json:"data,omitempty"`
-	Error      *jsonErrorMarshaling   `json:"error,omitempty"`
+//	type jsonResultMarshaling struct {
+//		ApiVersion string                 `json:"apiVersion,omitempty"`
+//		Context    string                 `json:"context,omitempty"`
+//		Id         string                 `json:"id,omitempty"`
+//		Method     string                 `json:"method,omitempty"`
+//		Params     map[string]interface{} `json:"params,omitempty"`
+//		Data       interface{}            `json:"data,omitempty"`
+//		Error      *jsonErrorMarshaling   `json:"error,omitempty"`
+//	}
+func (r *JsonResult) SetProperty(key string, val interface{}) *JsonResult {
+	if r.Properties == nil {
+		r.Properties = make(map[string]interface{})
+	}
+	r.Properties[key] = val
+	return r
 }
 
 func (r *JsonResult) MarshalJSON() ([]byte, error) {
-	ret := jsonResultMarshaling{Data: r.Data}
+	ret := make(map[string]interface{})
+	for key, val := range r.Properties {
+		ret[key] = val
+	}
+	if r.Data != nil {
+		ret["data"] = r.Data
+	}
 	if r.Error != nil {
 		if jsonErr, ok := r.Error.(jsonError); ok {
-			ret.Error = &jsonErrorMarshaling{
+			ret["error"] = jsonErrorMarshaling{
 				Code:    jsonErr.Code(),
 				Message: jsonErr.Error(),
 			}
@@ -48,7 +62,7 @@ func (r *JsonResult) MarshalJSON() ([]byte, error) {
 			if statusCode == 0 {
 				statusCode = iris.StatusBadRequest
 			}
-			ret.Error = &jsonErrorMarshaling{
+			ret["error"] = jsonErrorMarshaling{
 				Code:    statusCode,
 				Message: r.Error.Error(),
 			}
@@ -94,9 +108,9 @@ func JsonPageData(results interface{}, page *sqls.Paging) *JsonResult {
 	})
 }
 
-func JsonCursorData(results interface{}, cursor string, hasMore bool) *JsonResult {
+func JsonCursorData(items interface{}, cursor string, hasMore bool) *JsonResult {
 	return JsonData(&CursorResult{
-		Items:   results,
+		Items:   items,
 		Cursor:  cursor,
 		HasMore: hasMore,
 	})
