@@ -28,8 +28,6 @@ func (c *LikeController) PostLike() *web.JsonResult {
 	}
 	if entityType == constants.EntityTopic {
 		err = service.UserLikeService.TopicLike(user.Id, entityId)
-	} else if entityType == constants.EntityArticle {
-		err = service.UserLikeService.ArticleLike(user.Id, entityId)
 	} else if entityType == constants.EntityComment {
 		err = service.UserLikeService.CommentLike(user.Id, entityId)
 	}
@@ -51,8 +49,6 @@ func (c *LikeController) PostUnlike() *web.JsonResult {
 	}
 	if entityType == constants.EntityTopic {
 		err = service.UserLikeService.TopicUnLike(user.Id, entityId)
-	} else if entityType == constants.EntityArticle {
-		err = service.UserLikeService.ArticleUnLike(user.Id, entityId)
 	} else if entityType == constants.EntityComment {
 		err = service.UserLikeService.CommentUnLike(user.Id, entityId)
 	}

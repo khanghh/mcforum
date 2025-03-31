@@ -93,14 +93,8 @@ func (s *userLikeService) Recent(entityType string, entityId int64, count int) [
 
 // IsLiked 是否点赞
 func (s *userLikeService) IsLiked(userId int64, entityType string, entityId int64) bool {
-	return repository.UserLikeRepository.FindOne(
-		sqls.DB(),
-		sqls.NewCnd().
-			Eq("user_id", userId).
-			Eq("entity_id", entityId).
-			Eq("entity_type", entityType).
-			Eq("status", constants.StatusOK),
-	) != nil
+	isLiked, _ := s.isLiked(sqls.DB(), userId, entityType, entityId)
+	return isLiked
 }
 
 // GetUserLikes filter the given list of enitity ids to get the items liked by user
@@ -127,6 +121,11 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+		isLiked, err := s.isLiked(tx, userId, constants.EntityTopic, topicId)
+		if err != nil || (err == nil && isLiked) {
+			return nil
+		}
+
 		if err := s.like(tx, userId, constants.EntityTopic, topicId); err != nil {
 			return err
 		}
@@ -171,56 +170,6 @@ func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
 	return nil
 }
 
-func (s *userLikeService) ArticleLike(userId int64, articleId int64) error {
-	article := repository.ArticleRepository.Get(sqls.DB(), articleId)
-	if article == nil || article.Status != constants.StatusOK {
-		return errors.New("文章不存在")
-	}
-	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		if err := s.like(tx, userId, constants.EntityArticle, articleId); err != nil {
-			return err
-		}
-		// 更新点赞数
-		return repository.ArticleRepository.UpdateColumn(tx, articleId, "like_count", gorm.Expr("like_count - 1"))
-	}); err != nil {
-		return err
-	}
-
-	// 发送事件
-	event.Send(event.UserLikeEvent{
-		UserId:     userId,
-		EntityId:   articleId,
-		EntityType: constants.EntityArticle,
-	})
-	return nil
-}
-
-func (s *userLikeService) ArticleUnLike(userId int64, articleId int64) error {
-	article := repository.ArticleRepository.Get(sqls.DB(), articleId)
-	if article == nil || article.Status != constants.StatusOK {
-		return errors.New("文章不存在")
-	}
-
-	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		if err := s.unlike(tx, userId, constants.EntityArticle, articleId); err != nil {
-			return err
-		}
-		// 更新点赞数
-		return repository.ArticleRepository.UpdateColumn(tx, articleId, "like_count", gorm.Expr("like_count - 1"))
-	}); err != nil {
-		return err
-	}
-
-	// 发送事件
-	event.Send(event.UserUnLikeEvent{
-		UserId:     userId,
-		EntityId:   articleId,
-		EntityType: constants.EntityArticle,
-	})
-
-	return nil
-}
-
 // CommentLike 话题点赞
 func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	comment := repository.CommentRepository.Get(sqls.DB(), commentId)
@@ -229,6 +178,11 @@ func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+		isLiked, err := s.isLiked(tx, userId, constants.EntityComment, commentId)
+		if err != nil || (err == nil && isLiked) {
+			return nil
+		}
+
 		if err := s.like(tx, userId, constants.EntityComment, commentId); err != nil {
 			return err
 		}
@@ -273,6 +227,20 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 	})
 
 	return nil
+}
+
+func (r *userLikeService) isLiked(db *gorm.DB, userId int64, entityType string, entityId int64) (bool, error) {
+	var exists bool
+	err := db.Model(&model.UserLike{}).Select("1").
+		Where("user_id = ? AND entity_id = ? AND entity_type = ? AND status = ?", userId, entityType, entityId, constants.StatusOK).
+		Take(&exists).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
 }
 
 func (s *userLikeService) like(tx *gorm.DB, userId int64, entityType string, entityId int64) error {
