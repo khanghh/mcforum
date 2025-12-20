@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export APP_HOME=/app/bbs-go
+export APP_HOME=/app
 
 # 启动 bbs-go-server
 cd ${APP_HOME}/server

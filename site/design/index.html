@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MineCraft Forums - Community</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    }
+
+    h1,
+    h2,
+    h3,
+    .gaming-title {
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* Neon glow effects */
+    .neon-border {
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Gaming card */
+    .gaming-card {
+      background: linear-gradient(145deg, rgba(30, 30, 60, 0.8), rgba(20, 20, 40, 0.9));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    /* Animated gradient border */
+    @keyframes gradientBorder {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .animated-border {
+      background: linear-gradient(45deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6);
+      background-size: 300% 300%;
+      animation: gradientBorder 3s ease infinite;
+    }
+
+    /* Minecraft specific */
+    .pixelated {
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+
+    /* Scrollbar styling */
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(30, 30, 60, 0.5);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #8b5cf6, #ec4899);
+      border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #a78bfa, #f472b6);
+    }
+
+    /* Active category highlight */
+    .category-item.active {
+      background: rgba(139, 92, 246, 0.2);
+      border-left: 3px solid #8b5cf6;
+    }
+  </style>
+</head>
+
+<body class="text-gray-100 flex flex-col min-h-screen custom-scrollbar">
+  <!-- Navigation Menu -->
+  <nav
+    class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+        <div>
+          <div
+            class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
+            MineCraft Forums</div>
+          <div class="hidden md:block text-xs text-purple-300">Community & Discussions</div>
+        </div>
+      </div>
+      <ul class="flex space-x-4 sm:space-x-6 text-gray-300 font-medium">
+        <li><a href="#" class="text-purple-400" aria-current="page"><i class="fas fa-home mr-1"></i> <span
+              class="hidden sm:inline">Forums</span></a></li>
+        <li><a href="#" class="text-gray-300"><i class="fas fa-cube mr-1"></i> <span
+              class="hidden sm:inline">Servers</span></a></li>
+        <li><a href="#" class="text-gray-300"><i class="fas fa-envelope mr-1"></i> <span
+              class="hidden sm:inline">Messages</span></a></li>
+        <li><a href="#" class="text-gray-300"><i class="fas fa-user-circle mr-1"></i> <span
+              class="hidden sm:inline">Profile</span></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-grow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div class="flex gap-6">
+        <!-- Left Sidebar - Merged Categories + Widgets -->
+        <aside class="hidden lg:block w-80 flex-shrink-0">
+          <div class="space-y-6 sticky top-24">
+            <!-- Categories -->
+            <div class="gaming-card rounded-xl p-4">
+              <h3 class="text-lg font-bold text-purple-300 gaming-title mb-4 flex items-center">
+                <i class="fas fa-th-list mr-2"></i> CATEGORIES
+              </h3>
+              <nav class="space-y-1">
+                <a href="#all"
+                  class="category-item active block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-home mr-2 text-purple-400"></i> All Forums
+                </a>
+                <a href="#general"
+                  class="category-item block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-comments mr-2 text-purple-400"></i> General Discussion
+                </a>
+                <a href="#servers"
+                  class="category-item block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-server mr-2 text-blue-400"></i> Server Discussion
+                </a>
+                <a href="#building"
+                  class="category-item block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-cube mr-2 text-green-400"></i> Building & Creative
+                </a>
+                <a href="#mods"
+                  class="category-item block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-puzzle-piece mr-2 text-pink-400"></i> Mods & Plugins
+                </a>
+                <a href="#support"
+                  class="category-item block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-question-circle mr-2 text-yellow-400"></i> Help & Support
+                </a>
+                <a href="#marketplace"
+                  class="category-item block px-3 py-2 rounded text-sm font-semibold transition-all hover:bg-purple-500/10">
+                  <i class="fas fa-shopping-cart mr-2 text-emerald-400"></i> Marketplace
+                </a>
+              </nav>
+            </div>
+
+            <!-- Server Status -->
+            <div class="gaming-card rounded-xl p-4">
+              <h3 class="text-lg font-bold text-green-400 gaming-title mb-4 flex items-center">
+                <i class="fas fa-server mr-2"></i> SERVER STATUS
+              </h3>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center p-2 rounded bg-green-500/10">
+                  <span class="text-sm text-gray-400">Status</span>
+                  <span class="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
+                    <i class="fas fa-check-circle mr-1"></i>ONLINE
+                  </span>
+                </div>
+                <div class="flex justify-between items-center p-2 rounded bg-blue-500/10">
+                  <span class="text-sm text-gray-400">Online</span>
+                  <span class="font-bold text-green-400 gaming-title">2,847</span>
+                </div>
+                <div class="flex justify-between items-center p-2 rounded bg-purple-500/10">
+                  <span class="text-sm text-gray-400">Version</span>
+                  <span class="font-bold text-purple-400 gaming-title">1.20.4</span>
+                </div>
+              </div>
+              <button
+                class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold gaming-title hover:scale-105 transition-transform">
+                <i class="fas fa-play mr-2"></i> JOIN SERVER
+              </button>
+            </div>
+
+            <!-- Top Contributors -->
+            <div class="gaming-card rounded-xl p-4">
+              <h3 class="text-lg font-bold text-amber-400 gaming-title mb-4 flex items-center">
+                <i class="fas fa-medal mr-2"></i> TOP CONTRIBUTORS
+              </h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🥇</span>
+                  <img src="https://minotar.net/helm/BuildMaster/32.png" class="w-10 h-10 pixelated rounded" />
+                  <div class="flex-1">
+                    <p class="font-bold text-amber-300 gaming-title text-sm">BuildMaster</p>
+                    <p class="text-xs text-gray-400">4,523 posts</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🥈</span>
+                  <img src="https://minotar.net/helm/RedstoneKing/32.png" class="w-10 h-10 pixelated rounded" />
+                  <div class="flex-1">
+                    <p class="font-bold text-gray-300 gaming-title text-sm">RedstoneKing</p>
+                    <p class="text-xs text-gray-400">3,891 posts</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🥉</span>
+                  <img src="https://minotar.net/helm/ModDev/32.png" class="w-10 h-10 pixelated rounded" />
+                  <div class="flex-1">
+                    <p class="font-bold text-orange-300 gaming-title text-sm">ModDev</p>
+                    <p class="text-xs text-gray-400">3,456 posts</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Forum Stats -->
+            <div class="gaming-card rounded-xl p-4">
+              <h3 class="text-lg font-bold text-gray-400 gaming-title mb-4">FORUM STATS</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Threads</span>
+                  <span class="font-bold text-purple-300">845K</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Posts</span>
+                  <span class="font-bold text-pink-300">12.5M</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Members</span>
+                  <span class="font-bold text-blue-300">458K</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Online</span>
+                  <span class="font-bold text-green-300">2.4K</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Middle Content Area - Infinite Scrolling -->
+        <div class="flex-1 min-w-0">
+          <!-- Hero Banner -->
+          <div class="gaming-card rounded-xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+            <div class="absolute inset-0 animated-border opacity-10"></div>
+            <div class="relative z-10">
+              <h1
+                class="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 gaming-title mb-3">
+                ALL DISCUSSIONS
+              </h1>
+              <p class="text-gray-300 mb-4">Browse the latest discussions from our community</p>
+              <div class="flex flex-wrap gap-3">
+                <button
+                  class="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors">
+                  <i class="fas fa-plus mr-2"></i> New Thread
+                </button>
+                <button
+                  class="px-4 py-2 border border-purple-500/50 text-purple-300 rounded-lg font-semibold text-sm hover:bg-purple-500/20 transition-colors">
+                  <i class="fas fa-filter mr-2"></i> Filter
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Discussion Threads List -->
+          <div id="threads-container" class="space-y-4">
+            <!-- Thread 1 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-1" class="text-white hover:text-purple-400 transition-colors">
+                    🏰 Just finished my mega build after 6 months!
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/BuildMaster/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">BuildMaster</span>
+                  <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+                  <span class="text-xs text-gray-500">25 minutes ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Finally completed my massive medieval city project. Over 500
+                  hours of building. Album inside!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 456
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 128
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 3.2K
+                  </span>
+                  <span
+                    class="ml-auto px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">BUILDING</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 2 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-2" class="text-white hover:text-purple-400 transition-colors">
+                    ⚡ New 0-tick farm design - Fastest ever!
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/RedstoneKing/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">RedstoneKing</span>
+                  <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded">EXPERT</span>
+                  <span class="text-xs text-gray-500">1 hour ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Created a new 0-tick farm that's 20% faster than current
+                  designs. Tutorial and world download available!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 892
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 234
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 5.8K
+                  </span>
+                  <span class="ml-auto px-2 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded">REDSTONE</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 3 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-3" class="text-white hover:text-purple-400 transition-colors">
+                    🌍 Looking for builders for new project!
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/ServerOwner/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">ServerOwner</span>
+                  <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-bold rounded">VIP</span>
+                  <span class="text-xs text-gray-500">2 hours ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Starting a massive RPG server project. Need talented builders
+                  and terrain artists. Payment available!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 234
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 87
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 2.1K
+                  </span>
+                  <span
+                    class="ml-auto px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded">SERVERS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 4 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-4" class="text-white hover:text-purple-400 transition-colors">
+                    🔧 Released my new quality of life mod v2.0
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/ModDev/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">ModDev</span>
+                  <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs font-bold rounded">DEVELOPER</span>
+                  <span class="text-xs text-gray-500">3 hours ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Major update with new features: inventory sorting, crafting
+                  improvements, and better UI. Forge & Fabric!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 567
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 145
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 4.3K
+                  </span>
+                  <span class="ml-auto px-2 py-1 bg-pink-500/20 text-pink-400 text-xs font-bold rounded">MODS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 5 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-5" class="text-white hover:text-purple-400 transition-colors">
+                    ⚔️ Best PvP texture pack for 1.20.4?
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/PvPMaster/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">PvPMaster</span>
+                  <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+                  <span class="text-xs text-gray-500">4 hours ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Looking for recommendations for competitive PvP. Need low fire
+                  and clean sword textures!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 123
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 45
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 1.5K
+                  </span>
+                  <span class="ml-auto px-2 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded">PVP</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 6 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-6" class="text-white hover:text-purple-400 transition-colors">
+                    ❓ How do I install mods on Java Edition?
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/Beginner123/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">Beginner123</span>
+                  <span class="px-2 py-0.5 bg-gray-500/20 text-gray-400 text-xs font-bold rounded">MEMBER</span>
+                  <span class="text-xs text-gray-500">5 hours ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Complete newbie here. Can someone guide me through installing
+                  Forge and mods? Step by step please!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 67
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 28
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 892
+                  </span>
+                  <span
+                    class="ml-auto px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded">SUPPORT</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 7 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-7" class="text-white hover:text-purple-400 transition-colors">
+                    💰 Selling custom spawn builds - Portfolio inside!
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/Trader99/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">Trader99</span>
+                  <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-bold rounded">VIP</span>
+                  <span class="text-xs text-gray-500">6 hours ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Professional builder offering custom spawns, hubs, and lobbies.
+                  5+ years experience. DM for pricing!</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 189
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 56
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 2.7K
+                  </span>
+                  <span
+                    class="ml-auto px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded">MARKETPLACE</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thread 8 -->
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-8" class="text-white hover:text-purple-400 transition-colors">
+                    🎨 Share your best organic terraforming tips!
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/CreativePlayer/24.png"
+                    class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">CreativePlayer</span>
+                  <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+                  <span class="text-xs text-gray-500">7 hours ago</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">Want to improve my landscape building. What are your go-to
+                  techniques for natural-looking terrain?</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> 345
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> 98
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> 3.8K
+                  </span>
+                  <span
+                    class="ml-auto px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">BUILDING</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Load More Button -->
+          <div class="text-center mt-8 mb-8">
+            <button id="load-more-btn"
+              class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold gaming-title neon-border hover:scale-105 transition-transform">
+              <i class="fas fa-chevron-down mr-2"></i> LOAD MORE THREADS
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <!-- Main Footer Content -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <!-- Brand Section -->
+        <div class="space-y-4">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+            <div>
+              <h3
+                class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
+                MineCraft Forums
+              </h3>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm">
+            The ultimate community for Minecraft players. Share builds, discover mods, and connect with fellow gamers.
+          </p>
+          <div class="flex space-x-3">
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-discord"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-twitch"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Forums</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Leaderboards</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Server Status</a></li>
+          </ul>
+        </div>
+
+        <!-- Resources -->
+        <div>
+          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Download Packs</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Help Center</a></li>
+          </ul>
+        </div>
+
+        <!-- Community Stats -->
+        <div>
+          <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">COMMUNITY</h4>
+          <div class="space-y-3">
+            <div class="gaming-card p-3 rounded-lg">
+              <div class="text-xs text-gray-400 mb-1">Active Players</div>
+              <div class="text-2xl font-bold text-green-400 gaming-title">2,847</div>
+            </div>
+            <div class="gaming-card p-3 rounded-lg">
+              <div class="text-xs text-gray-400 mb-1">Total Members</div>
+              <div class="text-2xl font-bold text-purple-400 gaming-title">458K</div>
+            </div>
+            <div class="gaming-card p-3 rounded-lg">
+              <div class="text-xs text-gray-400 mb-1">Online Now</div>
+              <div class="text-2xl font-bold text-blue-400 gaming-title">2.4K</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 border-t border-purple-500/20">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="text-gray-400 text-sm gaming-title">
+            © 2025 MineCraft Forums. <span class="text-purple-400">Build Together!</span>
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+            <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+            <span class="text-gray-600">•</span>
+            <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+            <span class="text-gray-600">•</span>
+            <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
+            <span class="text-gray-600">•</span>
+            <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript for Load More -->
+  <script>
+    document.getElementById('load-more-btn').addEventListener('click', function () {
+      const container = document.getElementById('threads-container');
+      const btn = this;
+
+      // Show loading state
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> LOADING...';
+      btn.disabled = true;
+
+      // Simulate loading more threads
+      setTimeout(() => {
+        const newThreads = [
+          {
+            user: 'NewUser1',
+            badge: 'MEMBER',
+            badgeColor: 'gray',
+            time: '8 hours ago',
+            title: '🎮 What are your favorite mini-games?',
+            content: 'Looking for new mini-games to play with friends. What do you recommend?',
+            loves: 156,
+            comments: 42,
+            views: '1.2K',
+            category: 'GENERAL',
+            categoryColor: 'purple',
+            threadId: 9
+          },
+          {
+            user: 'NewUser2',
+            badge: 'VIP',
+            badgeColor: 'green',
+            time: '9 hours ago',
+            title: '🛡️ Server lag issues after update',
+            content: 'Anyone else experiencing lag on their servers after the 1.20.4 update?',
+            loves: 234,
+            comments: 67,
+            views: '2.3K',
+            category: 'SERVERS',
+            categoryColor: 'blue',
+            threadId: 10
+          },
+          {
+            user: 'NewUser3',
+            badge: 'PRO',
+            badgeColor: 'purple',
+            time: '10 hours ago',
+            title: '🏗️ Underwater base building guide',
+            content: 'Created a comprehensive guide for building underwater bases. Check it out!',
+            loves: 489,
+            comments: 123,
+            views: '4.1K',
+            category: 'BUILDING',
+            categoryColor: 'green',
+            threadId: 11
+          }
+        ];
+
+        newThreads.forEach(thread => {
+          const threadHTML = `
+            <div class="gaming-card rounded-xl p-5">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold mb-2">
+                  <a href="#thread-${thread.threadId}" class="text-white hover:text-purple-400 transition-colors">
+                    ${thread.title}
+                  </a>
+                </h3>
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <img src="https://minotar.net/helm/${thread.user}/24.png" class="w-6 h-6 pixelated rounded border border-purple-500/50 flex-shrink-0" />
+                  <span class="font-bold text-purple-300 gaming-title text-sm">${thread.user}</span>
+                  <span class="px-2 py-0.5 bg-${thread.badgeColor}-500/20 text-${thread.badgeColor}-400 text-xs font-bold rounded">${thread.badge}</span>
+                  <span class="text-xs text-gray-500">${thread.time}</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-3">${thread.content}</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-heart text-red-400"></i> ${thread.loves}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-comment text-blue-400"></i> ${thread.comments}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-eye text-green-400"></i> ${thread.views}
+                  </span>
+                  <span class="ml-auto px-2 py-1 bg-${thread.categoryColor}-500/20 text-${thread.categoryColor}-400 text-xs font-bold rounded">${thread.category}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', threadHTML);
+        });
+
+        // Reset button state
+        btn.innerHTML = '<i class="fas fa-chevron-down mr-2"></i> LOAD MORE THREADS';
+        btn.disabled = false;
+      }, 1000);
+    });
+
+    // Category navigation
+    document.querySelectorAll('.category-item').forEach(item => {
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-brand">
         <nuxt-link to="/" class="navbar-item">
-          <img :alt="config.siteTitle" src="~/assets/images/logo.png" />
+          <img :alt="config.siteTitle" src="/images/logo.png" />
         </nuxt-link>
         <a :class="{ 'is-active': navbarActive }" class="navbar-burger burger" data-target="navbarBasic"
           @click="toggleNav">

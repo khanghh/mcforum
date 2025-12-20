@@ -10,7 +10,7 @@ const i18n = useI18n()
 const router = useRouter()
 
 function createTopic() {
-  router.push('/t/create')
+  router.push('/topics/create')
 }
 </script>
 

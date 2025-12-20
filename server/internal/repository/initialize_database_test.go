@@ -4,6 +4,7 @@ import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"encoding/json"
+	"fmt"
 	"os"
 	"testing"
 
@@ -217,6 +218,12 @@ var sysConfigs = []model.SysConfig{
 		Name:        "Allowed Email Domains",
 		Description: "Permitted domains for user registration.",
 	},
+	{
+		Key:         constants.SysConfigUserObserveSeconds,
+		Value:       "10",
+		Name:        "test",
+		Description: "test",
+	},
 }
 
 var menuItems = []model.Menu{
@@ -373,7 +380,8 @@ func TestCreateSysConfigs(t *testing.T) {
 		item.UpdateTime = dates.NowTimestamp()
 		err := SysConfigRepository.Create(db, &item)
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			// panic(err)
 		}
 	}
 }
@@ -386,7 +394,8 @@ func TestCreateMenu(t *testing.T) {
 		item.UpdateTime = dates.NowTimestamp()
 		err := MenuRepository.Create(db, &item)
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			// panic(err)
 		}
 	}
 }

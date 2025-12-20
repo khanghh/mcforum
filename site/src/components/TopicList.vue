@@ -25,12 +25,12 @@
         <div class="topic-content" :class="{ 'topic-tweet': topic.type === 1 }">
           <template v-if="topic.type === 0">
             <h1 class="topic-title">
-              <nuxt-link :to="`/t/${topic.slug}`">
+              <nuxt-link :to="`/topics/${topic.slug}`">
                 {{ topic.title }}
               </nuxt-link>
             </h1>
             <nuxt-link
-              :to="`/t/${topic.slug}`"
+              :to="`/topics/${topic.slug}`"
               class="topic-summary">
               {{ topic.summary }}
             </nuxt-link>
@@ -38,7 +38,7 @@
           <template v-if="topic.type === 1">
             <nuxt-link
               v-if="topic.content"
-              :to="`/t/${topic.slug}`"
+              :to="`/topics/${topic.slug}`"
               class="topic-summary">
               {{ topic.content }}
             </nuxt-link>
@@ -47,7 +47,7 @@
               class="topic-image-list">
               <li v-for="(image, index) in topic.imageList" :key="index">
                 <nuxt-link
-                  :to="`/t/${topic.slug}`"
+                  :to="`/topics/${topic.slug}`"
                   class="image-item">
                   <img :src="image.preview" />
                 </nuxt-link>
@@ -76,7 +76,7 @@
             </div>
           </div>
           <div class="topic-tags">
-            <nuxt-link v-if="topic.node" class="topic-tag" :to="`/f/${topic.node.slug}`" :alt="topic.node.name">
+            <nuxt-link v-if="topic.node" class="topic-tag" :to="`/forums/${topic.node.slug}`" :alt="topic.node.name">
               {{ topic.node.name }}
             </nuxt-link>
           </div>
@@ -128,7 +128,7 @@ async function like(topic) {
 }
 
 async function toTopicDetail(topicId) {
-  useLinkTo(`/t/${topicId}`)
+  useLinkTo(`/topics/${topicId}`)
 }
 </script>
 

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="main-body redirect">
         <div>
-          <img src="~/assets/images/logo.png" style="max-width: 100px" />
+          <img src="/images/logo.png" style="max-width: 100px" />
         </div>
         <div style="margin: 20px 0">
           <h2>

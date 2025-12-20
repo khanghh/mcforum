@@ -200,7 +200,7 @@ async function createTopic() {
     const topic = await useHttpPost('/api/topics', {
       body: postForm.value,
     })
-    router.push(`/t/${topic.slug}`)
+    router.push(`/topics/${topic.slug}`)
   } catch (e) {
     showCaptcha()
     useMsgError(e.message || e)

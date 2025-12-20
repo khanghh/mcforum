@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gamer Profile - GamersHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    }
+
+    h1,
+    h2,
+    h3,
+    .gaming-title {
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* Neon glow effects */
+    .neon-border {
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Gaming card hover effect */
+    .gaming-card {
+      background: linear-gradient(145deg, rgba(30, 30, 60, 0.8), rgba(20, 20, 40, 0.9));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    /* Animated gradient border */
+    @keyframes gradientBorder {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .animated-border {
+      background: linear-gradient(45deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6);
+      background-size: 300% 300%;
+      animation: gradientBorder 3s ease infinite;
+    }
+
+    /* Prevent layout shift on hover */
+    .hover-lift {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Scrollbar styling */
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+
+<body class="text-gray-100 flex flex-col min-h-screen">
+  <!-- Navigation Menu -->
+  <nav
+    class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+        <div>
+          <div
+            class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
+            GamersHub</div>
+          <div class="hidden md:block text-xs text-purple-300">Level Up Your Gaming</div>
+        </div>
+      </div>
+      <ul class="flex space-x-4 sm:space-x-6 text-gray-300 font-medium">
+        <li><a href="#" class="text-gray-300" aria-label="Home"><i
+              class="fas fa-home mr-1"></i> <span
+              class="hidden sm:inline">Home</span></a></li>
+        <li><a href="#" class="text-gray-300" aria-label="Games"><i
+              class="fas fa-trophy mr-1"></i> <span
+              class="hidden sm:inline">Games</span></a></li>
+        <li><a href="#" class="text-gray-300" aria-label="Messages"><i
+              class="fas fa-envelope mr-1"></i> <span
+              class="hidden sm:inline">Messages</span></a></li>
+        <li><a href="#" class="text-purple-400" aria-current="page" aria-label="Profile"><i
+              class="fas fa-user-circle mr-1"></i> <span
+              class="hidden sm:inline">Profile</span></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="flex-grow py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <!-- Cover Photo -->
+      <div class="relative">
+        <div
+          class="h-48 sm:h-64 bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 rounded-2xl overflow-hidden relative">
+          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80"
+            class="w-full h-full object-cover opacity-40" alt="Gaming Cover">
+          <!-- Animated overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent"></div>
+          <div class="absolute inset-0 animated-border opacity-20"></div>
+        </div>
+        <div class="absolute bottom-0 left-6 right-6 transform translate-y-1/2 flex items-end justify-between gap-4">
+          <div class="flex items-end gap-4">
+            <div class="relative">
+              <!-- Pro Frame Outer Ring -->
+              <div
+                class="absolute -inset-2 bg-gradient-to-r from-amber-500 via-purple-500 to-pink-500 rounded-full opacity-75 blur-sm animate-pulse">
+              </div>
+              <!-- Pro Frame Inner -->
+              <div class="relative animated-border p-1 rounded-full">
+                <!-- Frame Decorations -->
+                <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                  <div
+                    class="bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-0.5 rounded-full border-2 border-gray-900 flex items-center gap-1">
+                    <i class="fas fa-crown text-white text-xs"></i>
+                    <span class="text-white text-xs font-bold gaming-title">PRO</span>
+                  </div>
+                </div>
+                <!-- Corner Stars -->
+                <div class="absolute top-0 right-0 text-amber-400 text-xl transform translate-x-1 -translate-y-1">
+                  <i class="fas fa-star drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]"></i>
+                </div>
+                <div class="absolute bottom-0 left-0 text-purple-400 text-xl transform -translate-x-1 translate-y-1">
+                  <i class="fas fa-star drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]"></i>
+                </div>
+                <img
+                  src="https://images.unsplash.com/photo-1635241161466-541f065683ba?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA==&auto=format&fit=crop&q=50&w=1000"
+                  alt="Profile"
+                  class="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-gray-900 shadow-2xl relative z-10">
+                <div
+                  class="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-3 border-gray-900 flex items-center justify-center z-20">
+                  <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1
+                  class="text-2xl sm:text-3xl font-bold text-white gaming-title drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]">
+                  ShadowGamer</h1>
+                <span
+                  class="px-3 py-1 bg-gradient-to-r from-red-600 to-red-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
+                  <i class="fas fa-shield-alt"></i> ADMIN
+                </span>
+                <span
+                  class="px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg">LVL
+                  87</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center">
+                  <i class="fas fa-gamepad text-purple-400 text-sm"></i>
+                  <span class="text-sm text-purple-200 font-medium">Currently grinding ranked matches 🎮</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden md:flex items-center gap-2 mb-3">
+            <button
+              class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center neon-border gaming-title text-sm"
+              aria-label="Follow user">
+              <i class="fas fa-user-plus mr-2"></i> ADD FRIEND
+            </button>
+            <button
+              class="px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm"
+              aria-label="Send message">
+              <i class="fas fa-comments mr-2"></i> MESSAGE
+            </button>
+          </div>
+        </div>
+        <div class="absolute top-4 right-4 flex space-x-2">
+          <button
+            class="gaming-card text-purple-300 px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-sm"
+            aria-label="Settings">
+            <i class="fas fa-cog mr-1"></i> <span class="hidden sm:inline">Settings</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="mt-20 sm:mt-24 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: User Intro -->
+        <div class="lg:col-span-1">
+          <div class="gaming-card rounded-2xl p-6 lg:sticky lg:top-24">
+
+            <div>
+              <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
+                <i class="fas fa-user-ninja mr-2"></i> About
+              </h3>
+              <p class="mt-3 text-gray-300 text-sm leading-relaxed">Competitive FPS player and strategy game enthusiast.
+                Streaming on Twitch and creating gaming content. Always looking for new challenges and team
+                opportunities.</p>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
+                <i class="fas fa-info-circle mr-2"></i> Basic Info
+              </h3>
+              <div class="mt-3">
+                <div class="flex items-center justify-between p-2 rounded-lg">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-calendar-plus text-purple-400 text-sm"></i>
+                    <span class="text-sm font-bold text-gray-400">Joined</span>
+                  </div>
+                  <span class="text-sm font-bold gaming-title">Jan 15, 2018</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-clock text-blue-400 text-sm"></i>
+                    <span class="text-sm font-bold text-gray-400">Play Time</span>
+                  </div>
+                  <span class="text-sm font-bold gaming-title">2,847 hrs</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-venus-mars text-pink-400 text-sm"></i>
+                    <span class="text-sm font-bold text-gray-400">Gender</span>
+                  </div>
+                  <span class="text-sm font-bold gaming-title">Male</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-envelope text-green-400 text-sm"></i>
+                    <span class="text-sm font-bold text-gray-400">Email</span>
+                  </div>
+                  <span class="text-sm font-bold gaming-title truncate">shadow@gamer.com</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-cyan-400 text-sm"></i>
+                    <span class="text-sm font-bold text-gray-400">Location</span>
+                  </div>
+                  <span class="text-sm font-bold gaming-title">Los Angeles, CA</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-star text-indigo-400 text-sm"></i>
+                    <span class="text-sm font-bold text-gray-400">Points</span>
+                  </div>
+                  <span class="text-sm font-bold gaming-title">15,420</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
+                <i class="fas fa-chart-line mr-2"></i> Level Progress
+              </h3>
+              <div
+                class="mt-3 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl font-bold text-purple-300 gaming-title">87</span>
+                    <i class="fas fa-arrow-right text-purple-400 text-xs"></i>
+                    <span class="text-xl font-bold text-gray-400 gaming-title">88</span>
+                  </div>
+                  <span class="text-xs font-bold text-purple-300">75% to next level</span>
+                </div>
+                <div class="relative w-full h-3 bg-gray-700/50 rounded-full overflow-hidden">
+                  <div
+                    class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-full animate-pulse"
+                    style="width: 75%;"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-xs font-bold text-white drop-shadow-lg">3,750 / 5,000 XP</span>
+                  </div>
+                </div>
+                <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
+                  <span>1,250 XP needed</span>
+                  <span class="flex items-center gap-1">
+                    <i class="fas fa-fire text-orange-400"></i>
+                    5 day streak
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
+                <i class="fas fa-gamepad mr-2"></i> Main Games
+              </h3>
+              <div class="flex flex-wrap gap-2 mt-3">
+                <span
+                  class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                  <i class="fas fa-crosshairs mr-1.5"></i> Valorant
+                </span>
+                <span
+                  class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <i class="fas fa-chess mr-1.5"></i> LoL
+                </span>
+                <span
+                  class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                  <i class="fas fa-bomb mr-1.5"></i> CS:GO
+                </span>
+                <span
+                  class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-green-500/20 text-green-300 border border-green-500/30">
+                  <i class="fas fa-dragon mr-1.5"></i> WoW
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
+                <i class="fas fa-trophy mr-2"></i> Achievements
+              </h3>
+              <div class="mt-3 grid grid-cols-3 gap-2">
+                <div class="flex flex-col items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-crown text-white text-xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs font-bold text-amber-300 gaming-title">CHAMPION</p>
+                    <p class="text-xs text-gray-400">5 wins</p>
+                  </div>
+                </div>
+                <div
+                  class="flex flex-col items-center gap-2 p-3 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-star text-white text-xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs font-bold text-purple-300 gaming-title">LEGENDARY</p>
+                    <p class="text-xs text-gray-400">Max rank</p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-fire text-white text-xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs font-bold text-blue-300 gaming-title">STREAK</p>
+                    <p class="text-xs text-gray-400">100+ kills</p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-users text-white text-xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs font-bold text-green-300 gaming-title">LEADER</p>
+                    <p class="text-xs text-gray-400">500+ hrs</p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-skull-crossbones text-white text-xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs font-bold text-red-300 gaming-title">VETERAN</p>
+                    <p class="text-xs text-gray-400">1K battles</p>
+                  </div>
+                </div>
+                <div
+                  class="flex flex-col items-center gap-2 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/30">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-bolt text-white text-xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs font-bold text-indigo-300 gaming-title">SPEEDRUN</p>
+                    <p class="text-xs text-gray-400">Record</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Column: Content Tabs -->
+        <div class="lg:col-span-2">
+          <div class="gaming-card rounded-2xl overflow-hidden">
+            <!-- Tabs Navigation -->
+            <div class="border-b border-purple-500/20">
+              <div class="flex overflow-x-auto custom-scrollbar" role="tablist">
+                <button
+                  class="tab-btn flex items-center px-6 py-4 border-b-2 border-purple-500 font-bold text-purple-400 whitespace-nowrap gaming-title"
+                  data-tab="topics"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="topics">
+                  <i class="fas fa-fire mr-2"></i> POSTS (245)
+                </button>
+                <button
+                  class="tab-btn flex items-center px-6 py-4 text-gray-400 border-b-2 border-transparent font-bold whitespace-nowrap gaming-title"
+                  data-tab="comments"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="comments">
+                  <i class="fas fa-comments mr-2"></i> ACTIVITY (156)
+                </button>
+                <button
+                  class="tab-btn flex items-center px-6 py-4 text-gray-400 border-b-2 border-transparent font-bold whitespace-nowrap gaming-title"
+                  data-tab="following"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="following">
+                  <i class="fas fa-users mr-2"></i> FOLLOWING (892)
+                </button>
+                <button
+                  class="tab-btn flex items-center px-6 py-4 text-gray-400 border-b-2 border-transparent font-bold whitespace-nowrap gaming-title"
+                  data-tab="followers"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="followers">
+                  <i class="fas fa-star mr-2"></i> FANS (1.2K)
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+              <!-- Topics -->
+              <div class="tab-content" id="topics" role="tabpanel" aria-labelledby="topics-tab">
+                <div class="space-y-5">
+                  <!-- Announcement 1 -->
+                  <div
+                    class="gaming-card rounded-xl p-6 border-l-4 border-red-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                          <span
+                            class="px-3 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded-full border border-red-500/50">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> URGENT
+                          </span>
+                          <span class="text-xs text-purple-400 gaming-title">📌 PINNED</span>
+                        </div>
+                        <a href="#"
+                          class="text-xl font-bold text-purple-300 gaming-title block">
+                          🔧 SCHEDULED MAINTENANCE - SERVER DOWNTIME
+                        </a>
+                        <p class="mt-3 text-gray-300 leading-relaxed">Server will be offline on March 15th from 2:00 AM
+                          to 6:00 AM EST for critical updates. This includes new anti-cheat system, performance
+                          improvements, and bug fixes. Ranked matches will be disabled 1 hour before maintenance.</p>
+                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
+                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 8.2k
+                            views</span>
+                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 156
+                            replies</span>
+                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 423
+                            likes</span>
+                          <span class="flex items-center"><i class="fas fa-server mr-1.5 text-amber-400"></i> Server
+                            Updates • 2 hours ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Announcement 2 -->
+                  <div
+                    class="gaming-card rounded-xl p-6 border-l-4 border-amber-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                          <span
+                            class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full border border-amber-500/50">
+                            <i class="fas fa-trophy mr-1"></i> EVENT
+                          </span>
+                        </div>
+                        <a href="#"
+                          class="text-xl font-bold text-purple-300 gaming-title block">
+                          🎉 WEEKEND TOURNAMENT - $5000 PRIZE POOL
+                        </a>
+                        <p class="mt-3 text-gray-300 leading-relaxed">Join our biggest tournament yet! 5v5 competitive
+                          matches starting Saturday 6 PM EST. Registration open now - limited to 128 teams. First place:
+                          $2500, Second: $1500, Third: $1000. All participants get exclusive in-game items!</p>
+                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
+                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 12.5k
+                            views</span>
+                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 289
+                            replies</span>
+                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 1.2k
+                            likes</span>
+                          <span class="flex items-center"><i class="fas fa-calendar mr-1.5 text-pink-400"></i> Events •
+                            1 day ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Announcement 3 -->
+                  <div
+                    class="gaming-card rounded-xl p-6 border-l-4 border-green-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                          <span
+                            class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/50">
+                            <i class="fas fa-check-circle mr-1"></i> UPDATE
+                          </span>
+                        </div>
+                        <a href="#"
+                          class="text-xl font-bold text-purple-300 gaming-title block">
+                          ✨ NEW MAP RELEASED: "NEON DISTRICT"
+                        </a>
+                        <p class="mt-3 text-gray-300 leading-relaxed">Explore our brand new cyberpunk-themed map!
+                          Features dynamic lighting, destructible environments, and multiple tactical routes. Available
+                          now in Quick Play, will be added to competitive rotation after 1 week testing period. Download
+                          size: 2.3GB.</p>
+                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
+                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 15.8k
+                            views</span>
+                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 412
+                            replies</span>
+                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 2.1k
+                            likes</span>
+                          <span class="flex items-center"><i class="fas fa-map mr-1.5 text-cyan-400"></i> Game Updates •
+                            3 days ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Announcement 4 -->
+                  <div
+                    class="gaming-card rounded-xl p-6 border-l-4 border-blue-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                          <span
+                            class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/50">
+                            <i class="fas fa-info-circle mr-1"></i> INFO
+                          </span>
+                        </div>
+                        <a href="#"
+                          class="text-xl font-bold text-purple-300 gaming-title block">
+                          📋 SERVER RULES UPDATE & MODERATION POLICY
+                        </a>
+                        <p class="mt-3 text-gray-300 leading-relaxed">Updated rules regarding toxic behavior, team
+                          killing, and chat conduct. New automated moderation system is live. Appeals can be submitted
+                          through Discord. Please review the complete rules in #server-rules channel. Breaking rules may
+                          result in temporary or permanent ban.</p>
+                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
+                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 6.3k
+                            views</span>
+                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 187
+                            replies</span>
+                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 542
+                            likes</span>
+                          <span class="flex items-center"><i class="fas fa-shield-alt mr-1.5 text-indigo-400"></i> Rules
+                            & Policy • 1 week ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comments -->
+              <div class="tab-content hidden" id="comments">
+                <div class="space-y-5">
+                  <div class="gaming-card rounded-xl p-5 border-l-4 border-green-500/50">
+                    <div class="flex items-start gap-4">
+                      <i class="fas fa-user-shield text-2xl text-green-400 mt-1"></i>
+                      <div class="flex-1">
+                        <p class="text-gray-300 leading-relaxed">"Banned 3 players for toxic behavior and team killing.
+                          Zero tolerance policy in effect. Thanks to everyone reporting violations!"</p>
+                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
+                          <span class="flex items-center"><i class="fas fa-gavel mr-1.5 text-red-400"></i> Moderation
+                            Action</span>
+                          <span>•</span>
+                          <span>2 hours ago</span>
+                          <span>•</span>
+                          <span class="text-green-400 font-bold">+15 reputation</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gaming-card rounded-xl p-5 border-l-4 border-purple-500/50">
+                    <div class="flex items-start gap-4">
+                      <i class="fas fa-trophy text-2xl text-amber-400 mt-1"></i>
+                      <div class="flex-1">
+                        <p class="text-gray-300 leading-relaxed">"Congratulations to Team Phoenix for winning the
+                          tournament! Amazing performance. Prize money has been distributed. Next tournament in 2
+                          weeks!"</p>
+                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
+                          <span class="flex items-center"><i class="fas fa-medal mr-1.5 text-amber-400"></i> Tournament
+                            Winner Announcement</span>
+                          <span>•</span>
+                          <span>5 hours ago</span>
+                          <span>•</span>
+                          <span class="text-purple-400 font-bold">+42 reputation</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gaming-card rounded-xl p-5 border-l-4 border-blue-500/50">
+                    <div class="flex items-start gap-4">
+                      <i class="fas fa-server text-2xl text-blue-400 mt-1"></i>
+                      <div class="flex-1">
+                        <p class="text-gray-300 leading-relaxed">"Server lag issues have been resolved! Upgraded to
+                          better infrastructure. Please report if you still experience any issues. Happy gaming!"</p>
+                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
+                          <span class="flex items-center"><i class="fas fa-tools mr-1.5 text-blue-400"></i> Technical
+                            Update</span>
+                          <span>•</span>
+                          <span>1 day ago</span>
+                          <span>•</span>
+                          <span class="text-blue-400 font-bold">+28 reputation</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gaming-card rounded-xl p-5 border-l-4 border-pink-500/50">
+                    <div class="flex items-start gap-4">
+                      <i class="fas fa-gift text-2xl text-pink-400 mt-1"></i>
+                      <div class="flex-1">
+                        <p class="text-gray-300 leading-relaxed">"Thanks for the amazing support! Giving away 50 VIP
+                          passes to celebrate 10K members milestone. Check announcement channel for details!"</p>
+                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
+                          <span class="flex items-center"><i class="fas fa-gift mr-1.5 text-pink-400"></i> Community
+                            Giveaway</span>
+                          <span>•</span>
+                          <span>2 days ago</span>
+                          <span>•</span>
+                          <span class="text-pink-400 font-bold">+67 reputation</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Following -->
+              <div class="tab-content hidden" id="following">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div class="gaming-card rounded-xl p-4 ">
+                    <div class="flex items-center space-x-3">
+                      <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg"
+                          class="w-14 h-14 rounded-full border-2 border-purple-500/50" />
+                        <div
+                          class="absolute -bottom-1 -right-1 bg-red-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                          <i class="fas fa-shield-alt text-xs text-white"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-purple-300 truncate gaming-title">NightHawk</p>
+                        <p class="text-xs text-gray-400 truncate">Co-Admin • Level 92</p>
+                      </div>
+                      <button
+                        class="text-xs px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/50 font-bold">FOLLOWING</button>
+                    </div>
+                  </div>
+                  <div class="gaming-card rounded-xl p-4 ">
+                    <div class="flex items-center space-x-3">
+                      <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/45.jpg"
+                          class="w-14 h-14 rounded-full border-2 border-amber-500/50" />
+                        <div
+                          class="absolute -bottom-1 -right-1 bg-amber-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                          <i class="fas fa-star text-xs text-white"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-purple-300 truncate gaming-title">PhoenixQueen</p>
+                        <p class="text-xs text-gray-400 truncate">Head Moderator • Level 85</p>
+                      </div>
+                      <button
+                        class="text-xs px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/50 font-bold">FOLLOWING</button>
+                    </div>
+                  </div>
+                  <div class="gaming-card rounded-xl p-4 ">
+                    <div class="flex items-center space-x-3">
+                      <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/men/66.jpg"
+                          class="w-14 h-14 rounded-full border-2 border-blue-500/50" />
+                        <div
+                          class="absolute -bottom-1 -right-1 bg-blue-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                          <i class="fas fa-code text-xs text-white"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-purple-300 truncate gaming-title">CyberDev</p>
+                        <p class="text-xs text-gray-400 truncate">Lead Developer • Level 99</p>
+                      </div>
+                      <button
+                        class="text-xs px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/50 font-bold">FOLLOWING</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Followers -->
+              <div class="tab-content hidden" id="followers">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div class="gaming-card rounded-xl p-4 ">
+                    <div class="flex items-center space-x-3">
+                      <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/men/12.jpg"
+                          class="w-14 h-14 rounded-full border-2 border-green-500/50" />
+                        <div
+                          class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                          <span class="w-2 h-2 bg-white rounded-full"></span>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-purple-300 truncate gaming-title">ToxicSniper</p>
+                        <p class="text-xs text-gray-400 truncate">Pro Player • Level 78</p>
+                      </div>
+                      <button
+                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold">+
+                        ADD</button>
+                    </div>
+                  </div>
+                  <div class="gaming-card rounded-xl p-4 ">
+                    <div class="flex items-center space-x-3">
+                      <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/28.jpg"
+                          class="w-14 h-14 rounded-full border-2 border-green-500/50" />
+                        <div
+                          class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                          <span class="w-2 h-2 bg-white rounded-full"></span>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-purple-300 truncate gaming-title">MysticMage</p>
+                        <p class="text-xs text-gray-400 truncate">Content Creator • Level 82</p>
+                      </div>
+                      <button
+                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold">+
+                        ADD</button>
+                    </div>
+                  </div>
+                  <div class="gaming-card rounded-xl p-4 ">
+                    <div class="flex items-center space-x-3">
+                      <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/52.jpg"
+                          class="w-14 h-14 rounded-full border-2 border-green-500/50" />
+                        <div
+                          class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                          <span class="w-2 h-2 bg-white rounded-full"></span>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-purple-300 truncate gaming-title">QuantumGirl</p>
+                        <p class="text-xs text-gray-400 truncate">Streamer • Level 91</p>
+                      </div>
+                      <button
+                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold">+
+                        ADD</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer
+    class="bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-lg border-t border-purple-500/20 mt-10">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+      <p class="gaming-title">© 2025 GamersHub. All rights reserved. <span class="text-purple-400">Level Up!</span></p>
+      <div class="flex space-x-4 mt-3 sm:mt-0">
+        <a href="#" class="">About</a>
+        <a href="#" class="">Privacy</a>
+        <a href="#" class="">Terms</a>
+        <a href="#" class="">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-tab');
+
+        // Update tab states
+        tabs.forEach(t => {
+          t.classList.remove('border-purple-500', 'text-purple-400');
+          t.classList.add('text-gray-400', 'border-transparent');
+          t.setAttribute('aria-selected', 'false');
+        });
+
+        tab.classList.remove('text-gray-400', 'border-transparent');
+        tab.classList.add('border-purple-500', 'text-purple-400');
+        tab.setAttribute('aria-selected', 'true');
+
+        // Update content visibility
+        contents.forEach(c => c.classList.add('hidden'));
+        document.getElementById(target).classList.remove('hidden');
+      });
+    });
+  </script>
+</body>
+
+</html>

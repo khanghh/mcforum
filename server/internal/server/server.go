@@ -4,7 +4,6 @@ import (
 	"bbs-go/internal/config"
 	"bbs-go/internal/controller/api"
 	"bbs-go/internal/middleware"
-	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -60,10 +59,10 @@ func NewServer() {
 		apiRoute.Party("/topics").Handle(new(api.TopicController))
 		apiRoute.Party("/forums").Handle(new(api.ForumController))
 		apiRoute.Party("/comments").Handle(new(api.CommentController))
-		// apiRoute.Party("/tag").Handle(new(api.TagController))
-		// apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
-		// apiRoute.Party("/like").Handle(new(api.LikeController))
-		// apiRoute.Party("/checkin").Handle(new(api.CheckinController))
+		apiRoute.Party("/tag").Handle(new(api.TagController))
+		apiRoute.Party("/favorite").Handle(new(api.FavoriteController))
+		apiRoute.Party("/like").Handle(new(api.LikeController))
+		apiRoute.Party("/checkin").Handle(new(api.CheckinController))
 		apiRoute.Party("/config").Handle(new(api.ConfigController))
 		apiRoute.Party("/upload").Handle(new(api.UploadController))
 		apiRoute.Party("/link").Handle(new(api.LinkController))
@@ -93,12 +92,6 @@ func NewServer() {
 	// 	m.Party("/role").Handle(new(admin.RoleController))
 	// 	m.Party("/menu").Handle(new(admin.MenuController))
 	// })
-
-	for _, route := range app.GetRoutes() {
-		if route.Method != iris.MethodOptions {
-			fmt.Printf("%s\t\t%s\n", route.Method, route.Path)
-		}
-	}
 
 	if err := app.Listen(":"+conf.Port,
 		iris.WithConfiguration(iris.Configuration{

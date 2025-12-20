@@ -5,7 +5,7 @@
       <div class="container">
         <div class="error">
           <div>
-            <img src="~/assets/images/logo.png" style="max-width: 100px" />
+            <img src="/images/logo.png" style="max-width: 100px" />
           </div>
           <div class="description">
             <div v-if="error">

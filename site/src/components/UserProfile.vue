@@ -39,7 +39,6 @@
 </template>
 
 <script setup>
-import defaultUserBg from '~/assets/images/default-user-bg.jpg'
 
 const i18n = useI18n()
 const props = defineProps({
@@ -64,7 +63,7 @@ const backgroundImage = computed(() => {
   if (localUser.value.smallBackgroundImage) {
     return localUser.value.smallBackgroundImage
   }
-  return defaultUserBg
+  return '/images/default-user-bg.jpg'
 })
 
 async function uploadBackground(e) {

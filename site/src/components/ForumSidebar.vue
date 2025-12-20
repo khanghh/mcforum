@@ -18,7 +18,6 @@
 </template>
 
 <script setup>
-import iconNode from '~/assets/images/node.png'
 
 const route = useRoute()
 const slug = route.params.slug || 'whats-new'
@@ -28,11 +27,11 @@ const { data: forums } = await useAsyncData('forums', () =>
 )
 
 function forumLogo(forum) {
-  return forum.logo || iconNode
+  return forum.logo || '/images/node.png'
 }
 
 function forumUrl(slug) {
-  return `/f/${slug}`
+  return `/forums/${slug}`
 }
 </script>
 

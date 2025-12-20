@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@element-plus/nuxt',
+    '@pinia/nuxt',
     ['nuxt-lazy-load', {
       images: true,
       videos: true,
@@ -75,7 +76,7 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       '/api/**': {
-        proxy: `${import.meta.env.SERVER_URL}/api/**`,
+        proxy: `http://localhost:3001/api/**`,
       },
       '/admin/**': {
         proxy: `${import.meta.env.SERVER_URL}/admin/**`,

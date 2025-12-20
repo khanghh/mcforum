@@ -12,7 +12,7 @@
         </div>
         <div class="gold-info-box">
           <div v-if="isLogin">
-            <span class="gold-info">{{ user.score || 0 }}</span>
+            <span class="gold-info">{{ user?.score || 0 }}</span>
           </div>
           <div v-else>
             <span class="gold-info">0</span>

@@ -49,7 +49,7 @@
           <div class="topic-tags">
             <nuxt-link
               v-if="topic.forum"
-              :to="`/f/${topic.forum.slug}`"
+              :to="`/forums/${topic.forum.slug}`"
               class="topic-tag">
               {{ topic.forum.name }}
             </nuxt-link>
@@ -176,7 +176,7 @@ async function onSwitchEditMode() {
     }).then((tmp) => {
       topic.value.content = tmp.content
       topic.value.editing = false
-      useLinkTo(`/t/${tmp.slug}`)
+      useLinkTo(`/topics/${tmp.slug}`)
     }).catch((err) => {
       alert(err)
     })

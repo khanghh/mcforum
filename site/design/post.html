@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MineCraft Forums - Post</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    }
+
+    h1,
+    h2,
+    h3,
+    .gaming-title {
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* Neon glow effects */
+    .neon-border {
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Gaming card */
+    .gaming-card {
+      background: linear-gradient(145deg, rgba(30, 30, 60, 0.8), rgba(20, 20, 40, 0.9));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    /* Animated gradient border */
+    @keyframes gradientBorder {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .animated-border {
+      background: linear-gradient(45deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6);
+      background-size: 300% 300%;
+      animation: gradientBorder 3s ease infinite;
+    }
+
+    /* Minecraft specific */
+    .pixelated {
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+
+    /* Scrollbar styling */
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(30, 30, 60, 0.5);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #8b5cf6, #ec4899);
+      border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #a78bfa, #f472b6);
+    }
+
+    /* Comment styling */
+    .comment-reply {
+      border-left: 3px solid rgba(139, 92, 246, 0.5);
+      padding-left: 1rem;
+      margin-left: 1rem;
+    }
+
+    /* Vote buttons */
+    .vote-btn {
+      transition: all 0.2s ease;
+    }
+
+    .vote-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .vote-btn.upvote:hover {
+      color: #10b981;
+    }
+
+    .vote-btn.downvote:hover {
+      color: #ef4444;
+    }
+
+    /* Content images */
+    .content-img {
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .content-img:hover {
+      transform: scale(1.02);
+    }
+
+    /* Thread stats */
+    .thread-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .thread-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="text-gray-100 flex flex-col min-h-screen custom-scrollbar">
+  <!-- Navigation Menu -->
+  <nav
+    class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+        <div>
+          <div
+            class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
+            MineCraft Forums
+          </div>
+          <div class="hidden md:block text-xs text-purple-300">Community & Discussions</div>
+        </div>
+      </div>
+      <ul class="flex space-x-4 sm:space-x-6 text-gray-300 font-medium">
+        <li><a href="#" class="text-gray-300"><i class="fas fa-home mr-1"></i> <span
+              class="hidden sm:inline">Forums</span></a></li>
+        <li><a href="#" class="text-gray-300"><i class="fas fa-cube mr-1"></i> <span
+              class="hidden sm:inline">Servers</span></a></li>
+        <li><a href="#" class="text-purple-400" aria-current="page"><i class="fas fa-envelope mr-1"></i> <span
+              class="hidden sm:inline">Messages</span></a></li>
+        <li><a href="#" class="text-gray-300"><i class="fas fa-user-circle mr-1"></i> <span
+              class="hidden sm:inline">Profile</span></a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+
+  <!-- Main Content -->
+  <main class="flex-grow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <!-- Breadcrumb -->
+      <div class="mb-6">
+        <nav class="flex text-sm text-gray-400">
+          <a href="#" class="hover:text-purple-400 transition-colors">Forums</a>
+          <span class="mx-2">›</span>
+          <a href="#" class="hover:text-purple-400 transition-colors">Building &amp; Creative</a>
+          <span class="mx-2">›</span>
+          <span class="text-purple-400">Just finished my mega build after 6 months!</span>
+        </nav>
+      </div>
+      <!-- Original Post -->
+      <div class="gaming-card rounded-xl p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <img src="https://minotar.net/helm/BuildMaster/40.png"
+            class="w-12 h-12 pixelated rounded border-2 border-purple-500/50 flex-shrink-0" />
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-bold text-purple-300 gaming-title text-lg">BuildMaster</span>
+              <span class="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+              <span class="text-sm text-gray-500">Posted 25 minutes ago</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
+              <span class="flex items-center gap-1">
+                <i class="fas fa-medal text-amber-400"></i> Top Contributor
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="fas fa-cube text-green-400"></i> 42 Builds
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="text-3xl font-bold mb-6 gaming-title">🏰 Just finished my mega build after 6 months!</h1>
+
+        <div class="prose prose-invert max-w-none mb-6">
+          <p class="text-gray-300 mb-4">After exactly 187 days and over 500 hours of work, I've finally completed my
+            massive medieval city project! This has been my passion project since the pandemic started, and I'm so
+            excited to share it with all of you.</p>
+
+          <p class="text-gray-300 mb-4">The city features:</p>
+          <ul class="text-gray-300 mb-4 list-disc list-inside space-y-2">
+            <li>A fully walled city with 4 distinct districts</li>
+            <li>Over 150 unique buildings including shops, homes, and workshops</li>
+            <li>A grand castle with throne room, barracks, and secret passages</li>
+            <li>Functional redstone mechanisms for gates and lighting</li>
+            <li>Custom terrain with rivers, forests, and mountains</li>
+            <li>An underground network of catacombs and dungeons</li>
+          </ul>
+
+          <p class="text-gray-300 mb-6">I've included a world download link at the bottom of this post for anyone who
+            wants to explore it themselves. I'd love to hear your feedback and suggestions!</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+            <img
+              src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              alt="Medieval Castle" class="content-img w-full h-48 object-cover rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              alt="City Overview" class="content-img w-full h-48 object-cover rounded-lg">
+          </div>
+
+          <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 my-6">
+            <h3 class="text-lg font-bold text-purple-300 mb-2 gaming-title">📥 World Download</h3>
+            <p class="text-gray-300 mb-3">You can download the world file here: <a href="#"
+                class="text-purple-400 hover:underline">Medieval_City_BuildMaster_v1.0.zip</a></p>
+            <p class="text-sm text-gray-400">Requirements: Minecraft 1.20.4, 8GB RAM recommended for optimal
+              performance
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
+          <div class="flex items-center gap-4">
+            <button class="vote-btn upvote flex items-center gap-1 text-gray-400 hover:text-green-400">
+              <i class="fas fa-arrow-up"></i>
+              <span>456</span>
+            </button>
+            <button class="vote-btn downvote flex items-center gap-1 text-gray-400 hover:text-red-400">
+              <i class="fas fa-arrow-down"></i>
+              <span>3</span>
+            </button>
+            <button class="flex items-center gap-1 text-gray-400 hover:text-blue-400">
+              <i class="far fa-comment"></i>
+              <span>128 Comments</span>
+            </button>
+            <button class="flex items-center gap-1 text-gray-400 hover:text-purple-400">
+              <i class="far fa-bookmark"></i>
+              <span>Save</span>
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="text-gray-400 hover:text-purple-400">
+              <i class="fas fa-share"></i>
+            </button>
+            <button class="text-gray-400 hover:text-red-400">
+              <i class="fas fa-flag"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="gaming-card rounded-xl p-6">
+        <h2 class="text-2xl font-bold mb-6 gaming-title flex items-center">
+          <i class="fas fa-comments mr-3 text-blue-400"></i> Comments (128)
+        </h2>
+
+        <!-- Comment Form -->
+        <div class="mb-8 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+          <h3 class="text-lg font-bold text-purple-300 mb-3 gaming-title">Post a Comment</h3>
+          <textarea placeholder="Share your thoughts..."
+            class="w-full bg-gray-900/50 border border-purple-500/30 rounded-lg p-4 text-white mb-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            rows="4"></textarea>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2 text-sm text-gray-400">
+              <button class="hover:text-purple-400">
+                <i class="fas fa-image"></i>
+              </button>
+              <button class="hover:text-purple-400">
+                <i class="fas fa-link"></i>
+              </button>
+              <button class="hover:text-purple-400">
+                <i class="fas fa-code"></i>
+              </button>
+            </div>
+            <button
+              class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold gaming-title hover:scale-105 transition-transform">
+              Post Comment
+            </button>
+          </div>
+        </div>
+
+        <!-- Comments List -->
+        <div class="space-y-6">
+          <!-- Comment 1 -->
+          <div class="border-b border-purple-500/20 pb-6">
+            <div class="flex items-start gap-3 mb-3">
+              <img src="https://minotar.net/helm/RedstoneKing/32.png"
+                class="w-10 h-10 pixelated rounded border-2 border-purple-500/50 flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <span class="font-bold text-purple-300 gaming-title">RedstoneKing</span>
+                  <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded">EXPERT</span>
+                  <span class="text-xs text-gray-500">22 minutes ago</span>
+                </div>
+                <p class="text-gray-300 mb-3">This is absolutely incredible! The attention to detail in the castle
+                  interiors is mind-blowing. How long did the throne room alone take you?</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400">
+                  <button class="vote-btn upvote flex items-center gap-1 hover:text-green-400">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>42</span>
+                  </button>
+                  <button class="vote-btn downvote flex items-center gap-1 hover:text-red-400">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>1</span>
+                  </button>
+                  <button class="flex items-center gap-1 hover:text-blue-400 reply-btn">
+                    <i class="far fa-comment"></i>
+                    <span>Reply</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reply to Comment 1 -->
+            <div class="comment-reply mt-4">
+              <div class="flex items-start gap-3 mb-3">
+                <img src="https://minotar.net/helm/BuildMaster/32.png"
+                  class="w-8 h-8 pixelated rounded border-2 border-purple-500/50 flex-shrink-0 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap mb-1">
+                    <span class="font-bold text-purple-300 gaming-title text-sm">BuildMaster</span>
+                    <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+                    <span class="text-xs text-gray-500">18 minutes ago</span>
+                  </div>
+                  <p class="text-gray-300 mb-3 text-sm">Thanks! The throne room took about 3 weeks. The hardest part
+                    was
+                    getting the chandelier design right with the limited block palette.</p>
+                  <div class="flex items-center gap-4 text-xs text-gray-400">
+                    <button class="vote-btn upvote flex items-center gap-1 hover:text-green-400">
+                      <i class="fas fa-arrow-up"></i>
+                      <span>24</span>
+                    </button>
+                    <button class="vote-btn downvote flex items-center gap-1 hover:text-red-400">
+                      <i class="fas fa-arrow-down"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comment 2 -->
+          <div class="border-b border-purple-500/20 pb-6">
+            <div class="flex items-start gap-3 mb-3">
+              <img src="https://minotar.net/helm/CreativePlayer/32.png"
+                class="w-10 h-10 pixelated rounded border-2 border-purple-500/50 flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <span class="font-bold text-purple-300 gaming-title">CreativePlayer</span>
+                  <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+                  <span class="text-xs text-gray-500">35 minutes ago</span>
+                </div>
+                <p class="text-gray-300 mb-3">The scale of this is just insane! I especially love the market district
+                  with all the unique shop designs. Did you use any mods for the terrain generation or is this all
+                  vanilla?</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400">
+                  <button class="vote-btn upvote flex items-center gap-1 hover:text-green-400">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>38</span>
+                  </button>
+                  <button class="vote-btn downvote flex items-center gap-1 hover:text-red-400">
+                    <i class="fas fa-arrow-down"></i>
+                  </button>
+                  <button class="flex items-center gap-1 hover:text-blue-400 reply-btn">
+                    <i class="far fa-comment"></i>
+                    <span>Reply</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comment 3 -->
+          <div class="border-b border-purple-500/20 pb-6">
+            <div class="flex items-start gap-3 mb-3">
+              <img src="https://minotar.net/helm/NoobBuilder/32.png"
+                class="w-10 h-10 pixelated rounded border-2 border-purple-500/50 flex-shrink-0 mt-1" />
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <span class="font-bold text-purple-300 gaming-title">NoobBuilder</span>
+                  <span class="px-2 py-0.5 bg-gray-500/20 text-gray-400 text-xs font-bold rounded">MEMBER</span>
+                  <span class="text-xs text-gray-500">1 hour ago</span>
+                </div>
+                <p class="text-gray-300 mb-3">As a beginner builder, this is both inspiring and intimidating! Any tips
+                  for someone just starting with large-scale projects?</p>
+                <div class="flex items-center gap-4 text-sm text-gray-400">
+                  <button class="vote-btn upvote flex items-center gap-1 hover:text-green-400">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>29</span>
+                  </button>
+                  <button class="vote-btn downvote flex items-center gap-1 hover:text-red-400">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>2</span>
+                  </button>
+                  <button class="flex items-center gap-1 hover:text-blue-400 reply-btn">
+                    <i class="far fa-comment"></i>
+                    <span>Reply</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reply to Comment 3 -->
+            <div class="comment-reply mt-4">
+              <div class="flex items-start gap-3 mb-3">
+                <img src="https://minotar.net/helm/BuildMaster/32.png"
+                  class="w-8 h-8 pixelated rounded border-2 border-purple-500/50 flex-shrink-0 mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap mb-1">
+                    <span class="font-bold text-purple-300 gaming-title text-sm">BuildMaster</span>
+                    <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">PRO</span>
+                    <span class="text-xs text-gray-500">45 minutes ago</span>
+                  </div>
+                  <p class="text-gray-300 mb-3 text-sm">Start with planning! I use graph paper to sketch out districts
+                    and important buildings first. Also, break the project into smaller sections so it doesn't feel
+                    overwhelming. Most importantly, have fun with it!</p>
+                  <div class="flex items-center gap-4 text-xs text-gray-400">
+                    <button class="vote-btn upvote flex items-center gap-1 hover:text-green-400">
+                      <i class="fas fa-arrow-up"></i>
+                      <span>31</span>
+                    </button>
+                    <button class="vote-btn downvote flex items-center gap-1 hover:text-red-400">
+                      <i class="fas fa-arrow-down"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Load More Comments Button -->
+          <div class="text-center pt-4">
+            <button
+              class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold gaming-title neon-border hover:scale-105 transition-transform">
+              <i class="fas fa-chevron-down mr-2"></i> LOAD MORE COMMENTS
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <!-- Main Footer Content -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <!-- Brand Section -->
+        <div class="space-y-4">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+            <div>
+              <h3
+                class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
+                MineCraft Forums
+              </h3>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm">
+            The ultimate community for Minecraft players. Share builds, discover mods, and connect with fellow gamers.
+          </p>
+          <div class="flex space-x-3">
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-discord"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+              <i class="fab fa-twitch"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Forums</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Leaderboards</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Server Status</a></li>
+          </ul>
+        </div>
+
+        <!-- Resources -->
+        <div>
+          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Download Packs</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Help Center</a></li>
+          </ul>
+        </div>
+
+        <!-- Community Stats -->
+        <div>
+          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">SERVER STATS</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li><span class="font-semibold text-gray-400">Total Visits:</span> 1,284,721</li>
+            <li><span class="font-semibold text-gray-400">Online:</span> 2,413 Members and 8 Guest</li>
+            <li><span class="font-semibold text-gray-400">New Member:</span> <a href="#"
+                class="text-pink-400 hover:underline">BlockCrafter99</a></li>
+            <li><span class="font-semibold text-gray-400">Server Time:</span> Oct 22, 2025, 11:53AM</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 border-t border-purple-500/20">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="text-gray-400 text-sm gaming-title">
+            © 2025 MineCraft Forums. <span class="text-purple-400">Build Together!</span>
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+            <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+            <span class="text-gray-600">•</span>
+            <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+            <span class="text-gray-600">•</span>
+            <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
+            <span class="text-gray-600">•</span>
+            <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple script for reply functionality
+    document.querySelectorAll('.reply-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const commentBox = document.querySelector('textarea');
+        const username = this.closest('.flex.items-start').querySelector('.gaming-title').textContent;
+        commentBox.value = `@${username} `;
+        commentBox.focus();
+      });
+    });
+
+    // Vote functionality
+    document.querySelectorAll('.vote-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const isUpvote = this.classList.contains('upvote');
+        const countElement = this.querySelector('span');
+
+        if (countElement) {
+          let count = parseInt(countElement.textContent);
+          if (isUpvote) {
+            count++;
+            this.style.color = '#10b981';
+          } else {
+            count--;
+            this.style.color = '#ef4444';
+          }
+          countElement.textContent = count;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

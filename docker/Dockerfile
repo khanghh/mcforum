@@ -41,7 +41,7 @@ RUN pnpm build:docker
 # run
 FROM node:20-alpine
 
-ENV APP_HOME=/app/bbs-go
+ENV APP_HOME=/app
 WORKDIR "$APP_HOME"
 
 COPY --from=server_builder /code/bbs-go/server/bbs-go ./server/bbs-go
@@ -51,9 +51,9 @@ COPY --from=site_builder /code/bbs-go/site/.output ./site/.output
 COPY --from=site_builder /code/bbs-go/site/node_modules ./site/node_modules
 COPY --from=admin_builder /code/bbs-go/admin/dist ./server/admin
 
-COPY ./start.sh ${APP_HOME}/start.sh
-RUN chmod +x ${APP_HOME}/start.sh
+COPY ./start.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-EXPOSE 8082 3000
+EXPOSE 8080
 
-CMD ["./start.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
