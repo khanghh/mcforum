@@ -5,11 +5,10 @@
 @import "./highlightjs";
 @import "./nav";
 @import "./signin";
-@import "./bulma.scss";
 
 :root {
-    --animate-duration: .3s;
-    --animate-delay: 0;
+  --animate-duration: .3s;
+  --animate-delay: 0;
 }
 
 @import 'animate.css/animate.min.css';

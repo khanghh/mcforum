@@ -4,13 +4,13 @@
       <div class="left-container">
         <div class="main-content">
           <search-topics-nav />
-          <load-more-async
+          <LoadMoreAsync
             ref="loadMore"
             v-slot="{ items }"
             url="/api/search/topic"
             :params="params">
             <search-topic-list :results="items" />
-          </load-more-async>
+          </LoadMoreAsync>
         </div>
       </div>
       <div class="right-container">

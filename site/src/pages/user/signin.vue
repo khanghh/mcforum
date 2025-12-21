@@ -137,4 +137,6 @@ function toSignup() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import "~/assets/css/bulma.scss";
+</style>

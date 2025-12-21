@@ -31,6 +31,7 @@ const (
 	SysConfigCreateCommentEmailVerified = "createCommentEmailVerified" // 发话题需要邮箱认证
 	SysConfigModules                    = "modules"                    // 功能模块
 	SysConfigEmailWhitelist             = "emailWhitelist"             // 邮箱白名单
+	SysConfigMenuItems                  = "menuItems"                  // 菜单配置
 )
 
 // EntityType

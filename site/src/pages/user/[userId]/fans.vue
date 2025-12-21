@@ -29,12 +29,12 @@
             </div>
 
             <div>
-              <load-more-async
+              <LoadMoreAsync
                 v-slot="{ items }"
                 url="/api/fans/fans"
                 :params="{ userId: user.id }">
                 <user-follow-list :users="items" />
-              </load-more-async>
+              </LoadMoreAsync>
             </div>
           </div>
         </div>

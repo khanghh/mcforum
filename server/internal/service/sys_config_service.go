@@ -144,6 +144,17 @@ func (s *sysConfigService) GetSiteNofitication() string {
 	return cache.SysConfigCache.GetValue(constants.SysConfigSiteNotification)
 }
 
+func (s *sysConfigService) GetMenuItems() []model.MenuItem {
+	str := cache.SysConfigCache.GetValue(constants.SysConfigMenuItems)
+	var menuItems []model.MenuItem
+	if strs.IsNotBlank(str) {
+		if err := jsons.Parse(str, &menuItems); err != nil {
+			slog.Error("Failed to get system config", "key", constants.SysConfigMenuItems, "error", err)
+		}
+	}
+	return menuItems
+}
+
 func (s *sysConfigService) GetRecommendTags() []string {
 	str := cache.SysConfigCache.GetValue(constants.SysConfigRecommendTags)
 	var recommendTags []string

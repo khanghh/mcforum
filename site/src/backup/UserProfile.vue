@@ -39,7 +39,6 @@
 </template>
 
 <script setup>
-
 const i18n = useI18n()
 const props = defineProps({
   user: {
@@ -89,8 +88,7 @@ async function uploadBackground(e) {
     localUser.value = await userStore.fetchCurrent()
 
     useMsgSuccess(i18n.t('message.set_cover_photo_success'))
-  }
-  catch (e) {
+  } catch (e) {
     useMsgError(e.message || e)
     console.error(e)
   }

@@ -20,8 +20,7 @@ function switchColorMode() {
   const colorMode = useColorMode()
   if (colorMode.value === 'dark') {
     colorMode.preference = 'light'
-  }
-  else {
+  } else {
     colorMode.preference = 'dark'
   }
 }

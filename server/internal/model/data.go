@@ -6,6 +6,12 @@ type ActionLink struct {
 	Url   string `json:"url"`
 }
 
+type MenuItem struct {
+	Name    string `json:"name"`
+	URLPath string `json:"urlPath"`
+	LogoURL string `json:"logoUrl,omitempty"`
+}
+
 // 积分配置
 type ScoreConfig struct {
 	PostTopicScore   int `json:"postTopicScore"`   // 发帖获得积分

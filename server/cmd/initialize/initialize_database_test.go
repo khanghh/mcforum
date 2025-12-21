@@ -1,8 +1,9 @@
-package repository
+package main
 
 import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
+	"bbs-go/internal/repository"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -102,6 +103,24 @@ var siteNavs = jsonMarshal([]model.ActionLink{
 		Url:   "/articles",
 	},
 })
+
+var forumMenuItems = []model.MenuItem{
+	{
+		Name:    "Thông báo",
+		URLPath: "/forums/announcement",
+		LogoURL: "/icons/announcement.svg",
+	},
+	{
+		Name:    "Thảo luận",
+		URLPath: "/forums/discussion",
+		LogoURL: "/icons/discussion.svg",
+	},
+	{
+		Name:    "Hỗ trợ",
+		URLPath: "/forums/support",
+		LogoURL: "/icons/support.svg",
+	},
+}
 
 var sysConfigs = []model.SysConfig{
 	{
@@ -219,6 +238,12 @@ var sysConfigs = []model.SysConfig{
 		Description: "Permitted domains for user registration.",
 	},
 	{
+		Key:         constants.SysConfigMenuItems,
+		Value:       jsonMarshal(forumMenuItems),
+		Name:        "Menu Items",
+		Description: "Configuration for site menu items.",
+	},
+	{
 		Key:         constants.SysConfigUserObserveSeconds,
 		Value:       "10",
 		Name:        "test",
@@ -226,7 +251,86 @@ var sysConfigs = []model.SysConfig{
 	},
 }
 
-var menuItems = []model.Menu{
+// map from roleId to array of menuItemId
+var roleMenuConfig = map[int][]int{
+	1: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
+	2: {1, 2, 3, 4, 5, 6, 7, 8, 9},
+}
+
+func init() {
+	connStr := os.Getenv("DB_URL")
+	var err error
+	db, err = gorm.Open(mysql.Open(connStr), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "t_",
+			SingularTable: true,
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestCreateUser(t *testing.T) {
+	adminUser.Id = 1
+	adminUser.CreateTime = dates.NowTimestamp()
+	adminUser.UpdateTime = dates.NowTimestamp()
+	err := repository.UserRepository.Create(db, &adminUser)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestCreateRoles(t *testing.T) {
+	for idx, item := range roles {
+		item["sort_no"] = idx
+		item["create_time"] = dates.NowTimestamp()
+		item["update_time"] = dates.NowTimestamp()
+		tx := db.Model(&model.Role{}).Create(item)
+		if tx.Error != nil {
+			panic(tx.Error)
+		}
+	}
+}
+
+func TestCreateUserRole(t *testing.T) {
+	err := repository.UserRoleRepository.Create(db, &model.UserRole{
+		Model:      model.Model{1},
+		UserId:     adminUser.Id,
+		RoleId:     1,
+		CreateTime: dates.NowTimestamp(),
+	})
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestCreateForums(t *testing.T) {
+	for idx, item := range forums {
+		item.Id = int64(idx + 1)
+		item.SortNo = idx
+		item.CreateTime = dates.NowTimestamp()
+		err := repository.ForumRepository.Create(db, &item)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func TestCreateSysConfigs(t *testing.T) {
+	for idx, item := range sysConfigs {
+		item.Id = int64(idx + 1)
+		item.CreateTime = dates.NowTimestamp()
+		item.UpdateTime = dates.NowTimestamp()
+		err := repository.SysConfigRepository.Create(db, &item)
+		if err != nil {
+			fmt.Println(err)
+			// panic(err)
+		}
+	}
+}
+
+var adminMenuItems = []model.Menu{
 	{
 		Title: "Dashboard",
 		Name:  "Dashboard",
@@ -307,92 +411,13 @@ var menuItems = []model.Menu{
 	},
 }
 
-// map from roleId to array of menuItemId
-var roleMenuConfig = map[int][]int{
-	1: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
-	2: {1, 2, 3, 4, 5, 6, 7, 8, 9},
-}
-
-func init() {
-	connStr := os.Getenv("DB_URL")
-	var err error
-	db, err = gorm.Open(mysql.Open(connStr), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "t_",
-			SingularTable: true,
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-}
-
-func TestCreateUser(t *testing.T) {
-	adminUser.Id = 1
-	adminUser.CreateTime = dates.NowTimestamp()
-	adminUser.UpdateTime = dates.NowTimestamp()
-	err := UserRepository.Create(db, &adminUser)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func TestCreateRoles(t *testing.T) {
-	for idx, item := range roles {
-		item["sort_no"] = idx
-		item["create_time"] = dates.NowTimestamp()
-		item["update_time"] = dates.NowTimestamp()
-		tx := db.Model(&model.Role{}).Create(item)
-		if tx.Error != nil {
-			panic(tx.Error)
-		}
-	}
-}
-
-func TestCreateUserRole(t *testing.T) {
-	err := UserRoleRepository.Create(db, &model.UserRole{
-		Model:      model.Model{1},
-		UserId:     adminUser.Id,
-		RoleId:     1,
-		CreateTime: dates.NowTimestamp(),
-	})
-	if err != nil {
-		panic(err)
-	}
-}
-
-func TestCreateForums(t *testing.T) {
-	for idx, item := range forums {
-		item.Id = int64(idx + 1)
-		item.SortNo = idx
-		item.CreateTime = dates.NowTimestamp()
-		err := ForumRepository.Create(db, &item)
-		if err != nil {
-			panic(err)
-		}
-	}
-}
-
-func TestCreateSysConfigs(t *testing.T) {
-	for idx, item := range sysConfigs {
-		item.Id = int64(idx + 1)
-		item.CreateTime = dates.NowTimestamp()
-		item.UpdateTime = dates.NowTimestamp()
-		err := SysConfigRepository.Create(db, &item)
-		if err != nil {
-			fmt.Println(err)
-			// panic(err)
-		}
-	}
-}
-
 func TestCreateMenu(t *testing.T) {
-	for idx, item := range menuItems {
+	for idx, item := range adminMenuItems {
 		item.Id = int64(idx + 1)
 		item.SortNo = idx
 		item.CreateTime = dates.NowTimestamp()
 		item.UpdateTime = dates.NowTimestamp()
-		err := MenuRepository.Create(db, &item)
+		err := repository.MenuRepository.Create(db, &item)
 		if err != nil {
 			fmt.Println(err)
 			// panic(err)
@@ -410,7 +435,7 @@ func TestCreateRoleMenu(t *testing.T) {
 				MenuId:     int64(menuId),
 				CreateTime: dates.NowTimestamp(),
 			}
-			err := RoleMenuRepository.Create(db, &item)
+			err := repository.RoleMenuRepository.Create(db, &item)
 			if err != nil {
 				panic(err)
 			}
@@ -423,13 +448,28 @@ func TestInitializeDatabase(t *testing.T) {
 	if err := db.AutoMigrate(model.Models...); nil != err {
 		panic(err)
 	}
+	fmt.Println(";")
 
-	TestCreateUser(t)
-	TestCreateRoles(t)
-	TestCreateUserRole(t)
-	TestCreateForums(t)
-	TestCreateSysConfigs(t)
-	TestCreateMenu(t)
-	TestCreateRoleMenu(t)
+	// TestCreateUser(t)
+	// TestCreateRoles(t)
+	// TestCreateUserRole(t)
+	// TestCreateForums(t)
+	// TestCreateSysConfigs(t)
+	// TestCreateMenu(t)
+	// TestCreateRoleMenu(t)
 
+}
+
+func TestSetForumMenu(t *testing.T) {
+	var menuConfig model.SysConfig
+	for _, item := range sysConfigs {
+		if item.Key == constants.SysConfigMenuItems {
+			menuConfig = item
+			break
+		}
+	}
+	err := repository.SysConfigRepository.Update(db, &menuConfig)
+	if err != nil {
+		panic(err)
+	}
 }

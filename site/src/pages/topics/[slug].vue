@@ -1,108 +1,165 @@
 <template>
-  <section v-if="topic != null" class="main">
-    <div v-if="isPending" class="container main-container">
-      <div class="notification is-warning"
-        style="width: 100%; margin: 20px 0">
-        {{ $t('message.post_under_review') }}
-      </div>
-    </div>
-    <div class="container main-container left-main size-300">
-      <div class="left-container">
-        <article class="topic-detail" itemscope itemtype="http://schema.org/BlogPosting">
-          <div class="topic-header">
-            <div class="topic-header-left">
-              <my-avatar :user="topic.user" :size="45" />
-            </div>
+  <div v-if="topic"
+    class="min-h-screen bg-gray-900 text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col"
+    style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);">
+    <GamingNavbar />
 
-            <div class="topic-header-center">
-              <div class="topic-nickname" itemprop="headline">
-                <nuxt-link
-                  itemprop="author"
-                  itemscope
-                  itemtype="http://schema.org/Person"
-                  :to="`/user/${topic.user.id}`">
-                  {{ topic.user.nickname }}
-                </nuxt-link>
-              </div>
-              <div class="topic-meta">
-                <span class="meta-item">
-                  {{ $t('feed.published_on') }}
-                  <time
-                    :datetime="usePrettyDate(topic.createTime)"
-                    itemprop="datePublished">
-                    {{ usePrettyDate(topic.createTime) }}
-                  </time>
-                </span>
-                <span v-if="topic.ipLocation" class="meta-item">{{ topic.ipLocation }}</span>
-              </div>
-            </div>
+    <!-- Main Content -->
+    <main class="flex-grow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6" itemscope itemtype="http://schema.org/BlogPosting">
+        <!-- Notification for pending posts -->
+        <div v-if="isPending" class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
+          <FontAwesome :icon="['fas', 'exclamation-triangle']" class="mr-2" /> {{ $t('message.post_under_review') }}
+        </div>
 
-            <div class="topic-header-right">
-              <topic-manage-menu v-model="topic" @onSwitchEditMode="onSwitchEditMode" />
-            </div>
-          </div>
-
-          <div class="topic-content content" itemprop="articleBody">
-            <topic-content v-model="topic" :editing="topic.editing" />
-          </div>
-
-          <div class="topic-tags">
-            <nuxt-link
-              v-if="topic.forum"
-              :to="`/forums/${topic.forum.slug}`"
-              class="topic-tag">
+        <!-- Breadcrumb -->
+        <div class="mb-6">
+          <nav class="flex text-sm text-gray-400">
+            <nuxt-link to="/forums" class="hover:text-purple-400 transition-colors">Forums</nuxt-link>
+            <span class="mx-2">›</span>
+            <nuxt-link v-if="topic.forum" :to="`/forums/${topic.forum.slug}`"
+              class="hover:text-purple-400 transition-colors">
               {{ topic.forum.name }}
             </nuxt-link>
-            <nuxt-link
-              v-for="tag in topic.tags"
-              :key="tag.name"
-              :to="`/tags/${tag}`"
-              class="topic-tag">
-              #{{ tag }}
-            </nuxt-link>
+            <span class="mx-2">›</span>
+            <span class="text-purple-400 truncate max-w-md">{{ topic.title }}</span>
+          </nav>
+        </div>
+
+        <!-- Original Post -->
+        <div
+          class="gaming-card rounded-xl p-6 mb-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] relative overflow-hidden">
+          <!-- Animated border overlay -->
+          <div
+            class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] animate-[gradientBorder_3s_ease_infinite] opacity-10 pointer-events-none">
           </div>
 
-          <div class="topic-actions">
-            <div class="action disabled">
-              <icon name="BookOpenText" size="1em" />
-              <div class="action-text">
-                <span>{{ $t('feed.view_count') }}</span>
-                <span v-if="topic.viewCount > 0" class="action-text">
-                  ({{ topic.viewCount }})
-                </span>
+          <div class="relative z-10">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="relative group">
+                  <img :src="topic.user.avatar || '/images/default-avatar.png'"
+                    class="w-12 h-12 rounded border-2 border-purple-500/50 flex-shrink-0 object-cover" />
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <nuxt-link :to="`/user/${topic.user.id}`"
+                      class="font-bold text-purple-300 gaming-title text-lg hover:text-purple-400 transition-colors"
+                      itemprop="author">
+                      {{ topic.user.nickname }}
+                    </nuxt-link>
+                    <span v-if="topic.user.type === 1 || topic.user.id === 1"
+                      class="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-bold rounded">
+                      ADMIN
+                    </span>
+                    <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">
+                      LVL
+                      {{ calculateLevel(topic.user.score) }}
+                    </span>
+                    <span class="text-sm text-gray-500">{{ usePrettyDate(topic.createTime) }}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
+                    <span v-if="topic.ipLocation" class="flex items-center gap-1">
+                      <FontAwesome :icon="['fas', 'map-marker-alt']" class="text-gray-500" /> {{ topic.ipLocation }}
+                    </span>
+                  </div>
+                </div>
               </div>
+
+              <!-- Manage Menu -->
+              <topic-manage-menu v-model="topic" class="relative z-20" @onSwitchEditMode="onSwitchEditMode" />
             </div>
-            <div class="action" @click="toggleLike(topic)">
-              <icon name="ThumbsUp" color="#1c71d8" :filled="liked" />
-              <div class="action-text">
-                <span>{{ $t('feed.like_count') }}</span>
-                <span v-if="topic.likeCount > 0">
-                  ({{ topic.likeCount }})
-                </span>
+
+            <h1 class="text-3xl font-bold mb-6 text-white" itemprop="headline">
+              <span v-if="topic.sticky" class="text-red-500 mr-2" title="Sticky Post">
+                <FontAwesome :icon="['fas', 'thumbtack']" />
+              </span>
+              <span v-if="topic.recommend" class="text-yellow-500 mr-2" title="Recommended">
+                <FontAwesome :icon="['fas', 'star']" />
+              </span>
+              {{ topic.title }}
+            </h1>
+
+            <div class="prose prose-invert max-w-none mb-6 text-gray-300" itemprop="articleBody">
+              <topic-content v-model="topic" :editing="topic.editing" />
+            </div>
+
+            <!-- Tags -->
+            <div v-if="topic.tags && topic.tags.length" class="flex flex-wrap gap-2 mb-6">
+              <nuxt-link v-for="tag in topic.tags" :key="tag" :to="`/tags/${tag}`"
+                class="px-3 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors">
+                #{{ tag }}
+              </nuxt-link>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
+              <div class="flex items-center gap-4">
+                <button
+                  class="group flex items-center gap-1 transition-all duration-200"
+                  :class="liked ? 'text-green-400' : 'text-gray-400 hover:text-green-400'"
+                  @click="toggleLike">
+                  <FontAwesome :icon="['fas', 'arrow-up']"
+                    class="transform group-hover:-translate-y-0.5 transition-transform" />
+                  <span class="font-bold">{{ topic.likeCount || 0 }}</span>
+                </button>
+
+                <!-- Downvote (Visual Only/Disabled as API doesn't support yet, generic placeholder logic) -->
+                <!-- <button class="group flex items-center gap-1 text-gray-400 hover:text-red-400 transition-all duration-200">
+                  <FontAwesome :icon="['fas', 'arrow-down']" class="transform group-hover:translate-y-0.5 transition-transform" />
+                </button> -->
+
+                <div class="flex items-center gap-1 text-gray-400">
+                  <FontAwesome :icon="['far', 'eye']" />
+                  <span>{{ topic.viewCount }} Views</span>
+                </div>
+
+                <div class="flex items-center gap-1 text-gray-400">
+                  <FontAwesome :icon="['far', 'comment']" />
+                  <span>{{ topic.commentCount }} Comments</span>
+                </div>
+
+                <button
+                  class="flex items-center gap-1 transition-colors duration-200"
+                  :class="topic.favorited ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'"
+                  @click="toggleFavorite">
+                  <FontAwesome :icon="topic.favorited ? ['fas', 'bookmark'] : ['far', 'bookmark']" />
+                  <span>{{ topic.favorited ? 'Saved' : 'Save' }}</span>
+                </button>
               </div>
-            </div>
-            <div class="action" @click="toggleFavorite(topic.id)">
-              <icon name="Star" color="#f6d32d" :filled="topic.favorited" />
-              <div class="action-text">
-                <span>{{ $t('feed.actions.favorite') }}</span>
+
+              <div class="flex items-center gap-2">
+                <button class="text-gray-400 hover:text-purple-400 transition-colors">
+                  <FontAwesome :icon="['fas', 'share']" />
+                </button>
+                <button class="text-gray-400 hover:text-red-400 transition-colors">
+                  <FontAwesome :icon="['fas', 'flag']" />
+                </button>
               </div>
             </div>
           </div>
-        </article>
+        </div>
 
-        <!-- 评论 -->
-        <comment
-          :entity-id="topic.id"
-          :comment-count="topic.commentCount"
-          entity-type="topic"
-          @created="commentCreated" />
+        <!-- Comments Section -->
+        <div
+          class="gaming-card rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
+          <h2 class="text-2xl font-bold mb-6 flex items-center text-white">
+            <FontAwesome :icon="['fas', 'comments']" class="mr-3 text-blue-400" />
+            Comments ({{ topic.commentCount }})
+          </h2>
+
+          <!-- Wrapped Comment Component -->
+          <CommentSection
+            :entity-id="topic.id"
+            :comment-count="topic.commentCount"
+            entity-type="topic"
+            @created="commentCreated" />
+        </div>
       </div>
-      <div class="right-container">
-        <user-info :user="topic.user" />
-      </div>
-    </div>
-  </section>
-  <not-found v-else />
+    </main>
+
+    <GamingFooter />
+  </div>
+  <NotFound v-else />
 </template>
 
 <script setup>
@@ -117,14 +174,32 @@ const { data: topic } = await useAsyncData('topic', () =>
   useHttpGet(`/api/topics/${slug}`),
 )
 
+// Handle 404 manually if topic is null (handled by v-if/v-else logic currently, but strict check is better)
+if (!topic.value) {
+  // Falls through to NotFound component via v-else
+}
+
+definePageMeta({
+  layout: false,
+})
+
 useHead({
   title: topic.value ? useTopicSiteTitle(topic.value) : i18n.t('page.not_found'),
+  bodyAttrs: {
+    class: 'bg-[#0f0f23]',
+  },
 })
+
 const isPending = computed(() => {
-  return topic.value.status === 2
+  return topic.value?.status === 2
 })
 
 const liked = ref(topic.value?.liked || false)
+
+function calculateLevel(score) {
+  return Math.floor(Math.sqrt(score || 0)) + 1
+}
+
 async function toggleLike() {
   try {
     if (liked.value) {
@@ -194,5 +269,3 @@ function commentCreated() {
   topic.value.commentCount++
 }
 </script>
-
-<style lang="scss" scoped></style>

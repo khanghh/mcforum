@@ -41,12 +41,6 @@ func NewServer() {
 		}
 	})
 
-	app.Any("/", func(i iris.Context) {
-		_ = i.JSON(map[string]interface{}{
-			"engine": "bbs-go",
-		})
-	})
-
 	// app.HandleDir("/admin", "./admin")
 
 	// api
@@ -57,7 +51,8 @@ func NewServer() {
 		apiRoute.Party("/me").Handle(new(api.MeController))
 		apiRoute.Party("/user").Handle(new(api.UserController))
 		apiRoute.Party("/topics").Handle(new(api.TopicController))
-		apiRoute.Party("/forums").Handle(new(api.ForumController))
+		apiRoute.Party("/feeds").Handle(new(api.ForumFeedsController))
+		apiRoute.Party("/forums").Handle(new(api.ForumsController))
 		apiRoute.Party("/comments").Handle(new(api.CommentController))
 		apiRoute.Party("/tag").Handle(new(api.TagController))
 		apiRoute.Party("/favorite").Handle(new(api.FavoriteController))

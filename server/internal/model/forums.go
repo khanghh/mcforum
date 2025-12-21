@@ -127,9 +127,11 @@ func (t *Topic) GetTitle() string {
 // 主题标签
 type TopicTag struct {
 	Model
-	TopicId    int64  `gorm:"not null;index:idx_topic_tag(topic_id,tag);" json:"topicId" form:"topicId"`
-	Tag        string `gorm:"not null" json:"tag" form:"tag"` // 标签编号
-	CreateTime int64  `json:"createTime" form:"createTime"`   // 创建时间
+	TopicId           int64  `gorm:"not null;index:idx_topic_tag(topic_id,tag);" json:"topicId" form:"topicId"`
+	Tag               string `gorm:"not null" json:"tag" form:"tag"` // 标签编号
+	LastCommentTime   int64  `gorm:"index:idx_topic_last_comment_time" json:"lastCommentTime"`
+	LastCommentUserId int64  `json:"lastCommentUserId"`            // 最后回复用户
+	CreateTime        int64  `json:"createTime" form:"createTime"` // 创建时间
 }
 
 // 消息

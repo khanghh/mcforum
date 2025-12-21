@@ -6,6 +6,7 @@ import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -80,6 +81,22 @@ func (c *TopicController) Post() *web.JsonResult {
 		return web.JsonError(err)
 	}
 	return web.JsonData(payload.BuildSimpleTopic(topic))
+}
+
+func (c *TopicController) Get(ctx iris.Context) *web.JsonResult {
+	type TopicQuery struct {
+		Tag      string `form:"tag"`
+		Username string `form:"username"`
+	}
+	params := TopicQuery{}
+	if err := ctx.ReadQuery(&params); err != nil {
+		return web.JsonError(err)
+	}
+	fmt.Println(params.Username)
+	return &web.JsonResult{
+		StatusCode: 404,
+		Error:      errs.ErrForbidden,
+	}
 }
 
 // GET /topics/{slug}

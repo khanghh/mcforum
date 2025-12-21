@@ -12,6 +12,7 @@ type Role struct {
 	UpdateTime int64  `gorm:"not null;default:0" json:"updateTime" form:"updateTime"` // 更新时间
 }
 
+// deprecated
 type Menu struct {
 	Model
 	ParentId   int64  `json:"parentId" form:"parentId"`                               // 上级菜单

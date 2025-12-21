@@ -36,14 +36,11 @@ export function usePrettyDate(timestamp) {
   const diffValue = new Date().getTime() - timestamp
   if (diffValue / minute < 1) {
     return i18n.t('feed.time_ago.just_now')
-  }
-  else if (diffValue / minute < 60) {
+  } else if (diffValue / minute < 60) {
     return i18n.t('feed.time_ago.minutes_ago', { time: Math.floor(diffValue / minute) })
-  }
-  else if (diffValue / hour <= 24) {
+  } else if (diffValue / hour <= 24) {
     return i18n.t('feed.time_ago.hours_ago', { time: Math.floor(diffValue / hour) })// `${Number.parseInt(diffValue / hour)}小时前`;
-  }
-  else if (diffValue / day <= 30) {
+  } else if (diffValue / day <= 30) {
     return i18n.t('feed.time_ago.days_ago', { time: Math.floor(diffValue / day) })
   }
   return useFormatDate(timestamp, 'yyyy-MM-dd HH:mm')
@@ -78,8 +75,7 @@ export function useMsgSignIn() {
 export function useCatchError(e) {
   if (e.errorCode === 1) {
     useMsgSignIn()
-  }
-  else {
+  } else {
     useMsgError(e.message || e)
   }
 }

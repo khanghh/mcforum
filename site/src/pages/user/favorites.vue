@@ -8,7 +8,7 @@
     </div>
 
     <div class="widget-content">
-      <load-more-async v-slot="{ items }" url="/api/user/favorites">
+      <LoadMoreAsync v-slot="{ items }" url="/api/user/favorites">
         <ul v-if="items && items.length" class="favorite-list">
           <li
             v-for="item in items"
@@ -39,7 +39,7 @@
             </div>
           </li>
         </ul>
-      </load-more-async>
+      </LoadMoreAsync>
     </div>
   </div>
 </template>

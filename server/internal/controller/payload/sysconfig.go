@@ -17,6 +17,7 @@ type SysConfigResponse struct {
 	SiteKeywords               []string            `json:"siteKeywords"`
 	SiteNavs                   []model.ActionLink  `json:"siteNavs"`
 	SiteNotification           string              `json:"siteNotification"`
+	MenuItems                  []model.MenuItem    `json:"menuItems"`
 	RecommendTags              []string            `json:"recommendTags"`
 	UrlRedirect                bool                `json:"urlRedirect"`
 	ScoreConfig                model.ScoreConfig   `json:"scoreConfig"`
@@ -40,6 +41,7 @@ func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 		siteDescription            = service.SysConfigService.GetSiteDescription()
 		siteKeywords               = service.SysConfigService.GetSiteKeywords()
 		siteNotification           = service.SysConfigService.GetSiteNofitication()
+		menuItems                  = service.SysConfigService.GetMenuItems()
 		recommendTags              = service.SysConfigService.GetRecommendTags()
 		urlRedirect                = service.SysConfigService.IsEnabledUrlRedirectPage()
 		pointsConfig               = service.SysConfigService.GetPointConfig()
@@ -68,6 +70,7 @@ func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 		SiteKeywords:               siteKeywords,
 		SiteNavs:                   siteNavs,
 		SiteNotification:           siteNotification,
+		MenuItems:                  menuItems,
 		RecommendTags:              recommendTags,
 		UrlRedirect:                urlRedirect,
 		ScoreConfig:                pointsConfig,

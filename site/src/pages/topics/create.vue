@@ -157,7 +157,7 @@ const topicCaptchaEnabled = computed(() => {
 })
 
 const { data: forums } = useAsyncData('forums', () =>
-  useHttpGet('/api/forums/list'),
+  useHttpGet('/api/forums'),
 )
 
 init()

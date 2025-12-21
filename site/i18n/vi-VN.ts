@@ -1,5 +1,17 @@
 export default {
   feed: {
+    whats_new: {
+      title: 'MỚI NHẤT',
+      description: 'Khám phá các chủ đề mới nhất trong cộng đồng, cập nhật nhanh những tin tức, thảo luận và nội dung vừa được tạo.',
+    },
+    recommended: {
+      title: 'ĐỀ XUẤT',
+      description: 'Xem các chủ đề được đề xuất dựa trên sở thích và các thảo luận nổi bật, giúp bạn không bỏ lỡ những nội dung quan trọng và thú vị.',
+    },
+    followed: {
+      title: 'THEO DÕI',
+      description: 'Danh sách các chủ đề bạn đang theo dõi, giúp bạn dễ dàng cập nhật các thảo luận mà bạn quan tâm mà không cần tìm kiếm lại.',
+    },
     like_count: 'Lượt thích',
     comment_count: 'Bình luận',
     view_count: 'Lượt xem',
@@ -23,6 +35,7 @@ export default {
       reply: 'Trả lời',
       hide_reply: 'Ẩn',
       view_more_replies: 'Xem thêm bình luận...',
+      view_more: 'Xem thêm',
       view_details: 'Xem chi tiết',
     },
   },

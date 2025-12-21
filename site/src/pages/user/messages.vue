@@ -8,7 +8,7 @@
     </div>
 
     <div class="widget-content">
-      <load-more-async v-slot="{ items }" url="/api/user/messages">
+      <LoadMoreAsync v-slot="{ items }" url="/api/user/messages">
         <ul v-if="items && items.length" class="message-list">
           <li
             v-for="message in items"
@@ -58,7 +58,7 @@
             </div>
           </li>
         </ul>
-      </load-more-async>
+      </LoadMoreAsync>
     </div>
   </div>
 </template>
