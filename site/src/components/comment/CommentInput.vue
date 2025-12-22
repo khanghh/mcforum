@@ -18,15 +18,7 @@
         </div>
 
         <CommentTextEditor ref="simpleEditor" v-model="value"
-          :placeholder="$t('message.type_comment_placeholder')" @submit="create" />
-
-        <!-- Loading Overlay -->
-        <div v-if="sending"
-          class="absolute inset-0 bg-gray-900/50 backdrop-blur-[1px] flex items-center justify-center z-10 rounded-xl">
-          <div class="flex items-center gap-2 text-purple-400 font-bold gaming-title animate-pulse">
-            <FontAwesome :icon="['fas', 'circle-notch']" spin /> SENDING...
-          </div>
-        </div>
+          :placeholder="$t('message.type_comment_placeholder')" :disabled="sending" @submit="create" />
       </div>
     </div>
   </div>

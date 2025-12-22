@@ -1,13 +1,14 @@
 <template>
   <div
-    class="group relative w-full overflow-hidden rounded-xl bg-gray-800/40 backdrop-blur-sm border border-purple-500/20 transition-all duration-300 hover:border-purple-500/40 focus-within:border-purple-500/60 focus-within:bg-gray-800/60 focus-within:shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+    :class="[{ 'opacity-60 pointer-events-none': disabled }, 'group relative w-full overflow-hidden rounded-xl bg-gray-800/40 backdrop-blur-sm border border-purple-500/20 transition-all duration-300 hover:border-purple-500/40 focus-within:border-purple-500/60 focus-within:bg-gray-800/60 focus-within:shadow-[0_0_15px_rgba(168,85,247,0.1)]']">
     <!-- Textarea -->
     <textarea
       ref="textarea"
       v-model="post.content"
       :placeholder="$t('form.placeholder.enter_post_content')"
       :style="{ 'min-height': `${height}px`, 'height': `${height}px` }"
-      class="text-input w-full bg-transparent text-gray-200 border-none rounded-t-xl p-5 focus:outline-none focus:ring-0 placeholder-gray-500 resize-y text-base font-medium leading-relaxed"
+      :class="['text-input w-full bg-transparent text-gray-200 border-none rounded-t-xl p-5 focus:outline-none focus:ring-0 placeholder-gray-500 resize-y text-base font-medium leading-relaxed', disabled ? 'cursor-not-allowed' : '']"
+      :disabled="disabled"
       @input="onInput"
       @paste="handleParse"
       @drop="handleDrag"
@@ -34,7 +35,7 @@
           class="flex items-center gap-2 text-sm transition-colors duration-200"
           :class="showImageUpload ? 'text-purple-400 font-semibold' : 'text-gray-400 hover:text-purple-400'"
           @click="switchImageUpload">
-          <icon name="ImagePlus" class="w-5 h-5" />
+          <FontAwesome :icon="['fas', 'image']" class="w-5 h-5" />
           <span>{{ $t('publish.add_image') }}</span>
         </button>
       </div>

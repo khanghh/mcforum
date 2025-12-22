@@ -1,71 +1,74 @@
 <template>
   <div class="space-y-6">
     <LoadMoreAsync ref="loadMore" v-slot="{ items }" :url="commentListUrl">
-      <div v-for="comment in items" :key="comment.id"
-        class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6">
-        <div class="flex items-start gap-4">
-          <div class="relative group">
-            <MyAvatar :user="comment.user" :size="30" class="rounded-lg border-2 border-purple-500/30" />
-          </div>
-
-          <div class="flex-1 min-w-0">
-            <!-- Comment Meta -->
-            <div class="flex items-center gap-2 flex-wrap mb-2">
-              <nuxt-link :to="`/user/${comment.user.id}`"
-                class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
-                {{ comment.user.nickname }}
-              </nuxt-link>
-              <span class="text-xs text-gray-500">{{ usePrettyDate(comment.createTime) }}</span>
-              <span v-if="comment.ipLocation" class="text-xs text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded">
-                {{ comment.ipLocation }}
-              </span>
+      <TransitionGroup name="comment" tag="div" class="space-y-6">
+        <div v-for="comment in items" :key="comment.id"
+          class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6">
+          <div class="flex items-start gap-4">
+            <div class="relative group">
+              <MyAvatar :user="comment.user" :size="30" class="rounded-lg border-2 border-purple-500/30" />
             </div>
 
-            <!-- Content -->
-            <div class="text-gray-300 mb-3 prose prose-invert max-w-none text-sm leading-relaxed">
-              <template v-if="comment.content">
-                <div v-if="comment.contentType === 'text'" v-text="comment.content" />
-                <div v-else v-html="comment.content" />
-              </template>
-            </div>
-
-            <!-- Images -->
-            <div v-if="comment.imageList && comment.imageList.length" class="flex flex-wrap gap-2 mb-3">
-              <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url"
-                class="w-24 h-24 object-cover rounded-lg border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer">
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-center gap-4 text-sm text-gray-400">
-              <button class="group flex items-center gap-1 transition-colors"
-                :class="comment.liked ? 'text-green-400' : 'hover:text-green-400'" @click="like(comment)">
-                <icon name="ThumbsUp" class="w-4 h-4" :filled="comment.liked" />
-                <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
-                <span v-else>Like</span>
-              </button>
-
-              <button class="group flex items-center gap-1 transition-colors"
-                :class="myReply.commentId === comment.id ? 'text-purple-400' : 'hover:text-purple-400'"
-                @click="switchShowReply(comment)">
-                <icon name="MessageSquareMore" class="w-4 h-4" />
-                <span>
-                  {{ myReply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+            <div class="flex-1 min-w-0">
+              <!-- Comment Meta -->
+              <div class="flex items-center gap-2 flex-wrap mb-2">
+                <nuxt-link :to="`/user/${comment.user.id}`"
+                  class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
+                  {{ comment.user.nickname }}
+                </nuxt-link>
+                <span class="text-xs text-gray-500">{{ usePrettyDate(comment.createTime) }}</span>
+                <span v-if="comment.ipLocation" class="text-xs text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded">
+                  {{ comment.ipLocation }}
                 </span>
-              </button>
-            </div>
+              </div>
 
-            <!-- Reply Form -->
-            <div v-if="myReply.commentId === comment.id"
-              class="mt-4 p-4 rounded-lg bg-gray-800/50 border border-purple-500/20">
-              <CommentTextEditor v-model="myReply.input" :height="100" @submit="submitReply(comment)" />
-            </div>
+              <!-- Content -->
+              <div class="text-gray-300 mb-3 prose prose-invert max-w-none text-sm leading-relaxed">
+                <template v-if="comment.content">
+                  <div v-if="comment.contentType === 'text'" v-text="comment.content" />
+                  <div v-else v-html="comment.content" />
+                </template>
+              </div>
 
-            <!-- Nested Replies -->
-            <CommentReplyList v-if="comment.replies && comment.replies.items" v-model="myReply" :comment-id="comment.id"
-              :data="comment.replies" @reply="onReply(comment, $event)" />
+              <!-- Images -->
+              <div v-if="comment.imageList && comment.imageList.length" class="flex flex-wrap gap-2 mb-3">
+                <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url"
+                  class="w-24 h-24 object-cover rounded-lg border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer">
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-4 text-sm text-gray-400">
+                <button class="group flex items-center gap-1 transition-colors"
+                  :class="comment.liked ? 'text-blue-400' : 'hover:text-blue-400'" @click="like(comment)">
+                  <FontAwesome :icon="['fas', 'thumbs-up']" class="w-4 h-4" />
+                  <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
+                  <span v-else>Like</span>
+                </button>
+
+                <button class="group flex items-center gap-1 transition-colors"
+                  :class="myReply.commentId === comment.id ? 'text-purple-400' : 'hover:text-purple-400'"
+                  @click="switchShowReply(comment)">
+                  <FontAwesome :icon="['fas', 'comment']" class="w-4 h-4" />
+                  <span>
+                    {{ myReply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+                  </span>
+                </button>
+              </div>
+
+              <!-- Reply Form -->
+              <div v-if="myReply.commentId === comment.id"
+                class="mt-4 p-4 rounded-lg bg-gray-800/50 border border-purple-500/20">
+                <CommentTextEditor v-model="myReply.input" :height="100" @submit="submitReply(comment)" />
+              </div>
+
+              <!-- Nested Replies -->
+              <CommentReplyList v-if="comment.replies && comment.replies.items" v-model="myReply"
+                :comment-id="comment.id"
+                :data="comment.replies" @reply="onReply(comment, $event)" />
+            </div>
           </div>
         </div>
-      </div>
+      </TransitionGroup>
     </LoadMoreAsync>
   </div>
 </template>
@@ -99,10 +102,10 @@ const commentListUrl = computed(() => `/api/topics/${route.params.slug}/comments
 const userStore = useUserStore()
 const loadMore = ref(null)
 
-const append = () => {
-  if (loadMore.value) {
-    loadMore.value.refresh()
-  }
+const append = (comment) => {
+  if (!loadMore.value || !comment) return
+  // Avoid full refresh (causes flicker/jump). Just prepend the new item.
+  loadMore.value.unshiftResults(comment)
 }
 
 const like = async (comment) => {
@@ -181,5 +184,21 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Scoped styles replaced by Tailwind classes */
+.comment-enter-active,
+.comment-leave-active,
+.comment-move {
+  transition: all 220ms ease;
+}
+
+.comment-enter-from,
+.comment-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.comment-enter-to,
+.comment-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>

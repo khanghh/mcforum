@@ -26,6 +26,7 @@ export interface ModulesConfig {
 
 export interface MenuItem {
   name: string
+  slug: string
   urlPath: string
   logoUrl: string
 }

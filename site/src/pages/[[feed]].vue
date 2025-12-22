@@ -39,8 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ref } from 'vue'
-import { onMounted } from 'vue'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -69,12 +67,14 @@ const feed = computed<FeedInfo>(() => {
         fetchTopicsUrl: '/api/feeds/followed',
         description: t('feed.followed.description'),
       }
-    default:
+    case 'whats-new':
       return {
         title: t('feed.whats_new.title'),
         fetchTopicsUrl: '/api/feeds/whats-new',
         description: t('feed.whats_new.description'),
       }
+    default:
+      throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
   }
 })
 

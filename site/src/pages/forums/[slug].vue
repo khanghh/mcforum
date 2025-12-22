@@ -59,17 +59,24 @@ definePageMeta({
 
 const i18n = useI18n()
 const route = useRoute()
-const userStore = useUserStore()
-const { user } = storeToRefs(userStore)
 
 const slug = route.params.slug || 'whats-new'
 
-const { data: data } = await useAsyncData(() => useHttpGet('/api/forums'))
+const { data, error } = await useAsyncData(() => useHttpGet('/api/forums'))
 
-console.log('Forums Data:', data.value)
+if (error?.value) {
+  const status = error.value.statusCode || error.value.status || 500
+  const message = error.value.message || i18n.t('page.server_error') || 'Server Error'
+  throw createError({ statusCode: status, statusMessage: message, fatal: true })
+}
+
 const forum = computed(() => {
   return data.value?.find(f => f.slug === slug)
 })
+
+if (!forum.value) {
+  throw createError({ statusCode: 404, statusMessage: i18n.t('page.not_found'), fatal: true })
+}
 
 const forumTitle = computed(() => {
   return forum.value ? forum.value.name : i18n.t('page.not_found')
@@ -79,12 +86,9 @@ const forumDescription = computed(() => {
   return forum.value ? forum.value.description : ''
 })
 
-if (!forum.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
-}
 
 useHead({
-  title: useSiteTitle(forumTitle?.value || i18n.t('page.not_found')),
+  title: useSiteTitle(forumTitle?.value),
   bodyAttrs: {
     class: 'bg-[#0f0f23]',
   },

@@ -6,7 +6,7 @@
     <nav class="space-y-1">
       <nuxt-link v-for="item in itemMenus" :key="item.urlPath" :to="item.urlPath"
         class="category-item block px-3 py-2 rounded text-md font-semibold transition-all hover:bg-purple-500/10 gaming-title"
-        :class="{ active: isActive(item.urlPath) }">
+        :class="{ active: item.urlPath === menuPath }">
         <FontAwesome :icon="['fas', getIcon(item)]" class="mr-2" :class="getIconColor(item)" /> {{ item.name }}
       </nuxt-link>
     </nav>
@@ -16,10 +16,8 @@
 <script setup>
 const route = useRoute()
 const configStore = useConfigStore()
+const menuPath = route.path === '/' ? '/whats-new' : route.path
 
-const isActive = (urlPath) => {
-  return route.path == urlPath
-}
 const itemMenus = computed(() => configStore.config.menuItems || [])
 
 function getIcon(forum) {

@@ -67,7 +67,7 @@
               </div>
 
               <!-- Manage Menu -->
-              <topic-manage-menu v-model="topic" class="relative z-20" @onSwitchEditMode="onSwitchEditMode" />
+              <TopicManageMenu v-model="topic" class="relative z-20" @onSwitchEditMode="onSwitchEditMode" />
             </div>
 
             <h1 class="text-3xl font-bold mb-6 text-white" itemprop="headline">

@@ -4,7 +4,7 @@
       <div class="flex-1 min-w-0">
         <h3 class="text-lg font-bold mb-2">
           <nuxt-link :to="`/topics/${topic.slug || topic.id}`"
-            class="text-white hover:text-purple-400 transition-colors">
+            class="text-white hover:text-purple-400 transition-colors gaming-title">
             <span v-if="showPinned && topic.pinned"
               class="mr-2 px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-bold rounded border border-red-500/50">
               PINNED
@@ -15,7 +15,7 @@
         <div class="flex items-center gap-2 mb-2 flex-wrap">
           <!-- Avatar -->
           <div class="flex items-center gap-2">
-            <my-avatar :user="topic.user" :size="24"
+            <Avatar :src="topic.user.avatar" :username="topic.user.nickname" :size="24"
               class="w-6 h-6 rounded border border-purple-500/50 flex-shrink-0" />
             <nuxt-link :to="`/user/${topic.user.id}`"
               class="font-bold text-purple-300 gaming-title text-sm hover:text-purple-200 transition-colors">

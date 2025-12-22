@@ -2,7 +2,7 @@
   <div class="avatar-edit">
     <div class="avatar-view" :style="{ backgroundImage: 'url(' + value + ')' }">
       <div class="upload-view" @click="pickImage">
-        <icon name="CloudUpload" />
+        <FontAwesome :icon="['fas', 'cloud-upload']" class="w-6 h-6 mb-1" />
         <span>点击修改</span>
       </div>
     </div>

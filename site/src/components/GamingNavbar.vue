@@ -12,7 +12,7 @@
           <div class="hidden md:block text-xs text-purple-300">Minecraft Server Vietnam</div>
         </a>
       </div>
-      <ul class="flex space-x-4 sm:space-x-6 text-gray-300 font-medium">
+      <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
         <li>
           <a href="https://play.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors"
             target="_blank">
@@ -38,10 +38,12 @@
             <span class="hidden sm:inline">Tin nhắn</span>
           </a>
         </li>
+
         <li>
-          <a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
-            <FontAwesome :icon="['fas', 'user-circle']" class="mr-1" />
-            <span class="hidden sm:inline">Profile</span>
+          <AvatarMenu v-if="userStore.isLogin" />
+          <a v-else href="/user/signin"
+            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
+            Sign In
           </a>
         </li>
       </ul>
@@ -50,5 +52,9 @@
 </template>
 
 <script setup>
-// Logic for active link etc. can be added here
+import { useUserStore } from '~/stores/user'
+import AvatarMenu from '~/components/navbar/AvatarMenu.vue'
+
+const userStore = useUserStore()
+
 </script>
