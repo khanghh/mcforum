@@ -38,7 +38,8 @@
             <div class="flex items-center justify-between gap-3 mb-4">
               <div class="flex items-center gap-3">
                 <div class="relative group">
-                  <img :src="topic.user.avatar || '/images/default-avatar.png'"
+                  <Avatar :src="topic.user.avatar || '/images/default-avatar.png'"
+                    :username="topic.user.nickname"
                     class="w-12 h-12 rounded border-2 border-purple-500/50 flex-shrink-0 object-cover" />
                 </div>
                 <div>
@@ -56,8 +57,12 @@
                       LVL
                       {{ calculateLevel(topic.user.score) }}
                     </span>
-                    <span class="text-sm text-gray-500">{{ usePrettyDate(topic.createTime) }}</span>
                   </div>
+
+                  <div class="text-sm text-gray-500 mt-1">
+                    {{ usePrettyDate(topic.createTime) }}
+                  </div>
+
                   <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
                     <span v-if="topic.ipLocation" class="flex items-center gap-1">
                       <FontAwesome :icon="['fas', 'map-marker-alt']" class="text-gray-500" /> {{ topic.ipLocation }}

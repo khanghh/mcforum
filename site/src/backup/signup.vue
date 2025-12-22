@@ -4,16 +4,28 @@
       <div class="main-body no-bg">
         <div class="widget signin">
           <div class="widget-header">
-            {{ $t('page.signin') }}
+            {{ $t('page.signup') }}
           </div>
           <div class="widget-content">
             <div class="field">
-              <label class="label">{{ $t('form.label.username_or_email') }}</label>
+              <label class="label">{{ $t('form.label.username') }}</label>
               <div class="control has-icons-left">
-                <input v-model="form.username" class="input is-success" type="text"
-                  :placeholder="$t('form.placeholder.enter_email')" @keyup.enter="signin" />
+                <input v-model="form.nickname" class="input is-success" type="text"
+                  :placeholder="$t('form.placeholder.enter_username')" @keyup.enter="signup" />
                 <span class="icon is-small is-left">
                   <icon name="UserRound" />
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">{{ $t('form.label.email') }}</label>
+              <div class="control has-icons-left">
+                <input v-model="form.email" class="input is-success" type="text"
+                  :placeholder="$t('form.placeholder.enter_email')"
+                  @keyup.enter="signup" />
+                <span class="icon is-small is-left">
+                  <icon name="Mail" />
                 </span>
               </div>
             </div>
@@ -23,7 +35,18 @@
               <div class="control has-icons-left">
                 <input v-model="form.password" class="input" type="password"
                   :placeholder="$t('form.placeholder.enter_password')"
-                  @keyup.enter="signin" />
+                  @keyup.enter="signup" />
+                <span class="icon is-small is-left">
+                  <icon name="Lock" />
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">{{ $t('form.label.confirm_password') }}</label>
+              <div class="control has-icons-left">
+                <input v-model="form.rePassword" class="input" type="password"
+                  :placeholder="$t('form.placeholder.confirm_password')" @keyup.enter="signup" />
                 <span class="icon is-small is-left">
                   <icon name="Lock" />
                 </span>
@@ -37,25 +60,27 @@
                   <div class="field login-captcha-input">
                     <input v-model="form.captchaCode" class="input" type="text"
                       :placeholder="$t('form.placeholder.enter_captcha')"
-                      @keyup.enter="signin" />
+                      @keyup.enter="signup" />
                     <span class="icon is-small is-left">
                       <icon name="ShieldCheck" />
                     </span>
                   </div>
-                  <div v-if="form.captchaUrl" class="field login-captcha-img" @click="refreshCaptcha">
-                    <img :src="form.captchaUrl" data-not-lazy />
+                  <div v-if="form.captchaUrl" class="field login-captcha-img">
+                    <a @click="refreshCaptcha"><img :src="form.captchaUrl" /></a>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="field">
-              <button class="button is-link" @click="signin">
-                {{ $t('form.button.signin') }}
-              </button>
-              <a class="button is-text" @click="toSignup">
-                {{ $t('links.dont_have_account') }}
-              </a>
+              <div class="control">
+                <button class="button is-link" @click="signup">
+                  {{ $t('form.button.signup') }}
+                </button>
+                <a class="button is-text" @click="toSignin">
+                  {{ $t('links.already_have_account') }}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -68,13 +93,15 @@
 const i18n = useI18n()
 
 useHead({
-  title: useSiteTitle(i18n.t('page.signin')),
+  title: useSiteTitle(i18n.t('page.signup')),
 })
 
 const route = useRoute()
 const form = reactive({
-  username: '',
+  nickname: '',
+  email: '',
   password: '',
+  rePassword: '',
   captchaId: '',
   captchaUrl: '',
   captchaCode: '',
@@ -92,6 +119,7 @@ async function refreshCaptcha() {
         },
       })
     })
+
     form.captchaId = captcha.value.captchaId
     form.captchaUrl = captcha.value.captchaUrl
     form.captchaCode = ''
@@ -100,43 +128,28 @@ async function refreshCaptcha() {
   }
 }
 
-async function signin() {
+async function signup() {
   try {
-    if (!form.username) {
-      useMsgError(i18n.t('message.username_email_required'))
-      return
-    }
-    if (!form.password) {
-      useMsgError(i18n.t('message.password_required'))
-      return
-    }
-    if (!form.captchaCode) {
-      useMsgError(i18n.t('message.captcha_required'))
-      return
-    }
-
     const userStore = useUserStore()
-    const { user, redirect } = await userStore.signin(form)
+    const { user, redirect } = await userStore.signup(form)
     if (redirect) {
       useLinkTo(redirect)
     } else {
       useLinkTo(`/user/${user.id}`)
     }
-  } catch (e) {
-    useCatchError(e)
+  } catch (err) {
+    useCatchError(err)
     await refreshCaptcha()
   }
 }
 
-function toSignup() {
+function toSignin() {
   if (form.redirect) {
-    useLinkTo(`/user/signup?redirect=${encodeURIComponent(form.redirect)}`)
+    useLinkTo(`/signin?redirect=${encodeURIComponent(form.redirect)}`)
   } else {
-    useLinkTo('/user/signup')
+    useLinkTo('/signin')
   }
 }
 </script>
 
-<style lang="scss" scoped>
-@import "~/assets/css/bulma.scss";
-</style>
+<style lang="scss" scoped></style>

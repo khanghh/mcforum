@@ -1,21 +1,29 @@
 <template>
-  <!-- <ClientOnly> -->
-  <el-dropdown
-    v-if="menus && menus.length"
-    trigger="click"
-    @command="handleCommand">
-    <span class="el-dropdown-link">{{ $t('publish.manage') }}</span>
-    <template #dropdown>
-      <el-dropdown-menu>
-        <el-dropdown-item v-for="item in menus"
-          :key="item.command"
-          :command="item.command">
-          {{ item.label }}
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </template>
-  </el-dropdown>
-  <!-- </ClientOnly> -->
+  <div v-if="menus && menus.length" ref="root" class="relative inline-block text-left">
+    <button @click="open = !open"
+      type="button"
+      :class="['gap-2 px-2 py-1 rounded text-sm border border-purple-500/20 hover:bg-purple-600/20', open ? 'bg-purple-600/20' : 'text-purple-300']"
+      aria-haspopup="true"
+      :aria-expanded="String(open)"
+      :aria-label="$t('publish.manage')">
+      <FontAwesome :icon="['fas', 'cog']" class="w-4 h-4 mr-2" />
+      <span class="whitespace-nowrap">{{ $t('publish.manage') }}</span>
+    </button>
+
+    <transition name="fade">
+      <div v-if="open"
+        class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+        <div class="py-1">
+          <button v-for="item in menus"
+            :key="item.command"
+            @click="select(item.command)"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100">
+            {{ item.label }}
+          </button>
+        </div>
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script setup>
@@ -30,6 +38,10 @@ const props = defineProps({
 const topic = ref(props.modelValue)
 
 const emit = defineEmits(['update:modelValue', 'onSwitchEditMode'])
+
+// dropdown state
+const open = ref(false)
+const root = ref(null)
 
 const userStore = useUserStore()
 const isOwner = userIsOwner(userStore.user)
@@ -76,6 +88,24 @@ const menus = computed(() => {
   }
   return items
 })
+
+function select(command) {
+  open.value = false
+  handleCommand(command)
+}
+
+function onClickOutside(e) {
+  if (!root.value) return
+  const path = e.composedPath ? e.composedPath() : (e.path || [])
+  if (path.length) {
+    if (!path.includes(root.value)) open.value = false
+  } else {
+    if (!root.value.contains(e.target)) open.value = false
+  }
+}
+
+onMounted(() => window.addEventListener('click', onClickOutside))
+onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
 
 async function handleCommand(command) {
   if (command === 'edit') {
@@ -166,15 +196,3 @@ function togglePinned() {
   })
 }
 </script>
-
-<style lang="scss" scoped>
-.el-dropdown-link {
-  cursor: pointer;
-  color: var(--text-color3);
-  font-size: 12px;
-}
-
-.el-dropdown-menu__item {
-  font-size: 12px;
-}
-</style>

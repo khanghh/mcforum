@@ -55,7 +55,7 @@
           </div>
           <div v-else class="navbar-item">
             <div class="buttons">
-              <nuxt-link class="button login-btn" to="/user/signin">
+              <nuxt-link class="button login-btn" to="/signin">
                 {{ $t('page.signin') }}
               </nuxt-link>
             </div>

@@ -41,13 +41,13 @@ export default {
   },
   publish: {
     action: {
-      edit: 'chỉnh sửa',
-      save: 'lưu bài đăng',
-      delete: 'xóa',
-      recommend: 'đề xuất',
-      unrecommend: 'bỏ đề xuất',
-      pin: 'ghim',
-      unpin: 'bỏ ghim',
+      edit: 'Chỉnh sửa',
+      save: 'Lưu bài đăng',
+      delete: 'Xóa',
+      recommend: 'Đề xuất',
+      unrecommend: 'Bỏ đề xuất',
+      pin: 'Ghim',
+      unpin: 'Bỏ ghim',
     },
     manage: 'Quản lý',
     add_image: 'Thêm ảnh',
@@ -127,6 +127,11 @@ export default {
     edit_article: 'Chỉnh sửa bài viết',
     by_tag: 'Thẻ {tag}',
     not_found: 'Không tìm thấy trang',
+    errors: {
+      internal_server_error: 'Đã xảy ra lỗi. Nếu bạn cho rằng đây là lỗi hệ thống, vui lòng báo cho đội quản trị viên.',
+      no_permission: 'Bạn không có quyền truy cập trang này',
+      page_not_found: 'Trang bạn yêu cầu không tồn tại hoặc đã bị xóa',
+    }
   },
   links: {
     back_to_profile: 'Quay lại hồ sơ',
@@ -180,7 +185,6 @@ export default {
     action_success: '{action} thành công ',
     action_failure: '{action} thất bại. {error}',
     please_enter_comment: 'Vui lòng nhập nội dung bình luận',
-    page_not_found: 'Trang bạn tìm kiếm không tồn tại hoặc đã bị xóa, {0}',
     offline: 'Bạn đang ngoại tuyến.',
   },
   form: {

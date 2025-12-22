@@ -46,13 +46,13 @@
 
             <p class="text-gray-400 mb-8 leading-relaxed">
               <span v-if="error && error.statusCode === 404">
-                The page you are looking for does not exist or has been deleted.
+                {{ $t('page.errors.page_not_found') }}
               </span>
               <span v-else-if="error && error.statusCode === 403">
-                You don't have permissions to access this page.
+                {{ $t('page.errors.no_permission') }}
               </span>
               <span v-else>
-                Something went wrong. If you think this is a bug, please report it to the support team.
+                {{ $t('page.errors.internal_server_error') }}
               </span>
             </p>
 
@@ -60,7 +60,7 @@
               class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center mx-auto shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] font-['Saira Semi Condensed',_sans-serif] tracking-[0.5px] transition-transform hover:scale-105"
               @click="handleError">
               <FontAwesome :icon="['fas', 'home']" class="mr-2" />
-              RETURN HOME
+              {{ $t('links.return_home') }}
             </button>
           </div>
         </div>

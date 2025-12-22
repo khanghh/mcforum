@@ -41,9 +41,9 @@
 
         <li>
           <AvatarMenu v-if="userStore.isLogin" />
-          <a v-else href="/user/signin"
+          <a v-else href="/signin"
             class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
-            Sign In
+            {{ $t('page.signin') }}
           </a>
         </li>
       </ul>

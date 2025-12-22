@@ -28,6 +28,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  class: {
+    type: [String, Array, Object],
+    default: '',
+  },
 })
 
 
@@ -59,8 +63,8 @@ onMounted(() => {
 const classes = computed(() => {
   const cls = ['object-cover', 'select-none', 'bg-gray-200']
   if (props.rounded) cls.push('rounded-full')
-  else cls.push('rounded-none')
-  return cls.join(' ')
+  if (props.class) return cls.concat(props.class)
+  return cls
 })
 
 function onError(e) {
