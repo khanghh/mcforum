@@ -19,26 +19,26 @@ export interface Forum {
 
 export interface Topic {
   id: number
-  slug?: string
-  type?: TopicType
-  user?: any
-  forum?: Forum
+  slug: string
+  type: TopicType
+  user: any
+  forum: Forum
   tags: string[]
   title: string
-  summary?: string
-  content?: string
-  imageList?: ImageInfo[]
+  summary: string
+  content: string
+  imageList: ImageInfo[]
   lastCommentTime?: number
-  viewCount?: number
-  commentCount?: number
-  likeCount?: number
-  liked?: boolean
-  createTime?: number
-  recommended?: boolean
+  viewCount: number
+  commentCount: number
+  likeCount: number
+  liked: boolean
+  createTime: number
+  recommended: boolean
   recommendedTime?: number
-  pinned?: boolean
-  pinnedTime?: number
-  status?: number
-  favorited?: boolean
-  ipLocation?: string
+  pinned: boolean
+  pinnedTime: number
+  status: number
+  favorited: boolean
+  ipLocation: string
 }

@@ -32,10 +32,7 @@
 
         <!-- Threads List -->
         <div id="threads-container" class="space-y-4">
-          <LoadMoreAsync
-            ref="loader"
-            v-slot="{ items }"
-            :cursor="forumCursor">
+          <LoadMoreAsync v-slot="{ items }" :cursor="forumCursor">
             <GamingTopicList :topics="items" show-pinned />
           </LoadMoreAsync>
         </div>

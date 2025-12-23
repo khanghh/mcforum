@@ -53,7 +53,11 @@
                 <!-- Topics Content -->
                 <div v-show="activeTab === 'topics'" class="space-y-4">
                   <LoadMoreAsync v-slot="{ items }" url="/api/topic/users/topics" :params="{ userId: user.id }">
-                    <GamingTopicList :topics="items" :show-pinned="false" />
+                    <TopicCard
+                      v-for="topic in items"
+                      :key="topic.id"
+                      :topic="topic"
+                      :show-pinned="showPinned" />
                   </LoadMoreAsync>
                 </div>
 

@@ -33,10 +33,10 @@
       <div v-if="topic.tags && topic.tags.length" class="flex items-center gap-2 flex-wrap mb-3">
         <nuxt-link
           v-for="tag in topic.tags"
-          :key="tag.id || tag.slug || tag.name || tag"
-          :to="`/tags/${(typeof tag === 'string') ? tag : (tag.slug || tag.name || tag)}`"
+          :key="tag"
+          :to="`/tags/${tag}`"
           class="px-2 py-0.5 bg-white/3 text-sm text-gray-400 rounded hover:text-gray-300 border border-white/10 hover:bg-white/5 transition-colors">
-          #{{ (typeof tag === 'string') ? tag : (tag.name || tag.slug || tag) }}
+          #{{ tag }}
         </nuxt-link>
       </div>
 
@@ -63,42 +63,39 @@
           {{ topic.viewCount }}
         </nuxt-link>
 
-        <!-- Category/Node -->
-        <nuxt-link
-          v-if="topic.node"
-          :to="`/forums/${topic.node.slug}`"
-          class="ml-auto px-2 py-1 bg-purple-500/20 text-gray-400 text-xs font-bold rounded hover:bg-purple-500/30 transition-colors">
-          {{ topic.node.name }}
-        </nuxt-link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Topic } from '@/types'
 const i18n = useI18n()
 const userStore = useUserStore()
 const user = userStore.user
 
-defineProps({
-  topic: { type: Object, required: true },
-  showPinned: { type: Boolean, default: false },
-})
+type Props = {
+  topic: Topic
+  showPinned?: boolean
+}
+const props = defineProps<Props>()
+  
+const topic = props.topic
 
-async function like(topic) {
+async function like(topic: Topic) {
   try {
     if (topic.liked) {
       await useHttpDelete(`/api/topics/${topic.slug}/reactions/${user.id}`)
       topic.liked = false
       topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0
-      useMsgSuccess(i18n.t('message.unliked_success'))
+      // useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
       await useHttpPostForm(`/api/topics/${topic.slug}/reactions`, {
         body: { type: 'like' },
       })
       topic.liked = true
       topic.likeCount++
-      useMsgSuccess(i18n.t('message.liked_success'))
+      // useMsgSuccess(i18n.t('message.liked_success'))
     }
   } catch (e) {
     useCatchError(e)
