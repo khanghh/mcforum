@@ -78,7 +78,7 @@ func GenerateSiteMap() {
 
 	service.TopicService.ScanDesc(func(topics []model.Topic) {
 		for _, topic := range topics {
-			if topic.Status == constants.StatusOK {
+			if topic.Status == constants.StatusActive {
 				topicUrl := bbsurls.AbsTopicUrl(topic.Slug, topic.Id)
 				sm.Add(stm.URL{
 					{"loc", topicUrl},

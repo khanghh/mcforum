@@ -85,7 +85,7 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 		CreateTime:   comment.CreateTime,
 	}
 
-	if comment.Status == constants.StatusOK {
+	if comment.Status == constants.StatusActive {
 		if comment.ContentType == constants.ContentTypeMarkdown {
 			content := markdown.ToHTML(comment.Content)
 			ret.Content = handleHtmlContent(content)

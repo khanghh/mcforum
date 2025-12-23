@@ -102,7 +102,7 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 
 // Undelete 取消删除
 func (s *topicService) Undelete(id int64) error {
-	err := repository.TopicRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusOK)
+	err := repository.TopicRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusActive)
 	if err == nil {
 		// 删掉标签文章
 		TopicTagService.UndeleteByTopicId(id)
@@ -123,7 +123,7 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 	}
 
 	node := repository.ForumRepository.Get(sqls.DB(), forumId)
-	if node == nil || node.Status != constants.StatusOK {
+	if node == nil || node.Status != constants.StatusActive {
 		return errors.New(locale.T("forum.not_found"))
 	}
 
@@ -179,7 +179,7 @@ func (s *topicService) GetForumTopics(forumId, cursor int64) (topics []model.Top
 	if cursor > 0 {
 		cnd.Lt("last_comment_time", cursor)
 	}
-	cnd.Eq("status", constants.StatusOK).Desc("last_comment_time").Limit(limit)
+	cnd.Eq("status", constants.StatusActive).Desc("last_comment_time").Limit(limit)
 	topics = repository.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
 		nextCursor = topics[len(topics)-1].LastCommentTime
@@ -196,7 +196,7 @@ func (s *topicService) GetNewestTopics(cursor int64) (topics []model.Topic, next
 	if cursor > 0 {
 		cnd.Lt("last_comment_time", cursor)
 	}
-	cnd.Eq("status", constants.StatusOK).Desc("last_comment_time").Limit(limit)
+	cnd.Eq("status", constants.StatusActive).Desc("last_comment_time").Limit(limit)
 	topics = repository.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
 		nextCursor = topics[len(topics)-1].LastCommentTime
@@ -213,7 +213,7 @@ func (s *topicService) GetRecommendedTopics(cursor int64) (topics []model.Topic,
 	if cursor > 0 {
 		cnd.Lt("last_comment_time", cursor)
 	}
-	cnd.Eq("status", constants.StatusOK).Desc("last_comment_time").Limit(limit)
+	cnd.Eq("status", constants.StatusActive).Desc("last_comment_time").Limit(limit)
 	topics = repository.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
 		nextCursor = topics[len(topics)-1].LastCommentTime
@@ -391,7 +391,7 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []model.Topic
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
-	cnd.Eq("status", constants.StatusOK).Desc("id").Limit(limit)
+	cnd.Eq("status", constants.StatusActive).Desc("id").Limit(limit)
 	topics = repository.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
 		nextCursor = topics[len(topics)-1].Id
@@ -405,10 +405,10 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []model.Topic
 func (s *topicService) GetPinnedTopics(forumId int64, limit int) []model.Topic {
 	if forumId > 0 {
 		return s.Find(sqls.NewCnd().Where("forum_id = ? and pinned = true and status = ?",
-			forumId, constants.StatusOK).Desc("pinned_time").Limit(limit))
+			forumId, constants.StatusActive).Desc("pinned_time").Limit(limit))
 	} else {
 		return s.Find(sqls.NewCnd().Where("pinned = true and status = ?",
-			constants.StatusOK).Desc("pinned_time").Limit(limit))
+			constants.StatusActive).Desc("pinned_time").Limit(limit))
 	}
 }
 
@@ -428,7 +428,7 @@ func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
 // 推荐
 func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) error {
 	topic := s.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return errors.New(locale.T("topic.not_found"))
 	}
 	if topic.Recommended == recommended { // 推荐状态没变更

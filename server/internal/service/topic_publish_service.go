@@ -50,7 +50,7 @@ func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
 	}
 
 	forum := repository.ForumRepository.Get(sqls.DB(), args.ForumId)
-	if forum == nil || forum.Status != constants.StatusOK {
+	if forum == nil || forum.Status != constants.StatusActive {
 		return errs.NewBadRequestError(locale.T(" forum.not_found"))
 	}
 
@@ -72,7 +72,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		Slug:            urls.GenerateSlug(args.Title),
 		Content:         args.Content,
 		HideContent:     args.HideContent,
-		Status:          constants.StatusOK,
+		Status:          constants.StatusActive,
 		UserAgent:       args.UserAgent,
 		Ip:              args.IPAddress,
 		IpLocation:      iplocator.IpLocation(args.IPAddress),

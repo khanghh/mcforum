@@ -36,7 +36,7 @@ func handleUserLike(i interface{}) {
 // sendTopicLikedNotification sends a message to topic author when a topic is liked.
 func sendTopicLikedNotification(topicId, likeUserId int64) {
 	topic := service.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return
 	}
 	if topic.UserId == likeUserId {
@@ -58,7 +58,7 @@ func sendTopicLikedNotification(topicId, likeUserId int64) {
 // sendTopicLikedMsg sends a message to comment author when a comment is liked.
 func sendCommentLikedNotification(commentId, likedUserId int64) {
 	comment := service.CommentService.Get(commentId)
-	if comment == nil || comment.Status != constants.StatusOK {
+	if comment == nil || comment.Status != constants.StatusActive {
 		return
 	}
 	if comment.UserId == likedUserId {
@@ -66,7 +66,7 @@ func sendCommentLikedNotification(commentId, likedUserId int64) {
 	}
 
 	topic := service.TopicService.Get(comment.TopicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return
 	}
 

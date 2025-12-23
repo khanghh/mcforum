@@ -15,6 +15,7 @@ import (
 
 type userCache struct {
 	cache            cache.LoadingCache
+	idCache          cache.Cache
 	scoreRankCache   cache.LoadingCache
 	checkInRankCache cache.LoadingCache
 }
@@ -31,6 +32,10 @@ func newUserCache() *userCache {
 				}
 				return nil, errors.New("not found")
 			},
+			cache.WithMaximumSize(1000),
+			cache.WithExpireAfterAccess(30*time.Minute),
+		),
+		idCache: cache.New(
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),
 		),
@@ -67,6 +72,19 @@ func (c *userCache) Get(userId int64) *model.User {
 		return nil
 	}
 	return val.(*model.User)
+}
+
+func (c *userCache) GetByUsername(username string) *model.User {
+	id, _ := c.idCache.GetIfPresent(username)
+	if id != nil {
+		return c.Get(id.(int64))
+	}
+	user := repository.UserRepository.GetByUsername(sqls.DB(), username)
+	if user != nil {
+		c.cache.Put(user.Id, user)
+		c.idCache.Put(username, user.Id)
+	}
+	return user
 }
 
 func (c *userCache) Invalidate(userId int64) {

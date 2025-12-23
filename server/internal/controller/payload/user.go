@@ -12,14 +12,13 @@ import (
 	"bbs-go/common/dates"
 	"bbs-go/common/strs"
 	"bbs-go/sqls"
-
-	"github.com/spf13/cast"
 )
 
 // UserInfo 用户简单信息
 type UserInfo struct {
 	Id           int64      `json:"id"`
 	Type         int        `json:"type"`
+	Username     string     `json:"username"`
 	Nickname     string     `json:"nickname"`
 	Avatar       string     `json:"avatar"`
 	SmallAvatar  string     `json:"smallAvatar"`
@@ -30,7 +29,7 @@ type UserInfo struct {
 	FansCount    int        `json:"fansCount"`    // 粉丝数量
 	FollowCount  int        `json:"followCount"`  // 关注数量
 	Score        int        `json:"score"`        // 积分
-	Description  string     `json:"description"`
+	Bio          string     `json:"bio"`
 	CreateTime   int64      `json:"createTime"`
 
 	Forbidden bool `json:"forbidden"` // 是否禁言
@@ -40,11 +39,10 @@ type UserInfo struct {
 // UserDetail 用户详细信息
 type UserDetail struct {
 	UserInfo
-	Username             string `json:"username"`
 	BackgroundImage      string `json:"backgroundImage"`
 	SmallBackgroundImage string `json:"smallBackgroundImage"`
 	HomePage             string `json:"homePage"`
-	Status               int    `json:"status"`
+	IsActive             bool   `json:"isActive"`
 }
 
 // UserProfile 用户个人信息
@@ -76,6 +74,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 	ret := &UserInfo{
 		Id:           user.Id,
 		Type:         user.Type,
+		Username:     user.Username.String,
 		Nickname:     user.Nickname,
 		Gender:       user.Gender,
 		Birthday:     user.Birthday,
@@ -84,7 +83,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		FansCount:    user.FansCount,
 		FollowCount:  user.FollowCount,
 		Score:        user.Score,
-		Description:  user.Description,
+		Bio:          user.Bio,
 		CreateTime:   user.CreateTime,
 		Forbidden:    user.IsForbidden(),
 	}
@@ -92,16 +91,13 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		ret.Avatar = user.Avatar
 		ret.SmallAvatar = HandleOssImageStyleAvatar(user.Avatar)
 	} else {
-		avatar := RandomAvatar(user.Id)
+		avatar := bbsurls.AbsUrl("/images/avatars/steve.png")
 		ret.Avatar = avatar
 		ret.SmallAvatar = avatar
 	}
-	if len(ret.Description) == 0 {
-		ret.Description = "这家伙很懒，什么都没留下"
-	}
-	if user.Status == constants.StatusDeleted {
-		ret.Nickname = "黑名单用户"
-		ret.Description = ""
+	if !user.IsActive {
+		ret.Nickname = ret.Username
+		ret.Bio = ""
 		ret.Score = 0
 		ret.Forbidden = true
 	}
@@ -114,13 +110,12 @@ func BuildUserDetail(user *model.User) *UserDetail {
 	}
 	ret := &UserDetail{
 		UserInfo:             *BuildUserInfo(user),
-		Username:             user.Username.String,
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
 		HomePage:             user.HomePage,
-		Status:               user.Status,
+		IsActive:             user.IsActive,
 	}
-	if user.Status == constants.StatusDeleted {
+	if !user.IsActive {
 		ret.Username = "blacklist"
 		ret.HomePage = ""
 	}
@@ -142,10 +137,4 @@ func BuildUserProfile(user *model.User) *UserProfile {
 		ret.Roles = strings.Split(user.Roles, ",")
 	}
 	return ret
-}
-
-func RandomAvatar(userId int64) string {
-	avatarCount := 128
-	avatarIndex := userId % int64(avatarCount)
-	return bbsurls.AbsUrl("/images/avatars/" + cast.ToString(avatarIndex) + ".png")
 }

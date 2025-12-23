@@ -13,11 +13,11 @@ import (
 	"bbs-go/internal/service"
 )
 
-type FavoriteController struct {
+type FavoritesController struct {
 	Ctx iris.Context
 }
 
-func (c *FavoriteController) PostAdd() *web.JsonResult {
+func (c *FavoritesController) PostAdd() *web.JsonResult {
 	var (
 		user       = service.UserTokenService.GetCurrent(c.Ctx)
 		entityType = params.FormValue(c.Ctx, "entityType")
@@ -42,7 +42,7 @@ func (c *FavoriteController) PostAdd() *web.JsonResult {
 }
 
 // 取消收藏
-func (c *FavoriteController) PostDelete() *web.JsonResult {
+func (c *FavoritesController) PostDelete() *web.JsonResult {
 	var (
 		user       = service.UserTokenService.GetCurrent(c.Ctx)
 		entityType = params.FormValue(c.Ctx, "entityType")

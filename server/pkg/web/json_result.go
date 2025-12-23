@@ -5,6 +5,7 @@ import (
 	"bbs-go/sqls"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/kataras/iris/v12"
 )
@@ -67,6 +68,9 @@ func (r *JsonResult) MarshalJSON() ([]byte, error) {
 				Message: r.Error.Error(),
 			}
 		}
+	}
+	if result, ok := r.Data.(*CursorResult); ok {
+		fmt.Println("ret", result.Items)
 	}
 	return json.Marshal(ret)
 }

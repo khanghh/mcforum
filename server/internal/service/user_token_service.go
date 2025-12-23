@@ -47,7 +47,7 @@ func (s *userTokenService) GetCurrent(ctx iris.Context) *model.User {
 		return nil
 	}
 	user := cache.UserCache.Get(userToken.UserId)
-	if user == nil || user.Status != constants.StatusOK {
+	if user == nil || !user.IsActive {
 		return nil
 	}
 	return user
@@ -101,7 +101,7 @@ func (s *userTokenService) Generate(userId int64) (string, error) {
 		Token:      token,
 		UserId:     userId,
 		ExpiredAt:  dates.Timestamp(expiredAt),
-		Status:     constants.StatusOK,
+		Status:     constants.StatusActive,
 		CreateTime: dates.NowTimestamp(),
 	}
 	err := repository.UserTokenRepository.Create(sqls.DB(), userToken)

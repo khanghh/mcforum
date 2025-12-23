@@ -76,7 +76,7 @@ func (s *userLikeService) Count(entityType string, entityId int64) int64 {
 	sqls.DB().Model(&model.UserLike{}).
 		Where("entity_id = ?", entityId).
 		Where("entity_type = ?", entityType).
-		Where("status = ?", constants.StatusOK).
+		Where("status = ?", constants.StatusActive).
 		Count(&count)
 	return count
 }
@@ -86,7 +86,7 @@ func (s *userLikeService) Recent(entityType string, entityId int64, count int) [
 	return s.Find(sqls.NewCnd().
 		Eq("entity_id", entityId).
 		Eq("entity_type", entityType).
-		Eq("status", constants.StatusOK).
+		Eq("status", constants.StatusActive).
 		Desc("id").Limit(count),
 	)
 }
@@ -105,7 +105,7 @@ func (s *userLikeService) GetUserLikes(userId int64, entityType string, entityId
 			Eq("user_id", userId).
 			Eq("entity_type", entityType).
 			In("entity_id", entityIds).
-			Eq("status", constants.StatusOK),
+			Eq("status", constants.StatusActive),
 	)
 	for _, like := range list {
 		likedEntityIds = append(likedEntityIds, like.EntityId)
@@ -116,7 +116,7 @@ func (s *userLikeService) GetUserLikes(userId int64, entityType string, entityId
 // TopicLike 话题点赞
 func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return errs.ErrTopicNotFound
 	}
 
@@ -173,7 +173,7 @@ func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
 // CommentLike 话题点赞
 func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	comment := repository.CommentRepository.Get(sqls.DB(), commentId)
-	if comment == nil || comment.Status != constants.StatusOK {
+	if comment == nil || comment.Status != constants.StatusActive {
 		return errs.ErrCommentNotFound
 	}
 
@@ -205,7 +205,7 @@ func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 // CommentLike 话题点赞
 func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 	comment := repository.CommentRepository.Get(sqls.DB(), commentId)
-	if comment == nil || comment.Status != constants.StatusOK {
+	if comment == nil || comment.Status != constants.StatusActive {
 		return errors.New("评论不存在")
 	}
 
@@ -232,7 +232,7 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 func (r *userLikeService) isLiked(db *gorm.DB, userId int64, entityType string, entityId int64) (bool, error) {
 	var exists bool
 	err := db.Model(&model.UserLike{}).Select("1").
-		Where("user_id = ? AND entity_id = ? AND entity_type = ? AND status = ?", userId, entityType, entityId, constants.StatusOK).
+		Where("user_id = ? AND entity_id = ? AND entity_type = ? AND status = ?", userId, entityType, entityId, constants.StatusActive).
 		Take(&exists).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -248,14 +248,14 @@ func (s *userLikeService) like(tx *gorm.DB, userId int64, entityType string, ent
 		UserId:     userId,
 		EntityType: entityType,
 		EntityId:   entityId,
-		Status:     constants.StatusOK,
+		Status:     constants.StatusActive,
 		CreateTime: dates.NowTimestamp(),
 	}
 
 	// Upsert (Insert or Update)
 	return tx.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "user_id"}, {Name: "entity_id"}, {Name: "entity_type"}},
-		DoUpdates: clause.Assignments(map[string]interface{}{"status": constants.StatusOK}),
+		DoUpdates: clause.Assignments(map[string]interface{}{"status": constants.StatusActive}),
 	}).Create(&like).Error
 }
 

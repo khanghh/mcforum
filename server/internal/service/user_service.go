@@ -223,7 +223,7 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 		Email:      sqls.SqlNullString(email),
 		Nickname:   nickname,
 		Password:   passwd.EncodePassword(password),
-		Status:     constants.StatusOK,
+		IsActive:   true,
 		CreateTime: dates.NowTimestamp(),
 		UpdateTime: dates.NowTimestamp(),
 	}
@@ -252,7 +252,7 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 	} else {
 		user = s.GetByUsername(username)
 	}
-	if user == nil || user.Status != constants.StatusOK {
+	if user == nil || !user.IsActive {
 		return nil, errors.New(locale.T("errors.sigin_failure"))
 	}
 	if !passwd.ValidatePassword(user.Password, password) {
@@ -415,8 +415,8 @@ func (s *userService) IncreaseCommentCount(userId int64) error {
 func (s *userService) SyncUserCount() {
 	s.Scan(func(users []model.User) {
 		for _, user := range users {
-			topicCount := repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusOK))
-			commentCount := repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusOK))
+			topicCount := repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusActive))
+			commentCount := repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusActive))
 			_ = repository.UserRepository.UpdateColumn(sqls.DB(), user.Id, "topic_count", topicCount)
 			_ = repository.UserRepository.UpdateColumn(sqls.DB(), user.Id, "comment_count", commentCount)
 			cache.UserCache.Invalidate(user.Id)
@@ -513,7 +513,7 @@ func (s *userService) CheckPostStatus(user *model.User) error {
 	if user == nil {
 		return errs.ErrUnauthorized
 	}
-	if user.Status != constants.StatusOK || user.IsForbidden() {
+	if !user.IsActive || user.IsForbidden() {
 		return errs.ErrForbidden
 	}
 	observeSeconds := SysConfigService.GetInt(constants.SysConfigUserObserveSeconds, 0)

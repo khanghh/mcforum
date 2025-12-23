@@ -28,7 +28,7 @@ func BuildFavorite(favorite *model.Favorite) *FavoriteResponse {
 	rsp.CreateTime = favorite.CreateTime
 
 	topic := service.TopicService.Get(favorite.EntityId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		rsp.Deleted = true
 	} else {
 		rsp.Url = bbsurls.AbsTopicUrl(topic.Slug, topic.Id)

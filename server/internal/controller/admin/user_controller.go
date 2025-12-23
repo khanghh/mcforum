@@ -74,7 +74,7 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 		homePage    = params.FormValue(c.Ctx, "homePage")
 		description = params.FormValue(c.Ctx, "description")
 		roleIds     = params.FormValueInt64Array(c.Ctx, "roleIds")
-		status      = params.FormValueIntDefault(c.Ctx, "status", 0)
+		isActive    = params.FormValueBoolDefault(c.Ctx, "is_active", false)
 	)
 
 	user := service.UserService.Get(id)
@@ -89,8 +89,8 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 	user.Avatar = avatar
 	user.Gender = gender
 	user.HomePage = homePage
-	user.Description = description
-	user.Status = status
+	user.Bio = description
+	user.IsActive = isActive
 
 	if err := service.UserService.Update(user); err != nil {
 		return web.JsonError(err)

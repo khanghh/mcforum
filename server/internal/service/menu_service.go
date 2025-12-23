@@ -70,7 +70,7 @@ func (s *menuService) Delete(id int64) {
 }
 
 func (s *menuService) GetNextSortNo(parentId int64) int {
-	if max := s.FindOne(sqls.NewCnd().Eq("parent_id", parentId).Eq("status", constants.StatusOK).Desc("sort_no")); max != nil {
+	if max := s.FindOne(sqls.NewCnd().Eq("parent_id", parentId).Eq("status", constants.StatusActive).Desc("sort_no")); max != nil {
 		return max.SortNo + 1
 	}
 	return 0
@@ -90,7 +90,7 @@ func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {
 		return nil
 	}
 
-	menus := s.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Asc("sort_no").Desc("id"))
+	menus := s.Find(sqls.NewCnd().Eq("status", constants.StatusActive).Asc("sort_no").Desc("id"))
 	menusMap := make(map[int64]model.Menu, len(menus))
 	for _, menu := range menus {
 		menusMap[menu.Id] = menu

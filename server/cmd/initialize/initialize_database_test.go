@@ -27,7 +27,7 @@ var roles = []map[string]any{
 		"name":   "Owner",
 		"code":   constants.RoleOwner,
 		"remark": "Owner",
-		"status": constants.StatusOK,
+		"status": constants.StatusActive,
 	},
 	{
 		"id":     2,
@@ -35,7 +35,7 @@ var roles = []map[string]any{
 		"name":   "Admin",
 		"code":   constants.RoleAdmin,
 		"remark": "Admin",
-		"status": constants.StatusOK,
+		"status": constants.StatusActive,
 	},
 }
 
@@ -45,7 +45,7 @@ var adminUser = model.User{
 	EmailVerified: true,
 	Nickname:      "admin",
 	Password:      passwd.EncodePassword("123456"),
-	Status:        constants.StatusOK,
+	IsActive:      true,
 	Roles:         "owner",
 }
 
@@ -55,7 +55,7 @@ var forums = []model.Forum{
 		Slug:        "announcement",
 		Description: "",
 		SortNo:      0,
-		Status:      constants.StatusOK,
+		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
 	{
@@ -63,7 +63,7 @@ var forums = []model.Forum{
 		Slug:        "support",
 		Description: "",
 		SortNo:      0,
-		Status:      constants.StatusOK,
+		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
 	{
@@ -71,7 +71,7 @@ var forums = []model.Forum{
 		Slug:        "discussion",
 		Description: "",
 		SortNo:      0,
-		Status:      constants.StatusOK,
+		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
 	{
@@ -79,7 +79,7 @@ var forums = []model.Forum{
 		Slug:        "staff",
 		Description: "",
 		SortNo:      0,
-		Status:      constants.StatusOK,
+		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
 }
@@ -469,6 +469,23 @@ func TestSetForumMenu(t *testing.T) {
 		}
 	}
 	err := repository.SysConfigRepository.Update(db, &menuConfig)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestAddUser(t *testing.T) {
+	user := model.User{
+		Username:      sqls.SqlNullString("khang"),
+		Email:         sqls.SqlNullString(""),
+		EmailVerified: false,
+		Nickname:      "khang",
+		Password:      passwd.EncodePassword("123456"),
+		IsActive:      true,
+		Roles:         "admin",
+		CreateTime:    dates.NowTimestamp(),
+	}
+	err := repository.UserRepository.Create(db, &user)
 	if err != nil {
 		panic(err)
 	}

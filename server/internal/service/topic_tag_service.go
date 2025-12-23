@@ -64,5 +64,5 @@ func (s *topicTagService) DeleteByTopicId(topicId int64) {
 }
 
 func (s *topicTagService) UndeleteByTopicId(topicId int64) {
-	sqls.DB().Model(model.TopicTag{}).Where("topic_id = ?", topicId).UpdateColumn("status", constants.StatusOK)
+	sqls.DB().Model(model.TopicTag{}).Where("topic_id = ?", topicId).UpdateColumn("status", constants.StatusActive)
 }

@@ -28,7 +28,7 @@ func newTopicCache() *topicCache {
 		recommendCache: cache.NewLoadingCache(
 			func(key cache.Key) (cache.Value, error) {
 				val := repository.TopicRepository.Find(sqls.DB(),
-					sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(50))
+					sqls.NewCnd().Eq("status", constants.StatusActive).Desc("id").Limit(50))
 				if val != nil {
 					return val, nil
 				}

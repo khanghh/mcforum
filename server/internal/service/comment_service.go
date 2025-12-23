@@ -104,7 +104,7 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 		QuoteId:     args.QuoteId,
 		Content:     args.Content,
 		ContentType: constants.ContentTypeText,
-		Status:      constants.StatusOK,
+		Status:      constants.StatusActive,
 		UserAgent:   args.UserAgent,
 		Ip:          args.IPAddress,
 		IpLocation:  iplocator.IpLocation(args.IPAddress),
@@ -116,7 +116,7 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 	}
 
 	topic := TopicService.Get(args.TopicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return nil, errs.ErrTopicNotFound
 	}
 
@@ -155,7 +155,7 @@ func (s *commentService) onComment(tx *gorm.DB, comment *model.Comment) error {
 
 // GetComments 列表
 func (s *commentService) GetComments(topicId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("topic_id", topicId).Eq("parent_id", 0).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
+	cnd := sqls.NewCnd().Eq("topic_id", topicId).Eq("parent_id", 0).Eq("status", constants.StatusActive).Desc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Lt("create_time", cursor)
 	}
@@ -171,7 +171,7 @@ func (s *commentService) GetComments(topicId int64, cursor int64, limit int) (co
 
 // GetReplies 二级回复列表
 func (s *commentService) GetReplies(commentId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("parent_id", commentId).Eq("status", constants.StatusOK).Desc("id").Limit(limit)
+	cnd := sqls.NewCnd().Eq("parent_id", commentId).Eq("status", constants.StatusActive).Desc("id").Limit(limit)
 	if cursor > 0 {
 		cnd.Lt("create_time", cursor)
 	}
@@ -215,5 +215,5 @@ func (s *commentService) Scan(callback func(comments []model.Comment)) {
 }
 
 func (s *commentService) IsCommented(userId int64, entityType string, entityId int64) bool {
-	return s.FindOne(sqls.NewCnd().Where("user_id = ? and entity_id = ? and entity_type = ? and status = ?", userId, entityId, entityType, constants.StatusOK)) != nil
+	return s.FindOne(sqls.NewCnd().Where("user_id = ? and entity_id = ? and entity_type = ? and status = ?", userId, entityId, entityType, constants.StatusActive)) != nil
 }

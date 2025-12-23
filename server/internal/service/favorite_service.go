@@ -80,7 +80,7 @@ func (s *favoriteService) GetBy(userId int64, entityType string, entityId int64)
 // AddArticleFavorite 收藏文章
 func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
 	article := repository.ArticleRepository.Get(sqls.DB(), articleId)
-	if article == nil || article.Status != constants.StatusOK {
+	if article == nil || article.Status != constants.StatusActive {
 		return errors.New("收藏的文章不存在")
 	}
 	return s.addFavorite(userId, constants.EntityArticle, articleId)
@@ -89,7 +89,7 @@ func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
 // AddTopicFavorite 收藏主题
 func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return errs.ErrTopicNotFound
 	}
 	return s.addFavorite(userId, constants.EntityTopic, topicId)

@@ -64,5 +64,5 @@ func (s *forumService) Delete(id int64) {
 }
 
 func (s *forumService) GetAll() []model.Forum {
-	return repository.ForumRepository.Find(sqls.DB(), sqls.NewCnd().Eq("status", constants.StatusOK).Asc("sort_no").Desc("id"))
+	return repository.ForumRepository.Find(sqls.DB(), sqls.NewCnd().Eq("status", constants.StatusActive).Asc("sort_no").Desc("id"))
 }

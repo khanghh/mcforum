@@ -22,11 +22,11 @@ import (
 	"bbs-go/internal/service"
 )
 
-type TopicController struct {
+type TopicsController struct {
 	Ctx iris.Context
 }
 
-func (c *TopicController) getTopicBySlugId(slugId string) (*model.Topic, error) {
+func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error) {
 	parts := strings.SplitN(slugId, ".", 2)
 	if len(parts) < 2 {
 		return nil, nil
@@ -36,7 +36,7 @@ func (c *TopicController) getTopicBySlugId(slugId string) (*model.Topic, error) 
 	cnd := sqls.NewCnd().
 		Eq("slug", topicSlug).
 		Eq("id", topicId).
-		Eq("status", constants.StatusOK)
+		Eq("status", constants.StatusActive)
 	topic := service.TopicService.FindOne(cnd)
 	return topic, nil
 }
@@ -55,7 +55,7 @@ func (c *TopicController) getTopicBySlugId(slugId string) (*model.Topic, error) 
 // }
 
 // POST /topics -> create topic
-func (c *TopicController) Post() *web.JsonResult {
+func (c *TopicsController) Post() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -83,7 +83,7 @@ func (c *TopicController) Post() *web.JsonResult {
 	return web.JsonData(payload.BuildSimpleTopic(topic))
 }
 
-func (c *TopicController) Get(ctx iris.Context) *web.JsonResult {
+func (c *TopicsController) Get(ctx iris.Context) *web.JsonResult {
 	type TopicQuery struct {
 		Tag      string `form:"tag"`
 		Username string `form:"username"`
@@ -100,7 +100,7 @@ func (c *TopicController) Get(ctx iris.Context) *web.JsonResult {
 }
 
 // GET /topics/{slug}
-func (c *TopicController) GetBy(slugId string) *web.JsonResult {
+func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
@@ -123,7 +123,7 @@ func (c *TopicController) GetBy(slugId string) *web.JsonResult {
 }
 
 // GET /topics/{slug}/edit
-func (c *TopicController) GetByEdit(slugId string) *web.JsonResult {
+func (c *TopicsController) GetByEdit(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
@@ -151,7 +151,7 @@ func (c *TopicController) GetByEdit(slugId string) *web.JsonResult {
 }
 
 // PUT /topics/{slug} // edit topic
-func (c *TopicController) PutBy(slugId string) *web.JsonResult {
+func (c *TopicsController) PutBy(slugId string) *web.JsonResult {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
@@ -179,7 +179,7 @@ func (c *TopicController) PutBy(slugId string) *web.JsonResult {
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
-func (c *TopicController) setTopicPinned(topicId int64, pinned bool) (*web.JsonResult, error) {
+func (c *TopicsController) setTopicPinned(topicId int64, pinned bool) (*web.JsonResult, error) {
 	err := service.TopicService.SetTopicPinned(topicId, pinned)
 	if err != nil {
 		return nil, err
@@ -187,7 +187,7 @@ func (c *TopicController) setTopicPinned(topicId int64, pinned bool) (*web.JsonR
 	return web.JsonSuccess(), nil
 }
 
-func (c *TopicController) setTopicRecommended(topicId int64, recommended bool) (*web.JsonResult, error) {
+func (c *TopicsController) setTopicRecommended(topicId int64, recommended bool) (*web.JsonResult, error) {
 	err := service.TopicService.SetTopicRecommended(topicId, recommended)
 	if err != nil {
 		return nil, err
@@ -196,7 +196,7 @@ func (c *TopicController) setTopicRecommended(topicId int64, recommended bool) (
 }
 
 // PATCH /topics/{slugId} => pin/unpin, recommend/unrecommend
-func (c *TopicController) PatchBy(slugId string) (*web.JsonResult, error) {
+func (c *TopicsController) PatchBy(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil
@@ -220,14 +220,14 @@ func (c *TopicController) PatchBy(slugId string) (*web.JsonResult, error) {
 }
 
 // DELETE /topics/{slug}
-func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
+func (c *TopicsController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
 	topic := service.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return web.JsonError(errs.ErrBadRequest), nil
 	}
 
@@ -243,7 +243,7 @@ func (c *TopicController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 }
 
 // POST /topics/{slugId}/reactions
-func (c *TopicController) PostByReactions(slugId string) (*web.JsonResult, error) {
+func (c *TopicsController) PostByReactions(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil
@@ -260,7 +260,7 @@ func (c *TopicController) PostByReactions(slugId string) (*web.JsonResult, error
 }
 
 // DELETE /topics/{slugId}/reactions/{userId}
-func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web.JsonResult, error) {
+func (c *TopicsController) DeleteByReactionsBy(slugId string, userId int64) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil
@@ -277,7 +277,7 @@ func (c *TopicController) DeleteByReactionsBy(slugId string, userId int64) (*web
 }
 
 // GET /topics/{slugId}/comments
-func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) {
+func (c *TopicsController) GetByComments(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil
@@ -290,7 +290,7 @@ func (c *TopicController) GetByComments(slugId string) (*web.JsonResult, error) 
 }
 
 // POST /topics/{slugId}/comments
-func (c *TopicController) PostByComments(slugId string) (*web.JsonResult, error) {
+func (c *TopicsController) PostByComments(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil

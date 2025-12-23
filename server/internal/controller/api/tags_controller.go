@@ -14,12 +14,12 @@ import (
 	"bbs-go/internal/service"
 )
 
-type TagController struct {
+type TagsController struct {
 	Ctx iris.Context
 }
 
 // 标签详情
-func (c *TagController) GetBy(tagId int64) *web.JsonResult {
+func (c *TagsController) GetBy(tagId int64) *web.JsonResult {
 	tag := cache.TagCache.Get(tagId)
 	if tag == nil {
 		return web.JsonErrorMsg("标签不存在")
@@ -28,17 +28,17 @@ func (c *TagController) GetBy(tagId int64) *web.JsonResult {
 }
 
 // 标签列表
-func (c *TagController) GetTags() *web.JsonResult {
+func (c *TagsController) GetTags() *web.JsonResult {
 	page := params.FormValueIntDefault(c.Ctx, "page", 1)
 	tags, paging := service.TagService.FindPageByCnd(sqls.NewCnd().
-		Eq("status", constants.StatusOK).
+		Eq("status", constants.StatusActive).
 		Page(page, 200).Desc("id"))
 
 	return web.JsonPageData(payload.BuildTags(tags), paging)
 }
 
 // 标签自动完成
-func (c *TagController) PostAutocomplete() *web.JsonResult {
+func (c *TagsController) PostAutocomplete() *web.JsonResult {
 	input := c.Ctx.FormValue("input")
 	tags := service.TagService.Autocomplete(input)
 	return web.JsonData(tags)

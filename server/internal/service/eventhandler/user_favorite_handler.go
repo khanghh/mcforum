@@ -21,7 +21,7 @@ func handleUserFavorite(i interface{}) {
 // sendTopicFavoriteMsg 话题被收藏
 func sendTopicFavoriteMsg(topicId, favoriteUserId int64) {
 	topic := service.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return
 	}
 	if topic.UserId == favoriteUserId {

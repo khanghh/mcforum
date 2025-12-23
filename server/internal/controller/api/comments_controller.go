@@ -17,7 +17,7 @@ import (
 	"bbs-go/internal/service"
 )
 
-type CommentController struct {
+type CommentsController struct {
 	Ctx iris.Context
 }
 
@@ -42,7 +42,7 @@ type CommentController struct {
 // 	return web.JsonSuccess()
 // }
 
-func (c *CommentController) PostByReplies(bas62Id string) *web.JsonResult {
+func (c *CommentsController) PostByReplies(bas62Id string) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -58,12 +58,12 @@ func (c *CommentController) PostByReplies(bas62Id string) *web.JsonResult {
 	if parent == nil {
 		return web.JsonError(errs.ErrCommentNotFound)
 	}
-	if parent.Status != constants.StatusOK {
+	if parent.Status != constants.StatusActive {
 		return web.JsonError(errs.ErrCommentDeleted)
 	}
 
 	topic := service.TopicService.Get(parent.TopicId)
-	if topic == nil || topic.Status != constants.StatusOK {
+	if topic == nil || topic.Status != constants.StatusActive {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
@@ -90,7 +90,7 @@ func (c *CommentController) PostByReplies(bas62Id string) *web.JsonResult {
 	return web.JsonData(payload.BuildComment(comment))
 }
 
-func (c *CommentController) GetByReplies(base62Id string) *web.JsonResult {
+func (c *CommentsController) GetByReplies(base62Id string) *web.JsonResult {
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	commentId := base62.Decode(base62Id)
 	comments, cursor, hasMore := service.CommentService.GetReplies(commentId, cursor, 10)
@@ -98,7 +98,7 @@ func (c *CommentController) GetByReplies(base62Id string) *web.JsonResult {
 	return web.JsonCursorData(payload.BuildComments(comments, currentUser, false, true), strconv.FormatInt(cursor, 10), hasMore)
 }
 
-func (c *CommentController) PostByReactions(base62Id string) (*web.JsonResult, error) {
+func (c *CommentsController) PostByReactions(base62Id string) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return nil, errs.ErrForbidden
@@ -110,7 +110,7 @@ func (c *CommentController) PostByReactions(base62Id string) (*web.JsonResult, e
 	return web.JsonSuccess(), nil
 }
 
-func (c *CommentController) DeleteByReactionsBy(base62Id string, userId int64) (*web.JsonResult, error) {
+func (c *CommentsController) DeleteByReactionsBy(base62Id string, userId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil || user.Id != userId {
 		return nil, errs.ErrForbidden

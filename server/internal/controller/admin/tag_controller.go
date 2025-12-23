@@ -52,7 +52,7 @@ func (c *TagController) PostCreate() *web.JsonResult {
 		return web.JsonErrorMsg("标签「" + t.Name + "」已存在")
 	}
 
-	t.Status = constants.StatusOK
+	t.Status = constants.StatusActive
 	t.CreateTime = dates.NowTimestamp()
 	t.UpdateTime = dates.NowTimestamp()
 

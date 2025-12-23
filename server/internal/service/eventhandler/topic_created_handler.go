@@ -20,7 +20,7 @@ func handleTopicCreatedEvent(i interface{}) {
 	// 积分
 	search.UpdateTopicIndex(e.Topic)
 	service.UserService.IncrScoreForPostTopic(e.Topic)
-	service.UserFollowService.ScanFans(e.Topic.UserId, func(fansId int64) {
+	service.UserFollowService.ScanFollowers(e.Topic.UserId, func(fansId int64) {
 		slog.With(slog.Any("topicId", e.Topic.Id), slog.Any("userId", e.Topic.UserId), slog.Any("fansId", fansId)).Info("Notify new topic created to followers")
 		if err := service.UserFeedService.Create(&model.UserFeed{
 			UserId:     fansId,

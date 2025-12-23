@@ -58,7 +58,7 @@ func (c *FansController) GetIsfollowed() *web.JsonResult {
 	current := service.UserTokenService.GetCurrent(c.Ctx)
 	var followed = false
 	if current != nil && current.Id != userId {
-		followed = service.UserFollowService.IsFollowed(current.Id, userId)
+		followed = service.UserFollowService.IsFollowing(current.Id, userId)
 	}
 	return web.JsonData(followed)
 }
@@ -66,12 +66,12 @@ func (c *FansController) GetIsfollowed() *web.JsonResult {
 func (c *FansController) GetFans() *web.JsonResult {
 	userId := params.FormValueInt64Default(c.Ctx, "userId", 0)
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFans(userId, cursor, 10)
+	userIds, cursor, hasMore := service.UserFollowService.GetFollowers(userId, cursor, 10)
 
 	current := service.UserTokenService.GetCurrent(c.Ctx)
-	var followedSet hashset.Set
+	var followedSet *hashset.Set
 	if current != nil {
-		followedSet = service.UserFollowService.IsFollowedUsers(current.Id, userIds...)
+		followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
 	}
 
 	var itemList []*payload.UserInfo
@@ -86,18 +86,18 @@ func (c *FansController) GetFans() *web.JsonResult {
 func (c *FansController) GetFollowed() *web.JsonResult {
 	userId := params.FormValueInt64Default(c.Ctx, "userId", 0)
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFollows(userId, cursor, 10)
+	userIds, cursor, hasMore := service.UserFollowService.GetFollowing(userId, cursor, 10)
 
 	current := service.UserTokenService.GetCurrent(c.Ctx)
-	var followedSet hashset.Set
+	var followedSet *hashset.Set
 	if current != nil {
 		if current.Id == userId {
-			followedSet = *hashset.New()
+			followedSet = hashset.New()
 			for _, id := range userIds {
 				followedSet.Add(id)
 			}
 		} else {
-			followedSet = service.UserFollowService.IsFollowedUsers(current.Id, userIds...)
+			followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
 		}
 	}
 
@@ -112,12 +112,12 @@ func (c *FansController) GetFollowed() *web.JsonResult {
 
 func (c *FansController) GetRecentFans() *web.JsonResult {
 	userId := params.FormValueInt64Default(c.Ctx, "userId", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFans(userId, 0, 10)
+	userIds, cursor, hasMore := service.UserFollowService.GetFollowers(userId, 0, 10)
 
 	current := service.UserTokenService.GetCurrent(c.Ctx)
-	var followedSet hashset.Set
+	var followedSet *hashset.Set
 	if current != nil {
-		followedSet = service.UserFollowService.IsFollowedUsers(current.Id, userIds...)
+		followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
 	}
 
 	var itemList []*payload.UserInfo
@@ -131,18 +131,18 @@ func (c *FansController) GetRecentFans() *web.JsonResult {
 
 func (c *FansController) GetRecentFollow() *web.JsonResult {
 	userId := params.FormValueInt64Default(c.Ctx, "userId", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFollows(userId, 0, 10)
+	userIds, cursor, hasMore := service.UserFollowService.GetFollowing(userId, 0, 10)
 
 	current := service.UserTokenService.GetCurrent(c.Ctx)
-	var followedSet hashset.Set
+	var followedSet *hashset.Set
 	if current != nil {
 		if current.Id == userId {
-			followedSet = *hashset.New()
+			followedSet = hashset.New()
 			for _, id := range userIds {
 				followedSet.Add(id)
 			}
 		} else {
-			followedSet = service.UserFollowService.IsFollowedUsers(current.Id, userIds...)
+			followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
 		}
 	}
 

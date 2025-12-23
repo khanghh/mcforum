@@ -61,9 +61,9 @@ const (
 
 // 状态
 const (
-	StatusOK      = 0 // 正常
-	StatusDeleted = 1 // 删除
-	StatusReview  = 2 // 待审核
+	StatusActive  = 0
+	StatusDeleted = 1
+	StatusReview  = 2
 )
 
 // 用户类型

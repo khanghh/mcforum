@@ -60,7 +60,7 @@ func sendReplyCommentNotification(e *event.CommentCreatedEvent) {
 	}
 
 	parentComment := service.CommentService.Get(e.Comment.ParentId)
-	if parentComment == nil || parentComment.Status != constants.StatusOK {
+	if parentComment == nil || parentComment.Status != constants.StatusActive {
 		return
 	}
 
@@ -90,7 +90,7 @@ func sendQuoteCommentNofitication(e *event.CommentCreatedEvent) {
 	}
 
 	quoteComment := service.CommentService.Get(e.Comment.QuoteId)
-	if quoteComment == nil || quoteComment.Status != constants.StatusOK {
+	if quoteComment == nil || quoteComment.Status != constants.StatusActive {
 		return
 	}
 

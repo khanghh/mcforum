@@ -79,7 +79,7 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 		return nil
 	}
 
-	if s.IsFollowed(userId, otherId) {
+	if s.IsFollowing(userId, otherId) {
 		return nil
 	}
 
@@ -130,7 +130,7 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 		// 自己关注自己，不进行处理。
 		return nil
 	}
-	if !s.IsFollowed(userId, otherId) {
+	if !s.IsFollowing(userId, otherId) {
 		return nil
 	}
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
@@ -168,8 +168,8 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 	return nil
 }
 
-// GetFans 粉丝列表
-func (s *userFollowService) GetFans(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
+// GetFollowers 粉丝列表
+func (s *userFollowService) GetFollowers(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("other_id", userId)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
@@ -189,8 +189,8 @@ func (s *userFollowService) GetFans(userId int64, cursor int64, limit int) (item
 	return
 }
 
-// GetFollows 关注列表
-func (s *userFollowService) GetFollows(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
+// GetFollowing 关注列表
+func (s *userFollowService) GetFollowing(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("user_id", userId)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
@@ -210,8 +210,8 @@ func (s *userFollowService) GetFollows(userId int64, cursor int64, limit int) (i
 	return
 }
 
-// ScanFans 扫描粉丝
-func (s *userFollowService) ScanFans(userId int64, handle func(fansId int64)) {
+// ScanFollowers 扫描粉丝
+func (s *userFollowService) ScanFollowers(userId int64, handle func(fansId int64)) {
 	var cursor int64 = 0
 	for {
 		list := s.Find(sqls.NewCnd().Eq("other_id", userId).Gt("id", cursor).Asc("id").Limit(100))
@@ -225,8 +225,8 @@ func (s *userFollowService) ScanFans(userId int64, handle func(fansId int64)) {
 	}
 }
 
-// ScanFollowed 扫描关注的用户
-func (s *userFollowService) ScanFollowed(userId int64, handle func(followUserId int64)) {
+// ScanFollowing 扫描关注的用户
+func (s *userFollowService) ScanFollowing(userId int64, handle func(followUserId int64)) {
 	var cursor int64 = 0
 	for {
 		list := s.Find(sqls.NewCnd().Eq("user_id", userId).Gt("id", cursor).Asc("id").Limit(100))
@@ -240,19 +240,20 @@ func (s *userFollowService) ScanFollowed(userId int64, handle func(followUserId 
 	}
 }
 
-func (s *userFollowService) IsFollowed(userId, otherId int64) bool {
+func (s *userFollowService) IsFollowing(userId, otherId int64) bool {
 	if userId == otherId {
 		return false
 	}
-	set := s.IsFollowedUsers(userId, otherId)
+	set := s.GetMutualFollowers(userId, otherId)
 	return set.Contains(otherId)
 }
 
-func (s *userFollowService) IsFollowedUsers(userId int64, otherIds ...int64) hashset.Set {
+// GetMutualFollowers returns the subset of given follower IDs that the user is already following back.
+func (s *userFollowService) GetMutualFollowers(userId int64, followerIds ...int64) *hashset.Set {
 	set := hashset.New()
-	list := s.Find(sqls.NewCnd().Eq("user_id", userId).In("other_id", otherIds))
+	list := s.Find(sqls.NewCnd().Eq("user_id", userId).In("other_id", followerIds))
 	for _, follow := range list {
 		set.Add(follow.OtherId)
 	}
-	return *set
+	return set
 }

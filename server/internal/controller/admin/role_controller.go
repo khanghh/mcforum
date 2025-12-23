@@ -47,7 +47,7 @@ func (c *RoleController) GetList() *web.JsonResult {
 }
 
 func (c *RoleController) GetAll_roles() *web.JsonResult {
-	list := service.RoleService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Asc("sort_no").Desc("id"))
+	list := service.RoleService.Find(sqls.NewCnd().Eq("status", constants.StatusActive).Asc("sort_no").Desc("id"))
 	return web.JsonData(list)
 }
 
@@ -115,7 +115,7 @@ func (c *RoleController) PostDelete() *web.JsonResult {
 }
 
 func (s *RoleController) GetRoles() *web.JsonResult {
-	roles := service.RoleService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Asc("sort_no").Desc("id"))
+	roles := service.RoleService.Find(sqls.NewCnd().Eq("status", constants.StatusActive).Asc("sort_no").Desc("id"))
 	return web.JsonData(roles)
 }
 

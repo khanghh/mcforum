@@ -76,7 +76,7 @@ func (s *tagService) Autocomplete(input string) []model.Tag {
 		return nil
 	}
 	return repository.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ? and name like ?",
-		constants.StatusOK, "%"+input+"%").Limit(6))
+		constants.StatusActive, "%"+input+"%").Limit(6))
 }
 
 func (s *tagService) GetOrCreate(name string) (*model.Tag, error) {
@@ -88,7 +88,7 @@ func (s *tagService) GetByName(name string) *model.Tag {
 }
 
 func (s *tagService) GetTags() []model.Tag {
-	return repository.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ?", constants.StatusOK))
+	return repository.TagRepository.Find(sqls.DB(), sqls.NewCnd().Where("status = ?", constants.StatusActive))
 }
 
 func (s *tagService) GetTagInIds(tagIds []int64) []model.Tag {

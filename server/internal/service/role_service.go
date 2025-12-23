@@ -73,7 +73,7 @@ func (s *roleService) GetByCode(code string) *model.Role {
 }
 
 func (s *roleService) GetNextSortNo() int {
-	if max := s.FindOne(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("sort_no")); max != nil {
+	if max := s.FindOne(sqls.NewCnd().Eq("status", constants.StatusActive).Desc("sort_no")); max != nil {
 		return max.SortNo + 1
 	}
 	return 0

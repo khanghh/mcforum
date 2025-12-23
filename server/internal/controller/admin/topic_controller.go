@@ -100,7 +100,7 @@ func (c *TopicController) PostAudit() *web.JsonResult {
 	if id <= 0 {
 		return web.JsonErrorMsg("id is required")
 	}
-	err := service.TopicService.UpdateColumn(id, "status", constants.StatusOK)
+	err := service.TopicService.UpdateColumn(id, "status", constants.StatusActive)
 	if err != nil {
 		return web.JsonError(err)
 	}
