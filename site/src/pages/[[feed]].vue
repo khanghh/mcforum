@@ -15,17 +15,17 @@
               <div class="relative z-10">
                 <h1
                   class="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 gaming-title py-3">
-                  {{ feed.title }}
+                  {{ feedInfo.title }}
                 </h1>
                 <p class="text-gray-300 mb-4">
-                  {{ feed.description }}
+                  {{ feedInfo.description }}
                 </p>
               </div>
             </div>
 
             <!-- Threads List -->
             <div id="threads-container" class="space-y-4">
-              <LoadMoreAsync v-slot="{ items }" :url="feed.fetchTopicsUrl">
+              <LoadMoreAsync v-slot="{ items }" :cursor="feedCursor">
                 <GamingTopicList :topics="items" show-pinned />
               </LoadMoreAsync>
             </div>
@@ -39,53 +39,63 @@
 </template>
 
 <script setup lang="ts">
+import { useApi, FeedType } from '@/composables/api'
+import type { CursorResult } from '@/composables/api'
+import type { Topic } from '~/types'
 
 const route = useRoute()
 const { t } = useI18n()
+const api = useApi()
+
 
 definePageMeta({
   layout: false,
 })
 
-type FeedInfo = {
+interface FeedInfo {
   title: string
-  fetchTopicsUrl: string
   description: string
 }
 
-const feed = computed<FeedInfo>(() => {
-  switch (route.params.feed) {
-    case 'recommended':
+const feedType: FeedType = route.params.feed as FeedType
+const allowFeeds = ['recommended', 'following', 'whats-new']
+if (!feedType || !allowFeeds.includes(feedType)) {
+  throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
+}
+
+const feedInfo = computed<FeedInfo>(() => {
+  switch (feedType) {
+    case FeedType.Recommended:
       return {
         title: t('feed.recommended.title'),
-        fetchTopicsUrl: '/api/feeds/recommended',
         description: t('feed.recommended.description'),
       }
-    case 'followed':
+    case FeedType.Following:
       return {
         title: t('feed.followed.title'),
-        fetchTopicsUrl: '/api/feeds/followed',
         description: t('feed.followed.description'),
       }
-    case 'whats-new':
+    case FeedType.WhatsNew:
+    default:
       return {
         title: t('feed.whats_new.title'),
-        fetchTopicsUrl: '/api/feeds/whats-new',
         description: t('feed.whats_new.description'),
       }
-    default:
-      throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
   }
 })
 
+
+const feedCursor: CursorResult<Topic[]> = await api.getTopicFeeds(feedType).catch(err => {
+  const status = err.statusCode || 500
+  const message = err.message || t('page.server_error')
+  throw createError({ statusCode: status, statusMessage: message, fatal: true })
+})
+
+
 useHead({
-  title: useSiteTitle(feed.value.title),
+  title: useSiteTitle(feedInfo.value.title),
   bodyAttrs: {
     class: 'bg-[#0f0f23]',
   },
 })
 </script>
-
-<style lang="scss">
-@import "~/assets/css/gaming-design.scss";
-</style>

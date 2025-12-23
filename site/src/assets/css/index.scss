@@ -1,9 +1,8 @@
 @charset "UTF-8";
-@import "./gaming-design.scss";
+@use "./gaming-design.scss";
+@use 'animate.css/animate.min.css';
 
 :root {
   --animate-duration: .3s;
   --animate-delay: 0;
 }
-
-@import 'animate.css/animate.min.css';

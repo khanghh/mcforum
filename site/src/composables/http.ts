@@ -19,7 +19,7 @@ function applyOptions(options: any = {}): any {
   return options
 }
 
-export function useHttp(url: string, options: any = {}): Promise<any> {
+export async function useHttp(url: string, options: any = {}): Promise<any> {
   options = applyOptions(options)
   if (options.headers?.['Content-Type'] === 'application/x-www-form-urlencoded' && options.body) {
     options.body = new URLSearchParams(options.body).toString()
@@ -44,6 +44,13 @@ export function useHttpPost(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'POST',
+  })
+}
+
+export function useHttpPut(url: string, options: any = {}): Promise<any> {
+  return useHttp(url, {
+    ...options,
+    method: 'PUT',
   })
 }
 

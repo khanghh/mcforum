@@ -71,7 +71,8 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+
 defineProps({
   error: {
     type: Object,

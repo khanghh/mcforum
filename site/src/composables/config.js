@@ -1,3 +1,5 @@
+import { useConfigStore } from '@/stores/config'
+
 export function useSiteTitle(...subTitles) {
   const configStore = useConfigStore()
   const titleParts = []
@@ -5,7 +7,7 @@ export function useSiteTitle(...subTitles) {
     titleParts.push(...subTitles)
   }
   if (configStore.config.siteTitle) {
-    titleParts.push(configStore.config.siteTitle)
+    titleParts?.push(configStore?.config?.siteTitle)
   }
   return titleParts.join(' - ')
 }

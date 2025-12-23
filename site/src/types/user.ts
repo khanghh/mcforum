@@ -12,7 +12,8 @@ export interface UserInfo {
   fansCount: number
   followCount: number
   score: number
-  description: string
+  bio: string
+  statusMessage: string
   createTime: number
   forbidden: boolean
   followed: boolean
@@ -23,7 +24,6 @@ export interface UserDetail extends UserInfo {
   backgroundImage: string
   smallBackgroundImage: string
   homePage: string
-  status: number
 }
 
 export interface UserProfile extends UserDetail {

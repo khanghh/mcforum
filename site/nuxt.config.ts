@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // ssr: false,
+  srcDir: 'src/',
+  compatibilityDate: '2024-09-15',
   modules: [
     '@vueuse/nuxt', // https://color-mode.nuxtjs.org/#configuration
     '@pinia/nuxt',
@@ -26,7 +28,7 @@ export default defineNuxtConfig({
         // See IntersectionObserver documentation
       },
     }],
-    '@nuxtjs/color-mode',
+    // '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@nuxt/eslint',
   ],
@@ -35,6 +37,7 @@ export default defineNuxtConfig({
   ],
 
   imports: {
+    autoImport: true,
     dirs: [
       'apis',
       'stores',
@@ -59,16 +62,14 @@ export default defineNuxtConfig({
     '~/assets/css/index.scss',
   ],
 
-  colorMode: {
-    preference: 'system', // default value of $colorMode.preference
-    fallback: 'light', // fallback value if not system preference found
-    storageKey: 'bbsgo-color-mode',
-    classPrefix: 'theme-',
-    classSuffix: '',
-  },
-  srcDir: 'src/',
+  // colorMode: {
+  //   preference: 'system', // default value of $colorMode.preference
+  //   fallback: 'light', // fallback value if not system preference found
+  //   storageKey: 'bbsgo-color-mode',
+  //   classPrefix: 'theme-',
+  //   classSuffix: '',
+  // },
 
-  compatibilityDate: '2024-09-15',
 
   nitro: {
     routeRules: {

@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <LoadMoreAsync v-slot="{ items }" url="/api/comment/list" :params="{ userId: user.id, entityType: 'topic' }">
+    <LoadMoreAsync v-slot="{ items }" :cursor="activitiesCursor">
       <div v-for="item in items" :key="item.id" class="gaming-card rounded-xl p-4 border-l-4 border-blue-500/50">
         <div class="flex items-start gap-4">
           <FontAwesome :icon="['fas', 'comment-dots']" class="text-2xl text-blue-400 mt-1" />
@@ -16,8 +16,12 @@
   </div>
 </template>
 
-<script setup>
-defineProps({ user: { type: Object, required: true } })
+<script setup lang="ts">
+import { CursorResult } from '@/composables/api'
+
+const props = defineProps({ user: { type: Object, required: true } })
+
+const activitiesCursor = new CursorResult('/api/comment/list', { userId: props.user.id, entityType: 'topic' })
 </script>
 
 <style scoped>

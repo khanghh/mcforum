@@ -7,8 +7,7 @@
           <LoadMoreAsync
             ref="loadMore"
             v-slot="{ items }"
-            url="/api/search/topic"
-            :params="params">
+            :cursor="searchCursor">
             <search-topic-list :results="items" />
           </LoadMoreAsync>
         </div>
@@ -31,6 +30,9 @@ const params = reactive({
   nodeId: route.query.nodeId || 0,
   timeRange: route.query.timeRange,
 })
+
+import { CursorResult } from '@/composables/api'
+const searchCursor = new CursorResult('/api/search/topic', params)
 
 watch(
   () => route.query,

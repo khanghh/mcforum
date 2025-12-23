@@ -28,17 +28,12 @@
               class="px-3 py-1 bg-gradient-to-r from-red-600 to-red-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
               <FontAwesome :icon="['fas', 'shield-alt']" /> ADMIN
             </span>
-            <span
-              class="px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg">
-              LVL
-              {{ calculateLevel(user.score) }}
-            </span>
           </div>
           <div class="flex items-center gap-2 mt-1">
-            <div v-if="user.statusMessage"
-              class="gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center">
+            <div
+              :class="['gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center', { invisible: !user.statusMessage }]">
               <FontAwesome :icon="['fas', 'quote-left']" class="text-purple-400 text-sm mr-2" />
-              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage }}</span>
+              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage || ' ' }}</span>
             </div>
           </div>
         </div>

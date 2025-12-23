@@ -6,7 +6,7 @@
       </div>
     </div>
     <template v-else>
-      <slot name="default" :items="pageData.items" />
+      <slot name="default" :items="pageItems" />
 
       <!-- Custom Loading Skeleton -->
       <div v-if="loading" class="py-4 space-y-4">
@@ -28,7 +28,7 @@
 
       <div class="text-center py-8">
         <button
-          v-if="pageData.hasMore"
+          v-if="pageHasMore"
           class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold font-['Saira Semi Condensed'] tracking-wider shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 mx-auto min-w-[200px]"
           :disabled="disabled"
           @click="loadMore">
@@ -44,103 +44,62 @@
   </div>
 </template>
 
-<script setup>
-defineExpose({
-  refresh,
-  unshiftResults,
-})
+<script setup lang="ts">
+import { CursorResult } from '@/composables/api'
+import { ref, computed } from 'vue'
 
-const props = defineProps({
-  url: {
-    type: String,
-    required: true,
-  },
-  params: {
-    type: Object,
-    default() {
-      return {}
-    },
-  },
-})
+
+type Props = {
+  cursor: CursorResult<any[]>
+}
+
+const props = defineProps<Props>()
 
 const loading = ref(false)
-const pageData = reactive({
-  cursor: '',
-  items: [],
-  hasMore: true,
-  firstLoaded: false,
-})
+const pageCursor = ref<any>('')
+const pageItems = ref<any[]>([])
+const pageHasMore = ref<boolean>(false)
 
-const disabled = computed(() => {
-  return loading.value || !pageData.hasMore
-})
+// initialize page data from the passed cursor (do not auto-load)
+pageItems.value = props.cursor.items ?? []
+pageHasMore.value = props.cursor.hasMore ?? false
+pageCursor.value = props.cursor.cursor
 
-const empty = computed(() => {
-  return pageData.firstLoaded && pageData.hasMore === false && pageData.items.length === 0
-})
+// expose API after functions are declared
 
-const { data: first } = await useAsyncData(
-  `load-more:${props.url}:${JSON.stringify(props.params)}`,
-  async () => {
-    try {
-      const data = await useHttpGet(props.url, {
-        params: props.params || {},
-      })
-      return data
-    } catch (e) {
-      console.error(e)
-      return null
-    }
-  },
-  {
-    watch: [() => props.url, () => props.params],
-  },
-)
+const disabled = computed(() => loading.value || !pageHasMore.value)
 
-if (first.value) {
-  renderData(first.value)
-  pageData.firstLoaded = true
-}
+const empty = computed(() => pageHasMore.value === false && pageItems.value.length === 0)
+
+// Do not auto-load on mounted — render current `cursor.items` only.
 
 async function loadMore() {
   loading.value = true
   try {
-    const filters = Object.assign(props.params || {}, {
-      cursor: pageData.cursor || '',
+    const newItems = await props.cursor.loadNext()
+    if (newItems && newItems.length) {
+      newItems.forEach((it) => pageItems.value.push(it))
+    }
+    pageHasMore.value = props.cursor.hasMore
+    pageCursor.value = props.cursor.cursor
+  } catch (err: any) {
+    throw createError({
+      statusCode: err.statusCode || 500,
+      statusMessage: err.message || 'Failed to load more items',
     })
-    const data = await useHttpGet(props.url, {
-      params: filters,
-    })
-    renderData(data)
-  } catch (err) {
-    console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-function refresh() {
-  pageData.cursor = ''
-  pageData.items = []
-  pageData.hasMore = true
-  return loadMore()
-}
-
-function renderData(data) {
-  data = data || {}
-  pageData.cursor = data.cursor
-  pageData.hasMore = data.hasMore
-
-  if (data.items && data.items.length) {
-    data.items.forEach((item) => {
-      pageData.items.push(item)
-    })
+function unshiftResults(item: any) {
+  if (item && pageItems.value) {
+    pageItems.value.unshift(item)
   }
 }
 
-function unshiftResults(item) {
-  if (item && pageData && pageData.items) {
-    pageData.items.unshift(item)
-  }
-}
+// expose helpers
+defineExpose({
+  unshiftResults,
+})
 </script>

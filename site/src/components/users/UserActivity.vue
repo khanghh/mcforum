@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <LoadMoreAsync v-slot="{ items }" url="/api/activity/list" :params="{ userId: user.id }">
+    <LoadMoreAsync v-slot="{ items }" :cursor="activityCursor">
       <div v-for="item in items" :key="item.id" class="gaming-card rounded-xl p-4">
         <div class="flex items-start gap-4">
           <div class="flex-shrink-0 mt-1 text-2xl text-purple-400">
@@ -27,8 +27,12 @@
   </div>
 </template>
 
-<script setup>
-defineProps({ user: { type: Object, required: true } })
+<script setup lang="ts">
+import { CursorResult } from '@/composables/api'
+
+const props = defineProps({ user: { type: Object, required: true } })
+
+const activityCursor = new CursorResult('/api/activity/list', { userId: props.user.id })
 
 function iconFor(item) {
   const t = (item.type || item.action || item.kind || '').toLowerCase()

@@ -61,21 +61,31 @@
           </ul>
         </div>
 
-        <!-- Community Stats -->
+        <!-- Forum Stats (moved from sidebar) -->
         <div>
-          <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">COMMUNITY</h4>
-          <div class="space-y-3">
-            <div class="gaming-card p-3 rounded-lg">
-              <div class="text-xs text-gray-400 mb-1">Active Players</div>
-              <div class="text-2xl font-bold text-green-400 gaming-title">2,847</div>
-            </div>
-            <div class="gaming-card p-3 rounded-lg">
-              <div class="text-xs text-gray-400 mb-1">Total Members</div>
-              <div class="text-2xl font-bold text-purple-400 gaming-title">458K</div>
-            </div>
-            <div class="gaming-card p-3 rounded-lg">
-              <div class="text-xs text-gray-400 mb-1">Online Now</div>
-              <div class="text-2xl font-bold text-blue-400 gaming-title">2.4K</div>
+          <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">FORUM STATS</h4>
+          <div class="gaming-card rounded-xl p-4 gaming-title">
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Threads</span>
+                <span class="font-bold text-gray-300">84</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Posts</span>
+                <span class="font-bold text-gray-300">1232</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Members</span>
+                <span class="font-bold text-gray-300">458</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Visits</span>
+                <span class="font-bold text-gray-300">2.4K</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Newest Member</span>
+                <a href="#" class="font-bold text-blue-300 hover:text-purple-400 transition-colors">admin</a>
+              </div>
             </div>
           </div>
         </div>

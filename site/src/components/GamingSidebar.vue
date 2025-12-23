@@ -4,7 +4,6 @@
       <SidebarCategories />
       <SidebarServerStatus />
       <SidebarTopContributors />
-      <SidebarForumStats />
     </div>
   </aside>
 </template>
@@ -13,5 +12,4 @@
 import SidebarCategories from './sidebar/SidebarCategories.vue'
 import SidebarServerStatus from './sidebar/SidebarServerStatus.vue'
 import SidebarTopContributors from './sidebar/SidebarTopContributors.vue'
-import SidebarForumStats from './sidebar/SidebarForumStats.vue'
 </script>

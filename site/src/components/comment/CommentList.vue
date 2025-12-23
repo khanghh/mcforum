@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <LoadMoreAsync ref="loadMore" v-slot="{ items }" :url="commentListUrl">
+    <LoadMoreAsync ref="loadMore" v-slot="{ items }" :cursor="commentCursor">
       <TransitionGroup name="comment" tag="div" class="space-y-6">
         <div v-for="comment in items" :key="comment.id"
           class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6">
@@ -98,6 +98,8 @@ const myReply = reactive({
 })
 
 const commentListUrl = computed(() => `/api/topics/${route.params.slug}/comments`)
+import { CursorResult } from '@/composables/api'
+const commentCursor = computed(() => new CursorResult(commentListUrl.value))
 
 const userStore = useUserStore()
 const loadMore = ref(null)

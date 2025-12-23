@@ -47,6 +47,7 @@
 const i18n = useI18n()
 const route = useRoute()
 const user = await useHttpGet(`/api/users/${route.params.username}`)
+
 const activeTab = ref('fans')
 
 useHead({
