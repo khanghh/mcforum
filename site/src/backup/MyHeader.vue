@@ -32,18 +32,18 @@
           <div v-if="user" class="navbar-item has-dropdown is-hoverable user-menus">
             <div class="navbar-link">
               <MyAvatar :user="user" :size="24" />
-              <span :to="`/user/${user.id}`" class="user-menus-nickname ellipsis">{{ user.nickname }}</span>
+              <span :to="`/users/${user.username}`" class="user-menus-nickname ellipsis">{{ user.nickname }}</span>
             </div>
             <div class="navbar-dropdown">
-              <nuxt-link class="navbar-item" :to="`/user/${user.id}`">
+              <nuxt-link class="navbar-item" :to="`/users/${user.username}`">
                 <icon name="UserRound" />
                 <span>{{ $t('navbar.profile') }}</span>
               </nuxt-link>
-              <nuxt-link class="navbar-item" to="/user/favorites">
+              <nuxt-link class="navbar-item" to="/users/me/favorites">
                 <icon name="Star" />
                 <span>{{ $t('navbar.favorites') }}</span>
               </nuxt-link>
-              <nuxt-link class="navbar-item" to="/user/profile">
+              <nuxt-link class="navbar-item" to="/users/me/profile">
                 <icon name="Settings" />
                 <span>{{ $t('navbar.settings') }}</span>
               </nuxt-link>

@@ -36,7 +36,7 @@ const props = defineProps({
 
 
 // internal defaults
-const fallback = '/images/steve.png'
+const fallback = '/images/avatars/steve.png'
 const altText = computed(() => (props.username ? `${props.username}` : 'avatar'))
 
 const sizeParam = computed(() => (typeof props.size === 'number' ? props.size : parseInt(String(props.size)) || 48))

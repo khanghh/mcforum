@@ -3,7 +3,7 @@
     <div class="widget-header">
       <span>{{ $t("widget.title.personal_info") }}</span>
       <div class="slot">
-        <nuxt-link to="/user/profile">{{ $t('profile.actions.edit') }}</nuxt-link>
+        <nuxt-link to="/users/me/profile">{{ $t('profile.actions.edit') }}</nuxt-link>
       </div>
     </div>
     <div class="widget-content stable">
@@ -20,7 +20,7 @@
           {{ $t('form.label.bio') }}
         </div>
         <div class="svalue">
-          {{ user.description }}
+          {{ user.bio }}
         </div>
       </div>
       <div

@@ -44,7 +44,7 @@
                 </div>
                 <div>
                   <div class="flex items-center gap-2 flex-wrap">
-                    <nuxt-link :to="`/user/${topic.user.id}`"
+                    <nuxt-link :to="`/users/${topic.user.username}`"
                       class="font-bold text-purple-300 gaming-title text-lg hover:text-purple-400 transition-colors"
                       itemprop="author">
                       {{ topic.user.nickname }}

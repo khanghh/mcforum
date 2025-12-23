@@ -4,7 +4,7 @@
       {{ $t('page.points_history') }}
     </div>
     <div class="widget-content">
-      <LoadMoreAsync v-slot="{ items }" url="/api/user/score_logs">
+      <LoadMoreAsync v-slot="{ items }" url="/api/users/score_logs">
         <ul class="score-logs">
           <li
             v-for="scoreLog in items"

@@ -3,7 +3,7 @@
     v-if="user"
     class="avatar-a"
     target="_blank"
-    :to="`/user/${user.id}`"
+    :to="`/users/${user.username}`"
     :class="[sizeClass]"
     :style="extraStyle">
     <img

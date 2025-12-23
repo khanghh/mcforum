@@ -11,7 +11,7 @@
               class="topic-inline-avatar"
               :user="topic.user"
               :size="20" />
-            <nuxt-link :to="`/user/${topic.user.id}`" class="topic-nickname">
+            <nuxt-link :to="`/users/${topic.user.username}`" class="topic-nickname">
               {{ topic.user.nickname }}
             </nuxt-link>
           </div>

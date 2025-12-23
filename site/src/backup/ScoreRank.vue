@@ -8,7 +8,7 @@
         <li v-for="user in scoreRank" :key="user.id">
           <my-avatar :user="user" :size="35" />
           <div class="score-user-info">
-            <nuxt-link :to="'/user/' + user.id" class="score-nickname">
+            <nuxt-link :to="'/users/' + user.id" class="score-nickname">
               {{ user.nickname }}
             </nuxt-link>
             <p class="score-desc">
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-const { data: scoreRank } = useAsyncData(() => useHttpGet('/api/user/score/rank'),
+const { data: scoreRank } = useAsyncData(() => useHttpGet('/api/users/score/rank'),
 )
 </script>
 

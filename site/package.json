@@ -27,7 +27,8 @@
     "eslint": "9.23.0",
     "nuxt": "4.2.2",
     "sass": "1.70.0",
-    "typescript": "5.5.3"
+    "typescript": "5.5.3",
+    "vite-plugin-optimize-css-modules": "1.2.0"
   },
   "dependencies": {
     "@pinia/nuxt": "0.11.3",

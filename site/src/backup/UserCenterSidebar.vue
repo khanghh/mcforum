@@ -67,7 +67,7 @@ function forbidden(days) {
 
 async function doForbidden(days) {
   try {
-    await useHttpPostForm('/api/user/forbidden', {
+    await useHttpPostForm('/api/users/forbidden', {
       body: {
         userId: localUser.value.id,
         days,
@@ -83,7 +83,7 @@ async function doForbidden(days) {
 
 async function removeForbidden() {
   try {
-    await useHttpPostForm('/api/user/forbidden', {
+    await useHttpPostForm('/api/users/forbidden', {
       body: {
         userId: localUser.value.id,
         days: 0,

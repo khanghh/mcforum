@@ -12,7 +12,7 @@
             <div class="flex-1 min-w-0">
               <!-- Comment Meta -->
               <div class="flex items-center gap-2 flex-wrap mb-2">
-                <nuxt-link :to="`/user/${comment.user.id}`"
+                <nuxt-link :to="`/users/${comment.user.username}`"
                   class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
                   {{ comment.user.nickname }}
                 </nuxt-link>

@@ -135,7 +135,7 @@ async function signup() {
     if (redirect) {
       useLinkTo(redirect)
     } else {
-      useLinkTo(`/user/${user.id}`)
+      useLinkTo(`/users/${user.id}`)
     }
   } catch (err) {
     useCatchError(err)

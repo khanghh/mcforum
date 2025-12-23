@@ -7,7 +7,7 @@
       <ul>
         <li>
           <span>{{ $t("profile.info.points") }}</span><br>
-          <nuxt-link to="/user/scores">
+          <nuxt-link to="/users/scores">
             <b>{{ user.score }}</b>
           </nuxt-link>
         </li>

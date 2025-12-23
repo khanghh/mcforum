@@ -1,10 +1,5 @@
 @charset "UTF-8";
-@import "./common";
-@import "./topic";
-@import "./link";
-@import "./highlightjs";
-@import "./nav";
-@import "./signin";
+@import "./gaming-design.scss";
 
 :root {
   --animate-duration: .3s;

@@ -110,7 +110,7 @@ async function signin() {
     if (redirect) {
       useLinkTo(redirect)
     } else {
-      useLinkTo(`/user/${user.id}`)
+      useLinkTo(`/users/${user.username}`)
     }
   } catch (e) {
     useCatchError(e)

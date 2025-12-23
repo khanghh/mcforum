@@ -75,6 +75,9 @@ importers:
       typescript:
         specifier: 5.5.3
         version: 5.5.3
+      vite-plugin-optimize-css-modules:
+        specifier: 1.2.0
+        version: 1.2.0(vite@7.3.0(jiti@2.6.1)(sass@1.70.0)(terser@5.44.1)(yaml@2.8.2))
 
 packages:
 
@@ -4976,6 +4979,11 @@ packages:
     peerDependenciesMeta:
       '@nuxt/kit':
         optional: true
+
+  vite-plugin-optimize-css-modules@1.2.0:
+    resolution: {integrity: sha512-5kOEVyif9qSoLAQDmN6nXW2fgz66oLXGlapKwY7u8nPVaVoyabkioQqf90s0gFvssCAY2bwBndx5sK7LF+i2rA==}
+    peerDependencies:
+      vite: ^6.0.0 || ^5.0.0 || ^4.0.0 || ^3.0.0 || ^2.0.0
 
   vite-plugin-vue-tracer@1.2.0:
     resolution: {integrity: sha512-a9Z/TLpxwmoE9kIcv28wqQmiszM7ec4zgndXWEsVD/2lEZLRGzcg7ONXmplzGF/UP5W59QNtS809OdywwpUWQQ==}
@@ -10806,6 +10814,10 @@ snapshots:
       '@nuxt/kit': 4.2.2(magicast@0.5.1)
     transitivePeerDependencies:
       - supports-color
+
+  vite-plugin-optimize-css-modules@1.2.0(vite@7.3.0(jiti@2.6.1)(sass@1.70.0)(terser@5.44.1)(yaml@2.8.2)):
+    dependencies:
+      vite: 7.3.0(jiti@2.6.1)(sass@1.70.0)(terser@5.44.1)(yaml@2.8.2)
 
   vite-plugin-vue-tracer@1.2.0(vite@7.3.0(jiti@2.6.1)(sass@1.70.0)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.26(typescript@5.5.3)):
     dependencies:

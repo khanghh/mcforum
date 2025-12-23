@@ -21,12 +21,12 @@
     <div class="profile-info">
       <div class="metas">
         <h1 class="nickname">
-          <nuxt-link :to="'/user/' + localUser.id">
+          <nuxt-link :to="'/users/' + localUser.id">
             {{ localUser.nickname }}
           </nuxt-link>
         </h1>
-        <div v-if="localUser.description" class="description">
-          <p>{{ localUser.description }}</p>
+        <div v-if="localUser.bio" class="description">
+          <p>{{ localUser.bio }}</p>
         </div>
       </div>
       <div class="action-btns">
@@ -78,14 +78,14 @@ async function uploadBackground(e) {
     const ret = await useHttpPostMultipart('/api/upload', formData)
 
     // 设置背景
-    await useHttpPostForm('/api/user/set_background_image', {
+    await useHttpPostForm('/api/users/set_background_image', {
       body: {
         backgroundImage: ret.url,
       },
     })
 
     // 重新加载数据
-    localUser.value = await userStore.fetchCurrent()
+    localUser.value = await userStore.getCurrent()
 
     useMsgSuccess(i18n.t('message.set_cover_photo_success'))
   } catch (e) {

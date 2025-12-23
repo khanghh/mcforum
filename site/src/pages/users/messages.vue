@@ -8,7 +8,7 @@
     </div>
 
     <div class="widget-content">
-      <LoadMoreAsync v-slot="{ items }" url="/api/user/messages">
+      <LoadMoreAsync v-slot="{ items }" url="/api/users/messages">
         <ul v-if="items && items.length" class="message-list">
           <li
             v-for="message in items"
@@ -20,7 +20,7 @@
             <div class="message-item-right">
               <div class="message-item-meta">
                 <span v-if="message.from.id > 0" class="msg-nickname">
-                  <nuxt-link :to="'/user/' + message.from.id" target="_blank">
+                  <nuxt-link :to="'/users/' + message.from.id" target="_blank">
                     {{
                       message.from.nickname
                     }}

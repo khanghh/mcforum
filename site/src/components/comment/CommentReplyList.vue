@@ -8,14 +8,14 @@
       <div class="flex-1 min-w-0">
         <!-- Reply Meta -->
         <div class="flex items-center gap-2 flex-wrap mb-1">
-          <nuxt-link :to="`/user/${reply.user.id}`"
+          <nuxt-link :to="`/users/${reply.user.username}`"
             class="font-bold text-sm text-purple-300 hover:text-purple-400 transition-colors">
             {{ reply.user.nickname }}
           </nuxt-link>
 
           <template v-if="reply.quote">
             <span class="text-xs text-gray-500">{{ $t('feed.replied_to') }}</span>
-            <nuxt-link :to="`/user/${reply.quote.user.id}`"
+            <nuxt-link :to="`/users/${reply.quote.user.username}`"
               class="font-bold text-sm text-purple-300 hover:text-purple-400 transition-colors">
               {{ reply.quote.user.nickname }}
             </nuxt-link>

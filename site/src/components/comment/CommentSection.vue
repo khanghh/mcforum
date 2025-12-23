@@ -12,7 +12,7 @@
     <template v-if="isLogin">
       <div v-if="isNeedEmailVerify" class="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-200">
         <i18n-t keypath="publish.verify_email_action" tag="p">
-          <nuxt-link to="/user/profile/account" class="font-bold underline hover:text-yellow-100">
+          <nuxt-link to="/users/me/profile" class="font-bold underline hover:text-yellow-100">
             {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings') }}
           </nuxt-link>
         </i18n-t>

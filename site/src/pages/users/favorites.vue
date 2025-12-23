@@ -8,7 +8,7 @@
     </div>
 
     <div class="widget-content">
-      <LoadMoreAsync v-slot="{ items }" url="/api/user/favorites">
+      <LoadMoreAsync v-slot="{ items }" url="/api/users/favorites">
         <ul v-if="items && items.length" class="favorite-list">
           <li
             v-for="item in items"
@@ -28,7 +28,7 @@
               </div>
               <div class="favorite-meta">
                 <span class="favorite-meta-item">
-                  <nuxt-link :to="'/user/' + item.user.id">
+                  <nuxt-link :to="'/users/' + item.user.id">
                     {{
                       item.user.nickname
                     }}

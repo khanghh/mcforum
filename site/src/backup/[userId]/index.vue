@@ -52,7 +52,7 @@
               <div class="p-6">
                 <!-- Topics Content -->
                 <div v-show="activeTab === 'topics'" class="space-y-4">
-                  <LoadMoreAsync v-slot="{ items }" url="/api/topic/user/topics" :params="{ userId: user.id }">
+                  <LoadMoreAsync v-slot="{ items }" url="/api/topic/users/topics" :params="{ userId: user.id }">
                     <GamingTopicList :topics="items" :show-pinned="false" />
                   </LoadMoreAsync>
                 </div>
@@ -92,7 +92,7 @@
 
                 <!-- Favorites Content -->
                 <div v-show="activeTab === 'favorites'" class="space-y-4">
-                  <LoadMoreAsync v-slot="{ items }" url="/api/topic/user/favorites" :params="{ userId: user.id }">
+                  <LoadMoreAsync v-slot="{ items }" url="/api/topic/users/favorites" :params="{ userId: user.id }">
                     <GamingTopicList :topics="items" :show-pinned="false" />
                   </LoadMoreAsync>
                 </div>
@@ -117,7 +117,7 @@ definePageMeta({
 
 const i18n = useI18n()
 const route = useRoute()
-const user = await useHttpGet(`/api/user/${route.params.userId}`)
+const user = await useHttpGet(`/api/users/${route.params.userId}`)
 const activeTab = ref('topics')
 
 useHead({

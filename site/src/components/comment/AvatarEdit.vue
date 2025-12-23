@@ -37,7 +37,7 @@ export default {
         const ret = await useHttpPostMultipart('/api/upload', formData)
 
         // 设置头像
-        await useHttpPostForm('/api/user/update/avatar', {
+        await useHttpPostForm('/api/users/update/avatar', {
           body: {
             avatar: ret.url,
           },
@@ -45,7 +45,7 @@ export default {
 
         // 重新加载数据
         const userStore = useUserStore()
-        userStore.fetchCurrent()
+        userStore.getCurrent()
         useMsgSuccess('头像更新成功')
       }
       catch (e) {

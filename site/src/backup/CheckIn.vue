@@ -63,7 +63,7 @@
           <li v-for="rank in checkInRank" :key="rank.id" class="rounded">
             <my-avatar :user="rank.user" :size="30" class="rank-user-avatar" />
             <div class="rank-user-info">
-              <nuxt-link :to="`/user/${rank.user.id}`">
+              <nuxt-link :to="`/users/${rank.user.id}`">
                 {{ rank.user.nickname }}
               </nuxt-link>
               <p>{{ usePrettyDate(rank.updateTime) }}</p>

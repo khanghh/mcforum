@@ -17,5 +17,4 @@ export default withNuxt().overrideRules({
     ignores: ['pre', 'textarea'],
     allowEmptyLines: false,
   }],
-  '@stylistic/brace-style': 'error',
 })

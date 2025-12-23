@@ -16,7 +16,7 @@
               邮箱验证失败<span v-if="data.message" class="has-text-danger">
                 &nbsp;原因：{{ data.message }}
               </span>，请前往&nbsp;<nuxt-link
-                to="/user/profile"
+                to="/users/me/profile"
                 style="font-weight: 700">
                 个人资料 &gt; 账号设置
               </nuxt-link>&nbsp;页面尝试重新发送验证邮件。
@@ -37,7 +37,7 @@ const data = reactive({
 const route = useRoute()
 try {
   const resp = await useHttpPost(
-    `/api/user/verify_email?token=${route.query.token}`,
+    `/api/users/verify_email?token=${route.query.token}`,
   )
   data.success = true
   data.email = resp.email

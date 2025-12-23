@@ -6,7 +6,7 @@
         <span class="count">{{ user.fansCount }}</span>
       </div>
       <div class="slot">
-        <nuxt-link :to="`/user/${user.id}/fans`">{{ $t('widget.actions.view_more') }}</nuxt-link>
+        <nuxt-link :to="`/users/${user.id}/fans`">{{ $t('widget.actions.view_more') }}</nuxt-link>
       </div>
     </div>
     <div class="widget-content">

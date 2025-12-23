@@ -44,13 +44,15 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'BBS-GO',
+      link: [
+        { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+      ],
       htmlAttrs: { class: 'theme-light has-navbar-fixed-top' },
       script: [],
-      link: [
-        { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' },
-      ],
-    },
+    }
   },
 
   css: [
@@ -76,6 +78,12 @@ export default defineNuxtConfig({
       '/admin/**': {
         proxy: `${import.meta.env.SERVER_URL}/admin/**`,
       },
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      // BASE_URL: 'http://localhost:3001',
     },
   },
 
@@ -162,4 +170,5 @@ export default defineNuxtConfig({
     exposeConfig: true,
     viewer: true,
   },
+
 })

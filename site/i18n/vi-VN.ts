@@ -128,7 +128,7 @@ export default {
     by_tag: 'Thẻ {tag}',
     not_found: 'Không tìm thấy trang',
     errors: {
-      internal_server_error: 'Đã xảy ra lỗi. Nếu bạn cho rằng đây là lỗi hệ thống, vui lòng báo cho đội quản trị viên.',
+      internal_server_error: 'Đã xảy ra lỗi. Nếu bạn cho rằng đây là lỗi hệ thống, vui lòng báo cho quản trị viên.',
       no_permission: 'Bạn không có quyền truy cập trang này',
       page_not_found: 'Trang bạn yêu cầu không tồn tại hoặc đã bị xóa',
     }

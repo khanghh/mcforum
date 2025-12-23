@@ -2,7 +2,7 @@
   <div class="dropdown-trigger">
     <nuxt-link
       :class="{ 'msg-flicker': msgcount > 0 }"
-      to="/user/messages"
+      to="/users/messages"
       class="msgicon"
       :title="$t('page.messages')">
       <icon name="Mail" size="1.5rem" />
@@ -14,7 +14,7 @@
 <script setup>
 const msgcount = ref(0)
 const messages = ref([])
-const { data } = await useAsyncData(() => useHttpGet('/api/user/msgrecent'))
+const { data } = await useAsyncData(() => useHttpGet('/api/users/msgrecent'))
 msgcount.value = data.value.count || 0
 messages.value = data.value.messages || []
 </script>

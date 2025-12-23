@@ -2,7 +2,7 @@
   <div class="relative inline-block" ref="dropdownRef">
     <button class="flex items-center space-x-2 focus:outline-none" @click="toggleDropdown">
       <Avatar :src="avatarSrc" :username="username"
-        class="w-10 h-10 rounded-lg object-cover border border-purple-600 overflow-hidden" />
+        class='w-10 h-10 object-cover border border-purple-600 rounded-lg' />
     </button>
 
     <!-- Dropdown Menu (light style) -->
@@ -12,15 +12,15 @@
         {{ userStore.user?.nickname }}
       </div>
       <div class="border-t border-gray-100 my-1"></div>
-      <a :href="`/user/${userStore.user?.id}`"
+      <a :href="`/users/${userStore.user?.username}`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <FontAwesome :icon="['fas', 'user']" class="mr-2 w-4 text-gray-500" /> Profile
       </a>
-      <a href="/user/favorites"
+      <a :href="`/users/${userStore.user?.username}/favorites`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <FontAwesome :icon="['fas', 'heart']" class="mr-2 w-4 text-gray-500" /> Favorite
       </a>
-      <a href="/user/profile"
+      <a href="/users/me/profile"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <FontAwesome :icon="['fas', 'cog']" class="mr-2 w-4 text-gray-500" /> Account Settings
       </a>

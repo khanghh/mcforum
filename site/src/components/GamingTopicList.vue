@@ -17,8 +17,8 @@
           <div class="flex items-center gap-2">
             <Avatar :src="topic.user.avatar" :username="topic.user.nickname" :size="24"
               class="w-6 h-6 rounded border border-purple-500/50 flex-shrink-0" />
-            <nuxt-link :to="`/user/${topic.user.id}`"
-              class="font-bold text-purple-300 gaming-title text-sm hover:text-purple-200 transition-colors">
+            <nuxt-link :to="`/users/${topic.user.username}`"
+              class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors">
               {{ topic.user.nickname }}
             </nuxt-link>
           </div>

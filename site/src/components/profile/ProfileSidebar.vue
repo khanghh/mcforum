@@ -1,12 +1,13 @@
 <template>
   <div class="lg:col-span-1">
-    <div class="gaming-card rounded-2xl p-6 lg:sticky lg:top-24 space-y-6">
-      <div v-if="user.description">
+    <div
+      class="bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] border border-[rgba(139,92,246,0.2)] rounded-2xl p-6 lg:sticky lg:top-24 space-y-6">
+      <div v-if="user.bio">
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
           <FontAwesome :icon="['fas', 'user']" class="mr-2" /> Bio
         </h3>
         <p class="mt-3 text-gray-300 text-sm leading-relaxed">
-          {{ user.description }}
+          {{ user.bio }}
         </p>
       </div>
 
@@ -44,13 +45,6 @@
             </div>
             <span class="text-sm font-bold gaming-title">{{ user.location || 'Unknown' }}</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
-            <div class="flex items-center gap-2">
-              <FontAwesome :icon="['fas', 'star']" class="text-indigo-400 text-sm" />
-              <span class="text-sm font-bold text-gray-400">Points</span>
-            </div>
-            <span class="text-sm font-bold gaming-title">{{ user.score || 0 }}</span>
-          </div>
         </div>
       </div>
 
@@ -70,7 +64,7 @@
           </div>
           <div class="relative w-full h-3 bg-gray-700/50 rounded-full overflow-hidden">
             <div
-              class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-full animate-pulse"
+              class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-full"
               style="width: 75%;">
             </div>
           </div>

@@ -127,7 +127,7 @@ async function handleCommand(command) {
 
 async function forbidden(days) {
   try {
-    await useHttpPostForm('/api/user/forbidden', {
+    await useHttpPostForm('/api/users/forbidden', {
       body: {
         userId: topic.value.user.id,
         days,

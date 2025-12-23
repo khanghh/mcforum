@@ -10,7 +10,7 @@
             <div class="tabs">
               <ul>
                 <li :class="{ 'is-active': activeTab === 'fans' }">
-                  <nuxt-link :to="`/user/${user.id}/fans`">
+                  <nuxt-link :to="`/users/${user.username}/fans`">
                     <span class="icon is-small">
                       <icon name="MessageSquareText" />
                     </span>
@@ -18,7 +18,7 @@
                   </nuxt-link>
                 </li>
                 <li :class="{ 'is-active': activeTab === 'followed' }">
-                  <nuxt-link :to="`/user/${user.id}/followed`">
+                  <nuxt-link :to="`/users/${user.username}/followed`">
                     <span class="icon is-small">
                       <icon name="FileText" />
                     </span>
@@ -46,7 +46,7 @@
 <script setup>
 const i18n = useI18n()
 const route = useRoute()
-const user = await useHttpGet(`/api/user/${route.params.userId}`)
+const user = await useHttpGet(`/api/users/${route.params.username}`)
 const activeTab = ref('fans')
 
 useHead({

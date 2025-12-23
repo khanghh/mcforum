@@ -14,12 +14,12 @@ export default {
     <div class="base-info">
       <my-avatar :user="user" :size="80" :extra-style="{ margin: '0 auto' }" />
       <div class="nickname">
-        <nuxt-link :to="`/user/${user.id}`" :alt="user.nickname">
+        <nuxt-link :to="`/users/${user.username}`" :alt="user.nickname">
           {{ user.nickname }}
         </nuxt-link>
       </div>
       <div class="description">
-        {{ user.description }}
+        {{ user.bio }}
       </div>
     </div>
     <div class="extra-info">

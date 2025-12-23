@@ -35,26 +35,29 @@
             </span>
           </div>
           <div class="flex items-center gap-2 mt-1">
-            <div v-if="user.description"
+            <div v-if="user.statusMessage"
               class="gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center">
               <FontAwesome :icon="['fas', 'quote-left']" class="text-purple-400 text-sm mr-2" />
-              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.description }}</span>
+              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage }}</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="hidden md:flex items-center gap-2 mb-3">
-        <button v-if="!isSelf"
-          class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center neon-border gaming-title text-sm hover:scale-105 transition-transform"
-          aria-label="Follow user">
-          <FontAwesome :icon="['fas', 'user-plus']" class="mr-2" /> FOLLOW
+      <div v-if="currentUser" class="hidden md:flex items-center gap-2 mb-3">
+        <button v-if="!isSelf" @click="isFollowing ? handleUnfollow() : handleFollow()"
+          :class="isFollowing
+            ? 'px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors'
+            : 'px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center neon-border gaming-title text-sm hover:scale-105 transition-transform'"
+          :aria-label="isFollowing ? 'Unfollow user' : 'Follow user'">
+          <FontAwesome :icon="isFollowing ? ['fas', 'user-minus'] : ['fas', 'user-plus']" class="mr-2" />
+          {{ isFollowing ? 'UNFOLLOW' : 'FOLLOW' }}
         </button>
-        <button v-if="!isSelf"
+        <button v-if="!isSelf" @click="handleMessage"
           class="px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors"
           aria-label="Send message">
           <FontAwesome :icon="['fas', 'comments']" class="mr-2" /> MESSAGE
         </button>
-        <nuxt-link v-if="isSelf" to="/user/profile"
+        <nuxt-link v-if="isSelf" to="/users/me/profile"
           class="px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors">
           <FontAwesome :icon="['fas', 'cog']" class="mr-2" /> EDIT PROFILE
         </nuxt-link>
@@ -63,7 +66,7 @@
 
     <!-- Mobile Settings Button -->
     <div v-if="isSelf" class="absolute top-4 right-4 md:hidden">
-      <nuxt-link to="/user/profile"
+      <nuxt-link to="/users/me/profile"
         class="gaming-card text-purple-300 px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-sm block">
         <FontAwesome :icon="['fas', 'cog']" />
       </nuxt-link>
@@ -74,6 +77,9 @@
 <script setup>
 import AvatarDecorated from '../AvatarDecorated.vue'
 
+const userStore = useUserStore()
+const api = useApi()
+
 const props = defineProps({
   user: {
     type: Object,
@@ -81,9 +87,46 @@ const props = defineProps({
   },
 })
 
-const userStore = useUserStore()
+const isFollowing = ref(false)
+
 const currentUser = computed(() => userStore.user)
-const isSelf = computed(() => currentUser.value && currentUser.value.id === props.user.id)
+const isSelf = computed(() => currentUser?.value && currentUser?.value?.id === props.user.id)
+
+// Resolve before render (SSR-friendly). If not logged in / any error -> false.
+if (typeof userStore.getCurrent === 'function') {
+  await userStore.getCurrent().catch(() => undefined)
+}
+
+if (!isSelf.value) {
+  isFollowing.value = await api.isFollowing(props.user.id).catch(() => false)
+}
+
+const handleFollow = async () => {
+  try {
+    await api.followUser(props.user.username)
+    isFollowing.value = true
+    useMsgSuccess('Followed successfully')
+  } catch (e) {
+    console.error(e)
+    useMsgError('Follow failed')
+  }
+}
+
+const handleUnfollow = async () => {
+  try {
+    await api.unfollowUser(props.user.username)
+    isFollowing.value = false
+    useMsgSuccess('Unfollowed successfully')
+  } catch (e) {
+    console.error(e)
+    useMsgError('Unfollow failed')
+  }
+}
+
+const handleMessage = () => {
+  // Navigate to messages page or open chat
+  navigateTo(`/messages/${props.user.id}`)
+}
 
 async function onUploaded(file) {
   try {
@@ -91,11 +134,11 @@ async function onUploaded(file) {
     formData.append('image', file, file.name)
     const ret = await useHttpPostMultipart('/api/upload', formData)
 
-    await useHttpPostForm('/api/user/update/avatar', {
+    await useHttpPostForm('/api/users/update/avatar', {
       body: { avatar: ret.url },
     })
 
-    await userStore.fetchCurrent()
+    await userStore.getCurrent()
     useMsgSuccess('头像更新成功')
   }
   catch (e) {

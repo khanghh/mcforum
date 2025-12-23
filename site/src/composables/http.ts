@@ -1,10 +1,9 @@
-const CONFIG = {
-  baseURL: process.env.BASE_URL_TEST,
-}
+import { useCookie } from '#app'
 
 // 请求体封装
-function applyOptions(options = {}) {
-  options.baseURL = options.baseURL ?? CONFIG.baseURL
+function applyOptions(options: any = {}): any {
+  const config = useRuntimeConfig()
+  options.baseURL = config.public.BASE_URL as string
   options.initialCache = options.initialCache ?? false
   options.headers = options.headers || {}
   options.method = options.method || 'GET'
@@ -20,7 +19,7 @@ function applyOptions(options = {}) {
   return options
 }
 
-export function useHttp(url, options = {}) {
+export function useHttp(url: string, options: any = {}): Promise<any> {
   options = applyOptions(options)
   if (options.headers?.['Content-Type'] === 'application/x-www-form-urlencoded' && options.body) {
     options.body = new URLSearchParams(options.body).toString()
@@ -28,10 +27,11 @@ export function useHttp(url, options = {}) {
   return new Promise((resolve, reject) => {
     $fetch(url, options)
       .then((resp) => {
-        if (!resp.error) {
-          resolve(resp.data)
+        const response = resp as { error?: any; data?: any }
+        if (!response.error) {
+          resolve(response.data)
         } else {
-          reject(resp.error)
+          reject(response.error)
         }
       })
       .catch((err) => {
@@ -40,28 +40,28 @@ export function useHttp(url, options = {}) {
   })
 }
 
-export function useHttpPost(url, options = {}) {
+export function useHttpPost(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'POST',
   })
 }
 
-export function useHttpGet(url, options = {}) {
+export function useHttpGet(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'GET',
   })
 }
 
-export function useHttpDelete(url, options = {}) {
+export function useHttpDelete(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'DELETE',
   })
 }
 
-export function useHttpPutForm(url, options = {}) {
+export function useHttpPutForm(url: string, options: any = {}): Promise<any> {
   console.log(options)
   return useHttp(url, {
     ...options,
@@ -72,7 +72,7 @@ export function useHttpPutForm(url, options = {}) {
   })
 }
 
-export function useHttpPatchForm(url, options = {}) {
+export function useHttpPatchForm(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'PATCH',
@@ -83,7 +83,7 @@ export function useHttpPatchForm(url, options = {}) {
 }
 
 // POST请求(application/x-www-form-urlencoded)
-export function useHttpPostForm(url, options = {}) {
+export function useHttpPostForm(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'POST',
@@ -94,7 +94,7 @@ export function useHttpPostForm(url, options = {}) {
 }
 
 // POST请求(multipart/form-data)
-export function useHttpPostMultipart(url, formData) {
+export function useHttpPostMultipart(url: string, formData: FormData): Promise<any> {
   return useHttp(url, {
     method: 'POST',
     body: formData,

@@ -9,7 +9,7 @@
           <i18n-t keypath="publish.verify_email_action" tag="p">
             <strong>
               <nuxt-link
-                to="/user/profile/account"
+                to="/users/me/account"
                 style="color: var(--text-link-color)">
                 {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings')
                 }}
