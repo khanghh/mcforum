@@ -250,35 +250,34 @@ func (s *topicService) GetFollowedTopics(userId int64, cursor int64) (topics []m
 	return
 }
 
-// // 指定标签下话题列表
-// func (s *topicService) GetTagTopics(tagId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
-// 	limit := 20
-// 	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
-// 		Eq("tag_id", tagId).
-// 		Eq("status", constants.StatusOK).
-// 		Desc("last_comment_time").Limit(limit))
-// 	if len(topicTags) > 0 {
-// 		nextCursor = topicTags[len(topicTags)-1].LastCommentTime
+// 指定标签下话题列表
+func (s *topicService) GetTopicsByTag(tag string, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
+	limit := 20
+	tagTopics := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
+		Eq("tag", tag).
+		Desc("last_comment_time").Limit(limit))
+	if len(tagTopics) > 0 {
+		nextCursor = tagTopics[len(tagTopics)-1].LastCommentTime
 
-// 		var topicIds []int64
-// 		for _, topicTag := range topicTags {
-// 			topicIds = append(topicIds, topicTag.TopicId)
-// 		}
+		var topicIds []int64
+		for _, topicTag := range tagTopics {
+			topicIds = append(topicIds, topicTag.TopicId)
+		}
 
-// 		topicsMap := s.GetTopicInIds(topicIds)
-// 		if topicsMap != nil {
-// 			for _, topicTag := range topicTags {
-// 				if topic, found := topicsMap[topicTag.TopicId]; found {
-// 					topics = append(topics, topic)
-// 				}
-// 			}
-// 		}
-// 	} else {
-// 		nextCursor = cursor
-// 	}
-// 	hasMore = len(topicTags) >= limit
-// 	return
-// }
+		topicsMap := s.GetTopicInIds(topicIds)
+		if topicsMap != nil {
+			for _, topicTag := range tagTopics {
+				if topic, found := topicsMap[topicTag.TopicId]; found {
+					topics = append(topics, topic)
+				}
+			}
+		}
+	} else {
+		nextCursor = cursor
+	}
+	hasMore = len(tagTopics) >= limit
+	return
+}
 
 func (s *topicService) GetTopicByIds(topicIds []int64) (topics []model.Topic) {
 	topicsMap := s.GetTopicInIds(topicIds)

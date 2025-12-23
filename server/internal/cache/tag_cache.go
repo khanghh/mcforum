@@ -5,12 +5,11 @@ import (
 	"log/slog"
 	"time"
 
-	"bbs-go/sqls"
-
 	"github.com/goburrow/cache"
 
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
+	"bbs-go/sqls"
 )
 
 type tagCache struct {
@@ -23,7 +22,7 @@ func newTagCache() *tagCache {
 	return &tagCache{
 		cache: cache.NewLoadingCache(
 			func(key cache.Key) (cache.Value, error) {
-				val := repository.TagRepository.Get(sqls.DB(), key2Int64(key))
+				val := repository.TagRepository.GetByName(sqls.DB(), key2String(key))
 				if val != nil {
 					return val, nil
 				}
@@ -35,8 +34,8 @@ func newTagCache() *tagCache {
 	}
 }
 
-func (c *tagCache) Get(tagId int64) *model.Tag {
-	val, err := c.cache.Get(tagId)
+func (c *tagCache) Get(tagName string) *model.Tag {
+	val, err := c.cache.Get(tagName)
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 		return nil
@@ -47,12 +46,12 @@ func (c *tagCache) Get(tagId int64) *model.Tag {
 	return nil
 }
 
-func (c *tagCache) GetList(tagIds []int64) (tags []model.Tag) {
-	if len(tagIds) == 0 {
+func (c *tagCache) GetList(tagNames []string) (tags []model.Tag) {
+	if len(tagNames) == 0 {
 		return nil
 	}
-	for _, tagId := range tagIds {
-		tag := c.Get(tagId)
+	for _, tagName := range tagNames {
+		tag := c.Get(tagName)
 		if tag != nil {
 			tags = append(tags, *tag)
 		}
@@ -60,6 +59,6 @@ func (c *tagCache) GetList(tagIds []int64) (tags []model.Tag) {
 	return
 }
 
-func (c *tagCache) Invalidate(tagId int64) {
-	c.cache.Invalidate(tagId)
+func (c *tagCache) Invalidate(tagName string) {
+	c.cache.Invalidate(tagName)
 }

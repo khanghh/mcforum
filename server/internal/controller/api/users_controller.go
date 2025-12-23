@@ -204,14 +204,17 @@ func (c *UsersController) PostVerify_email() *web.JsonResult {
 	return web.NewEmptyRspBuilder().Put("email", email).JsonResult()
 }
 
-func (c *UsersController) GetByTopics(userID int64) *web.JsonResult {
+func (c *UsersController) GetByTopics(username string) *web.JsonResult {
+	user := cache.UserCache.GetByUsername(username)
+	if user == nil {
+		return web.JsonError(errs.ErrUserNotFound)
+	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	topics, cursor, hasMore := service.TopicService.GetUserTopics(userID, cursor)
+	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.Id, cursor)
 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
-func (c *UsersController) GetFollowersBy(username string) *web.JsonResult {
+func (c *UsersController) GetByFollowers(username string) *web.JsonResult {
 	user := cache.UserCache.GetByUsername(username)
 	if user == nil {
 		return web.JsonError(errs.ErrUserNotFound)
@@ -235,7 +238,7 @@ func (c *UsersController) GetFollowersBy(username string) *web.JsonResult {
 	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
 }
 
-func (c *UsersController) GetFollowingBy(username string) *web.JsonResult {
+func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
 	user := cache.UserCache.GetByUsername(username)
 	if user == nil {
 		return web.JsonError(errs.ErrUserNotFound)

@@ -53,7 +53,7 @@ func (s *tagService) Update(t *model.Tag) error {
 	if err := repository.TagRepository.Update(sqls.DB(), t); err != nil {
 		return err
 	}
-	cache.TagCache.Invalidate(t.Id)
+	cache.TagCache.Invalidate(t.Name)
 	return nil
 }
 
@@ -84,7 +84,7 @@ func (s *tagService) GetOrCreate(name string) (*model.Tag, error) {
 }
 
 func (s *tagService) GetByName(name string) *model.Tag {
-	return repository.TagRepository.GetByName(name)
+	return repository.TagRepository.GetByName(sqls.DB(), name)
 }
 
 func (s *tagService) GetTags() []model.Tag {

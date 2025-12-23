@@ -31,6 +31,17 @@ func (r *tagRepository) Get(db *gorm.DB, id int64) *model.Tag {
 	return ret
 }
 
+func (r *tagRepository) GetByName(db *gorm.DB, name string) *model.Tag {
+	if len(name) == 0 {
+		return nil
+	}
+	ret := &model.Tag{}
+	if err := db.Take(&ret, "name = ?", name).Error; err != nil {
+		return nil
+	}
+	return ret
+}
+
 func (r *tagRepository) Take(db *gorm.DB, where ...interface{}) *model.Tag {
 	ret := &model.Tag{}
 	if err := db.Take(ret, where...).Error; err != nil {
@@ -101,18 +112,11 @@ func (r *tagRepository) GetTagInIds(tagIds []int64) []model.Tag {
 	return tags
 }
 
-func (r *tagRepository) GetByName(name string) *model.Tag {
-	if len(name) == 0 {
-		return nil
-	}
-	return r.Take(sqls.DB(), "name = ?", name)
-}
-
 func (r *tagRepository) GetOrCreate(db *gorm.DB, name string) (*model.Tag, error) {
 	if len(name) == 0 {
 		return nil, errors.New("标签为空")
 	}
-	tag := r.GetByName(name)
+	tag := r.GetByName(db, name)
 	if tag != nil {
 		return tag, nil
 	} else {

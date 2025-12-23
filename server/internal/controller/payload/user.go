@@ -16,21 +16,22 @@ import (
 
 // UserInfo 用户简单信息
 type UserInfo struct {
-	Id           int64      `json:"id"`
-	Type         int        `json:"type"`
-	Username     string     `json:"username"`
-	Nickname     string     `json:"nickname"`
-	Avatar       string     `json:"avatar"`
-	SmallAvatar  string     `json:"smallAvatar"`
-	Gender       string     `json:"gender"`
-	Birthday     *time.Time `json:"birthday"`
-	TopicCount   int        `json:"topicCount"`   // 话题数量
-	CommentCount int        `json:"commentCount"` // 跟帖数量
-	FansCount    int        `json:"fansCount"`    // 粉丝数量
-	FollowCount  int        `json:"followCount"`  // 关注数量
-	Score        int        `json:"score"`        // 积分
-	Bio          string     `json:"bio"`
-	CreateTime   int64      `json:"createTime"`
+	Id            int64      `json:"id"`
+	Type          int        `json:"type"`
+	Username      string     `json:"username"`
+	Nickname      string     `json:"nickname"`
+	Avatar        string     `json:"avatar"`
+	SmallAvatar   string     `json:"smallAvatar"`
+	Gender        string     `json:"gender"`
+	Birthday      *time.Time `json:"birthday"`
+	TopicCount    int        `json:"topicCount"`   // 话题数量
+	CommentCount  int        `json:"commentCount"` // 跟帖数量
+	FansCount     int        `json:"fansCount"`    // 粉丝数量
+	FollowCount   int        `json:"followCount"`  // 关注数量
+	Score         int        `json:"score"`        // 积分
+	Bio           string     `json:"bio"`
+	StatusMessage string     `json:"statusMessage"`
+	CreateTime    int64      `json:"createTime"`
 
 	Forbidden bool `json:"forbidden"` // 是否禁言
 	Followed  bool `json:"followed"`  // 是否关注
@@ -72,20 +73,21 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		return nil
 	}
 	ret := &UserInfo{
-		Id:           user.Id,
-		Type:         user.Type,
-		Username:     user.Username.String,
-		Nickname:     user.Nickname,
-		Gender:       user.Gender,
-		Birthday:     user.Birthday,
-		TopicCount:   user.TopicCount,
-		CommentCount: user.CommentCount,
-		FansCount:    user.FansCount,
-		FollowCount:  user.FollowCount,
-		Score:        user.Score,
-		Bio:          user.Bio,
-		CreateTime:   user.CreateTime,
-		Forbidden:    user.IsForbidden(),
+		Id:            user.Id,
+		Type:          user.Type,
+		Username:      user.Username.String,
+		Nickname:      user.Nickname,
+		Gender:        user.Gender,
+		Birthday:      user.Birthday,
+		TopicCount:    user.TopicCount,
+		CommentCount:  user.CommentCount,
+		FansCount:     user.FansCount,
+		FollowCount:   user.FollowCount,
+		Score:         user.Score,
+		Bio:           user.Bio,
+		StatusMessage: user.StatusMessage,
+		CreateTime:    user.CreateTime,
+		Forbidden:     user.IsForbidden(),
 	}
 	if strs.IsNotBlank(user.Avatar) {
 		ret.Avatar = user.Avatar

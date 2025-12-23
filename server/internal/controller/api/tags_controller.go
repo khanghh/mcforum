@@ -2,6 +2,7 @@ package api
 
 import (
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
 
 	"bbs-go/pkg/web"
@@ -19,10 +20,10 @@ type TagsController struct {
 }
 
 // 标签详情
-func (c *TagsController) GetBy(tagId int64) *web.JsonResult {
-	tag := cache.TagCache.Get(tagId)
+func (c *TagsController) GetBy(tagName string) *web.JsonResult {
+	tag := cache.TagCache.Get(tagName)
 	if tag == nil {
-		return web.JsonErrorMsg("标签不存在")
+		return web.JsonError(errs.ErrBadRequest)
 	}
 	return web.JsonData(payload.BuildTag(tag))
 }

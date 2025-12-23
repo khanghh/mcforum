@@ -6,7 +6,6 @@ import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -41,19 +40,6 @@ func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error)
 	return topic, nil
 }
 
-// 节点
-// func (c *TopicController) GetNodes() *web.JsonResult {
-// 	nodes := response.BuildForumList(service.ForumService.GetAll())
-// 	return web.JsonData(nodes)
-// }
-
-// // 节点信息
-// func (c *TopicController) GetNode() *web.JsonResult {
-// 	nodeId := params.FormValueInt64Default(c.Ctx, "nodeId", 0)
-// 	node := service.ForumService.Get(nodeId)
-// 	return web.JsonData(response.BuildForum(node))
-// }
-
 // POST /topics -> create topic
 func (c *TopicsController) Post() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
@@ -83,20 +69,31 @@ func (c *TopicsController) Post() *web.JsonResult {
 	return web.JsonData(payload.BuildSimpleTopic(topic))
 }
 
+// // 标签帖子列表
+//
+//	func (c *TopicController) GetTagTopics() *web.JsonResult {
+//		var (
+//			cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
+//			tagId, err = params.FormValueInt64(c.Ctx, "tagId")
+//			user       = service.UserTokenService.GetCurrent(c.Ctx)
+//		)
+//		if err != nil {
+//			return web.JsonError(err)
+//		}
+//		topics, cursor, hasMore := service.TopicService.GetTagTopics(tagId, cursor)
+//		return web.JsonCursorData(response.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+//	}
+
 func (c *TopicsController) Get(ctx iris.Context) *web.JsonResult {
-	type TopicQuery struct {
-		Tag      string `form:"tag"`
-		Username string `form:"username"`
+	tag := params.FormValueDefault(c.Ctx, "tag", "")
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
+
+	if tag == "" {
+		return web.JsonError(errs.ErrBadRequest)
 	}
-	params := TopicQuery{}
-	if err := ctx.ReadQuery(&params); err != nil {
-		return web.JsonError(err)
-	}
-	fmt.Println(params.Username)
-	return &web.JsonResult{
-		StatusCode: 404,
-		Error:      errs.ErrForbidden,
-	}
+	topics, cursor, hasMore := service.TopicService.GetTopicsByTag(tag, cursor)
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
 }
 
 // GET /topics/{slug}
@@ -320,177 +317,3 @@ func (c *TopicsController) PostByComments(slugId string) (*web.JsonResult, error
 
 	return web.JsonData(payload.BuildComment(comment)), nil
 }
-
-// POST 	/topics/{slugId}/comments/{id}/reactions
-// DELETE 	/topics/{slugId}/comments/{id}/reactions
-// GET 		/topics/{slugId}/comments/{id}/replies
-// func (c *CommentController) PostByReactions(commentId int64) (*web.JsonResult, error) {
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	if user == nil {
-// 		return nil, errs.ErrForbidden
-// 	}
-// 	if err := service.UserLikeService.CommentLike(user.Id, commentId); err != nil {
-// 		return nil, err
-// 	}
-// 	return web.JsonSuccess(), nil
-// }
-
-// POST /topics/{slugId}/unpin
-// func (c *TopicController) PostByUnpin(slugId string) (*web.JsonResult, int) {
-// 	_, topicId, err := c.parseSlugId(slugId)
-// 	if err != nil {
-// 		return web.JsonErrorMsg("not found"), iris.StatusNotFound
-// 	}
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-// 		return web.JsonErrorMsg("no permission"), iris.StatusUnauthorized
-// 	}
-
-// 	if err := service.TopicService.SetTopicPinned(int64(topicId), false); err != nil {
-// 		return web.JsonError(err), iris.StatusInternalServerError
-// 	}
-// 	return web.JsonSuccess(), iris.StatusOK
-// }
-
-// POST /topics/{slugId}/recommend
-// func (c *TopicController) PostByRecommend(slugId string) (*web.JsonResult, int) {
-// 	_, topicId, err := c.parseSlugId(slugId)
-// 	if err != nil {
-// 		return web.JsonErrorMsg("not found"), iris.StatusNotFound
-// 	}
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-// 		return web.JsonErrorMsg("no permission"), iris.StatusUnauthorized
-// 	}
-
-// 	if err := service.TopicService.SetRecommended(int64(topicId), true); err != nil {
-// 		return web.JsonError(err), iris.StatusInternalServerError
-// 	}
-// 	return web.JsonSuccess(), iris.StatusOK
-// }
-
-// POST /topics/{slugId}/unrecommend
-// func (c *TopicController) PostByUnrecommend(slugId string) (*web.JsonResult, int) {
-// 	_, topicId, err := c.parseSlugId(slugId)
-// 	if err != nil {
-// 		return web.JsonErrorMsg("not found"), iris.StatusNotFound
-// 	}
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-// 		return web.JsonErrorMsg("no permission"), iris.StatusUnauthorized
-// 	}
-
-// 	if err := service.TopicService.SetRecommended(int64(topicId), false); err != nil {
-// 		return web.JsonError(err), iris.StatusInternalServerError
-// 	}
-// 	return web.JsonSuccess(), iris.StatusOK
-// }
-
-// 点赞用户
-// func (c *TopicController) GetRecentlikesBy(topicId int64) *web.JsonResult {
-// 	likes := service.UserLikeService.Recent(constants.EntityTopic, topicId, 5)
-// 	var users []response.UserInfo
-// 	for _, like := range likes {
-// 		userInfo := response.BuildUserInfoDefaultIfNull(like.UserId)
-// 		if userInfo != nil {
-// 			users = append(users, *userInfo)
-// 		}
-// 	}
-// 	return web.JsonData(users)
-// }
-
-// // 最新帖子
-// func (c *TopicController) GetRecent() *web.JsonResult {
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	topics := service.TopicService.Find(sqls.NewCnd().Where("status = ?", constants.StatusOK).Desc("id").Limit(10))
-// 	return web.JsonData(response.BuildSimpleTopics(topics, user))
-// }
-
-// 用户帖子列表
-// func (c *TopicController) GetUserTopics() *web.JsonResult {
-// 	userId, err := params.FormValueInt64(c.Ctx, "userId")
-// 	if err != nil {
-// 		return web.JsonError(err)
-// 	}
-// 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	topics, cursor, hasMore := service.TopicService.GetUserTopics(userId, cursor)
-// 	return web.JsonCursorData(response.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
-// }
-
-// // 标签帖子列表
-// func (c *TopicController) GetTagTopics() *web.JsonResult {
-// 	var (
-// 		cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
-// 		tagId, err = params.FormValueInt64(c.Ctx, "tagId")
-// 		user       = service.UserTokenService.GetCurrent(c.Ctx)
-// 	)
-// 	if err != nil {
-// 		return web.JsonError(err)
-// 	}
-// 	topics, cursor, hasMore := service.TopicService.GetTagTopics(tagId, cursor)
-// 	return web.JsonCursorData(response.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
-// }
-
-// 收藏
-// func (c *TopicController) GetFavoriteBy(topicId int64) *web.JsonResult {
-// 	user := service.UserTokenService.GetCurrent(c.Ctx)
-// 	if user == nil {
-// 		return web.JsonError(errs.NotLogin)
-// 	}
-// 	err := service.FavoriteService.AddTopicFavorite(user.Id, topicId)
-// 	if err != nil {
-// 		return web.JsonError(err)
-// 	}
-// 	return web.JsonSuccess()
-// }
-
-// // 推荐话题列表（目前逻辑为取最近50条数据随机展示）
-// func (c *TopicController) GetRecommend() *web.JsonResult {
-// 	topics := cache.TopicCache.GetRecommendTopics()
-// 	if len(topics) == 0 {
-// 		return web.JsonSuccess()
-// 	} else {
-// 		dest := make([]model.Topic, len(topics))
-// 		perm := rand.Perm(len(topics))
-// 		for i, v := range perm {
-// 			dest[v] = topics[i]
-// 		}
-// 		end := 10
-// 		if end > len(topics) {
-// 			end = len(topics)
-// 		}
-// 		ret := dest[0:end]
-// 		return web.JsonData(response.BuildSimpleTopics(ret, nil))
-// 	}
-// }
-
-// // 最新话题
-// func (c *TopicController) GetNewest() *web.JsonResult {
-// 	topics := service.TopicService.Find(sqls.NewCnd().Eq("status", constants.StatusOK).Desc("id").Limit(6))
-// 	return web.JsonData(response.BuildSimpleTopics(topics, nil))
-// }
-
-// func (c *TopicController) GetHide_content() *web.JsonResult {
-// 	topicId := params.FormValueInt64Default(c.Ctx, "topicId", 0)
-// 	var (
-// 		exists      = false // 是否有隐藏内容
-// 		show        = false // 是否显示隐藏内容
-// 		hideContent = ""    // 隐藏内容
-// 	)
-// 	topic := service.TopicService.Get(topicId)
-// 	if topic != nil && topic.Status == constants.StatusOK && strs.IsNotBlank(topic.HideContent) {
-// 		exists = true
-// 		if user := service.UserTokenService.GetCurrent(c.Ctx); user != nil {
-// 			if user.Id == topic.UserId || service.CommentService.IsCommented(user.Id, constants.EntityTopic, topic.Id) {
-// 				show = true
-// 				hideContent = markdown.ToHTML(topic.HideContent)
-// 			}
-// 		}
-// 	}
-// 	return web.JsonData(map[string]interface{}{
-// 		"exists":  exists,
-// 		"show":    show,
-// 		"content": hideContent,
-// 	})
-// }
