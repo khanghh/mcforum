@@ -40,7 +40,7 @@
               <div class="flex items-center gap-4 text-sm text-gray-400">
                 <button class="group flex items-center gap-1 transition-colors"
                   :class="comment.liked ? 'text-blue-400' : 'hover:text-blue-400'" @click="like(comment)">
-                  <FontAwesome :icon="['fas', 'thumbs-up']" class="w-4 h-4" />
+                  <Icon name="TablerThumbUpFilled" class="w-4 h-4" />
                   <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
                   <span v-else>Like</span>
                 </button>
@@ -48,7 +48,7 @@
                 <button class="group flex items-center gap-1 transition-colors"
                   :class="myReply.commentId === comment.id ? 'text-purple-400' : 'hover:text-gray-400'"
                   @click="switchShowReply(comment)">
-                  <FontAwesome :icon="['fas', 'comment']" class="w-4 h-4" />
+                  <Icon name="TablerMessageCircle" class="w-4 h-4" />
                   <span>
                     {{ myReply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
                   </span>

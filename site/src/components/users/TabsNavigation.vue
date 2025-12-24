@@ -5,25 +5,25 @@
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
         :class="activeTab === 'topics' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('topics')">
-        <FontAwesome :icon="['fas', 'fire']" class="mr-2" /> POSTS
+        <Icon name="RiFireLine" class="mr-2" /> POSTS
       </button>
       <button
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
         :class="activeTab === 'activity' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('activity')">
-        <FontAwesome :icon="['fas', 'comments']" class="mr-2" /> ACTIVITIES
+        <Icon name="TablerMessageCircles" class="mr-2" /> ACTIVITIES
       </button>
       <button
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
         :class="activeTab === 'followers' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('followers')">
-        <FontAwesome :icon="['fas', 'star']" class="mr-2" /> FOLLOWERS
+        <Icon name="TablerStar" class="mr-2" /> FOLLOWERS
       </button>
       <button
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
         :class="activeTab === 'following' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('following')">
-        <FontAwesome :icon="['fas', 'users']" class="mr-2" /> FOLLOWING
+        <Icon name="PhUsersThreeFill" class="mr-2" /> FOLLOWING
       </button>
     </div>
   </div>
@@ -34,7 +34,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps({
   activeTab: {
-    type: String as () => string | undefined
+    type: String as () => string | undefined,
   },
 })
 
@@ -42,15 +42,14 @@ const route = useRoute()
 const router = useRouter()
 
 function changeTab(tab: string) {
-   router.push({
+  router.push({
     name: route.name as string, // keep the same named route
     params: {
       ...route.params, // keep existing params like id
-      tab: tab,        // change only the tab
+      tab: tab, // change only the tab
     },
   })
 }
-
 </script>
 
 <style scoped>

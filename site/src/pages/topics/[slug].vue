@@ -9,7 +9,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6" itemscope itemtype="http://schema.org/BlogPosting">
         <!-- Notification for pending posts -->
         <div v-if="isPending" class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
-          <FontAwesome :icon="['fas', 'exclamation-triangle']" class="mr-2" /> {{ $t('message.post_under_review') }}
+          <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.post_under_review') }}
         </div>
 
         <!-- Breadcrumb -->
@@ -65,7 +65,7 @@
 
                   <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
                     <span v-if="topic.ipLocation" class="flex items-center gap-1">
-                      <FontAwesome :icon="['fas', 'map-marker-alt']" class="text-gray-500" /> {{ topic.ipLocation }}
+                      <Icon name="TablerMapPinFilled" class="text-gray-500" /> {{ topic.ipLocation }}
                     </span>
                   </div>
                 </div>
@@ -77,10 +77,10 @@
 
             <h1 class="text-3xl font-bold mb-6 text-white" itemprop="headline">
               <span v-if="topic.sticky" class="text-red-500 mr-2" title="Sticky Post">
-                <FontAwesome :icon="['fas', 'thumbtack']" />
+                <Icon name="TablerPin" />
               </span>
               <span v-if="topic.recommend" class="text-yellow-500 mr-2" title="Recommended">
-                <FontAwesome :icon="['fas', 'star']" />
+                <Icon name="TablerStar" />
               </span>
               {{ topic.title }}
             </h1>
@@ -103,23 +103,18 @@
                   class="group flex items-center gap-1 transition-all duration-200"
                   :class="liked ? 'text-green-400' : 'text-gray-400 hover:text-green-400'"
                   @click="toggleLike">
-                  <FontAwesome :icon="['fas', 'arrow-up']"
+                  <Icon name="TablerArrowUp"
                     class="transform group-hover:-translate-y-0.5 transition-transform" />
                   <span class="font-bold">{{ topic.likeCount || 0 }}</span>
                 </button>
 
-                <!-- Downvote (Visual Only/Disabled as API doesn't support yet, generic placeholder logic) -->
-                <!-- <button class="group flex items-center gap-1 text-gray-400 hover:text-red-400 transition-all duration-200">
-                  <FontAwesome :icon="['fas', 'arrow-down']" class="transform group-hover:translate-y-0.5 transition-transform" />
-                </button> -->
-
                 <div class="flex items-center gap-1 text-gray-400">
-                  <FontAwesome :icon="['far', 'eye']" />
+                  <Icon name="IcRoundRemoveRedEye" />
                   <span>{{ topic.viewCount }} Views</span>
                 </div>
 
                 <div class="flex items-center gap-1 text-gray-400">
-                  <FontAwesome :icon="['far', 'comment']" />
+                  <Icon name="TablerMessageCircle" />
                   <span>{{ topic.commentCount }} Comments</span>
                 </div>
 
@@ -127,17 +122,17 @@
                   class="flex items-center gap-1 transition-colors duration-200"
                   :class="topic.favorited ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'"
                   @click="toggleFavorite">
-                  <FontAwesome :icon="topic.favorited ? ['fas', 'bookmark'] : ['far', 'bookmark']" />
+                  <Icon name="TablerBookmark" />
                   <span>{{ topic.favorited ? 'Saved' : 'Save' }}</span>
                 </button>
               </div>
 
               <div class="flex items-center gap-2">
                 <button class="text-gray-400 hover:text-purple-400 transition-colors">
-                  <FontAwesome :icon="['fas', 'share']" />
+                  <Icon name="TablerShare3" />
                 </button>
                 <button class="text-gray-400 hover:text-red-400 transition-colors">
-                  <FontAwesome :icon="['fas', 'flag']" />
+                  <Icon name="TablerFlagFilled" />
                 </button>
               </div>
             </div>
@@ -148,13 +143,13 @@
         <div
           class="gaming-card rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
           <h2 class="text-2xl font-bold mb-6 flex items-center text-white">
-            <FontAwesome :icon="['fas', 'comments']" class="mr-3 text-blue-400" />
+            <Icon name="TablerMessageCircles" class="mr-3 text-blue-400" />
             Comments ({{ topic.commentCount }})
           </h2>
 
           <!-- Wrapped Comment Component -->
           <CommentSection
-            :topicSlug="topic.slug"
+            :topic-slug="topic.slug"
             :comment-count="topic.commentCount"
             entity-type="topic"
             @created="commentCreated" />
@@ -211,13 +206,15 @@ async function toggleLike() {
       liked.value = false
       topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
-    } else {
+    }
+    else {
       await api.addTopicReaction(slug, 'like')
       liked.value = true
       topic.value.likeCount++
       useMsgSuccess(i18n.t('message.liked_success'))
     }
-  } catch (e) {
+  }
+  catch (e) {
     useCatchError(e)
   }
 }
@@ -228,14 +225,16 @@ async function toggleFavorite() {
       await useHttpDelete(`/api/me/favorites/${topic.value.id}`)
       topic.value.favorited = false
       useMsgSuccess(i18n.t('message.removed_from_favorite'))
-    } else {
+    }
+    else {
       await useHttpPutForm(`/api/me/favorites`, {
         body: { topicId: topic.value.id },
       })
       topic.value.favorited = true
       useMsgSuccess(i18n.t('message.added_to_favorite'))
     }
-  } catch (e) {
+  }
+  catch (e) {
     useCatchError(e)
   }
 }
@@ -257,7 +256,8 @@ async function onSwitchEditMode() {
     }).catch((err) => {
       alert(err)
     })
-  } else {
+  }
+  else {
     useHttpGet(`/api/topics/${topic.value.slug}/edit`).then((tmp) => {
       topic.value.content = tmp.content
       topic.value.editing = true

@@ -32,9 +32,9 @@
           class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold font-['Saira Semi Condensed'] tracking-wider shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 mx-auto min-w-[200px]"
           :disabled="disabled"
           @click="loadMore">
-          <FontAwesome v-if="loading" :icon="['fas', 'spinner']" spin />
+          <Icon v-if="loading" name="spinner" class="animate-spin" />
           <span>{{ loading ? 'LOADING...' : $t('feed.actions.view_more') }}</span>
-          <FontAwesome v-if="!loading" :icon="['fas', 'chevron-down']" />
+          <Icon v-if="!loading" name="caret-down" />
         </button>
         <div v-else class="text-gray-500 text-sm font-medium py-4">
           {{ $t('message.no_more_content') }}

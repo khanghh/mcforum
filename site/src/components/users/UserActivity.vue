@@ -4,7 +4,7 @@
       <div v-for="item in items" :key="item.id" class="gaming-card rounded-xl p-4">
         <div class="flex items-start gap-4">
           <div class="flex-shrink-0 mt-1 text-2xl text-purple-400">
-            <FontAwesome :icon="iconFor(item)" />
+            <Icon :name="iconFor(item)" />
           </div>
           <div class="flex-1">
             <div class="text-sm text-gray-400 mb-1">
@@ -36,10 +36,10 @@ const activityCursor = new CursorResult('/api/activity/list', { userId: props.us
 
 function iconFor(item) {
   const t = (item.type || item.action || item.kind || '').toLowerCase()
-  if (t.includes('comment')) return ['fas', 'comment-dots']
-  if (t.includes('post') || t.includes('create')) return ['fas', 'fire']
-  if (t.includes('like') || t.includes('favorite')) return ['fas', 'heart']
-  return ['fas', 'bolt']
+  if (t.includes('comment')) return 'PhChatCircle'
+  if (t.includes('post') || t.includes('create')) return 'PhFire'
+  if (t.includes('like') || t.includes('favorite')) return 'PhHeart'
+  return 'PhLightning'
 }
 
 function titleFor(item) {

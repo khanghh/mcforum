@@ -14,27 +14,30 @@
       </div>
       <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
         <li>
-          <a href="https://play.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors"
+          <a href="https://play.mineviet.com"
+            class="flex items-center text-gray-300 hover:text-purple-400 transition-colors"
             target="_blank">
-            <FontAwesome :icon="['fas', 'server']" class="mr-1" />
+            <Icon name="TablerServer" class="mr-1" />
             <span class="hidden sm:inline">Máy chủ</span>
           </a>
         </li>
         <li>
-          <a href="https://skin.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
-            <FontAwesome :icon="['fas', 'palette']" class="mr-1" />
+          <a href="https://skin.mineviet.com"
+            class="flex items-center text-gray-300 hover:text-purple-400 transition-colors">
+            <Icon name="TablerPaletteFilled" class="mr-1" />
             <span class="hidden sm:inline">Đổi skin</span>
           </a>
         </li>
         <li>
-          <a href="https://ban.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
-            <FontAwesome :icon="['fas', 'ban']" class="mr-1" />
+          <a href="https://ban.mineviet.com"
+            class="flex items-center text-gray-300 hover:text-purple-400 transition-colors">
+            <Icon name="TablerBan" class="mr-1" />
             <span class="hidden sm:inline">Vi phạm</span>
           </a>
         </li>
         <li>
-          <a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
-            <FontAwesome :icon="['fas', 'envelope']" class="mr-1" />
+          <a href="#" class="flex items-center text-gray-300 hover:text-purple-400 transition-colors">
+            <Icon name="TablerMaile" class="mr-1" />
             <span class="hidden sm:inline">Tin nhắn</span>
           </a>
         </li>
@@ -56,5 +59,4 @@ import { useUserStore } from '~/stores/user'
 import AvatarMenu from '~/components/navbar/AvatarMenu.vue'
 
 const userStore = useUserStore()
-
 </script>

@@ -4,7 +4,7 @@
     <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
       <div
         class="bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-0.5 border-2 border-gray-900 flex items-center gap-1">
-        <FontAwesome :icon="['fas', 'crown']" class="text-white text-xs" />
+        <Icon name="TablerCrown" class="text-white text-xs" />
         <span class="text-white text-xs font-bold gaming-title">VIP3</span>
       </div>
     </div>
@@ -19,8 +19,8 @@
           :username="user.nickname"
           :size="128"
           :rounded="false"
-          @uploaded="emit('uploaded', $event)"
-          class="w-full h-full block object-cover" />
+          class="w-full h-full block object-cover"
+          @uploaded="emit('uploaded', $event)" />
 
         <Avatar
           v-else

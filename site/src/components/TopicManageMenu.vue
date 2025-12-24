@@ -1,12 +1,12 @@
 <template>
   <div v-if="menus && menus.length" ref="root" class="relative inline-block text-left">
-    <button @click="open = !open"
-      type="button"
+    <button type="button"
       :class="['gap-2 px-2 py-1 rounded text-sm border border-purple-500/20 hover:bg-purple-600/20', open ? 'bg-purple-600/20' : 'text-purple-300']"
       aria-haspopup="true"
       :aria-expanded="String(open)"
-      :aria-label="$t('publish.manage')">
-      <FontAwesome :icon="['fas', 'cog']" class="w-4 h-4 mr-2" />
+      :aria-label="$t('publish.manage')"
+      @click="open = !open">
+      <Icon name="TablerSettings" class="w-4 h-4 mr-2" />
       <span class="whitespace-nowrap">{{ $t('publish.manage') }}</span>
     </button>
 
@@ -16,8 +16,8 @@
         <div class="py-1">
           <button v-for="item in menus"
             :key="item.command"
-            @click="select(item.command)"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100">
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100"
+            @click="select(item.command)">
             {{ item.label }}
           </button>
         </div>
@@ -99,7 +99,8 @@ function onClickOutside(e) {
   const path = e.composedPath ? e.composedPath() : (e.path || [])
   if (path.length) {
     if (!path.includes(root.value)) open.value = false
-  } else {
+  }
+  else {
     if (!root.value.contains(e.target)) open.value = false
   }
 }
@@ -110,17 +111,23 @@ onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
 async function handleCommand(command) {
   if (command === 'edit') {
     toggleEditing()
-  } else if (command === 'delete') {
+  }
+  else if (command === 'delete') {
     deleteTopic()
-  } else if (command === 'recommend') {
+  }
+  else if (command === 'recommend') {
     toggleRecommended()
-  } else if (command === 'pin') {
+  }
+  else if (command === 'pin') {
     togglePinned()
-  } else if (command === 'forbidden7Days') {
+  }
+  else if (command === 'forbidden7Days') {
     await forbidden(7)
-  } else if (command === 'forbiddenForever') {
+  }
+  else if (command === 'forbiddenForever') {
     await forbidden(-1)
-  } else {
+  }
+  else {
     console.log('click on item ' + command)
   }
 }
@@ -134,7 +141,8 @@ async function forbidden(days) {
       },
     })
     useMsgSuccess(i18n.t('message.mute_user_success'))
-  } catch (e) {
+  }
+  catch (e) {
     useMsgError(i18n.t('message.mute_user_failure', { error: e }))
   }
 }
@@ -160,7 +168,8 @@ function toggleEditing() {
     useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(() => {
       emit('onSwitchEditMode')
     })
-  } else {
+  }
+  else {
     emit('onSwitchEditMode')
   }
 }

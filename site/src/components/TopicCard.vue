@@ -45,24 +45,23 @@
         <button class="flex items-center gap-1 hover:text-red-400 transition-colors"
           :class="{ 'text-red-400': topic.liked }"
           @click.prevent="likeTopic">
-          <FontAwesome :icon="['fas', 'heart']" :class="{ 'text-red-400': topic.liked }" />
+          <Icon name="TablerHeartFilled" :class="{ 'text-red-400': topic.liked }" />
           {{ topic.likeCount }}
         </button>
 
         <!-- Comment -->
         <nuxt-link :to="`/topics/${topic.slug || topic.id}`"
           class="flex items-center gap-1 hover:text-gray-400 transition-colors">
-          <FontAwesome :icon="['fas', 'comment']" />
+          <Icon name="TablerMessageCircle" />
           {{ topic.commentCount }}
         </nuxt-link>
 
         <!-- View -->
         <nuxt-link :to="`/topics/${topic.slug || topic.id}`"
           class="flex items-center gap-1 hover:text-gray-400 transition-colors">
-          <FontAwesome :icon="['fas', 'eye']" />
+          <Icon name="IcRoundRemoveRedEye" />
           {{ topic.viewCount }}
         </nuxt-link>
-
       </div>
     </div>
   </div>
@@ -71,6 +70,7 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
 import type { Topic } from '@/types'
+
 const i18n = useI18n()
 const userStore = useUserStore()
 const user = userStore.user
@@ -87,26 +87,28 @@ const localTopic = reactive({ ...(props.topic) }) as Topic
 const author = computed(() => localTopic.user)
 
 async function likeTopic() {
-    try {
-      if (!user || !user.id) {
-        useCatchError(new Error(i18n.t('auth.login_required')))
-        return
-      }
-
-      const slug = localTopic.slug || localTopic.id
-      if (localTopic.liked) {
-        await useHttpDelete(`/api/topics/${slug}/reactions/${user.id}`)
-        localTopic.liked = false
-        localTopic.likeCount = localTopic.likeCount > 0 ? localTopic.likeCount - 1 : 0
-      } else {
-        await useHttpPostForm(`/api/topics/${slug}/reactions`, {
-          body: { type: 'like' },
-        })
-        localTopic.liked = true
-        localTopic.likeCount = (localTopic.likeCount || 0) + 1
-      }
-    } catch (e) {
-      useCatchError(e)
+  try {
+    if (!user || !user.id) {
+      useCatchError(new Error(i18n.t('auth.login_required')))
+      return
     }
+
+    const slug = localTopic.slug || localTopic.id
+    if (localTopic.liked) {
+      await useHttpDelete(`/api/topics/${slug}/reactions/${user.id}`)
+      localTopic.liked = false
+      localTopic.likeCount = localTopic.likeCount > 0 ? localTopic.likeCount - 1 : 0
+    }
+    else {
+      await useHttpPostForm(`/api/topics/${slug}/reactions`, {
+        body: { type: 'like' },
+      })
+      localTopic.liked = true
+      localTopic.likeCount = (localTopic.likeCount || 0) + 1
+    }
+  }
+  catch (e) {
+    useCatchError(e)
+  }
 }
 </script>

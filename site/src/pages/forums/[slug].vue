@@ -18,13 +18,13 @@
             </p>
             <div class="flex flex-wrap gap-3">
               <button
-                class="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
+                class="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
                 @click="navigateTo('/topics/create')">
-                <FontAwesome :icon="['fas', 'plus']" class="mr-2" /> New Thread
+                <Icon name="TablerPlus" class="mr-2" /> New Thread
               </button>
               <button
-                class="px-4 py-2 border border-purple-500/50 text-purple-300 rounded-lg font-semibold text-sm hover:bg-purple-500/20 transition-colors">
-                <FontAwesome :icon="['fas', 'filter']" class="mr-2" /> Filter
+                class="flex items-center px-4 py-2 border border-purple-500/50 text-purple-300 rounded-lg font-semibold text-sm hover:bg-purple-500/20 transition-colors">
+                <Icon name="TablerFilter" class="mr-2" /> Filter
               </button>
             </div>
           </div>
@@ -56,7 +56,7 @@ const route = useRoute()
 const slug = route.params.slug as string
 const api = useApi()
 
-const forumList = await api.getForumList().catch(err => {
+const forumList = await api.getForumList().catch((err) => {
   const status = err.statusCode || 500
   const message = err.message || i18n.t('page.server_error')
   throw createError({ statusCode: status, statusMessage: message, fatal: true })

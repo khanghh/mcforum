@@ -1,7 +1,7 @@
 <template>
   <div class="gaming-card rounded-xl p-4">
     <h3 class="text-lg font-bold text-amber-400 gaming-title mb-4 flex items-center">
-      <FontAwesome :icon="['fas', 'medal']" class="mr-2" /> TOP CONTRIBUTORS
+      <Icon name="TablerMedal2" class="mr-2" /> TOP CONTRIBUTORS
     </h3>
     <div class="space-y-3">
       <div class="flex items-center gap-3">

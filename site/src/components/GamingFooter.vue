@@ -6,7 +6,7 @@
         <!-- Brand Section -->
         <div class="space-y-4">
           <div class="flex items-center space-x-2">
-            <FontAwesome :icon="['fas', 'gamepad']" class="text-3xl text-purple-400" />
+            <Icon name="TablerDeviceGamepad2" class=" text-3xl text-purple-400" />
             <div>
               <h3
                 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title">
@@ -20,19 +20,19 @@
           <div class="flex space-x-3">
             <a href="#"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
-              <FontAwesome :icon="['fab', 'discord']" />
+              <Icon name="TablerBrandDiscordFilled" />
             </a>
             <a href="#"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
-              <FontAwesome :icon="['fab', 'twitter']" />
+              <Icon name="TablerBrandFacebookFilled" />
             </a>
             <a href="#"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
-              <FontAwesome :icon="['fab', 'youtube']" />
+              <Icon name="TablerBrandTwitterFilled" />
             </a>
             <a href="#"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
-              <FontAwesome :icon="['fab', 'twitch']" />
+              <Icon name="TablerBrandYoutubeFilled" />
             </a>
           </div>
         </div>

@@ -1,17 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // ssr: false,
-  srcDir: 'src/',
-  devServer: {
-    port: 3000, // default: 3000
-    host: '0.0.0.0', // default: localhost
-  },
-  compatibilityDate: '2024-09-15',
-  modules: [
-    '@vueuse/nuxt', // https://color-mode.nuxtjs.org/#configuration
+  modules: [// https://color-mode.nuxtjs.org/#configuration
+    '@vueuse/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
-    '@vesp/nuxt-fontawesome',
+    '@nuxt/icon',
     ['nuxt-lazy-load', {
       images: true,
       videos: true,
@@ -31,8 +25,7 @@ export default defineNuxtConfig({
       observerConfig: {
         // See IntersectionObserver documentation
       },
-    }],
-    // '@nuxtjs/color-mode',
+    }], // '@nuxtjs/color-mode',
     '@nuxtjs/i18n',
     '@nuxt/eslint',
   ],
@@ -59,12 +52,24 @@ export default defineNuxtConfig({
       ],
       htmlAttrs: { class: 'theme-light has-navbar-fixed-top' },
       script: [],
-    }
+    },
   },
 
   css: [
     '~/assets/css/index.scss',
   ],
+
+  runtimeConfig: {
+    public: {
+      // BASE_URL: 'http://localhost:3001',
+    },
+  },
+  srcDir: 'src/',
+  devServer: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost
+  },
+  compatibilityDate: '2024-09-15',
 
   // colorMode: {
   //   preference: 'system', // default value of $colorMode.preference
@@ -73,7 +78,6 @@ export default defineNuxtConfig({
   //   classPrefix: 'theme-',
   //   classSuffix: '',
   // },
-
 
   nitro: {
     routeRules: {
@@ -86,89 +90,21 @@ export default defineNuxtConfig({
     },
   },
 
-  runtimeConfig: {
-    public: {
-      // BASE_URL: 'http://localhost:3001',
-    },
-  },
-
   eslint: {
     config: {
       stylistic: true,
     },
   },
-  fontawesome: {
-    icons: {
-      solid: [
-        'arrow-up',
-        'ban',
-        'bookmark',
-        'calendar-plus',
-        'chart-line',
-        'check-circle',
-        'chevron-down',
-        'circle-notch',
-        'clock',
-        'cloud-upload',
-        'cog',
-        'comment',
-        'comment-dots',
-        'comments',
-        'crown',
-        'cube',
-        'envelope',
-        'exclamation-triangle',
-        'eye',
-        'filter',
-        'fire',
-        'flag',
-        'gamepad',
-        'heart',
-        'home',
-        'image',
-        'info-circle',
-        'map-marker-alt',
-        'medal',
-        'palette',
-        'play',
-        'plus',
-        'puzzle-piece',
-        'question-circle',
-        'quote-left',
-        'server',
-        'share',
-        'shield-alt',
-        'shopping-cart',
-        'sign-out-alt',
-        'spinner',
-        'star',
-        'th-list',
-        'thumbs-up',
-        'thumbtack',
-        'times',
-        'trophy',
-        'user',
-        'user-circle',
-        'user-plus',
-        'users',
-      ],
-      regular: [
-        'bookmark',
-        'comment',
-        'comments',
-        'eye',
-      ],
-      brands: [
-        'discord',
-        'twitch',
-        'twitter',
-        'youtube',
-      ],
-    },
-  },
 
   i18n: {
     vueI18n: './i18n.config.ts',
+  },
+
+  icon: {
+    serverBundle: {
+      collections: ['tabler'],
+    },
+    localApiEndpoint: '/icons',
   },
 
   tailwindcss: {

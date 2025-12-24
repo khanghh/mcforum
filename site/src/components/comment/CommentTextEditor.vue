@@ -35,7 +35,7 @@
           class="flex items-center gap-2 text-sm transition-colors duration-200"
           :class="showImageUpload ? 'text-purple-400 font-semibold' : 'text-gray-400 hover:text-purple-400'"
           @click="switchImageUpload">
-          <FontAwesome :icon="['fas', 'image']" class="w-5 h-5" />
+          <Icon name="TablerPhoto" class="w-5 h-5" />
           <span>{{ $t('publish.add_image') }}</span>
         </button>
       </div>
@@ -48,7 +48,7 @@
           :disabled="imageUploading"
           @click="doSubmit">
           <span v-if="imageUploading" class="flex items-center gap-2">
-            <FontAwesome :icon="['fas', 'spinner']" spin /> {{ $t('file.uploading') }}
+            <Icon name="TablerLoader2" /> {{ $t('file.uploading') }}
           </span>
           <span v-else>{{ $t('form.button.send') }}</span>
         </button>

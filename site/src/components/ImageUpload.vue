@@ -227,7 +227,7 @@ defineExpose({
         <div
           class="cursor-pointer p-2 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-colors duration-200"
           @click="removeItem(index)">
-          <icon name="Trash2" size="20px" />
+          <icon name="trash" size="20px" />
         </div>
       </div>
     </div>
@@ -241,7 +241,7 @@ defineExpose({
       <input ref="currentInput" :accept="accept" type="file" multiple class="hidden" @input="onInput">
       <div class="flex flex-col items-center justify-center">
         <slot name="add-image-button">
-          <icon name="Plus"
+          <icon name="plus"
             class="text-purple-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
             size="24px" />
         </slot>

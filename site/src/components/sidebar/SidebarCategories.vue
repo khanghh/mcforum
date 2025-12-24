@@ -1,13 +1,13 @@
 <template>
   <div class="gaming-card rounded-xl p-4">
     <h3 class="text-lg font-bold text-purple-300 mb-4 flex items-center gaming-title">
-      <FontAwesome :icon="['fas', 'th-list']" class="mr-2" /> CATEGORIES
+      <Icon name="IcRoundViewList" class="mr-2" /> CATEGORIES
     </h3>
     <nav class="space-y-1">
       <nuxt-link v-for="item in itemMenus" :key="item.urlPath" :to="item.urlPath"
         class="category-item block px-3 py-2 rounded text-md font-semibold transition-all hover:bg-purple-500/10 gaming-title"
         :class="{ active: item.urlPath === menuPath }">
-        <FontAwesome :icon="['fas', getIcon(item)]" class="mr-2" :class="getIconColor(item)" /> {{ item.name }}
+        <Icon :name="getIcon(item)" class="mr-2" :class="getIconColor(item)" /> {{ item.name }}
       </nuxt-link>
     </nav>
   </div>
@@ -23,11 +23,11 @@ const itemMenus = computed(() => configStore.config.menuItems || [])
 function getIcon(forum) {
   const name = forum.name.toLowerCase()
   if (name.includes('server')) return 'server'
-  if (name.includes('build') || name.includes('creative')) return 'cube'
-  if (name.includes('mod') || name.includes('plugin')) return 'puzzle-piece'
-  if (name.includes('help') || name.includes('support')) return 'question-circle'
-  if (name.includes('market') || name.includes('shop')) return 'shopping-cart'
-  if (name.includes('all') || name.includes('home')) return 'home'
+  if (name.includes('build') || name.includes('creative')) return 'TablerCube'
+  if (name.includes('mod') || name.includes('plugin')) return 'TablerPuzzle'
+  if (name.includes('help') || name.includes('support')) return 'TablerQuestionCircle'
+  if (name.includes('market') || name.includes('shop')) return 'TablerShoppingCart'
+  if (name.includes('all') || name.includes('home')) return 'TablerHomeFilled'
   return 'comments'
 }
 

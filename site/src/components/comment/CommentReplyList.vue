@@ -45,7 +45,7 @@
         <div class="flex items-center gap-4 text-sm text-gray-400">
           <button class="group flex items-center gap-1 transition-colors"
             :class="reply.liked ? 'text-blue-400' : 'hover:text-blue-400'" @click="like(reply)">
-            <FontAwesome :icon="['fas', 'thumbs-up']" class="w-4 h-4" />
+            <Icon name="TablerThumbUpFilled" class="w-4 h-4" />
             <span v-if="reply.likeCount > 0">{{ reply.likeCount }}</span>
             <span v-else>Like</span>
           </button>
@@ -53,7 +53,7 @@
           <button class="group flex items-center gap-1 transition-colors"
             :class="myReply.commentId === reply.id ? 'text-purple-400' : 'hover:text-purple-400'"
             @click="switchShowReply(reply)">
-            <FontAwesome :icon="['fas', 'comment']" class="w-4 h-4" />
+            <Icon name="TablerMessageCircle" class="w-4 h-4" />
             <span>{{ myReply.commentId === reply.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}</span>
           </button>
         </div>
@@ -78,7 +78,7 @@
     <div v-if="replies.hasMore" class="pt-2">
       <button class="text-xs font-bold text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
         @click="loadMore">
-        <FontAwesome :icon="['fas', 'chevron-down']" /> {{ $t('feed.actions.view_more_replies') }}
+        <Icon name="TablerChevronDown" /> {{ $t('feed.actions.view_more_replies') }}
       </button>
     </div>
   </div>
@@ -132,13 +132,15 @@ async function like(comment) {
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
-    } else {
+    }
+    else {
       await api.addCommentReaction(comment.id, 'like')
       comment.liked = true
       comment.likeCount = comment.likeCount + 1
       useMsgSuccess(i18n.t('message.liked_success'))
     }
-  } catch (e) {
+  }
+  catch (e) {
     useCatchError(e)
   }
 }
@@ -151,7 +153,8 @@ function switchShowReply(comment) {
 
   if (myReply.commentId === comment.id) {
     hideReply(comment)
-  } else {
+  }
+  else {
     myReply.commentId = comment.id
   }
 }
@@ -181,9 +184,11 @@ async function submitReply(parent) {
     hideReply()
     emit('reply', ret)
     useMsgSuccess(i18n.t('message.comment_success'))
-  } catch (e) {
+  }
+  catch (e) {
     useCatchError(e)
-  } finally {
+  }
+  finally {
     sending.value = false
   }
 }
