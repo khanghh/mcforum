@@ -90,6 +90,7 @@ function uploadFile(file, index, length) {
     body: formData,
   })
 }
+
 function uploadFiles(promiseList) {
   loading.value = true
 
@@ -122,6 +123,7 @@ function uploadFiles(promiseList) {
     },
   )
 }
+
 function removeItem(index) {
   ElMessageBox.confirm(i18n.t('dialog.message.confirm_action_post'), i18n.t('dialog.title.prompt'), {
     confirmButtonText: i18n.t('dialog.button.confirm'),
@@ -140,6 +142,7 @@ function removeItem(index) {
     () => console.log('canceled delete'),
   )
 }
+
 function checkSizeLimit(files) {
   let pass = true
   for (let i = 0; i < files.length; i++) {

@@ -9,14 +9,13 @@
       enter-to-class="opacity-100 translate-y-0 scale-100"
       leave-active-class="transition ease-in duration-150"
       leave-from-class="opacity-100 translate-y-0 scale-100"
-      leave-to-class="opacity-0 -translate-y-1 scale-95"
-    >
+      leave-to-class="opacity-0 -translate-y-1 scale-95">
       <div v-if="visible" class="z-10 w-full max-w-lg p-6">
         <div class="rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-900">
           <div class="mb-4">
             <div v-if="title" class="flex items-start space-x-3">
               <span :class="['flex-shrink-0 inline-flex items-center justify-center rounded-full p-2', iconBgClass]">
-                <component :is="IconComponent" class="w-6 h-6" aria-hidden="true" />
+                <Icon :name="iconName" class="w-6 h-6" aria-hidden="true" />
               </span>
               <div>
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ title }}</h3>
@@ -49,7 +48,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
-import { PhInfoIcon, PhWarningIcon } from '@/icons'
 
 const dialog = useConfirmDialog()
 
@@ -65,9 +63,9 @@ const iconBgClass = computed(() => {
   }
 })
 
-const IconComponent = computed(() => {
+const iconName = computed(() => {
   const v = variant?.value ?? 'info'
-  return v === 'warning' ? PhWarningIcon : PhInfoIcon
+  return v === 'warning' ? 'PhWarning' : 'PhInfo'
 })
 
 const confirmBtnClass = computed(() => {
