@@ -1,4 +1,7 @@
 <script setup>
+import { useToast } from '@/composables/useToast'
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
+
 const i18n = useI18n()
 const props = defineProps({
   modelValue: {
@@ -29,6 +32,8 @@ const fileList = ref(props.modelValue)
 const previewFiles = ref([])
 const currentInput = ref(null)
 const loading = ref(false)
+const toast = useToast()
+const confirmDialog = useConfirmDialog()
 
 function onClick() {
   if (currentInput.value) {
@@ -125,22 +130,23 @@ function uploadFiles(promiseList) {
 }
 
 function removeItem(index) {
-  ElMessageBox.confirm(i18n.t('dialog.message.confirm_action_post'), i18n.t('dialog.title.prompt'), {
-    confirmButtonText: i18n.t('dialog.button.confirm'),
-    cancelButtonText: i18n.t('dialog.button.cancel'),
-    type: 'warning',
-  }).then(
-    () => {
+  confirmDialog.show({
+    title: i18n.t('dialog.title.prompt'),
+    message: i18n.t('dialog.message.confirm_action_post'),
+    confirmText: i18n.t('dialog.button.confirm'),
+    cancelText: i18n.t('dialog.button.cancel'),
+    variant: 'warning',
+    onConfirm: () => {
       previewFiles.value[index].deleted = true // 删除动画
       fileList.value.splice(index, 1)
       emits('update:modelValue', fileList.value) // 避免和回显冲突，先修改 fileList
       setTimeout(() => {
         previewFiles.value.splice(index, 1)
-        useMsgSuccess(i18n.t('message.delete_success'))
+        toast.success(i18n.t('message.delete_success'))
       }, 900)
     },
-    () => console.log('canceled delete'),
-  )
+    onCancel: () => console.log('canceled delete'),
+  })
 }
 
 function checkSizeLimit(files) {
@@ -151,12 +157,12 @@ function checkSizeLimit(files) {
     }
   }
   if (!pass)
-    useMsgError(i18n.t('message.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }))
+    toast.error(i18n.t('message.image_size_limit_error', { limit: `${props.sizeLimit / 1024 / 1024} MB` }))
   return pass
 }
 function checkLengthLimit(files) {
   if (previewFiles.value.length + files.length > props.limit) {
-    useMsgWarning(i18n.t('message.image_upload_limit', { limit: props.limit }))
+    toast.warning(i18n.t('message.image_upload_limit', { limit: props.limit }))
     return false
   }
   else {
@@ -192,125 +198,54 @@ defineExpose({
 </script>
 
 <template>
-  <div class="image-uploads">
-    <div v-for="(image, index) in previewFiles" :key="index" class="preview-item" :class="{ deleted: image.deleted }"
+  <div class="flex flex-wrap gap-3">
+    <div
+      v-for="(image, index) in previewFiles"
+      :key="index"
+      class="relative group rounded-xl overflow-hidden border border-purple-500/30 bg-gradient-to-br from-gray-900/80 to-gray-800/80"
+      :class="{ 'transition-all duration-1000 transform -translate-y-full opacity-0': image.deleted }"
       :style="{ width: size, height: size }">
-      <img :src="image.url" class="image-item">
-      <el-progress v-show="image.progress < 100" :percentage="image.progress" color="#25A9F6" :show-text="false"
-        class="progress" />
-      <div v-show="image.progress < 100" class="cover">
-        上传中...
+      <img :src="image.url"
+        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+
+      <!-- Progress Bar -->
+      <div v-show="image.progress < 100"
+        class="absolute inset-0 flex flex-col justify-center items-center bg-black/60 z-10 p-2">
+        <div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden mb-2">
+          <div
+            class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300"
+            :style="{ width: image.progress + '%' }">
+          </div>
+        </div>
+        <span class="text-xs text-purple-200 font-medium">Uploading...</span>
       </div>
-      <div class="upload-delete" :class="{
-        'show-delete': image.progress === 100,
-      }" @click="removeItem(index)">
-        <icon name="Trash2" />
+
+      <!-- Delete Overlay -->
+      <div
+        class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-200"
+        :class="{ 'opacity-100': image.progress === 100 && !image.deleted, 'group-hover:opacity-100': image.progress === 100 }">
+        <div
+          class="cursor-pointer p-2 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-colors duration-200"
+          @click="removeItem(index)">
+          <icon name="Trash2" size="20px" />
+        </div>
       </div>
     </div>
-    <div v-show="previewFiles.length < limit" class="add-image-btn" :style="{ width: size, height: size }"
+
+    <!-- Add Button -->
+    <div
+      v-show="previewFiles.length < limit"
+      class="relative flex items-center justify-center rounded-xl border-2 border-dashed border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-pink-500/5 hover:from-purple-500/10 hover:to-pink-500/10 hover:border-purple-400 transition-all duration-300 cursor-pointer group"
+      :style="{ width: size, height: size }"
       @click="onClick($event)">
-      <input ref="currentInput" :accept="accept" type="file" multiple @input="onInput">
-      <div class="add-image-btn-wrapper">
+      <input ref="currentInput" :accept="accept" type="file" multiple class="hidden" @input="onInput">
+      <div class="flex flex-col items-center justify-center">
         <slot name="add-image-button">
-          <icon name="Plus" color="#1c71d8" size="30px" />
+          <icon name="Plus"
+            class="text-purple-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
+            size="24px" />
         </slot>
       </div>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.image-uploads {
-  display: flex;
-  column-gap: 10px;
-  row-gap: 10px;
-
-  .preview-item {
-    position: relative;
-    border: 2px dashed var(--border-color);
-
-    &.deleted {
-      transition: 1s all;
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-
-    .image-item {
-      cursor: pointer;
-      // border-radius: 5px;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .progress {
-      position: absolute;
-      top: 80px;
-      width: 100%;
-      height: 6px;
-      padding: 0 10px;
-    }
-
-    .cover {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      color: var(--text-color2);
-      background: rgba(255, 255, 255, 0.5);
-      font-size: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .upload-delete {
-      cursor: pointer;
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      height: 20px;
-      width: 100%;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.3);
-      text-align: center;
-      vertical-align: middle;
-      line-height: 20px;
-
-      i.iconfont {
-        font-size: 14px;
-        fill: white;
-        color: var(--text-color5);
-        font-weight: 700;
-      }
-    }
-
-    &:hover {
-      .upload-delete.show-delete {
-        display: flex;
-      }
-    }
-  }
-
-  .add-image-btn {
-    cursor: pointer;
-    border: 2px dashed var(--border-color);
-    position: relative;
-
-    input[type="file"] {
-      cursor: pointer;
-      display: none;
-    }
-
-    .add-image-btn-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-  }
-}
-</style>
