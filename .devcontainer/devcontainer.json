@@ -6,13 +6,16 @@
   },
   "runArgs": [
     "--network=bridge",
-    "--name=bbsgo-dev"
+    "--name=bbsgo-dev",
+    "--add-host=host.docker.internal:host-gateway",
+    "--sysctl=net.ipv6.conf.all.disable_ipv6=1"
   ],
   "containerEnv": {
     "TZ": "Asia/Ho_Chi_Minh"
   },
   "forwardPorts": [
-    8080, 3000
+    8080,
+    3000
   ],
   "customizations": {
     "vscode": {

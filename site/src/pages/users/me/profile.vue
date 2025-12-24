@@ -7,7 +7,7 @@
           <h2 class="text-lg font-semibold">{{ $t('page.personal_info') }}</h2>
         </div>
 
-        <nuxt-link :to="'/users/' + user.id"
+        <nuxt-link :to="`/users/${user.username}`"
           class="inline-flex items-center gap-2 text-sm text-gray-300 hover:text-white">
           <icon name="Undo2" />
           <span>{{ $t('links.back_to_profile') }}</span>

@@ -8,12 +8,12 @@
       </div>
 
       <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px]">
-        <TabsNavigation v-model="activeTab" />
+        <TabsNavigation :activeTab="activeTab" />
         <div class="p-6">
           <UserTopics v-show="activeTab === 'topics'" :user="user" />
           <UserActivity v-show="activeTab === 'activity'" :user="user" />
           <UserFollowing v-show="activeTab === 'following'" :user="user" />
-          <UserFans v-show="activeTab === 'fans'" :user="user" />
+          <UserFollowers v-show="activeTab === 'followers'" :user="user" />
           <UserFavorites v-show="activeTab === 'favorites'" :user="user" />
         </div>
       </div>
@@ -28,10 +28,9 @@ import TabsNavigation from '~/components/users/TabsNavigation.vue'
 import UserTopics from '~/components/users/UserTopics.vue'
 import UserActivity from '~/components/users/UserActivity.vue'
 import UserFollowing from '~/components/users/UserFollowing.vue'
-import UserFans from '~/components/users/UserFans.vue'
+import UserFollowers from '~/components/users/UserFollowers.vue'
 import UserFavorites from '~/components/users/UserFavorites.vue'
-import type { UserProfile } from '@/types'
-import { ref, watch } from 'vue'
+import type { UserProfile } from '@/types/user'
 
 definePageMeta({
   layout: 'profile',
@@ -47,22 +46,13 @@ const user: UserProfile = await api.getUser(username).catch(() => {
   throw createError({ statusCode: 404, statusMessage: 'User not found' })
 })
 
-const allowedTabs = ['topics', 'activity', 'following', 'fans', 'favorites']
+const allowedTabs = ['topics', 'activity', 'followers', 'following' ]
 const tabParam: string = route.params.tab as string
 if (tabParam && !allowedTabs.includes(tabParam)) {
   throw createError({ statusCode: 404, statusMessage: 'Tab not found' })
 }
 
-const initialTab = allowedTabs.includes(tabParam) ? tabParam : 'topics'
-const activeTab = ref(initialTab)
-
-// keep URL in sync when tab changes
-watch(activeTab, (tab) => {
-  const params = { ...route.params }
-  if (tab === 'topics') delete params.tab
-  else params.tab = tab
-  router.push({ params }).catch(() => { })
-})
+const activeTab = computed(() => tabParam || 'topics')
 
 useHead({
   title: useSiteTitle(i18n.t('page.profile', { nickname: user.nickname })),
@@ -71,23 +61,3 @@ useHead({
   },
 })
 </script>
-
-<style scoped>
-/* Scrollbar styling */
-.custom-scrollbar::-webkit-scrollbar {
-  height: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4b5563;
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
-</style>

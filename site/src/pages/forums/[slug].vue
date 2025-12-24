@@ -69,12 +69,7 @@ if (!forumInfo || !forumInfo.slug) {
 
 const forumTitle = computed(() => forumInfo.name || slug)
 const forumDescription = computed(() => forumInfo.description || '')
-
-const forumCursor = await api.getForumTopics(slug).catch(err => {
-  const status = err.statusCode || 500
-  const message = err.message || i18n.t('page.server_error')
-  throw createError({ statusCode: status, statusMessage: message, fatal: true })
-})
+const forumCursor = api.getForumTopics(slug)
 
 useHead({
   title: useSiteTitle(forumInfo.name),

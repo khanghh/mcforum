@@ -2,7 +2,7 @@
   <div class="gaming-card rounded-xl p-5 hover:bg-white/5 transition-colors">
     <div class="flex-1 min-w-0">
       <h3 class="text-lg font-bold mb-2">
-        <nuxt-link :to="`/topics/${topic.slug || topic.id}`"
+        <nuxt-link :to="`/topics/${topic.slug}`"
           class="text-white hover:text-purple-400 transition-colors gaming-title">
           <span v-if="showPinned && topic.pinned"
             class="mr-2 px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-bold rounded border border-red-500/50">
@@ -13,12 +13,12 @@
       </h3>
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <!-- Avatar -->
-        <div class="flex items-center gap-2">
-          <Avatar :src="topic.user.avatar" :username="topic.user.nickname" :size="24"
+        <div v-if="author" class="flex items-center gap-2">
+          <Avatar :src="author.avatar" :username="author.nickname" :size="24"
             class="w-6 h-6 rounded border border-purple-500/50 flex-shrink-0" />
-          <nuxt-link :to="`/users/${topic.user.username}`"
+          <nuxt-link :to="`/users/${author.username}`"
             class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors">
-            {{ topic.user.nickname }}
+            {{ author.nickname }}
           </nuxt-link>
         </div>
 
@@ -44,7 +44,7 @@
         <!-- Like -->
         <button class="flex items-center gap-1 hover:text-red-400 transition-colors"
           :class="{ 'text-red-400': topic.liked }"
-          @click.prevent="like(topic)">
+          @click.prevent="likeTopic">
           <FontAwesome :icon="['fas', 'heart']" :class="{ 'text-red-400': topic.liked }" />
           {{ topic.likeCount }}
         </button>
@@ -69,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, reactive } from 'vue'
 import type { Topic } from '@/types'
 const i18n = useI18n()
 const userStore = useUserStore()
@@ -79,36 +80,33 @@ type Props = {
   showPinned?: boolean
 }
 const props = defineProps<Props>()
-  
-const topic = props.topic
 
-async function like(topic: Topic) {
-  try {
-    if (topic.liked) {
-      await useHttpDelete(`/api/topics/${topic.slug}/reactions/${user.id}`)
-      topic.liked = false
-      topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0
-      // useMsgSuccess(i18n.t('message.unliked_success'))
-    } else {
-      await useHttpPostForm(`/api/topics/${topic.slug}/reactions`, {
-        body: { type: 'like' },
-      })
-      topic.liked = true
-      topic.likeCount++
-      // useMsgSuccess(i18n.t('message.liked_success'))
+// create a local mutable copy to avoid mutating readonly props
+const localTopic = reactive({ ...(props.topic) }) as Topic
+
+const author = computed(() => localTopic.user)
+
+async function likeTopic() {
+    try {
+      if (!user || !user.id) {
+        useCatchError(new Error(i18n.t('auth.login_required')))
+        return
+      }
+
+      const slug = localTopic.slug || localTopic.id
+      if (localTopic.liked) {
+        await useHttpDelete(`/api/topics/${slug}/reactions/${user.id}`)
+        localTopic.liked = false
+        localTopic.likeCount = localTopic.likeCount > 0 ? localTopic.likeCount - 1 : 0
+      } else {
+        await useHttpPostForm(`/api/topics/${slug}/reactions`, {
+          body: { type: 'like' },
+        })
+        localTopic.liked = true
+        localTopic.likeCount = (localTopic.likeCount || 0) + 1
+      }
+    } catch (e) {
+      useCatchError(e)
     }
-  } catch (e) {
-    useCatchError(e)
-  }
 }
 </script>
-
-<style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>

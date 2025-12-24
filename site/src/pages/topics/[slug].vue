@@ -154,7 +154,7 @@
 
           <!-- Wrapped Comment Component -->
           <CommentSection
-            :entity-id="topic.id"
+            :topicSlug="topic.slug"
             :comment-count="topic.commentCount"
             entity-type="topic"
             @created="commentCreated" />
@@ -171,13 +171,12 @@
 const i18n = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
+const api = useApi()
 
 const slug = route.params.slug
 const user = userStore.user
 
-const { data: topic } = await useAsyncData('topic', () =>
-  useHttpGet(`/api/topics/${slug}`),
-)
+const { data: topic } = await useAsyncData('topic', () => api.getTopic(slug))
 
 // Handle 404 manually if topic is null (handled by v-if/v-else logic currently, but strict check is better)
 if (!topic.value) {
@@ -208,14 +207,12 @@ function calculateLevel(score) {
 async function toggleLike() {
   try {
     if (liked.value) {
-      await useHttpDelete(`/api/topics/${slug}/reactions/${user.id}`)
+      await api.removeTopicReaction(slug)
       liked.value = false
       topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
-      await useHttpPostForm(`/api/topics/${slug}/reactions`, {
-        body: { type: 'like' },
-      })
+      await api.addTopicReaction(slug, 'like')
       liked.value = true
       topic.value.likeCount++
       useMsgSuccess(i18n.t('message.liked_success'))

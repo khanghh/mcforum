@@ -28,7 +28,7 @@
 
       <div class="text-center py-8">
         <button
-          v-if="pageHasMore"
+          v-if="hasMore"
           class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold font-['Saira Semi Condensed'] tracking-wider shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 mx-auto min-w-[200px]"
           :disabled="disabled"
           @click="loadMore">
@@ -52,45 +52,26 @@ import { ref, computed } from 'vue'
 type Props = {
   cursor: CursorResult<any[]>
 }
-
 const props = defineProps<Props>()
+defineExpose({
+  unshiftResults,
+})
 
 const loading = ref(false)
-const pageCursor = ref<any>('')
 const pageItems = ref<any[]>([])
-const pageHasMore = ref<boolean>(false)
+const hasMore = ref<boolean>(true)
 
-// initialize page data from the passed cursor (do not auto-load)
-pageItems.value = props.cursor.items ?? []
-pageHasMore.value = props.cursor.hasMore ?? false
-pageCursor.value = props.cursor.cursor
+const preloadItems = await props.cursor.loadNext().catch(() => [])
+pageItems.value = preloadItems
+hasMore.value = props.cursor.hasMore
 
-// expose API after functions are declared
+const disabled = computed(() => {
+  return loading.value || !hasMore
+})
 
-const disabled = computed(() => loading.value || !pageHasMore.value)
-
-const empty = computed(() => pageHasMore.value === false && pageItems.value.length === 0)
-
-// Do not auto-load on mounted — render current `cursor.items` only.
-
-async function loadMore() {
-  loading.value = true
-  try {
-    const newItems = await props.cursor.loadNext()
-    if (newItems && newItems.length) {
-      newItems.forEach((it) => pageItems.value.push(it))
-    }
-    pageHasMore.value = props.cursor.hasMore
-    pageCursor.value = props.cursor.cursor
-  } catch (err: any) {
-    throw createError({
-      statusCode: err.statusCode || 500,
-      statusMessage: err.message || 'Failed to load more items',
-    })
-  } finally {
-    loading.value = false
-  }
-}
+const empty = computed(() => {
+  return !hasMore.value && !pageItems.value?.length
+})
 
 function unshiftResults(item: any) {
   if (item && pageItems.value) {
@@ -98,8 +79,19 @@ function unshiftResults(item: any) {
   }
 }
 
-// expose helpers
-defineExpose({
-  unshiftResults,
-})
+async function loadMore() {
+  loading.value = true
+  try {
+    const items = await props.cursor.loadNext()
+    pageItems.value.push(...items)
+    hasMore.value = props.cursor.hasMore
+  } catch (err) {
+    console.error('Load more failed:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+
+
 </script>

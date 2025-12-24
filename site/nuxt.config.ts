@@ -2,6 +2,10 @@
 export default defineNuxtConfig({
   // ssr: false,
   srcDir: 'src/',
+  devServer: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost
+  },
   compatibilityDate: '2024-09-15',
   modules: [
     '@vueuse/nuxt', // https://color-mode.nuxtjs.org/#configuration
@@ -74,7 +78,7 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       '/api/**': {
-        proxy: `http://localhost:3001/api/**`,
+        proxy: `http://172.17.0.1:3001/api/**`,
       },
       '/admin/**': {
         proxy: `${import.meta.env.SERVER_URL}/admin/**`,

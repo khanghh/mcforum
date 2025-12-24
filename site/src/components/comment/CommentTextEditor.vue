@@ -18,7 +18,7 @@
     <!-- Image Uploader Area -->
     <div v-show="showImageUpload" class="px-4 pb-4">
       <div class="p-4 rounded-lg bg-gray-900/40 border border-dashed border-gray-700/50">
-        <image-upload
+        <ImageUpload
           ref="imageUploader"
           v-model="post.imageList"
           v-model:on-upload="imageUploading"
@@ -160,7 +160,3 @@ defineExpose({
   clear,
 })
 </script>
-
-<style lang="scss" scoped>
-/* Scoped styles replaced by Tailwind classes */
-</style>

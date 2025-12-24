@@ -10,7 +10,7 @@ export enum TopicType {
 }
 
 export interface Forum {
-  id?: number
+  id: number
   name: string
   slug: string
   logo?: string
@@ -40,5 +40,4 @@ export interface Topic {
   pinnedTime: number
   status: number
   favorited: boolean
-  ipLocation: string
 }

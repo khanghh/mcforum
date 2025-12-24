@@ -5,7 +5,6 @@
         <div class="main-content">
           <search-topics-nav />
           <LoadMoreAsync
-            ref="loadMore"
             v-slot="{ items }"
             :cursor="searchCursor">
             <search-topic-list :results="items" />
@@ -24,7 +23,7 @@
 
 <script setup>
 const route = useRoute()
-const loadMore = ref(null)
+// const loadMore = ref(null)
 const params = reactive({
   keyword: route.query.q || '',
   nodeId: route.query.nodeId || 0,
@@ -40,11 +39,11 @@ watch(
     params.keyword = newQuery.q || ''
     params.nodeId = newQuery.nodeId || 0
     params.timeRange = newQuery.timeRange
-    nextTick(() => {
-      if (loadMore.value) {
-        loadMore.value.refresh()
-      }
-    })
+    // nextTick(() => {
+    //   if (loadMore.value) {
+    //     loadMore.value.refresh()
+    //   }
+    // })
   },
   { immediate: true },
 )

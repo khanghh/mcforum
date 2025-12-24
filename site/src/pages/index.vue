@@ -37,11 +37,7 @@ definePageMeta({
   layout: 'default',
 })
 
-const newTopicsCursor = await api.getTopicFeeds(FeedType.WhatsNew).catch(err => {
-  const status = err.statusCode || 500
-  const message = err.message || t('page.server_error')
-  throw createError({ statusCode: status, statusMessage: message, fatal: true })
-})
+const newTopicsCursor = api.getTopicFeeds(FeedType.WhatsNew)
 
 useHead({
   title: useSiteTitle(t('feed.whats_new.title')),

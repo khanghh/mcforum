@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 pl-4 border-l-2 border-purple-500/20 space-y-4">
+  <div class="mt-4 pl-4 border-l-4 border-purple-500/20 space-y-4">
     <div v-for="reply in replies.items" :key="reply.id" class="flex items-start gap-4">
       <div class="relative group">
         <my-avatar :user="reply.user" :size="24" class="rounded-lg border-2 border-purple-500/30" />
@@ -9,14 +9,14 @@
         <!-- Reply Meta -->
         <div class="flex items-center gap-2 flex-wrap mb-1">
           <nuxt-link :to="`/users/${reply.user.username}`"
-            class="font-bold text-sm text-purple-300 hover:text-purple-400 transition-colors">
+            class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
             {{ reply.user.nickname }}
           </nuxt-link>
 
           <template v-if="reply.quote">
             <span class="text-xs text-gray-500">{{ $t('feed.replied_to') }}</span>
             <nuxt-link :to="`/users/${reply.quote.user.username}`"
-              class="font-bold text-sm text-purple-300 hover:text-purple-400 transition-colors">
+              class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
               {{ reply.quote.user.nickname }}
             </nuxt-link>
           </template>
@@ -42,10 +42,10 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center gap-4 text-xs text-gray-400">
+        <div class="flex items-center gap-4 text-sm text-gray-400">
           <button class="group flex items-center gap-1 transition-colors"
-            :class="reply.liked ? 'text-green-400' : 'hover:text-green-400'" @click="like(reply)">
-            <FontAwesome :icon="['fas', 'thumbs-up']" class="w-3 h-3" />
+            :class="reply.liked ? 'text-blue-400' : 'hover:text-blue-400'" @click="like(reply)">
+            <FontAwesome :icon="['fas', 'thumbs-up']" class="w-4 h-4" />
             <span v-if="reply.likeCount > 0">{{ reply.likeCount }}</span>
             <span v-else>Like</span>
           </button>
@@ -53,7 +53,7 @@
           <button class="group flex items-center gap-1 transition-colors"
             :class="myReply.commentId === reply.id ? 'text-purple-400' : 'hover:text-purple-400'"
             @click="switchShowReply(reply)">
-            <FontAwesome :icon="['fas', 'comments']" class="w-3 h-3" />
+            <FontAwesome :icon="['fas', 'comment']" class="w-4 h-4" />
             <span>{{ myReply.commentId === reply.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}</span>
           </button>
         </div>
@@ -61,7 +61,16 @@
         <!-- Reply Form -->
         <div v-if="myReply.commentId === reply.id"
           class="mt-3 p-3 rounded-lg bg-gray-800/50 border border-purple-500/20">
-          <CommentTextEditor v-model="myReply.input" :height="80" @submit="submitReply(reply)" />
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-gray-400 font-medium text-xs tracking-wider">
+              {{ $t('feed.replying_to') }}
+            </span>
+            <nuxt-link :to="`/users/${reply.user.username}`"
+              class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
+              {{ reply.user.nickname }}
+            </nuxt-link>
+          </div>
+          <CommentTextEditor v-model="myReply.input" :disabled="sending" :height="80" @submit="submitReply(reply)" />
         </div>
       </div>
     </div>
@@ -77,11 +86,11 @@
 
 <script setup>
 const i18n = useI18n()
-const userStore = useUserStore()
+const api = useApi()
 
 const props = defineProps({
   commentId: {
-    type: String,
+    type: Number,
     required: true,
   },
   modelValue: {
@@ -93,6 +102,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const sending = ref(false)
 
 const emit = defineEmits(['update:modelValue', 'reply'])
 const myReply = reactive(props.modelValue)
@@ -117,14 +128,12 @@ async function loadMore() {
 async function like(comment) {
   try {
     if (comment.liked) {
-      await useHttpDelete(`/api/comments/${comment.id}/reactions/${userStore.user.id}`)
+      await api.removeCommentReaction(comment.id)
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
-      await useHttpPostForm(`/api/comments/${comment.id}/reactions`, {
-        body: { type: 'like' },
-      })
+      await api.addCommentReaction(comment.id, 'like')
       comment.liked = true
       comment.likeCount = comment.likeCount + 1
       useMsgSuccess(i18n.t('message.liked_success'))
@@ -154,23 +163,28 @@ function hideReply() {
 }
 
 async function submitReply(parent) {
+  if (!myReply.input.content) {
+    useMsgError(i18n.t('message.please_enter_comment'))
+    return
+  }
+  if (sending.value) {
+    return
+  }
+
+  sending.value = true
   try {
-    const ret = await useHttpPostForm(`/api/comments/${myReply.commentId}/replies`, {
-      body: {
-        content: myReply.input.content || '',
-        imageList: myReply.input.imageList ? JSON.stringify(myReply.input.imageList) : '',
-        quoteId: myReply.commentId,
-      },
+    const ret = await api.addCommentReply(myReply.commentId, {
+      content: myReply.input.content || '',
+      imageList: myReply.input.imageList,
+      quoteId: myReply.commentId,
     })
     hideReply()
     emit('reply', ret)
     useMsgSuccess(i18n.t('message.comment_success'))
   } catch (e) {
     useCatchError(e)
+  } finally {
+    sending.value = false
   }
 }
 </script>
-
-<style lang="scss" scoped>
-/* Scoped styles replaced by Tailwind classes */
-</style>

@@ -58,7 +58,7 @@ interface FeedInfo {
 }
 
 const feedType: FeedType = route.params.feed as FeedType
-const allowFeeds = ['recommended', 'following', 'whats-new']
+const allowFeeds = ['recommended', 'followed', 'whats-new']
 if (!feedType || !allowFeeds.includes(feedType)) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
 }
@@ -70,7 +70,7 @@ const feedInfo = computed<FeedInfo>(() => {
         title: t('feed.recommended.title'),
         description: t('feed.recommended.description'),
       }
-    case FeedType.Following:
+    case FeedType.Followed:
       return {
         title: t('feed.followed.title'),
         description: t('feed.followed.description'),
@@ -85,12 +85,7 @@ const feedInfo = computed<FeedInfo>(() => {
 })
 
 
-const feedCursor: CursorResult<Topic[]> = await api.getTopicFeeds(feedType).catch(err => {
-  const status = err.statusCode || 500
-  const message = err.message || t('page.server_error')
-  throw createError({ statusCode: status, statusMessage: message, fatal: true })
-})
-
+const feedCursor: CursorResult<Topic[]> = api.getTopicFeeds(feedType)
 
 useHead({
   title: useSiteTitle(feedInfo.value.title),

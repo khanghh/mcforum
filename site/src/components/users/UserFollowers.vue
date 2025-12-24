@@ -8,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { UserProfile } from '@/types/user'
 import UserCard from './UserCard.vue'
 import { useApi } from '@/composables/api'
@@ -25,9 +24,9 @@ const isSelf = loggedInUser?.username === props.user.username
 
 const getUserFollowing = async () => {
   if (isSelf) {
-    return await api.getMyFollowing()
+    return await api.getMyFollowers()
   }
-  return await api.getUserFollowing(props.user.username)
+  return await api.getUserFollowers(props.user.username)
 }
 
 const followingCursor = await getUserFollowing().catch(err => {

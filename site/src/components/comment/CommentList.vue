@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <LoadMoreAsync ref="loadMore" v-slot="{ items }" :cursor="commentCursor">
+    <LoadMoreAsync ref="loadMoreComment" v-slot="{ items }" :cursor="commentsCursor">
       <TransitionGroup name="comment" tag="div" class="space-y-6">
         <div v-for="comment in items" :key="comment.id"
           class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6">
@@ -46,7 +46,7 @@
                 </button>
 
                 <button class="group flex items-center gap-1 transition-colors"
-                  :class="myReply.commentId === comment.id ? 'text-purple-400' : 'hover:text-purple-400'"
+                  :class="myReply.commentId === comment.id ? 'text-purple-400' : 'hover:text-gray-400'"
                   @click="switchShowReply(comment)">
                   <FontAwesome :icon="['fas', 'comment']" class="w-4 h-4" />
                   <span>
@@ -58,6 +58,15 @@
               <!-- Reply Form -->
               <div v-if="myReply.commentId === comment.id"
                 class="mt-4 p-4 rounded-lg bg-gray-800/50 border border-purple-500/20">
+                <div v-if="replyTo" class="flex items-center gap-2 mb-4">
+                  <span class="text-gray-400 font-medium text-xs tracking-wider">
+                    {{ $t('feed.replying_to') }}
+                  </span>
+                  <nuxt-link :to="`/users/${replyTo.username}`"
+                    class="font-bold text-sm text-purple-300 hover:text-purple-400 transition-colors">
+                    {{ replyTo.nickname }}
+                  </nuxt-link>
+                </div>
                 <CommentTextEditor v-model="myReply.input" :height="100" @submit="submitReply(comment)" />
               </div>
 
@@ -73,74 +82,68 @@
   </div>
 </template>
 
-<script setup>
-const i18n = useI18n()
-const route = useRoute()
+<script setup lang="ts">
+import { ref, reactive, computed, type Ref } from 'vue'
+import type { Comment, CommentUser } from '@/types'
 
-defineProps({
-  entityType: {
+const userStore = useUserStore()
+const api = useApi()
+
+const props = defineProps({
+  topicSlug: {
     type: String,
-    required: true,
-  },
-  entityId: {
-    type: Number,
     required: true,
   },
 })
 
 const myReply = reactive({
   commentId: 0,
-  quoteId: 0,
   input: {
     content: '',
     imageList: [],
   },
 })
 
-const commentListUrl = computed(() => `/api/topics/${route.params.slug}/comments`)
-import { CursorResult } from '@/composables/api'
-const commentCursor = computed(() => new CursorResult(commentListUrl.value))
+const replyTo = ref<CommentUser | null>(null)
 
-const userStore = useUserStore()
-const loadMore = ref(null)
+const commentsCursor = api.getTopicComments(props.topicSlug)
 
-const append = (comment) => {
-  if (!loadMore.value || !comment) return
-  // Avoid full refresh (causes flicker/jump). Just prepend the new item.
-  loadMore.value.unshiftResults(comment)
+const isLogin = computed(() => {
+  return !!userStore.user
+})
+
+const loadMoreComment = ref<any>(null)
+
+const append = (comment: Comment) => {
+  if (!loadMoreComment.value || !comment) return
+  loadMoreComment.value.unshiftResults(comment)
 }
 
-const like = async (comment) => {
+const like = async (comment: Comment) => {
+  if (!isLogin.value) return
   try {
     if (comment.liked) {
-      await useHttpDelete(`/api/comments/${comment.id}/reactions/${userStore.user.id}`, {
-      })
+      await api.removeCommentReaction(comment.id)
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
-      useMsgSuccess(i18n.t('message.unliked_success'))
     } else {
-      await useHttpPostForm(`/api/comments/${comment.id}/reactions`, {
-        body: { type: 'like' },
-      })
+      await api.addCommentReaction(comment.id, 'like')
       comment.liked = true
-      comment.likeCount = comment.likeCount + 1
-      useMsgSuccess(i18n.t('message.liked_success'))
+      comment.likeCount = (comment.likeCount || 0) + 1
     }
   } catch (e) {
     useCatchError(e)
   }
 }
 
-const switchShowReply = (comment) => {
-  if (!userStore.user) {
-    useMsgSignIn()
-    return
-  }
+const switchShowReply = (comment: Comment) => {
+  if (!isLogin.value) return
 
   if (myReply.commentId === comment.id) {
     hideReply()
   } else {
     myReply.commentId = comment.id
+    replyTo.value = comment.user
   }
 }
 
@@ -148,29 +151,28 @@ const hideReply = () => {
   myReply.commentId = 0
   myReply.input.content = ''
   myReply.input.imageList = []
+  replyTo.value = null
 }
 
-const submitReply = async (parent) => {
+const submitReply = async (parent: Comment) => {
+  if (!isLogin.value) return
   try {
-    const ret = await useHttpPostForm(`/api/comments/${parent.id}/replies`, {
-      body: {
-        content: myReply.input.content,
-        imageList: myReply.input.imageList ? JSON.stringify(myReply.input.imageList) : '',
-      },
+    const ret = await api.addCommentReply(parent.id, {
+      content: myReply.input.content || '',
+      imageList: myReply.input.imageList
     })
     hideReply()
     prependReply(parent, ret)
-    useMsgSuccess(i18n.t('message.comment_success'))
   } catch (e) {
     useCatchError(e)
   }
 }
 
-const onReply = (parent, comment) => {
+const onReply = (parent: Comment, comment: Comment) => {
   prependReply(parent, comment)
 }
 
-const prependReply = (parent, comment) => {
+const prependReply = (parent: Comment, comment: Comment) => {
   if (parent.replies && parent.replies.items) {
     parent.replies.items.unshift(comment)
   } else {
