@@ -5,7 +5,6 @@ import (
 	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
 	"bbs-go/pkg/msg"
-	"strconv"
 
 	"bbs-go/common/strs"
 	"bbs-go/pkg/web"
@@ -14,7 +13,6 @@ import (
 
 	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/kataras/iris/v12"
-	"github.com/spf13/cast"
 
 	"bbs-go/internal/cache"
 	"bbs-go/internal/model"
@@ -60,7 +58,7 @@ func (c *UsersController) GetFavorites() *web.JsonResult {
 		hasMore = len(favorites) >= limit
 	}
 
-	return web.JsonCursorData(payload.BuildFavorites(favorites), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildFavorites(favorites), cursor, hasMore)
 }
 
 // 获取最近3条未读消息
@@ -105,7 +103,7 @@ func (c *UsersController) GetMessages() *web.JsonResult {
 	// 全部标记为已读
 	service.MessageService.MarkRead(user.Id)
 
-	return web.JsonCursorData(payload.BuildMessages(list), cast.ToString(nextCursor), hasMore)
+	return web.JsonCursorData(payload.BuildMessages(list), nextCursor, hasMore)
 }
 
 // 用户积分记录
@@ -133,7 +131,7 @@ func (c *UsersController) GetScore_logs() *web.JsonResult {
 		hasMore = len(list) == limit
 	}
 
-	return web.JsonCursorData(list, cast.ToString(nextCursor), hasMore)
+	return web.JsonCursorData(list, nextCursor, hasMore)
 }
 
 // 积分排行
@@ -211,7 +209,7 @@ func (c *UsersController) GetByTopics(username string) *web.JsonResult {
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.Id, cursor)
-	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
 func (c *UsersController) GetByFollowers(username string) *web.JsonResult {
@@ -235,7 +233,7 @@ func (c *UsersController) GetByFollowers(username string) *web.JsonResult {
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
@@ -266,7 +264,7 @@ func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *UsersController) PostByFollow(username string) *web.JsonResult {

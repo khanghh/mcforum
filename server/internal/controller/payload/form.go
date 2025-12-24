@@ -1,11 +1,9 @@
 package payload
 
 import (
-	"bbs-go/common/base62"
 	"bbs-go/common/utils"
 	"bbs-go/internal/model/constants"
 	"bbs-go/pkg/web/params"
-	"fmt"
 	"log/slog"
 	"strings"
 
@@ -60,12 +58,21 @@ type CreateCommentForm struct {
 }
 
 func GetCreateCommentForm(ctx iris.Context) CreateCommentForm {
-	fmt.Println("quoteIdStr", params.FormValue(ctx, "quoteId"))
-	fmt.Println("quoteId", base62.Decode(params.FormValue(ctx, "quoteId")))
+	contentType := ctx.GetHeader("Content-Type")
+
+	if contentType == "application/json" {
+		var form CreateCommentForm
+		if err := ctx.ReadJSON(&form); err != nil {
+			slog.Error(err.Error(), slog.Any("err", err))
+		}
+		return form
+	}
+
 	form := CreateCommentForm{
-		QuoteId: base62.Decode(params.FormValue(ctx, "quoteId")),
 		Content: strings.TrimSpace(params.FormValue(ctx, "content")),
 		Images:  params.FormValueStringArray(ctx, "images"),
+		QuoteId: params.FormValueInt64Default(ctx, "quoteId", 0),
 	}
+
 	return form
 }

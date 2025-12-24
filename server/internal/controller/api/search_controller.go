@@ -11,7 +11,6 @@ import (
 	"bbs-go/pkg/web/params"
 
 	"github.com/kataras/iris/v12"
-	"github.com/spf13/cast"
 )
 
 type SearchController struct {
@@ -31,15 +30,15 @@ func (c *SearchController) AnyReindex() *web.JsonResult {
 
 func (c *SearchController) GetTopic() *web.JsonResult {
 	var (
-		cursor    = params.FormValueIntDefault(c.Ctx, "cursor", 1)
+		cursor    = params.FormValueInt64Default(c.Ctx, "cursor", 1)
 		keyword   = params.FormValue(c.Ctx, "keyword")
 		nodeId    = params.FormValueInt64Default(c.Ctx, "nodeId", 0)
 		timeRange = params.FormValueIntDefault(c.Ctx, "timeRange", 0)
 		limit     = 20
 	)
-	list, _, err := search.SearchTopic(keyword, nodeId, timeRange, cursor, limit)
+	list, _, err := search.SearchTopic(keyword, nodeId, timeRange, int(cursor), limit)
 	if err != nil {
 		return web.JsonError(err)
 	}
-	return web.JsonCursorData(payload.BuildSearchTopics(list), cast.ToString(cursor+1), len(list) >= limit)
+	return web.JsonCursorData(payload.BuildSearchTopics(list), cursor+1, len(list) >= limit)
 }

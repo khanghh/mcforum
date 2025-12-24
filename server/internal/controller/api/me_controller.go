@@ -10,7 +10,6 @@ import (
 	"bbs-go/internal/validate"
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
-	"strconv"
 	"strings"
 	"time"
 
@@ -230,53 +229,48 @@ func (c *MeController) GetTopics() *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.Id, cursor)
-	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
 func (c *MeController) GetFollowers() *web.JsonResult {
-	userId := params.FormValueInt64Default(c.Ctx, "userId", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFollowers(userId, 0, 10)
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 
-	current := service.UserTokenService.GetCurrent(c.Ctx)
-	var followedSet *hashset.Set
-	if current != nil {
-		followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
+	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+	if currentUser == nil {
+		return web.JsonError(errs.ErrUnauthorized)
 	}
 
-	itemList := make([]payload.UserInfo, 0, len(userIds))
-	for _, id := range userIds {
+	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(currentUser.Id, cursor, 10)
+
+	var followedSet *hashset.Set
+	if currentUser != nil {
+		followedSet = service.UserFollowService.GetMutualFollowers(currentUser.Id, followerIds...)
+	}
+
+	itemList := make([]payload.UserInfo, 0, len(followerIds))
+	for _, id := range followerIds {
 		item := payload.BuildUserInfoDefaultIfNull(id)
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, *item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *MeController) GetFollowing() *web.JsonResult {
-	userId := params.FormValueInt64Default(c.Ctx, "userId", 0)
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFollowing(userId, cursor, 10)
 
-	current := service.UserTokenService.GetCurrent(c.Ctx)
-	var followedSet *hashset.Set
-	if current != nil {
-		if current.Id == userId {
-			followedSet = hashset.New()
-			for _, id := range userIds {
-				followedSet.Add(id)
-			}
-		} else {
-			followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
-		}
+	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+	if currentUser == nil {
+		return web.JsonError(errs.ErrUnauthorized)
 	}
 
-	itemList := make([]payload.UserInfo, 0, len(userIds))
-	for _, id := range userIds {
+	followingIds, cursor, hasMore := service.UserFollowService.GetFollowing(currentUser.Id, cursor, 10)
+	itemList := make([]payload.UserInfo, 0, len(followingIds))
+	for _, id := range followingIds {
 		item := payload.BuildUserInfoDefaultIfNull(id)
-		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, *item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *MeController) GetFollowingBy(userId int64) *web.JsonResult {

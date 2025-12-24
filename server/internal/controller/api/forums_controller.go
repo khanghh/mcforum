@@ -4,7 +4,6 @@ import (
 	"bbs-go/common/arrays"
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
-	"strconv"
 
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
@@ -57,7 +56,7 @@ func (c *ForumsController) GetBy(slug string) *web.JsonResult {
 		}
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
-	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), cursor, hasMore)
 }
 
 func (c *ForumsController) GetByInfo(slug string) *web.JsonResult {

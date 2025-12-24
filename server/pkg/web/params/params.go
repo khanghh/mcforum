@@ -217,6 +217,21 @@ func FormValueInt64Default(ctx iris.Context, name string, def int64) int64 {
 	return def
 }
 
+func FormValueUint64(ctx iris.Context, name string) (uint64, error) {
+	str := ctx.FormValue(name)
+	if str == "" {
+		return 0, paramError(name)
+	}
+	return strconv.ParseUint(str, 10, 64)
+}
+
+func FormValueUint64Default(ctx iris.Context, name string, def uint64) uint64 {
+	if v, err := FormValueUint64(ctx, name); err == nil {
+		return v
+	}
+	return def
+}
+
 func FormValueInt64Array(ctx iris.Context, name string) []int64 {
 	str := ctx.FormValue(name)
 	str = strings.TrimSpace(str)

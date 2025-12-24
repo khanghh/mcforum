@@ -7,7 +7,6 @@ import (
 	"bbs-go/internal/service"
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
-	"strconv"
 
 	"github.com/kataras/iris/v12"
 )
@@ -33,7 +32,7 @@ func (c *FeedsController) GetWhatsNew() *web.JsonResult {
 		temp = append(temp, topic)
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
-	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), cursor, hasMore)
 }
 
 func (c *FeedsController) GetRecommended() *web.JsonResult {
@@ -57,7 +56,7 @@ func (c *FeedsController) GetRecommended() *web.JsonResult {
 		}
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
-	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), strconv.FormatInt(cursor, 10), hasMore).
+	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), cursor, hasMore).
 		SetProperty("forum", "recommended")
 }
 
@@ -67,7 +66,7 @@ func (c *FeedsController) GetFollowed() *web.JsonResult {
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
 	)
 	topics, cursor, hasMore := service.TopicService.GetFollowedTopics(user.Id, cursor)
-	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
 func NewFeedController() *FeedsController {

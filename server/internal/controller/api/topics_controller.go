@@ -6,7 +6,6 @@ import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
-	"strconv"
 	"strings"
 
 	"bbs-go/common/base62"
@@ -93,7 +92,7 @@ func (c *TopicsController) Get(ctx iris.Context) *web.JsonResult {
 	}
 	topics, cursor, hasMore := service.TopicService.GetTopicsByTag(tag, cursor)
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
 // GET /topics/{slug}
@@ -256,8 +255,8 @@ func (c *TopicsController) PostByReactions(slugId string) (*web.JsonResult, erro
 	return web.JsonSuccess(), nil
 }
 
-// DELETE /topics/{slugId}/reactions/{userId}
-func (c *TopicsController) DeleteByReactionsBy(slugId string, userId int64) (*web.JsonResult, error) {
+// DELETE /topics/{slugId}/reactions
+func (c *TopicsController) DeleteByReactions(slugId string) (*web.JsonResult, error) {
 	topic, err := c.getTopicBySlugId(slugId)
 	if err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil
@@ -283,7 +282,7 @@ func (c *TopicsController) GetByComments(slugId string) (*web.JsonResult, error)
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	comments, cursor, hasMore := service.CommentService.GetComments(topic.Id, cursor, 20)
 	resp := payload.BuildComments(comments, currentUser, true, false)
-	return web.JsonCursorData(resp, strconv.FormatInt(cursor, 10), hasMore), nil
+	return web.JsonCursorData(resp, cursor, hasMore), nil
 }
 
 // POST /topics/{slugId}/comments

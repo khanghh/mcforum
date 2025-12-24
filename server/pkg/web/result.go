@@ -12,6 +12,6 @@ type PageResult struct {
 type CursorResult struct {
 	Metadata interface{} `json:"metadata,omitempty"`
 	Items    interface{} `json:"items"`   // 数据
-	Cursor   string      `json:"cursor"`  // 下一页
+	Cursor   int64       `json:"cursor"`  // 下一页
 	HasMore  bool        `json:"hasMore"` // 是否还有数据
 }

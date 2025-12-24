@@ -1,13 +1,11 @@
 package api
 
 import (
-	"bbs-go/common/base62"
 	"bbs-go/common/utils"
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
-	"strconv"
 
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
@@ -42,7 +40,7 @@ type CommentsController struct {
 // 	return web.JsonSuccess()
 // }
 
-func (c *CommentsController) PostByReplies(bas62Id string) *web.JsonResult {
+func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
@@ -53,7 +51,6 @@ func (c *CommentsController) PostByReplies(bas62Id string) *web.JsonResult {
 		return web.JsonError(err)
 	}
 
-	commentId := base62.Decode(bas62Id)
 	parent := service.CommentService.Get(commentId)
 	if parent == nil {
 		return web.JsonError(errs.ErrCommentNotFound)
@@ -90,34 +87,32 @@ func (c *CommentsController) PostByReplies(bas62Id string) *web.JsonResult {
 	return web.JsonData(payload.BuildComment(comment))
 }
 
-func (c *CommentsController) GetByReplies(base62Id string) *web.JsonResult {
+func (c *CommentsController) GetByReplies(commentId int64) *web.JsonResult {
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	commentId := base62.Decode(base62Id)
 	comments, cursor, hasMore := service.CommentService.GetReplies(commentId, cursor, 10)
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
-	return web.JsonCursorData(payload.BuildComments(comments, currentUser, false, true), strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(payload.BuildComments(comments, currentUser, false, true), cursor, hasMore)
 }
 
-func (c *CommentsController) PostByReactions(base62Id string) (*web.JsonResult, error) {
+// POST /api/comments/:id/reactions
+func (c *CommentsController) PostByReactions(commentId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return nil, errs.ErrForbidden
+		return nil, errs.ErrUnauthorized
 	}
-	commentId := base62.Decode(base62Id)
 	if err := service.UserLikeService.CommentLike(user.Id, commentId); err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
 }
 
-func (c *CommentsController) DeleteByReactionsBy(base62Id string, userId int64) (*web.JsonResult, error) {
+// DELETE /api/comments/:id/reactions
+func (c *CommentsController) DeleteByReactions(commentId int64) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || user.Id != userId {
-		return nil, errs.ErrForbidden
+	if user == nil {
+		return nil, errs.ErrUnauthorized
 	}
-
-	commentId := base62.Decode(base62Id)
-	if err := service.UserLikeService.CommentUnLike(userId, commentId); err != nil {
+	if err := service.UserLikeService.CommentUnLike(user.Id, commentId); err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil

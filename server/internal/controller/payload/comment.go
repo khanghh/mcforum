@@ -1,33 +1,45 @@
 package payload
 
 import (
+	"bbs-go/internal/cache"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
+	"bbs-go/pkg/bbsurls"
 	"bbs-go/pkg/markdown"
+	"bbs-go/sqls"
 	"html"
 	"strconv"
 
 	"bbs-go/common/arrays"
-	"bbs-go/common/base62"
+	"bbs-go/common/dates"
+	"bbs-go/common/strs"
 	"bbs-go/pkg/web"
 )
 
+type CommentUserInfo struct {
+	Id          int64  `json:"id"`
+	Username    string `json:"username"`
+	Nickname    string `json:"nickname"`
+	Avatar      string `json:"avatar"`
+	SmallAvatar string `json:"smallAvatar"`
+}
+
 // CommentResponse 评论返回数据
 type CommentResponse struct {
-	Id           string            `json:"id"`
-	User         *UserInfo         `json:"user"`
-	ParentId     string            `json:"paerntId,omitempty"`
-	QuoteId      string            `json:"quoteId,omitempty"`
+	Id           int64             `json:"id"`
+	User         *CommentUserInfo  `json:"user"`
+	ParentId     int64             `json:"parentId,omitempty"`
+	QuoteId      int64             `json:"quoteId,omitempty"`
 	ContentType  string            `json:"contentType"`
 	Content      string            `json:"content"`
 	ImageList    []ImageInfo       `json:"imageList"`
 	LikeCount    int64             `json:"likeCount"`
 	CommentCount int64             `json:"commentCount"`
 	Liked        bool              `json:"liked"`
-	Quote        *CommentResponse  `json:"quote"`
-	Replies      *web.CursorResult `json:"replies"`
-	IpLocation   string            `json:"ipLocation"`
+	Quote        *CommentResponse  `json:"quote,omitempty"`
+	Replies      *web.CursorResult `json:"replies,omitempty"`
+	IpLocation   string            `json:"ipLocation,omitempty"`
 	Status       int               `json:"status"`
 	CreateTime   int64             `json:"createTime"`
 }
@@ -64,6 +76,31 @@ func getLikedCommentIds(comments []model.Comment, currentUser *model.User) (like
 	return
 }
 
+func buildCommentUserInfo(userId int64) *CommentUserInfo {
+	user := cache.UserCache.Get(userId)
+	if user == nil {
+		user = &model.User{}
+		user.Id = userId
+		user.Type = constants.UserTypeNormal
+		user.Username = sqls.SqlNullString("user" + strconv.FormatInt(userId, 10))
+		user.Nickname = "deleted_user"
+		user.CreateTime = dates.NowTimestamp()
+	}
+	var userAvatar string
+	if strs.IsNotBlank(user.Avatar) {
+		userAvatar = user.Avatar
+	} else {
+		userAvatar = bbsurls.AbsUrl("/images/avatars/steve.png")
+	}
+	return &CommentUserInfo{
+		Id:          user.Id,
+		Username:    user.Username.String,
+		Avatar:      userAvatar,
+		SmallAvatar: HandleOssImageStyleAvatar(userAvatar),
+		Nickname:    user.Nickname,
+	}
+}
+
 // doBuildComment 渲染评论
 // isBuildReplies 是否渲染评论的二级回复，一级评论时要设置为true，其他时候都为false
 // isBuildQuote 是否渲染评论的引用，二级回复时要设置为true，其他时候都为false
@@ -73,10 +110,10 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 	}
 
 	ret := &CommentResponse{
-		Id:           base62.Encode(comment.Id),
-		User:         BuildUserInfoDefaultIfNull(comment.UserId),
-		ParentId:     base62.Encode(comment.ParentId),
-		QuoteId:      base62.Encode(comment.QuoteId),
+		Id:           comment.Id,
+		User:         buildCommentUserInfo(comment.UserId),
+		ParentId:     comment.ParentId,
+		QuoteId:      comment.QuoteId,
 		LikeCount:    comment.LikeCount,
 		CommentCount: comment.CommentCount,
 		ContentType:  comment.ContentType,
@@ -109,7 +146,7 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 		replyResults := BuildComments(replies, currentUser, false, true)
 		ret.Replies = &web.CursorResult{
 			Items:   replyResults,
-			Cursor:  strconv.FormatInt(nextCursor, 10),
+			Cursor:  nextCursor,
 			HasMore: comment.CommentCount > repliesLimit,
 		}
 	}

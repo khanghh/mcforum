@@ -4,7 +4,6 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/service"
-	"strconv"
 
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
@@ -80,7 +79,7 @@ func (c *FansController) GetFans() *web.JsonResult {
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *FansController) GetFollowed() *web.JsonResult {
@@ -107,7 +106,7 @@ func (c *FansController) GetFollowed() *web.JsonResult {
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *FansController) GetRecentFans() *web.JsonResult {
@@ -126,7 +125,7 @@ func (c *FansController) GetRecentFans() *web.JsonResult {
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }
 
 func (c *FansController) GetRecentFollow() *web.JsonResult {
@@ -152,5 +151,5 @@ func (c *FansController) GetRecentFollow() *web.JsonResult {
 		item.Followed = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
-	return web.JsonCursorData(itemList, strconv.FormatInt(cursor, 10), hasMore)
+	return web.JsonCursorData(itemList, cursor, hasMore)
 }

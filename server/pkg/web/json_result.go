@@ -5,7 +5,6 @@ import (
 	"bbs-go/sqls"
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/kataras/iris/v12"
 )
@@ -69,9 +68,6 @@ func (r *JsonResult) MarshalJSON() ([]byte, error) {
 			}
 		}
 	}
-	if result, ok := r.Data.(*CursorResult); ok {
-		fmt.Println("ret", result.Items)
-	}
 	return json.Marshal(ret)
 }
 
@@ -112,7 +108,7 @@ func JsonPageData(results interface{}, page *sqls.Paging) *JsonResult {
 	})
 }
 
-func JsonCursorData(items interface{}, cursor string, hasMore bool) *JsonResult {
+func JsonCursorData(items interface{}, cursor int64, hasMore bool) *JsonResult {
 	return JsonData(&CursorResult{
 		Items:   items,
 		Cursor:  cursor,
