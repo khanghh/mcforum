@@ -71,7 +71,7 @@ export default {
   navbar: {
     profile: 'Profile',
     favorites: 'Yêu thích',
-    settings: 'Cài đặt',
+    account_settings: 'Cài đặt',
     logout: 'Đăng xuất',
     publish: 'Publish',
     post_status: 'Đăng trạng thái',
@@ -193,12 +193,17 @@ export default {
     action_failure: '{action} thất bại. {error}',
     please_enter_comment: 'Vui lòng nhập nội dung bình luận',
     offline: 'Bạn đang ngoại tuyến.',
+    tag_description: 'Bạn đang duyệt các chủ đề được gắn thẻ này. Khám phá và tham gia thảo luận!'
   },
   form: {
+    title: {
+      edit_profile: 'Chỉnh sửa hồ sơ',
+    },
     button: {
       signin: 'Đăng nhập',
       signup: 'Đăng ký',
       save: 'Lưu',
+      cancel: 'Hủy bỏ',
       set: 'Thiết lập',
       send: 'Gửi',
       change: 'Thay đổi',
@@ -207,6 +212,7 @@ export default {
       post_topic: 'Đăng chủ đề',
       post_article: 'Đăng bài viết',
       submmit_changes: 'Gửi thay đổi',
+      save_changes: 'Lưu thay đổi',
     },
     label: {
       username: 'Username',
@@ -214,6 +220,8 @@ export default {
       email: 'Email',
       avatar: 'Ảnh đại diện',
       bio: 'Giới thiệu',
+      location: 'Địa điểm',
+      other_settings: 'Cài đặt khác',
       website: 'Trang web',
       username_or_email: 'Username/Email',
       password: 'Mật khẩu',
@@ -230,11 +238,29 @@ export default {
       enter_nickname: 'Nhập biệt danh',
       enter_title: 'Nhập tiêu đề bài viết',
       enter_website: 'Thêm URL trang chủ của bạn',
+      enter_location: 'Nhập thành phố, quốc gia của bạn',
       write_bio: 'Giới thiệu về bản thân',
       enter_post_title: 'Vui lòng nhập tiêu đề bài viết',
       enter_post_content: 'Viết nội dung của bạn tại đây. Kéo hoặc duyệt ảnh để tải lên.',
       enter_hidden_content: 'Nội dung này bị ẩn. Nó sẽ hiển thị sau khi bạn bình luận.',
       enter_search_content: 'Nhập nội dung bạn muốn tìm kiếm',
+    },
+    help: {
+      location_optional: 'Thành phố hoặc quốc gia của bạn (tùy chọn)',
+      nickname_public: 'Biệt danh sẽ hiển thị công khai trên diễn đàn',
+      username_immutable: 'Username không thể thay đổi sau khi đăng ký',
+      cannot_change: 'Không thể thay đổi',
+      email_used_for_notifications: 'Email được sử dụng để nhận thông báo',
+      change_in_account: 'Thay đổi',
+      bio_limit: 'Mô tả ngắn về bạn (tối đa 200 ký tự)',
+    },
+    settings: {
+      locked_profile: 'Ẩn trang cá nhân',
+      locked_profile_desc: 'Cho phép hoặc không cho người khác truy cập hồ sơ của bạn.',
+      show_location_title: 'Hiển thị địa điểm',
+      show_location_desc: 'Hiển thị địa điểm của bạn trên hồ sơ',
+      email_notifications_title: 'Thông báo qua email',
+      email_notifications_desc: 'Nhận thông báo qua email',
     },
   },
   dialog: {
@@ -272,7 +298,8 @@ export default {
     },
     actions: {
       edit: 'Chỉnh sửa',
-      upload_cover_photo: 'Tải ảnh bìa',
+      change_cover: 'Upload ảnh bìa',
+      change_avatar: 'Thay đổi',
       unmute: 'Bật tiếng',
       mute_7days: 'Cấm 7 ngày',
       mute_permanent: 'Cấm vĩnh viễn',

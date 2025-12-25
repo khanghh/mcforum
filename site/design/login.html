@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - MineViet Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .gaming-title {
+            font-family: 'Saira Semi Condensed', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .server-title {
+            font-family: 'Saira Semi Condensed', sans-serif;
+            font-weight: 700;
+        }
+        
+        .gradient-border {
+            position: relative;
+            border: 2px solid transparent;
+            background: linear-gradient(145deg, rgba(30,30,60,0.8), rgba(20,20,40,0.9)) padding-box,
+                        linear-gradient(45deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6) border-box;
+            background-size: 300% 300%;
+            animation: gradientBorder 3s ease infinite;
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.4);
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #8b5cf6;
+            border-radius: 4px;
+            background-color: rgba(30, 30, 60, 0.8);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .checkbox-container input[type="checkbox"]:checked {
+            background-color: #8b5cf6;
+        }
+        
+        .checkbox-container input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-900 text-gray-100 font-sans" style="background:linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);">
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img loading="lazy" src="/images/logo.png" class="w-12 h-12">
+                <a href="/">
+                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title"> MineViet Forum </div>
+                    <div class="hidden md:block text-xs text-purple-300">Minecraft Server Vietnam</div>
+                </a>
+            </div>
+            <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
+                <li><a href="https://play.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors" target="_blank">
+                    <i class="fas fa-server mr-1"></i><span class="hidden sm:inline">Máy chủ</span>
+                </a></li>
+                <li><a href="https://skin.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-palette mr-1"></i><span class="hidden sm:inline">Đổi skin</span>
+                </a></li>
+                <li><a href="https://ban.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-ban mr-1"></i><span class="hidden sm:inline">Vi phạm</span>
+                </a></li>
+                <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-envelope mr-1"></i><span class="hidden sm:inline">Tin nhắn</span>
+                </a></li>
+                <li><a href="/" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm"> Back to Home </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6">
+        <div class="max-w-4xl w-full flex flex-col lg:flex-row items-center justify-center gap-8">
+            <!-- Left side - Welcome text and graphics -->
+            <div class="lg:w-1/2 text-center lg:text-left">
+                <div class="mb-8">
+                    <h1 class="text-4xl lg:text-5xl font-bold tracking-wider text-white drop-shadow-[0_0_10px_rgba(168,85,247,0.8)] mb-4">
+                        Welcome Back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Player</span>
+                    </h1>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Sign in to access your MineViet account, join discussions, check your stats, and connect with the community.
+                    </p>
+                    <div class="hidden lg:block">
+                        <div class="relative w-64 h-64 mx-auto lg:mx-0 floating">
+                            <div class="absolute -inset-4 bg-purple-500/20 rounded-full blur-xl"></div>
+                            <img src="/images/logo.png" class="relative z-10 w-64 h-64 object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]" alt="MineViet Logo">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Features list -->
+                <div class="space-y-4 mt-8">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <i class="fas fa-users text-purple-400"></i>
+                        </div>
+                        <span class="text-gray-300">Join 458K+ community members</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <i class="fas fa-trophy text-yellow-400"></i>
+                        </div>
+                        <span class="text-gray-300">Track your achievements and stats</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <i class="fas fa-comments text-green-400"></i>
+                        </div>
+                        <span class="text-gray-300">Participate in forum discussions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side - Sign In Form -->
+            <div class="lg:w-1/2 w-full max-w-md">
+                <div class="gradient-border rounded-2xl p-8 relative overflow-hidden backdrop-blur-sm">
+                    <!-- Animated border overlay -->
+                    <div class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] opacity-10"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold text-white mb-2 gaming-title">Sign In</h2>
+                            <p class="text-gray-400">Enter your credentials to continue</p>
+                        </div>
+
+                        <form id="signinForm" class="space-y-6">
+                            <!-- Username/Email -->
+                            <div>
+                                <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+                                    <i class="fas fa-user mr-2"></i>Username or Email
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="username" name="username" required 
+                                           class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
+                                           placeholder="Enter your username or email">
+                                    <div class="absolute right-3 top-3">
+                                        <i class="fas fa-user text-gray-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="password" class="block text-sm font-medium text-gray-300">
+                                        <i class="fas fa-lock mr-2"></i>Password
+                                    </label>
+                                    <a href="#" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
+                                </div>
+                                <div class="relative">
+                                    <input type="password" id="password" name="password" required 
+                                           class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
+                                           placeholder="Enter your password">
+                                    <div class="absolute right-3 top-3">
+                                        <i class="fas fa-lock text-gray-500"></i>
+                                    </div>
+                                    <button type="button" id="togglePassword" class="absolute right-10 top-3 text-gray-400 hover:text-white">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Remember Me & Two-Factor -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
+                                <div class="flex items-center checkbox-container">
+                                    <input type="checkbox" id="remember" name="remember" class="mr-3">
+                                    <label for="remember" class="text-sm text-gray-300">Remember me</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 rounded bg-purple-500/30 flex items-center justify-center mr-2">
+                                        <i class="fas fa-shield-alt text-xs text-purple-400"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-300">Two-Factor Authentication Available</span>
+                                </div>
+                            </div>
+
+                            <!-- Sign In Button -->
+                            <button type="submit" 
+                                    class="w-full px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] gaming-title tracking-[0.5px] transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                                <i class="fas fa-sign-in-alt mr-2"></i> Sign In to MineViet
+                            </button>
+
+                            <!-- Divider -->
+                            <div class="relative my-6">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-700"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-4 bg-gray-900/80 text-gray-400">Or continue with</span>
+                                </div>
+                            </div>
+
+                            <!-- Social Login Options -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <button type="button" 
+                                        class="flex items-center justify-center px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+                                    <i class="fab fa-microsoft text-blue-400 mr-2"></i>
+                                    <span class="text-gray-300">Microsoft</span>
+                                </button>
+                                <button type="button" 
+                                        class="flex items-center justify-center px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+                                    <i class="fab fa-google text-red-400 mr-2"></i>
+                                    <span class="text-gray-300">Google</span>
+                                </button>
+                            </div>
+
+                            <!-- Sign Up Link -->
+                            <div class="text-center pt-4">
+                                <p class="text-gray-400">
+                                    Don't have an account? 
+                                    <a href="#" class="text-purple-400 hover:text-purple-300 font-semibold transition-colors">Create one now</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Security notice -->
+                <div class="mt-6 p-4 bg-gray-800/40 rounded-lg border border-purple-500/20">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-shield-alt text-purple-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-white">Secure Login</h3>
+                            <p class="text-xs text-gray-400 mt-1">
+                                Your login information is encrypted and secure. We never share your data with third parties.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+            <!-- Main Footer Content -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- Brand Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+                        <div>
+                            <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title"> MineViet Forum </h3>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm"> The ultimate community for Minecraft players. Share builds, discover mods, and connect with fellow gamers. </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-twitch"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Forums</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Leaderboards</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Server Status</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Download Packs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Community Stats -->
+                <div>
+                    <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">COMMUNITY</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-400 mb-1">Active Players</div>
+                            <div class="text-2xl font-bold text-green-400 gaming-title">2,847</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-400 mb-1">Total Members</div>
+                            <div class="text-2xl font-bold text-purple-400 gaming-title">458K</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-400 mb-1">Online Now</div>
+                            <div class="text-2xl font-bold text-blue-400 gaming-title">2.4K</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-purple-500/20">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-400 text-sm gaming-title"> © 2025 MineViet Network. All rights reserved. </p>
+                    <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+                        <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+                        <span class="text-gray-600">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+                        <span class="text-gray-600">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
+                        <span class="text-gray-600">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle eye icon
+            const eyeIcon = this.querySelector('i');
+            if (type === 'text') {
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        });
+        
+        // Form submission
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation
+            if (!username || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Simulate login process
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing In...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // In a real application, you would send the data to a server here
+                console.log('Login attempted with:', { username, password });
+                
+                // Show success message
+                alert('Login successful! Redirecting to dashboard...');
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // In a real app, you would redirect the user
+                // window.location.href = '/dashboard';
+            }, 1500);
+        });
+        
+        // Social login buttons
+        document.querySelectorAll('button[type="button"]').forEach(button => {
+            if (button.textContent.includes('Microsoft') || button.textContent.includes('Google')) {
+                button.addEventListener('click', function() {
+                    const provider = this.textContent.includes('Microsoft') ? 'Microsoft' : 'Google';
+                    alert(`Redirecting to ${provider} authentication...`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -2,12 +2,19 @@
   <div class="relative">
     <!-- Cover Photo -->
     <div
-      class="h-48 sm:h-64 bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 rounded-2xl overflow-hidden relative">
+      class="h-48 sm:h-64 bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 rounded-2xl overflow-hidden relative group">
       <img
         :src="user.backgroundImage || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80'"
         class="w-full h-full object-cover opacity-40" alt="Gaming Cover">
       <!-- Animated overlay -->
       <div class="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent"></div>
+      <!-- Upload button (visible on hover for profile owner) -->
+      <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="handleCoverSelect" />
+      <button v-if="isSelf" @click="handleCoverClick" type="button"
+        class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium text-white px-3 py-1 rounded-md bg-black/40 backdrop-blur-sm">
+        <Icon name="TablerCloudUpload" class="mr-1" />
+        {{ $t('profile.actions.change_cover') }}
+      </button>
     </div>
 
     <div class="px-6 -mt-12 sm:-mt-16 relative z-10 flex items-end justify-between gap-4">
@@ -32,7 +39,7 @@
           <div class="flex items-center gap-2 mt-1">
             <div
               :class="['gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center', { invisible: !user.statusMessage }]">
-              <Icon name="TablerQuoteFilled" class="text-purple-400 text-sm mr-2" />
+              <Icon name="Fa7SolidQuoteLeft" class="text-purple-400 text-sm mr-2" />
               <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage || '' }}</span>
             </div>
           </div>
@@ -148,6 +155,36 @@ async function onUploaded(file) {
 
 function calculateLevel(score) {
   return Math.floor(Math.sqrt(score || 0)) + 1
+}
+
+// Cover upload handlers
+const coverInput = ref(null)
+const handleCoverClick = () => {
+  if (coverInput?.value) coverInput.value.click()
+}
+async function handleCoverSelect(e) {
+  const file = e.target?.files?.[0]
+  if (!file) return
+  await onCoverUploaded(file)
+  e.target.value = ''
+}
+async function onCoverUploaded(file) {
+  try {
+    const formData = new FormData()
+    formData.append('image', file, file.name)
+    const ret = await useHttpPostMultipart('/api/upload', formData)
+
+    await useHttpPostForm('/api/users/update/background', {
+      body: { backgroundImage: ret.url },
+    })
+
+    await userStore.getCurrent()
+    useMsgSuccess('Cover updated')
+  }
+  catch (e) {
+    console.error(e)
+    useMsgError('Cover update failed')
+  }
 }
 </script>
 

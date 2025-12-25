@@ -10,20 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;600;700&display=swap"
     rel="stylesheet">
   <style>
-    @keyframes gradientBorder {
-      0% {
-        background-position: 0% 50%;
-      }
-
-      50% {
-        background-position: 100% 50%;
-      }
-
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
     .gaming-title {
       font-family: 'Saira Semi Condensed', sans-serif;
       letter-spacing: 0.5px;
@@ -34,20 +20,20 @@
       font-weight: 700;
     }
 
+    /* Static gradient border without animation */
     .gradient-border {
       position: relative;
       border: 2px solid transparent;
-      background: linear-gradient(145deg, rgba(30, 30, 60, 0.8), rgba(20, 20, 40, 0.9)) padding-box,
-        linear-gradient(45deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6) border-box;
+      background: linear-gradient(145deg, rgba(45, 45, 70, 0.9), rgba(35, 35, 55, 0.95)) padding-box,
+        linear-gradient(45deg, #7c3aed, #8b5cf6, #a78bfa) border-box;
       background-size: 300% 300%;
-      animation: gradientBorder 3s ease infinite;
     }
 
     input:focus,
     textarea:focus,
     select:focus {
       outline: none;
-      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4);
     }
 
     .avatar-upload {
@@ -56,7 +42,7 @@
 
     .avatar-upload:hover {
       transform: scale(1.05);
-      filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
+      filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4));
     }
 
     .file-upload-label:hover .file-upload-overlay {
@@ -67,37 +53,20 @@
       font-size: 1.3em;
     }
 
-    .location-suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: rgba(30, 30, 60, 0.95);
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      border-radius: 0 0 8px 8px;
-      z-index: 50;
-      backdrop-filter: blur(10px);
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .location-suggestion-item {
-      padding: 10px 15px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .location-suggestion-item:hover {
-      background: rgba(139, 92, 246, 0.2);
+    /* Subtle pattern for background */
+    .bg-pattern {
+      background-color: #1a1a2e;
+      background-image:
+        radial-gradient(at 47% 33%, hsl(240, 33%, 20%) 0, transparent 59%),
+        radial-gradient(at 82% 65%, hsl(267, 65%, 15%) 0, transparent 55%);
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-gray-900 text-gray-100 font-sans"
-  style="background:linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);">
+<body class="min-h-screen text-gray-100 font-sans bg-pattern">
   <!-- Navigation Bar -->
   <nav
-    class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+    class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/30 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <img loading="lazy" src="/images/logo.png" class="w-12 h-12">
@@ -136,7 +105,7 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="flex-grow py-8">
+  <main class="flex-grow py-8 relative z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <!-- Profile Edit Card -->
       <div class="max-w-3xl mx-auto">
@@ -144,7 +113,7 @@
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+              class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
               <i class="fas fa-user-edit text-purple-400 text-lg"></i>
             </div>
             <h1
@@ -152,18 +121,17 @@
               Chỉnh sửa hồ sơ</h1>
           </div>
           <a href="/users/admin"
-            class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-800/80">
+            class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50">
             <i class="fas fa-arrow-left mr-2"></i>
             <span>Quay lại hồ sơ</span>
           </a>
         </div>
 
-        <!-- Edit Form Container -->
-        <div class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm">
-          <!-- Animated border overlay -->
-          <div
-            class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] opacity-10">
-          </div>
+        <!-- Edit Form Container - Lighter -->
+        <div
+          class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
+          <!-- Subtle gradient overlay -->
+          <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
           <div class="relative z-10">
             <form class="space-y-8">
@@ -176,12 +144,13 @@
                   <div class="flex flex-col sm:flex-row items-center gap-6">
                     <!-- Current Avatar Preview -->
                     <div class="relative group">
-                      <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500/30 avatar-upload">
+                      <div
+                        class="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500/40 avatar-upload shadow-lg shadow-purple-500/20">
                         <img loading="lazy" src="/images/avatars/steve.png" alt="avatar"
                           class="w-full h-full object-cover">
                       </div>
                       <div
-                        class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        class="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                       </div>
                     </div>
 
@@ -189,15 +158,15 @@
                     <div class="flex-1">
                       <label class="file-upload-label relative inline-block cursor-pointer">
                         <div
-                          class="border-2 border-dashed border-purple-500/30 rounded-xl p-6 text-center hover:border-purple-500/50 transition-colors">
+                          class="border-2 border-dashed border-purple-500/40 rounded-xl p-6 text-center hover:border-purple-500/60 transition-colors bg-gray-800/30">
                           <div
-                            class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                            class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
                             <i class="fas fa-cloud-upload-alt text-purple-400 text-xl"></i>
                           </div>
                           <h4 class="text-white font-medium mb-2">Thay đổi ảnh đại diện</h4>
-                          <p class="text-sm text-gray-400 mb-4">PNG, JPG hoặc GIF (Tối đa 5MB)</p>
+                          <p class="text-sm text-gray-300 mb-4">PNG, JPG hoặc GIF (Tối đa 5MB)</p>
                           <div
-                            class="px-4 py-2 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-lg inline-block">
+                            class="px-4 py-2 bg-gradient-to-r from-purple-600/40 to-pink-600/40 rounded-lg inline-block hover:from-purple-600/50 hover:to-pink-600/50 transition-all">
                             <span class="text-sm text-white">Chọn ảnh</span>
                           </div>
                           <input type="file" accept="image/*" class="sr-only" id="avatar-upload">
@@ -219,13 +188,13 @@
                 <div class="flex-1">
                   <div class="relative">
                     <input type="text" id="nickname" autocomplete="off"
-                      class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors"
                       placeholder="Nhập biệt danh của bạn">
                     <div class="absolute right-3 top-3">
-                      <i class="fas fa-pen text-gray-500"></i>
+                      <i class="fas fa-pen text-gray-400"></i>
                     </div>
                   </div>
-                  <p class="text-xs text-gray-500 mt-2">Biệt danh sẽ hiển thị công khai trên diễn đàn</p>
+                  <p class="text-xs text-gray-400 mt-2">Biệt danh sẽ hiển thị công khai trên diễn đàn</p>
                 </div>
               </div>
 
@@ -236,14 +205,14 @@
                 </label>
                 <div class="flex-1">
                   <div
-                    class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-300 flex items-center justify-between">
+                    class="w-full px-4 py-3 bg-gray-800/40 border border-gray-700 rounded-lg text-gray-300 flex items-center justify-between">
                     <div class="flex items-center">
                       <span class="font-mono text-purple-300">@</span>
                       <span class="ml-1 font-medium">admin</span>
                     </div>
-                    <span class="text-xs px-2 py-1 bg-gray-700 rounded text-gray-400">Không thể thay đổi</span>
+                    <span class="text-xs px-2 py-1 bg-gray-700/50 rounded text-gray-300">Không thể thay đổi</span>
                   </div>
-                  <p class="text-xs text-gray-500 mt-2">Username không thể thay đổi sau khi đăng ký</p>
+                  <p class="text-xs text-gray-400 mt-2">Username không thể thay đổi sau khi đăng ký</p>
                 </div>
               </div>
 
@@ -255,14 +224,14 @@
                 <div class="flex-1">
                   <div class="relative">
                     <input type="email" id="email"
-                      class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors"
                       value="admin@mineviet.com">
                     <div class="absolute right-3 top-3">
-                      <i class="fas fa-envelope text-gray-500"></i>
+                      <i class="fas fa-envelope text-gray-400"></i>
                     </div>
                   </div>
                   <div class="flex justify-between items-center mt-2">
-                    <p class="text-xs text-gray-500">Email được sử dụng để nhận thông báo</p>
+                    <p class="text-xs text-gray-400">Email được sử dụng để nhận thông báo</p>
                     <a href="https://example.com/account" target="_blank" rel="noopener"
                       class="text-sm text-purple-400 hover:text-purple-300 flex items-center transition-colors">
                       <i class="fas fa-external-link-alt mr-1"></i>
@@ -280,66 +249,15 @@
                 <div class="flex-1">
                   <div class="relative">
                     <textarea id="bio" rows="4"
-                      class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors resize-none"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors resize-none"
                       placeholder="Giới thiệu về bản thân..."></textarea>
                     <div class="absolute right-3 top-3">
-                      <i class="fas fa-align-left text-gray-500"></i>
+                      <i class="fas fa-align-left text-gray-400"></i>
                     </div>
                   </div>
                   <div class="flex justify-between items-center mt-2">
-                    <p class="text-xs text-gray-500">Mô tả ngắn về bạn (tối đa 500 ký tự)</p>
-                    <span class="text-xs text-gray-400" id="bio-counter">0/500</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- LOCATION INPUT (NEW SECTION) -->
-              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                <label for="location" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
-                  <i class="fas fa-map-marker-alt mr-2"></i>Địa điểm
-                </label>
-                <div class="flex-1">
-                  <div class="relative">
-                    <input type="text" id="location" autocomplete="off"
-                      class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
-                      placeholder="Nhập thành phố, quốc gia của bạn">
-                    <div class="absolute right-3 top-3">
-                      <i class="fas fa-globe-americas text-gray-500"></i>
-                    </div>
-                    <!-- Location Suggestions Dropdown -->
-                    <div id="location-suggestions" class="location-suggestions hidden mt-1">
-                      <!-- Suggestions will be populated by JavaScript -->
-                    </div>
-                  </div>
-                  <div class="flex justify-between items-center mt-2">
-                    <p class="text-xs text-gray-500">Thành phố hoặc quốc gia của bạn (tùy chọn)</p>
-                    <button type="button" id="detect-location"
-                      class="text-xs text-purple-400 hover:text-purple-300 flex items-center transition-colors">
-                      <i class="fas fa-crosshairs mr-1"></i>
-                      <span>Phát hiện vị trí</span>
-                    </button>
-                  </div>
-
-                  <!-- Popular Locations -->
-                  <div class="mt-3">
-                    <p class="text-xs text-gray-400 mb-2">Chọn nhanh:</p>
-                    <div class="flex flex-wrap gap-2">
-                      <button type="button"
-                        class="location-chip text-xs px-3 py-1 bg-gray-800/50 hover:bg-purple-600/30 rounded-full border border-gray-700 hover:border-purple-500 transition-colors"
-                        data-location="Hà Nội, Việt Nam">Hà Nội</button>
-                      <button type="button"
-                        class="location-chip text-xs px-3 py-1 bg-gray-800/50 hover:bg-purple-600/30 rounded-full border border-gray-700 hover:border-purple-500 transition-colors"
-                        data-location="TP. Hồ Chí Minh, Việt Nam">TP. HCM</button>
-                      <button type="button"
-                        class="location-chip text-xs px-3 py-1 bg-gray-800/50 hover:bg-purple-600/30 rounded-full border border-gray-700 hover:border-purple-500 transition-colors"
-                        data-location="Đà Nẵng, Việt Nam">Đà Nẵng</button>
-                      <button type="button"
-                        class="location-chip text-xs px-3 py-1 bg-gray-800/50 hover:bg-purple-600/30 rounded-full border border-gray-700 hover:border-purple-500 transition-colors"
-                        data-location="Hải Phòng, Việt Nam">Hải Phòng</button>
-                      <button type="button"
-                        class="location-chip text-xs px-3 py-1 bg-gray-800/50 hover:bg-purple-600/30 rounded-full border border-gray-700 hover:border-purple-500 transition-colors"
-                        data-location="International">Quốc tế</button>
-                    </div>
+                    <p class="text-xs text-gray-400">Mô tả ngắn về bạn (tối đa 500 ký tự)</p>
+                    <span class="text-xs text-gray-300" id="bio-counter">0/500</span>
                   </div>
                 </div>
               </div>
@@ -352,45 +270,30 @@
                 <div class="flex-1 space-y-4">
                   <!-- Privacy Setting -->
                   <div
-                    class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                    class="flex items-center justify-between p-4 bg-gray-800/40 rounded-lg border border-gray-700/50">
                     <div>
                       <h4 class="font-medium text-white">Hồ sơ công khai</h4>
-                      <p class="text-sm text-gray-400 mt-1">Cho phép mọi người xem hồ sơ của bạn</p>
+                      <p class="text-sm text-gray-300 mt-1">Cho phép mọi người xem hồ sơ của bạn</p>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" class="sr-only peer" checked>
                       <div
-                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left:0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
-                      </div>
-                    </label>
-                  </div>
-
-                  <!-- Location Visibility -->
-                  <div
-                    class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
-                    <div>
-                      <h4 class="font-medium text-white">Hiển thị địa điểm</h4>
-                      <p class="text-sm text-gray-400 mt-1">Cho phép hiển thị địa điểm của bạn trên hồ sơ</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" class="sr-only peer" checked>
-                      <div
-                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left:0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
+                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
                       </div>
                     </label>
                   </div>
 
                   <!-- Email Notifications -->
                   <div
-                    class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                    class="flex items-center justify-between p-4 bg-gray-800/40 rounded-lg border border-gray-700/50">
                     <div>
                       <h4 class="font-medium text-white">Thông báo qua email</h4>
-                      <p class="text-sm text-gray-400 mt-1">Nhận email về hoạt động mới</p>
+                      <p class="text-sm text-gray-300 mt-1">Nhận email về hoạt động mới</p>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" class="sr-only peer" checked>
                       <div
-                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left:0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
+                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
                       </div>
                     </label>
                   </div>
@@ -407,7 +310,7 @@
                   Hủy bỏ
                 </button>
                 <button type="submit"
-                  class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] gaming-title tracking-[0.5px] transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                  class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3),0_0_25px_rgba(139,92,246,0.2)] gaming-title tracking-[0.5px] transition-all hover:scale-[1.02] active:scale-[0.98]">
                   <i class="fas fa-save mr-2"></i> Lưu thay đổi
                 </button>
               </div>
@@ -417,14 +320,14 @@
 
         <!-- Information Notice -->
         <div
-          class="mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-lg border border-purple-500/20">
+          class="mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-lg border border-purple-500/30 backdrop-blur-sm">
           <div class="flex items-start">
             <div class="flex-shrink-0 mt-1">
               <i class="fas fa-info-circle text-purple-400"></i>
             </div>
             <div class="ml-3">
               <h3 class="text-sm font-medium text-white">Thông tin quan trọng</h3>
-              <p class="text-xs text-gray-400 mt-1">
+              <p class="text-xs text-gray-300 mt-1">
                 Thay đổi thông tin sẽ được cập nhật ngay lập tức. Một số thay đổi (như avatar) có thể mất vài phút để
                 hiển thị trên toàn hệ thống.
                 Liên hệ với đội ngũ hỗ trợ nếu bạn gặp bất kỳ vấn đề nào.
@@ -437,7 +340,8 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-16">
+  <footer
+    class="bg-gradient-to-b from-transparent to-purple-900/20 border-t border-purple-500/30 mt-16 backdrop-blur-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <!-- Main Footer Content -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
@@ -451,7 +355,7 @@
                 MineViet Forum </h3>
             </div>
           </div>
-          <p class="text-gray-400 text-sm"> The ultimate community for Minecraft players. Share builds, discover mods,
+          <p class="text-gray-300 text-sm"> The ultimate community for Minecraft players. Share builds, discover mods,
             and connect with fellow gamers. </p>
           <div class="flex space-x-3">
             <a href="#"
@@ -477,11 +381,11 @@
         <div>
           <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Forums</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Leaderboards</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Server Status</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Home</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Forums</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Leaderboards</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Staff Team</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Server Status</a></li>
           </ul>
         </div>
 
@@ -489,28 +393,28 @@
         <div>
           <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Download Packs</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Help Center</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Wiki</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Tutorials</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Download Packs</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Help Center</a></li>
           </ul>
         </div>
 
         <!-- Community Stats -->
         <div>
-          <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">COMMUNITY</h4>
+          <h4 class="text-lg font-bold text-amber-300 gaming-title mb-4">COMMUNITY</h4>
           <div class="space-y-3">
             <div class="p-3 rounded-lg bg-gray-800/30">
-              <div class="text-xs text-gray-400 mb-1">Active Players</div>
+              <div class="text-xs text-gray-300 mb-1">Active Players</div>
               <div class="text-2xl font-bold text-green-400 gaming-title">2,847</div>
             </div>
             <div class="p-3 rounded-lg bg-gray-800/30">
-              <div class="text-xs text-gray-400 mb-1">Total Members</div>
+              <div class="text-xs text-gray-300 mb-1">Total Members</div>
               <div class="text-2xl font-bold text-purple-400 gaming-title">458K</div>
             </div>
             <div class="p-3 rounded-lg bg-gray-800/30">
-              <div class="text-xs text-gray-400 mb-1">Online Now</div>
+              <div class="text-xs text-gray-300 mb-1">Online Now</div>
               <div class="text-2xl font-bold text-blue-400 gaming-title">2.4K</div>
             </div>
           </div>
@@ -520,14 +424,14 @@
       <!-- Bottom Bar -->
       <div class="pt-8 border-t border-purple-500/20">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p class="text-gray-400 text-sm gaming-title"> © 2025 MineViet Network. All rights reserved. </p>
-          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+          <p class="text-gray-300 text-sm gaming-title"> © 2025 MineViet Network. All rights reserved. </p>
+          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-300">
             <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
-            <span class="text-gray-600">•</span>
+            <span class="text-gray-500">•</span>
             <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
-            <span class="text-gray-600">•</span>
+            <span class="text-gray-500">•</span>
             <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
-            <span class="text-gray-600">•</span>
+            <span class="text-gray-500">•</span>
             <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
           </div>
         </div>
@@ -547,14 +451,14 @@
 
         // Change color when approaching limit
         if (count > 450) {
-          charCounter.classList.remove('text-gray-400');
+          charCounter.classList.remove('text-gray-300');
           charCounter.classList.add('text-yellow-400');
         } else if (count > 480) {
           charCounter.classList.remove('text-yellow-400');
           charCounter.classList.add('text-red-400');
         } else {
           charCounter.classList.remove('text-yellow-400', 'text-red-400');
-          charCounter.classList.add('text-gray-400');
+          charCounter.classList.add('text-gray-300');
         }
       });
     }
@@ -576,113 +480,6 @@
           // Show success message
           showNotification('Đã chọn ảnh đại diện mới', 'success');
         }
-      });
-    }
-
-    // LOCATION FUNCTIONALITY
-    const locationInput = document.getElementById('location');
-    const locationSuggestions = document.getElementById('location-suggestions');
-    const detectLocationBtn = document.getElementById('detect-location');
-
-    // Popular location chips
-    const locationChips = document.querySelectorAll('.location-chip');
-    locationChips.forEach(chip => {
-      chip.addEventListener('click', function () {
-        locationInput.value = this.getAttribute('data-location');
-        showNotification(`Đã chọn: ${this.getAttribute('data-location')}`, 'info');
-      });
-    });
-
-    // Location suggestions
-    const popularLocations = [
-      'Hà Nội, Việt Nam',
-      'TP. Hồ Chí Minh, Việt Nam',
-      'Đà Nẵng, Việt Nam',
-      'Hải Phòng, Việt Nam',
-      'Cần Thơ, Việt Nam',
-      'Nha Trang, Việt Nam',
-      'Huế, Việt Nam',
-      'Đà Lạt, Việt Nam',
-      'Hạ Long, Việt Nam',
-      'Phú Quốc, Việt Nam',
-      'Singapore',
-      'Tokyo, Nhật Bản',
-      'Seoul, Hàn Quốc',
-      'Bangkok, Thái Lan',
-      'Kuala Lumpur, Malaysia',
-      'London, Anh',
-      'New York, USA',
-      'Los Angeles, USA',
-      'Sydney, Úc',
-      'Toronto, Canada'
-    ];
-
-    if (locationInput) {
-      locationInput.addEventListener('input', function () {
-        const value = this.value.toLowerCase();
-        if (value.length > 1) {
-          const filtered = popularLocations.filter(loc =>
-            loc.toLowerCase().includes(value)
-          );
-
-          if (filtered.length > 0) {
-            locationSuggestions.innerHTML = filtered.map(loc =>
-              `<div class="location-suggestion-item" data-location="${loc}">
-                                <i class="fas fa-map-marker-alt mr-2 text-purple-400"></i>
-                                ${loc}
-                            </div>`
-            ).join('');
-            locationSuggestions.classList.remove('hidden');
-          } else {
-            locationSuggestions.classList.add('hidden');
-          }
-        } else {
-          locationSuggestions.classList.add('hidden');
-        }
-      });
-
-      // Hide suggestions when clicking outside
-      document.addEventListener('click', function (e) {
-        if (!locationInput.contains(e.target) && !locationSuggestions.contains(e.target)) {
-          locationSuggestions.classList.add('hidden');
-        }
-      });
-
-      // Select suggestion
-      locationSuggestions.addEventListener('click', function (e) {
-        if (e.target.classList.contains('location-suggestion-item')) {
-          locationInput.value = e.target.getAttribute('data-location');
-          locationSuggestions.classList.add('hidden');
-        }
-      });
-    }
-
-    // Detect location button
-    if (detectLocationBtn) {
-      detectLocationBtn.addEventListener('click', function () {
-        detectLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i><span>Đang xác định...</span>';
-        detectLocationBtn.disabled = true;
-
-        // Simulate location detection
-        setTimeout(() => {
-          // In a real app, use Geolocation API
-          // navigator.geolocation.getCurrentPosition(success, error);
-
-          // For demo purposes, use a random location
-          const demoLocations = [
-            'Hà Nội, Việt Nam',
-            'TP. Hồ Chí Minh, Việt Nam',
-            'Đà Nẵng, Việt Nam',
-            'Hải Phòng, Việt Nam'
-          ];
-          const randomLocation = demoLocations[Math.floor(Math.random() * demoLocations.length)];
-
-          locationInput.value = randomLocation;
-          showNotification(`Đã phát hiện vị trí: ${randomLocation}`, 'success');
-
-          detectLocationBtn.innerHTML = '<i class="fas fa-crosshairs mr-1"></i><span>Phát hiện vị trí</span>';
-          detectLocationBtn.disabled = false;
-        }, 1500);
       });
     }
 
@@ -725,7 +522,7 @@
     function showNotification(message, type = 'success') {
       // Create notification element
       const notification = document.createElement('div');
-      notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-gradient-to-r from-green-600 to-emerald-600' : 'bg-gradient-to-r from-red-600 to-pink-600'}`;
+      notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-gradient-to-r from-green-600 to-emerald-600' : 'bg-gradient-to-r from-red-600 to-pink-600'} backdrop-blur-sm`;
       notification.innerHTML = `
                 <div class="flex items-center">
                     <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} mr-3"></i>

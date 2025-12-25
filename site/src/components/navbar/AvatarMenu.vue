@@ -8,27 +8,32 @@
     <!-- Dropdown Menu (light style) -->
     <div v-if="isDropdownOpen"
       class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-sm py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-gray-200">
-      <div class="px-4 py-2 text-sm font-semibold text-gray-800 truncate">
-        {{ userStore.user?.nickname }}
+      <div class="px-4 py-2 flex items-center gap-3">
+        <Avatar :src="avatarSrc" :username="username"
+          class="w-10 h-10 object-cover border border-purple-600 rounded-lg" />
+        <div class="min-w-0">
+          <div class="text-sm font-semibold text-gray-800 truncate">{{ userStore.user?.nickname }}</div>
+          <div v-if="userStore.user?.email" class="text-xs text-gray-500 truncate">{{ userStore.user?.email }}</div>
+        </div>
       </div>
       <div class="border-t border-gray-100 my-1"></div>
       <a :href="`/users/${userStore.user?.username}`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon name="Fa7SolidUserLarge" class="mr-2 w-4 text-gray-500" /> Profile
+        <Icon name="Fa7SolidUserLarge" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.profile') }}
       </a>
       <a :href="`/users/${userStore.user?.username}/favorites`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon name="Fa7SolidStar" class="mr-2 w-4 text-gray-500" /> Favorite
+        <Icon name="Fa7SolidStar" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.favorites') }}
       </a>
       <a href="/users/me/profile"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon name="Fa7SolidGear" class="mr-2 w-4 text-gray-500" /> Account Settings
+        <Icon name="Fa7SolidGear" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.account_settings') }}
       </a>
       <div class="border-t border-gray-100 my-1"></div>
       <button
         class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 transition-colors"
         @click="logout">
-        <Icon name="TablerLogout" class="mr-2 w-4 text-red-600" /> Logout
+        <Icon name="TablerLogout" class="mr-2 w-4 text-red-600" /> {{ $t('navbar.logout') }}
       </button>
     </div>
   </div>

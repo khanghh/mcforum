@@ -6,7 +6,7 @@
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
           <Icon name="Fa7SolidUserLarge" class="mr-2" /> Bio
         </h3>
-        <p class="mt-3 text-gray-300 text-sm leading-relaxed">
+        <p class="mt-3 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap break-words">
           {{ user.bio }}
         </p>
       </div>

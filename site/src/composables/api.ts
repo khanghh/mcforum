@@ -58,6 +58,16 @@ export type CreateCommentPayload = {
   quoteId?: number
 }
 
+
+export type UpdateProfilePayload = {
+  nickname?: string
+  bio?: string
+  location?: string
+  lockedProfile?: boolean
+  showLocation?: boolean
+  emailNotify?: boolean
+}
+
 export enum FeedType {
   WhatsNew = 'whats-new',
   Followed = 'followed',
@@ -68,6 +78,10 @@ export const useApi = () => {
   // me api endpoints
   const getCurrentUser = (): Promise<UserProfile> => {
     return useHttpGet('/api/users/me')
+  }
+
+  const updateProfile = (data: UpdateProfilePayload): Promise<UserProfile> => {
+    return useHttpPatch('/api/users/me', { body: data })
   }
 
   const isFollowing = (otherUserID: string): Promise<boolean> => {
@@ -193,8 +207,9 @@ export const useApi = () => {
 
 
   return {
-    // me api endpoints (declared order)
+    // me api endpoints
     getCurrentUser,
+    updateProfile,
     isFollowing,
     getMyFollowers,
     getMyFollowing,

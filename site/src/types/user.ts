@@ -23,7 +23,13 @@ export interface UserDetail extends UserInfo {
   username: string
   backgroundImage: string
   smallBackgroundImage: string
-  homePage: string
+  location: string
+}
+
+export interface UserSettings {
+  lockedProfile: boolean
+  showLocation: boolean
+  emailNotify: boolean
 }
 
 export interface UserProfile extends UserDetail {
@@ -31,4 +37,5 @@ export interface UserProfile extends UserDetail {
   passwordSet: boolean
   email: string
   emailVerified: boolean
+  settings?: UserSettings
 }

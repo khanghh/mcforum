@@ -21,3 +21,12 @@ import GamingFooter from '~/components/GamingFooter.vue'
 import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import Toast from '~/components/ui/Toast.vue'
 </script>
+
+<style scoped>
+.bg-pattern {
+  background-color: #1a1a2e;
+  background-image:
+    radial-gradient(at 47% 33%, hsl(240, 33%, 20%) 0, transparent 59%),
+    radial-gradient(at 82% 65%, hsl(267, 65%, 15%) 0, transparent 55%);
+}
+</style>

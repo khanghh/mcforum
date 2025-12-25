@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa hồ sơ - MineViet Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .gaming-title {
+            font-family: 'Saira Semi Condensed', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .server-title {
+            font-family: 'Saira Semi Condensed', sans-serif;
+            font-weight: 700;
+        }
+        
+        .gradient-border {
+            position: relative;
+            border: 2px solid transparent;
+            background: linear-gradient(145deg, rgba(30,30,60,0.8), rgba(20,20,40,0.9)) padding-box,
+                        linear-gradient(45deg, #8b5cf6, #ec4899, #06b6d4, #8b5cf6) border-box;
+            background-size: 300% 300%;
+            animation: gradientBorder 3s ease infinite;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.4);
+        }
+        
+        .avatar-upload {
+            transition: all 0.3s ease;
+        }
+        
+        .avatar-upload:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
+        }
+        
+        .file-upload-label:hover .file-upload-overlay {
+            opacity: 1;
+        }
+        
+        .iconify {
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-900 text-gray-100 font-sans" style="background:linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);">
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img loading="lazy" src="/images/logo.png" class="w-12 h-12">
+                <a href="/">
+                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title"> MineViet Forum </div>
+                    <div class="hidden md:block text-xs text-purple-300">Minecraft Server Vietnam</div>
+                </a>
+            </div>
+            <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
+                <li><a href="https://play.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors" target="_blank">
+                    <i class="fas fa-server mr-1"></i><span class="hidden sm:inline">Máy chủ</span>
+                </a></li>
+                <li><a href="https://skin.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-palette mr-1"></i><span class="hidden sm:inline">Đổi skin</span>
+                </a></li>
+                <li><a href="https://ban.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-ban mr-1"></i><span class="hidden sm:inline">Vi phạm</span>
+                </a></li>
+                <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-envelope mr-1"></i><span class="hidden sm:inline">Tin nhắn</span>
+                </a></li>
+                <li>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                            <span class="text-xs font-bold">A</span>
+                        </div>
+                        <a href="/users/admin" class="text-purple-300 hover:text-white transition-colors text-sm">admin</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <!-- Profile Edit Card -->
+            <div class="max-w-3xl mx-auto">
+                <!-- Header with back button -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                            <i class="fas fa-user-edit text-purple-400 text-lg"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">Chỉnh sửa hồ sơ</h1>
+                    </div>
+                    <a href="/users/admin" class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-800/80">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        <span>Quay lại hồ sơ</span>
+                    </a>
+                </div>
+
+                <!-- Edit Form Container -->
+                <div class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm">
+                    <!-- Animated border overlay -->
+                    <div class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] opacity-10"></div>
+                    
+                    <div class="relative z-10">
+                        <form class="space-y-8">
+                            <!-- Avatar Section -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-image mr-2"></i>Ảnh đại diện
+                                </label>
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                                        <!-- Current Avatar Preview -->
+                                        <div class="relative group">
+                                            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500/30 avatar-upload">
+                                                <img loading="lazy" src="/images/avatars/steve.png" alt="avatar" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        </div>
+                                        
+                                        <!-- Avatar Upload -->
+                                        <div class="flex-1">
+                                            <label class="file-upload-label relative inline-block cursor-pointer">
+                                                <div class="border-2 border-dashed border-purple-500/30 rounded-xl p-6 text-center hover:border-purple-500/50 transition-colors">
+                                                    <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                                                        <i class="fas fa-cloud-upload-alt text-purple-400 text-xl"></i>
+                                                    </div>
+                                                    <h4 class="text-white font-medium mb-2">Thay đổi ảnh đại diện</h4>
+                                                    <p class="text-sm text-gray-400 mb-4">PNG, JPG hoặc GIF (Tối đa 5MB)</p>
+                                                    <div class="px-4 py-2 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-lg inline-block">
+                                                        <span class="text-sm text-white">Chọn ảnh</span>
+                                                    </div>
+                                                    <input type="file" accept="image/*" class="sr-only" id="avatar-upload">
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="border-t border-gray-700/50"></div>
+
+                            <!-- Nickname -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                <label for="nickname" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-user-tag mr-2"></i>Biệt danh
+                                </label>
+                                <div class="flex-1">
+                                    <div class="relative">
+                                        <input type="text" id="nickname" autocomplete="off" 
+                                               class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
+                                               placeholder="Nhập biệt danh của bạn">
+                                        <div class="absolute right-3 top-3">
+                                            <i class="fas fa-pen text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">Biệt danh sẽ hiển thị công khai trên diễn đàn</p>
+                                </div>
+                            </div>
+
+                            <!-- Username (read-only) -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-at mr-2"></i>Username
+                                </label>
+                                <div class="flex-1">
+                                    <div class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-300 flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <span class="font-mono text-purple-300">@</span>
+                                            <span class="ml-1 font-medium">admin</span>
+                                        </div>
+                                        <span class="text-xs px-2 py-1 bg-gray-700 rounded text-gray-400">Không thể thay đổi</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">Username không thể thay đổi sau khi đăng ký</p>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                                <label for="email" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-envelope mr-2"></i>Email
+                                </label>
+                                <div class="flex-1">
+                                    <div class="relative">
+                                        <input type="email" id="email" 
+                                               class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors"
+                                               value="admin@mineviet.com">
+                                        <div class="absolute right-3 top-3">
+                                            <i class="fas fa-envelope text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <p class="text-xs text-gray-500">Email được sử dụng để nhận thông báo</p>
+                                        <a href="https://example.com/account" target="_blank" rel="noopener" class="text-sm text-purple-400 hover:text-purple-300 flex items-center transition-colors">
+                                            <i class="fas fa-external-link-alt mr-1"></i>
+                                            <span>Thay đổi trong tài khoản</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bio -->
+                            <div class="flex flex-col sm:flex-row sm:items-start gap-6">
+                                <label for="bio" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-start pt-3">
+                                    <i class="fas fa-info-circle mr-2 mt-0.5"></i>Giới thiệu
+                                </label>
+                                <div class="flex-1">
+                                    <div class="relative">
+                                        <textarea id="bio" rows="4" 
+                                                  class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 transition-colors resize-none"
+                                                  placeholder="Giới thiệu về bản thân..."></textarea>
+                                        <div class="absolute right-3 top-3">
+                                            <i class="fas fa-align-left text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <p class="text-xs text-gray-500">Mô tả ngắn về bạn (tối đa 500 ký tự)</p>
+                                        <span class="text-xs text-gray-400">0/500</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Settings -->
+                            <div class="flex flex-col sm:flex-row sm:items-start gap-6">
+                                <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-start pt-3">
+                                    <i class="fas fa-cog mr-2 mt-0.5"></i>Cài đặt khác
+                                </label>
+                                <div class="flex-1 space-y-4">
+                                    <!-- Privacy Setting -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                        <div>
+                                            <h4 class="font-medium text-white">Hồ sơ công khai</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Cho phép mọi người xem hồ sơ của bạn</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Email Notifications -->
+                                    <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                        <div>
+                                            <h4 class="font-medium text-white">Thông báo qua email</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Nhận email về hoạt động mới</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="border-t border-gray-700/50"></div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex flex-col sm:flex-row justify-end gap-4 pt-4">
+                                <button type="button" 
+                                        class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700">
+                                    Hủy bỏ
+                                </button>
+                                <button type="submit" 
+                                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] gaming-title tracking-[0.5px] transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                                    <i class="fas fa-save mr-2"></i> Lưu thay đổi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Information Notice -->
+                <div class="mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-lg border border-purple-500/20">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-info-circle text-purple-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-white">Thông tin quan trọng</h3>
+                            <p class="text-xs text-gray-400 mt-1">
+                                Thay đổi thông tin sẽ được cập nhật ngay lập tức. Một số thay đổi (như avatar) có thể mất vài phút để hiển thị trên toàn hệ thống.
+                                Liên hệ với đội ngũ hỗ trợ nếu bạn gặp bất kỳ vấn đề nào.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+            <!-- Main Footer Content -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- Brand Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+                        <div>
+                            <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title"> MineViet Forum </h3>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm"> The ultimate community for Minecraft players. Share builds, discover mods, and connect with fellow gamers. </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-twitch"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Forums</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Leaderboards</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Server Status</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Download Packs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Community Stats -->
+                <div>
+                    <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">COMMUNITY</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-400 mb-1">Active Players</div>
+                            <div class="text-2xl font-bold text-green-400 gaming-title">2,847</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-400 mb-1">Total Members</div>
+                            <div class="text-2xl font-bold text-purple-400 gaming-title">458K</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-400 mb-1">Online Now</div>
+                            <div class="text-2xl font-bold text-blue-400 gaming-title">2.4K</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-purple-500/20">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-400 text-sm gaming-title"> © 2025 MineViet Network. All rights reserved. </p>
+                    <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+                        <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+                        <span class="text-gray-600">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+                        <span class="text-gray-600">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
+                        <span class="text-gray-600">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Character counter for bio
+        const bioTextarea = document.getElementById('bio');
+        const charCounter = document.querySelector('.text-xs.text-gray-400');
+        
+        if (bioTextarea && charCounter) {
+            bioTextarea.addEventListener('input', function() {
+                const count = this.value.length;
+                charCounter.textContent = `${count}/500`;
+                
+                // Change color when approaching limit
+                if (count > 450) {
+                    charCounter.classList.remove('text-gray-400');
+                    charCounter.classList.add('text-yellow-400');
+                } else if (count > 480) {
+                    charCounter.classList.remove('text-yellow-400');
+                    charCounter.classList.add('text-red-400');
+                } else {
+                    charCounter.classList.remove('text-yellow-400', 'text-red-400');
+                    charCounter.classList.add('text-gray-400');
+                }
+            });
+        }
+        
+        // Avatar upload preview
+        const avatarUpload = document.getElementById('avatar-upload');
+        const avatarPreview = document.querySelector('.w-32.h-32.rounded-full img');
+        
+        if (avatarUpload && avatarPreview) {
+            avatarUpload.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Show success message
+                    showNotification('Đã chọn ảnh đại diện mới', 'success');
+                }
+            });
+        }
+        
+        // Form submission
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang lưu...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Show success message
+                    showNotification('Đã lưu thay đổi thành công!', 'success');
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+        }
+        
+        // Cancel button
+        const cancelBtn = document.querySelector('button[type="button"]');
+        if (cancelBtn && cancelBtn.textContent.includes('Hủy bỏ')) {
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Bạn có chắc muốn hủy bỏ thay đổi?')) {
+                    window.location.href = '/users/admin';
+                }
+            });
+        }
+        
+        // Notification function
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-gradient-to-r from-green-600 to-emerald-600' : 'bg-gradient-to-r from-red-600 to-pink-600'}`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

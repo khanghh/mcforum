@@ -13,7 +13,9 @@
               class="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 gaming-title py-3">
               #{{ tagTitle }}
             </h1>
-            <p class="text-gray-300 mb-4">You are browsing all the topics that have been grouped under this tag</p>
+            <p class="text-gray-300 mb-4">
+              {{ i18n.t('message.tag_description') }}
+            </p>
           </div>
         </div>
 
@@ -44,14 +46,9 @@ const name = (route.params.name as string) || ''
 
 const api = useApi()
 
-const topicsCursor: CursorResult<Topic[]> = await api.getTopicsByTag(name).catch(err => {
-  const status = err.statusCode || 500
-  const message = err.message || i18n.t('page.server_error')
-  throw createError({ statusCode: status, statusMessage: message, fatal: true })
-})
+const topicsCursor: CursorResult<Topic[]> = await api.getTopicsByTag(name)
 
 const tagTitle = computed(() => name)
-const tagDescription = computed(() => '')
 
 useHead({
   title: useSiteTitle(tagTitle.value),

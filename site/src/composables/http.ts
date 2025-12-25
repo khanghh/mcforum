@@ -54,6 +54,13 @@ export function useHttpPut(url: string, options: any = {}): Promise<any> {
   })
 }
 
+export function useHttpPatch(url: string, options: any = {}): Promise<any> {
+  return useHttp(url, {
+    ...options,
+    method: 'PATCH',
+  })
+}
+
 export function useHttpGet(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
@@ -73,16 +80,6 @@ export function useHttpPutForm(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
     ...options,
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  })
-}
-
-export function useHttpPatchForm(url: string, options: any = {}): Promise<any> {
-  return useHttp(url, {
-    ...options,
-    method: 'PATCH',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
