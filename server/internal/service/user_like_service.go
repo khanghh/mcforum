@@ -122,7 +122,7 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		isLiked, err := s.isLiked(tx, userId, constants.EntityTopic, topicId)
-		if err != nil || (err == nil && isLiked) {
+		if err != nil || isLiked {
 			return nil
 		}
 
@@ -232,7 +232,7 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 func (r *userLikeService) isLiked(db *gorm.DB, userId int64, entityType string, entityId int64) (bool, error) {
 	var exists bool
 	err := db.Model(&model.UserLike{}).Select("1").
-		Where("user_id = ? AND entity_id = ? AND entity_type = ? AND status = ?", userId, entityType, entityId, constants.StatusActive).
+		Where("user_id = ? AND entity_id = ? AND entity_type = ? AND status = ?", userId, entityId, entityType, constants.StatusActive).
 		Take(&exists).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -33,8 +33,8 @@ type UserInfo struct {
 	StatusMessage string     `json:"statusMessage"`
 	CreateTime    int64      `json:"createTime"`
 
-	Forbidden bool `json:"forbidden"` // 是否禁言
-	Followed  bool `json:"followed"`  // 是否关注
+	Forbidden   bool `json:"forbidden"`   // 是否禁言
+	IsFollowing bool `json:"isFollowing"` // 是否关注
 }
 
 // UserDetail 用户详细信息

@@ -13,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/emirpasic/gods/sets/hashset"
 	"github.com/kataras/iris/v12"
 )
 
@@ -241,16 +240,12 @@ func (c *MeController) GetFollowers() *web.JsonResult {
 	}
 
 	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(currentUser.Id, cursor, 10)
-
-	var followedSet *hashset.Set
-	if currentUser != nil {
-		followedSet = service.UserFollowService.GetMutualFollowers(currentUser.Id, followerIds...)
-	}
+	followedSet := service.UserFollowService.GetMutualFollowers(currentUser.Id, followerIds...)
 
 	itemList := make([]payload.UserInfo, 0, len(followerIds))
 	for _, id := range followerIds {
 		item := payload.BuildUserInfoDefaultIfNull(id)
-		item.Followed = followedSet.Contains(id)
+		item.IsFollowing = followedSet.Contains(id)
 		itemList = append(itemList, *item)
 	}
 	return web.JsonCursorData(itemList, cursor, hasMore)

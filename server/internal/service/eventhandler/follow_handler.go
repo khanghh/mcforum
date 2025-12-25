@@ -30,10 +30,10 @@ func handleFollowEvent(i interface{}) {
 	// 		})
 	// 	}
 	// })
-	sendUserFollowedNotification(&e)
+	sendUserFollowNotification(&e)
 }
 
-func sendUserFollowedNotification(e *event.FollowEvent) {
+func sendUserFollowNotification(e *event.FollowEvent) {
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId: e.UserId,
 		ToId:   e.OtherId,

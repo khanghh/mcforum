@@ -225,12 +225,14 @@ func (c *UsersController) GetByFollowers(username string) *web.JsonResult {
 	var followedSet *hashset.Set
 	if currentUser != nil {
 		followedSet = service.UserFollowService.GetMutualFollowers(currentUser.Id, followerIds...)
+	} else {
+		followedSet = hashset.New()
 	}
 
 	var itemList []*payload.UserInfo
 	for _, id := range followerIds {
 		item := payload.BuildUserInfoDefaultIfNull(id)
-		item.Followed = followedSet.Contains(id)
+		item.IsFollowing = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
 	return web.JsonCursorData(itemList, cursor, hasMore)
@@ -261,7 +263,7 @@ func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
 	var itemList []*payload.UserInfo
 	for _, id := range userIds {
 		item := payload.BuildUserInfoDefaultIfNull(id)
-		item.Followed = followedSet.Contains(id)
+		item.IsFollowing = followedSet.Contains(id)
 		itemList = append(itemList, item)
 	}
 	return web.JsonCursorData(itemList, cursor, hasMore)
