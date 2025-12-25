@@ -4,7 +4,7 @@
       class="bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] border border-[rgba(139,92,246,0.2)] rounded-2xl p-6 lg:sticky lg:top-24 space-y-6">
       <div v-if="user.bio">
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="PhUserFill" class="mr-2" /> Bio
+          <Icon name="Fa7SolidUserLarge" class="mr-2" /> Bio
         </h3>
         <p class="mt-3 text-gray-300 text-sm leading-relaxed">
           {{ user.bio }}
@@ -18,7 +18,7 @@
         <div class="mt-3 space-y-2">
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
-              <Icon name="calendar-plus" class="text-purple-400 text-sm" />
+              <Icon name="TablerCalendarPlus" class="text-purple-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">Joined</span>
             </div>
             <span class="text-sm font-bold gaming-title">{{ formatDate(user.createTime) }}</span>

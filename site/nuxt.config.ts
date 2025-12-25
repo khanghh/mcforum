@@ -102,9 +102,8 @@ export default defineNuxtConfig({
 
   icon: {
     serverBundle: {
-      collections: ['tabler'],
+      collections: [],
     },
-    localApiEndpoint: '/icons',
   },
 
   tailwindcss: {

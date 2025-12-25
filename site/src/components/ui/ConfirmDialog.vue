@@ -1,5 +1,5 @@
 <template>
-  <div v-if="wrapperVisible" class="fixed inset-0 z-100000 flex items-center justify-center">
+  <div v-if="wrapperVisible" class="fixed inset-0 z-[10000] flex items-center justify-center">
     <div class="fixed inset-0 bg-black/50" @click="onCancel"></div>
     <transition
       appear
@@ -51,7 +51,7 @@ import { useConfirmDialog } from '@/composables/useConfirmDialog'
 
 const dialog = useConfirmDialog()
 
-const { visible, title, message, confirmText, cancelText, variant } = dialog.state
+const { visible, title, message, confirmText, cancelText, variant, icon } = dialog.state
 
 const iconBgClass = computed(() => {
   const v = variant?.value ?? 'info'
@@ -64,6 +64,9 @@ const iconBgClass = computed(() => {
 })
 
 const iconName = computed(() => {
+  if (icon?.value) {
+    return icon.value
+  }
   const v = variant?.value ?? 'info'
   return v === 'warning' ? 'PhWarning' : 'PhInfo'
 })

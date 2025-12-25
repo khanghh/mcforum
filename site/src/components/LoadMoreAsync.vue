@@ -34,7 +34,7 @@
           @click="loadMore">
           <Icon v-if="loading" name="spinner" class="animate-spin" />
           <span>{{ loading ? 'LOADING...' : $t('feed.actions.view_more') }}</span>
-          <Icon v-if="!loading" name="caret-down" />
+          <Icon v-if="!loading" name="TablerChevronDown" />
         </button>
         <div v-else class="text-gray-500 text-sm font-medium py-4">
           {{ $t('message.no_more_content') }}

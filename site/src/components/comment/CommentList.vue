@@ -3,7 +3,7 @@
     <LoadMoreAsync ref="loadMoreComment" v-slot="{ items }" :cursor="commentsCursor">
       <TransitionGroup name="comment" tag="div" class="space-y-6">
         <div v-for="comment in items" :key="comment.id"
-          class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6">
+          class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6 group">
           <div class="flex items-start gap-4">
             <div class="relative group">
               <MyAvatar :user="comment.user" :size="30" class="rounded-lg border-2 border-purple-500/30" />
@@ -11,15 +11,23 @@
 
             <div class="flex-1 min-w-0">
               <!-- Comment Meta -->
-              <div class="flex items-center gap-2 flex-wrap mb-2">
-                <nuxt-link :to="`/users/${comment.user.username}`"
-                  class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
-                  {{ comment.user.nickname }}
-                </nuxt-link>
-                <span class="text-xs text-gray-500">{{ usePrettyDate(comment.createTime) }}</span>
-                <span v-if="comment.ipLocation" class="text-xs text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded">
-                  {{ comment.ipLocation }}
-                </span>
+              <div class="flex items-center justify-between gap-2 flex-wrap mb-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <nuxt-link :to="`/users/${comment.user.username}`"
+                    class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
+                    {{ comment.user.nickname }}
+                  </nuxt-link>
+                  <span class="text-xs text-gray-500">{{ usePrettyDate(comment.createTime) }}</span>
+                  <span v-if="comment.ipLocation" class="text-xs text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded">
+                    {{ comment.ipLocation }}
+                  </span>
+                </div>
+
+                <button v-if="isCommentOwner(comment)"
+                  class="group flex items-center gap-1 transition-colors text-gray-400 hover:text-purple-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
+                  @click="deleteComment(comment)">
+                  <Icon name="Fa7SolidTrashCan" class="w-4 h-4" />
+                </button>
               </div>
 
               <!-- Content -->
@@ -37,10 +45,10 @@
               </div>
 
               <!-- Actions -->
-              <div class="flex items-center gap-4 text-sm text-gray-400">
+              <div class="flex items-center gap-4 text-sm text-gray-400 w-full">
                 <button class="group flex items-center gap-1 transition-colors"
                   :class="comment.liked ? 'text-blue-400' : 'hover:text-blue-400'" @click="like(comment)">
-                  <Icon name="TablerThumbUpFilled" class="w-4 h-4" />
+                  <Icon name="MaterialSymbolsThumbUp" class="w-4 h-4" />
                   <span v-if="comment.likeCount > 0">{{ comment.likeCount }}</span>
                   <span v-else>Like</span>
                 </button>
@@ -88,6 +96,8 @@ import type { Comment, CommentUser } from '@/types'
 
 const userStore = useUserStore()
 const api = useApi()
+const dialog = useConfirmDialog()
+const { t } = useI18n()
 
 const props = defineProps({
   topicSlug: {
@@ -111,6 +121,10 @@ const commentsCursor = api.getTopicComments(props.topicSlug)
 const isLogin = computed(() => {
   return !!userStore.user
 })
+
+const isCommentOwner = (comment: Comment) => {
+  return userStore.user && userStore.user.id === comment.user.id
+}
 
 const loadMoreComment = ref<any>(null)
 
@@ -180,6 +194,25 @@ const prependReply = (parent: Comment, comment: Comment) => {
       items: [comment],
     }
   }
+}
+
+const deleteComment = async (comment: Comment) => {
+  console.log('delete comment', comment)
+  dialog.show({
+    title: $t('dialog.title.confirm_delete'),
+    message: $t('dialog.message.confirm_delete_comment'),
+    confirmText: $t('dialog.button.confirm'),
+    cancelText: $t('dialog.button.cancel'),
+    variant: 'warning',
+    icon: 'Fa7SolidTrashCan',
+    onConfirm: async () => {
+      // await api.deleteComment(comment.id)
+      // // Remove from the list
+      // if (loadMoreComment.value) {
+      //   loadMoreComment.value.removeItem(comment)
+      // }
+    },
+  })
 }
 
 defineExpose({

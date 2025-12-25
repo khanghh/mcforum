@@ -1,4 +1,4 @@
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, reactive } from 'vue'
 
 type ConfirmDialogOptions = {
   title?: string
@@ -8,6 +8,7 @@ type ConfirmDialogOptions = {
   onConfirm?: () => void
   onCancel?: () => void
   variant?: 'info' | 'warning'
+  icon?: string
 }
 
 const visible = ref(false)
@@ -16,6 +17,7 @@ const message = ref('')
 const confirmText = ref('OK')
 const cancelText = ref('Cancel')
 const variant = ref<'info' | 'warning'>('info')
+const icon = ref<string | null | undefined>(null)
 
 let resolver: ((value: boolean) => void) | null = null
 
@@ -51,6 +53,7 @@ function show(opts: ConfirmDialogOptions) {
   confirmText.value = rest.confirmText ?? 'OK'
   cancelText.value = rest.cancelText ?? 'Cancel'
   variant.value = rest.variant ?? 'info'
+  icon.value = rest.icon
 
   visible.value = true
 
@@ -67,19 +70,22 @@ function show(opts: ConfirmDialogOptions) {
   })
 }
 
+const state = reactive({
+  visible,
+  title,
+  message,
+  confirmText,
+  cancelText,
+  variant,
+  icon,
+})
+
 export function useConfirmDialog() {
   return {
     show,
     hide,
     confirm,
     cancel,
-    state: toRefs({
-      visible,
-      title,
-      message,
-      confirmText,
-      cancelText,
-      variant,
-    }),
+    state: toRefs(state),
   }
 }

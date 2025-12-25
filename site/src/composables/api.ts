@@ -54,7 +54,7 @@ export class CursorResult<T extends any[]> {
 
 export type CreateCommentPayload = {
   content: string
-  imageList?: string[]  
+  imageList?: string[]
   quoteId?: number
 }
 
@@ -153,7 +153,9 @@ export const useApi = () => {
   }
 
   const addTopicReaction = (topicSlug: string, reactionType: string): Promise<boolean> => {
-    return useHttpPost(`/api/topics/${topicSlug}/reactions`)
+    return useHttpPost(`/api/topics/${topicSlug}/reactions`, {
+      body: { type: reactionType },
+    })
   }
 
   const removeTopicReaction = (topicSlug: string): Promise<void> => {
@@ -176,7 +178,9 @@ export const useApi = () => {
   }
 
   const addCommentReaction = (commentId: number, reactionType: string): Promise<boolean> => {
-    return useHttpPost(`/api/comments/${commentId}/reactions`)
+    return useHttpPost(`/api/comments/${commentId}/reactions`, {
+      body: { type: reactionType },
+    })
   }
 
   const removeCommentReaction = (commentId: number): Promise<void> => {

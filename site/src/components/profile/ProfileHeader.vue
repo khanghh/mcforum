@@ -56,7 +56,7 @@
         </button>
         <nuxt-link v-if="isSelf" to="/users/me/profile"
           class="px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors">
-          <Icon name="TablerSettings" class="mr-2" /> EDIT PROFILE
+          <Icon name="Fa7SolidGear" class="mr-2" /> EDIT PROFILE
         </nuxt-link>
       </div>
     </div>
@@ -65,7 +65,7 @@
     <div v-if="isSelf" class="absolute top-4 right-4 md:hidden">
       <nuxt-link to="/users/me/profile"
         class="gaming-card text-purple-300 px-4 py-2 rounded-lg text-sm font-medium backdrop-blur-sm block">
-        <Icon name="TablerSettings" />
+        <Icon name="Fa7SolidGear" />
       </nuxt-link>
     </div>
   </div>

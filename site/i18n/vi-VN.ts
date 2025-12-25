@@ -238,6 +238,7 @@ export default {
       setup_username: 'Thiết lập tên người dùng',
       change_password: 'Thay đổi Mật khẩu',
       set_new_password: 'Thiết lập Mật khẩu',
+      confirm_delete: 'Xác nhận xóa',
     },
     message: {
       mute_user: 'Bạn có muốn cấm người dùng này?',
@@ -246,6 +247,7 @@ export default {
       confirm_delete_article: 'Bạn có chắc chắn muốn xóa bài viết này?',
       confirm_delete_post: 'Bạn có chắc chắn muốn xóa bài đăng này?',
       confirm_action_post: 'Bạn có chắc chắn muốn {action} bài đăng này?',
+      confirm_delete_comment: 'Bạn có chắc chắn muốn xóa bình luận này?',
     },
     button: {
       cancel: 'Hủy',

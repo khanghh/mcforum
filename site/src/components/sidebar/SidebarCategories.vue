@@ -5,7 +5,7 @@
     </h3>
     <nav class="space-y-1">
       <nuxt-link v-for="item in itemMenus" :key="item.urlPath" :to="item.urlPath"
-        class="category-item block px-3 py-2 rounded text-md font-semibold transition-all hover:bg-purple-500/10 gaming-title"
+        class="category-item block px-3 py-2 rounded text-md font-semibold transition-all hover:bg-purple-500/10 gaming-title flex items-center"
         :class="{ active: item.urlPath === menuPath }">
         <Icon :name="getIcon(item)" class="mr-2" :class="getIconColor(item)" /> {{ item.name }}
       </nuxt-link>
@@ -28,7 +28,7 @@ function getIcon(forum) {
   if (name.includes('help') || name.includes('support')) return 'TablerQuestionCircle'
   if (name.includes('market') || name.includes('shop')) return 'TablerShoppingCart'
   if (name.includes('all') || name.includes('home')) return 'TablerHomeFilled'
-  return 'comments'
+  return 'UilCommentsAlt'
 }
 
 function getIconColor(forum) {

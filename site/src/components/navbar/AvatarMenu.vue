@@ -13,20 +13,20 @@
       </div>
       <div class="border-t border-gray-100 my-1"></div>
       <a :href="`/users/${userStore.user?.username}`"
-        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon name="PhUserFill" class="mr-2 w-4 text-gray-500" /> Profile
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+        <Icon name="Fa7SolidUserLarge" class="mr-2 w-4 text-gray-500" /> Profile
       </a>
       <a :href="`/users/${userStore.user?.username}/favorites`"
-        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon name="TablerHeartFilled" class="mr-2 w-4 text-gray-500" /> Favorite
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+        <Icon name="Fa7SolidStar" class="mr-2 w-4 text-gray-500" /> Favorite
       </a>
       <a href="/users/me/profile"
-        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon name="TablerSettings" class="mr-2 w-4 text-gray-500" /> Account Settings
+        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+        <Icon name="Fa7SolidGear" class="mr-2 w-4 text-gray-500" /> Account Settings
       </a>
       <div class="border-t border-gray-100 my-1"></div>
       <button
-        class="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 transition-colors"
+        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 transition-colors"
         @click="logout">
         <Icon name="TablerLogout" class="mr-2 w-4 text-red-600" /> Logout
       </button>

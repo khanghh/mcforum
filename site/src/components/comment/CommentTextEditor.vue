@@ -70,6 +70,10 @@ const props = defineProps({
       imageList: [],
     }),
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['submit', 'update:modelValue'])

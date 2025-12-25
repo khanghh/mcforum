@@ -83,3 +83,10 @@ body {
   background: rgba(139, 92, 246, 0.2);
   border-left: 3px solid #8b5cf6;
 }
+
+.icon {
+  display: inline-block;
+  box-sizing: content-box;
+  overflow: visible;
+  margin-bottom: 0.1em;
+}

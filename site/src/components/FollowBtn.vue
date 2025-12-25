@@ -1,7 +1,7 @@
 <template>
   <div>
     <button class="button follow-btn" :class="{ 'is-followed': followed }" @click="follow">
-      <icon name="Plus" />
+      <icon name="TablerPlus" />
       <span>{{ followed ? $t('profile.actions.unfollow') : $t('profile.actions.follow') }}</span>
     </button>
   </div>

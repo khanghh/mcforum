@@ -241,7 +241,7 @@ defineExpose({
       <input ref="currentInput" :accept="accept" type="file" multiple class="hidden" @input="onInput">
       <div class="flex flex-col items-center justify-center">
         <slot name="add-image-button">
-          <icon name="plus"
+          <Icon name="TablerPlus"
             class="text-purple-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
             size="24px" />
         </slot>

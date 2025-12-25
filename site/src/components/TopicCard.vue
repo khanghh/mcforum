@@ -42,10 +42,10 @@
 
       <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
         <!-- Like -->
-        <button class="flex items-center gap-1 hover:text-red-400 transition-colors"
-          :class="{ 'text-red-400': topic.liked }"
+        <button class="flex items-center gap-1 hover:text-blue-400 transition-colors"
+          :class="{ 'text-blue-400': topic.liked }"
           @click.prevent="likeTopic">
-          <Icon name="TablerHeartFilled" :class="{ 'text-red-400': topic.liked }" />
+          <Icon name="MaterialSymbolsThumbUp" :class="{ 'text-blue-400': topic.liked }" />
           {{ topic.likeCount }}
         </button>
 
@@ -62,6 +62,11 @@
           <Icon name="IcRoundRemoveRedEye" />
           {{ topic.viewCount }}
         </nuxt-link>
+
+        <!-- Forum Name -->
+        <span v-if="topic.forum" :class="['ml-auto px-2 py-1 text-xs font-bold rounded', forumLabelColor]">
+          {{ topic.forum.name.toUpperCase() }}
+        </span>
       </div>
     </div>
   </div>
@@ -74,17 +79,22 @@ import type { Topic } from '@/types'
 const i18n = useI18n()
 const userStore = useUserStore()
 const user = userStore.user
+const api = useApi()
 
 type Props = {
   topic: Topic
   showPinned?: boolean
 }
 const props = defineProps<Props>()
+const topic = props.topic
 
-// create a local mutable copy to avoid mutating readonly props
-const localTopic = reactive({ ...(props.topic) }) as Topic
+const author = computed(() => topic.user)
 
-const author = computed(() => localTopic.user)
+const forumLabelColor = computed(() => {
+  if (!topic.forum) return ''
+  const hash = slugHash(topic.forum.slug)
+  return labelColors[hash % labelColors.length]
+})
 
 async function likeTopic() {
   try {
@@ -93,22 +103,43 @@ async function likeTopic() {
       return
     }
 
-    const slug = localTopic.slug || localTopic.id
-    if (localTopic.liked) {
-      await useHttpDelete(`/api/topics/${slug}/reactions/${user.id}`)
-      localTopic.liked = false
-      localTopic.likeCount = localTopic.likeCount > 0 ? localTopic.likeCount - 1 : 0
+    const slug = topic.slug
+    if (topic.liked) {
+      await api.removeTopicReaction(slug)
+      topic.liked = false
+      topic.likeCount = topic.likeCount > 0 ? topic.likeCount - 1 : 0
     }
     else {
-      await useHttpPostForm(`/api/topics/${slug}/reactions`, {
-        body: { type: 'like' },
-      })
-      localTopic.liked = true
-      localTopic.likeCount = (localTopic.likeCount || 0) + 1
+      await api.addTopicReaction(slug, 'like')
+      topic.liked = true
+      topic.likeCount = (topic.likeCount || 0) + 1
     }
   }
   catch (e) {
     useCatchError(e)
   }
+}
+
+
+const labelColors = [
+  'bg-red-500/20 text-red-400 border-red-500/50',
+  'bg-green-500/20 text-green-400 border-green-500/50',
+  'bg-blue-500/20 text-blue-400 border-blue-500/50',
+  'bg-yellow-500/20 text-yellow-400 border-yellow-500/50',
+  'bg-purple-500/20 text-purple-400 border-purple-500/50',
+  'bg-pink-500/20 text-pink-400 border-pink-500/50',
+  'bg-indigo-500/20 text-indigo-400 border-indigo-500/50',
+  'bg-teal-500/20 text-teal-400 border-teal-500/50',
+  'bg-orange-500/20 text-orange-400 border-orange-500/50',
+  'bg-cyan-500/20 text-cyan-400 border-cyan-500/50',
+]
+
+function slugHash(str: string): number {
+  let h = 0
+  for (let i = 0; i < str.length; i++) {
+    h = (h << 5) - h + str.charCodeAt(i)
+    h |= 0
+  }
+  return h >>> 0
 }
 </script>

@@ -15,7 +15,7 @@
       <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
         <li>
           <a href="https://play.mineviet.com"
-            class="flex items-center text-gray-300 hover:text-purple-400 transition-colors"
+            class="text-gray-300 hover:text-purple-400 transition-colors"
             target="_blank">
             <Icon name="TablerServer" class="mr-1" />
             <span class="hidden sm:inline">Máy chủ</span>
@@ -23,21 +23,21 @@
         </li>
         <li>
           <a href="https://skin.mineviet.com"
-            class="flex items-center text-gray-300 hover:text-purple-400 transition-colors">
+            class="text-gray-300 hover:text-purple-400 transition-colors">
             <Icon name="TablerPaletteFilled" class="mr-1" />
             <span class="hidden sm:inline">Đổi skin</span>
           </a>
         </li>
         <li>
           <a href="https://ban.mineviet.com"
-            class="flex items-center text-gray-300 hover:text-purple-400 transition-colors">
+            class="text-gray-300 hover:text-purple-400 transition-colors">
             <Icon name="TablerBan" class="mr-1" />
             <span class="hidden sm:inline">Vi phạm</span>
           </a>
         </li>
         <li>
-          <a href="#" class="flex items-center text-gray-300 hover:text-purple-400 transition-colors">
-            <Icon name="TablerMaile" class="mr-1" />
+          <a href="/users/me/messages" class="text-gray-300 hover:text-purple-400 transition-colors">
+            <Icon name="TablerMail" class="mr-1" />
             <span class="hidden sm:inline">Tin nhắn</span>
           </a>
         </li>

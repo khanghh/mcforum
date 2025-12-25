@@ -6,7 +6,7 @@
       :aria-expanded="String(open)"
       :aria-label="$t('publish.manage')"
       @click="open = !open">
-      <Icon name="TablerSettings" class="w-4 h-4 mr-2" />
+      <Icon name="Fa7SolidGear" class="mr-2" />
       <span class="whitespace-nowrap">{{ $t('publish.manage') }}</span>
     </button>
 
@@ -16,8 +16,9 @@
         <div class="py-1">
           <button v-for="item in menus"
             :key="item.command"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="select(item.command)">
+            <Icon :name="item.icon" class="mr-2" />
             {{ item.label }}
           </button>
         </div>
@@ -54,34 +55,40 @@ const menus = computed(() => {
     items.push({
       command: 'edit',
       label: topic.value.editing ? i18n.t('publish.action.save') : i18n.t('publish.action.edit'),
+      icon: 'Fa7SolidFileEdit',
     })
   }
   if (isTopicOwner || isOwner || isAdmin) {
     items.push({
       command: 'delete',
       label: i18n.t('publish.action.delete'),
+      icon: 'Fa7SolidTrashCan',
     })
   }
   if (isOwner || isAdmin) {
     items.push({
       command: 'recommend',
       label: topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend'),
+      icon: 'TablerStar',
     })
   }
   if (isOwner || isAdmin) {
     items.push({
       command: 'pin',
+      icon: 'TablerPin',
       label: topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin'),
     })
   }
   if (isOwner || isAdmin) {
     items.push({
       command: 'forbidden7Days',
+      icon: 'TablerBan',
       label: i18n.t('profile.actions.mute_7days'),
     })
   }
   if (isOwner) {
     items.push({
+      icon: 'TablerBan',
       command: 'forbiddenForever',
       label: i18n.t('profile.actions.mute_permanent'),
     })

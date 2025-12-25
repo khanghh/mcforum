@@ -45,7 +45,7 @@
         <div class="flex items-center gap-4 text-sm text-gray-400">
           <button class="group flex items-center gap-1 transition-colors"
             :class="reply.liked ? 'text-blue-400' : 'hover:text-blue-400'" @click="like(reply)">
-            <Icon name="TablerThumbUpFilled" class="w-4 h-4" />
+            <Icon name="MaterialSymbolsThumbUp" class="w-4 h-4" />
             <span v-if="reply.likeCount > 0">{{ reply.likeCount }}</span>
             <span v-else>Like</span>
           </button>
