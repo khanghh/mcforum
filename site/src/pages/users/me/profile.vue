@@ -288,7 +288,11 @@ async function submitForm() {
     await reload()
     toast.success(i18n.t('message.profile_update_success'))
   } catch (e) {
-    console.error(e)
+    console.error(e?.data?.error.message || e)
+    if (e?.data?.error.message) {
+      toast.error(e.data.error.message)
+      return
+    }
     toast.error(i18n.t('message.profile_update_failure'))
   }
 }

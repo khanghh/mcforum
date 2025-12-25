@@ -4,7 +4,7 @@
       class="bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] border border-[rgba(139,92,246,0.2)] rounded-2xl p-6 lg:sticky lg:top-24 space-y-6">
       <div v-if="user.bio">
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="Fa7SolidUserLarge" class="mr-2" /> Bio
+          <Icon name="Fa7SolidUserLarge" class="mr-2" /> {{ $t('profile.info.bio') }}
         </h3>
         <p class="mt-3 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap break-words">
           {{ user.bio }}
@@ -13,13 +13,13 @@
 
       <div>
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="info-circle" class="mr-2" /> Basic Info
+          <Icon name="Fa7SolidCircleInfo" class="mr-2" /> {{ $t('profile.info.basic_info') }}
         </h3>
         <div class="mt-3 space-y-2">
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerCalendarPlus" class="text-purple-400 text-sm" />
-              <span class="text-sm font-bold text-gray-400">Joined</span>
+              <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.join_date') }}</span>
             </div>
             <span class="text-sm font-bold gaming-title">{{ formatDate(user.createTime) }}</span>
           </div>
@@ -27,21 +27,21 @@
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerClockHour4" class="text-blue-400 text-sm" />
-              <span class="text-sm font-bold text-gray-400">Play Time</span>
+              <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.play_time') }}</span>
             </div>
             <span class="text-sm font-bold gaming-title">2,847 hrs</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
+          <!-- <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerMail" class="text-blue-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">Email</span>
             </div>
             <span class="text-sm font-bold gaming-title truncate max-w-[150px]">{{ user.email || 'Hidden' }}</span>
-          </div>
+          </div> -->
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerMapPinFilled" class="text-blue-400 text-sm" />
-              <span class="text-sm font-bold text-gray-400">Location</span>
+              <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.location') }}</span>
             </div>
             <span class="text-sm font-bold gaming-title">{{ user.location || 'Unknown' }}</span>
           </div>
