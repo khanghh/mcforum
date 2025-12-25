@@ -2,16 +2,16 @@ package web
 
 import "bbs-go/sqls"
 
-// PageResult 分页返回数据
+// PageResult paged result data
 type PageResult struct {
-	Page    *sqls.Paging `json:"page"`    // 分页信息
-	Results interface{}  `json:"results"` // 数据
+	Page    *sqls.Paging `json:"page"`    // Pagination info
+	Results interface{}  `json:"results"` // Data
 }
 
-// CursorResult Cursor分页返回数据
+// CursorResult cursor paged result data
 type CursorResult struct {
 	Metadata interface{} `json:"metadata,omitempty"`
-	Items    interface{} `json:"items"`   // 数据
-	Cursor   int64       `json:"cursor"`  // 下一页
-	HasMore  bool        `json:"hasMore"` // 是否还有数据
+	Items    interface{} `json:"items"`   // Data
+	Cursor   int64       `json:"cursor"`  // Next page
+	HasMore  bool        `json:"hasMore"` // Whether there is more data
 }

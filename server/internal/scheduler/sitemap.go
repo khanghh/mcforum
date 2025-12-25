@@ -46,13 +46,13 @@ func GenerateSiteMap() {
 	}()
 
 	sm := stm.NewSitemap(0)
-	sm.SetDefaultHost(config.Instance().BaseUrl) // 网站host
+	sm.SetDefaultHost(config.Instance().BaseUrl) // website host
 	if uploader.IsEnabledOss() {
-		sm.SetSitemapsHost(config.Instance().Uploader.AliyunOss.Host) // 上传到阿里云所以host设置为阿里云
+		sm.SetSitemapsHost(config.Instance().Uploader.AliyunOss.Host) // upload to Aliyun so host set to Aliyun
 	} else {
 		sm.SetPublicPath(config.Instance().Uploader.Local.Host)
 	}
-	sm.SetSitemapsPath("sitemap") // sitemap存放目录
+	sm.SetSitemapsPath("sitemap") // sitemap storage directory
 	sm.SetVerbose(false)
 	sm.SetPretty(false)
 	sm.SetCompress(true)
@@ -134,17 +134,17 @@ func (adp *myAdapter) Write(loc *stm.Location, data []byte) {
 		_ = w.Close()
 		out = in.Bytes()
 
-		// 写入gzip格式数据
+		// write gzip format data
 		adp.ossWrite(loc.PathInPublic(), out)
 
-		// 写入原始数据
+		// write raw data
 		adp.ossWrite(strings.ReplaceAll(loc.PathInPublic(), ".gz", ""), data)
-	} else { // 非gzip
+	} else { // non-gzip
 		adp.ossWrite(loc.PathInPublic(), data)
 	}
 }
 
-// oss写入
+// OSS write
 func (adp *myAdapter) ossWrite(fileKey string, out []byte) {
 	if _url, err := uploader.PutObject(fileKey, out, ""); err != nil {
 		slog.Error("Upload sitemap error:", slog.Any("err", err))

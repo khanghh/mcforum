@@ -15,7 +15,7 @@ type LoginController struct {
 	Ctx iris.Context
 }
 
-// 注册
+// Signup
 func (c *LoginController) PostSignup() *web.JsonResult {
 	var (
 		captchaId   = c.Ctx.PostValueTrim("captchaId")
@@ -29,7 +29,7 @@ func (c *LoginController) PostSignup() *web.JsonResult {
 	)
 	loginMethod := service.SysConfigService.GetLoginMethod()
 	if !loginMethod.Password {
-		return web.JsonErrorMsg("账号密码登录/注册已禁用")
+		return web.JsonErrorMsg("Username/password login/registration is disabled")
 	}
 	if !captcha.VerifyString(captchaId, captchaCode) {
 		return web.JsonError(errs.CaptchaError)
@@ -41,7 +41,7 @@ func (c *LoginController) PostSignup() *web.JsonResult {
 	return payload.BuildLoginSuccess(c.Ctx, user, redirect)
 }
 
-// 用户名密码登录
+// Signin (username/password)
 func (c *LoginController) PostSignin() *web.JsonResult {
 	var (
 		username = c.Ctx.PostValueTrim("username")
@@ -50,7 +50,7 @@ func (c *LoginController) PostSignin() *web.JsonResult {
 	)
 	loginMethod := service.SysConfigService.GetLoginMethod()
 	if !loginMethod.Password {
-		return web.JsonErrorMsg("账号密码登录/注册已禁用")
+		return web.JsonErrorMsg("Username/password login/registration is disabled")
 	}
 
 	user, err := service.UserService.SignIn(username, password)
@@ -60,7 +60,7 @@ func (c *LoginController) PostSignin() *web.JsonResult {
 	return payload.BuildLoginSuccess(c.Ctx, user, redirect)
 }
 
-// 退出登录
+// Signout
 func (c *LoginController) GetSignout() *web.JsonResult {
 	err := service.UserTokenService.Signout(c.Ctx)
 	if err != nil {

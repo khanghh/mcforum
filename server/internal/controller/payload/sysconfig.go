@@ -10,7 +10,7 @@ import (
 
 // SysConfigResponse
 //
-//	配置返回结构体
+// SysConfigResponse config response struct
 type SysConfigResponse struct {
 	SiteTitle                  string              `json:"siteTitle"`
 	SiteDescription            string              `json:"siteDescription"`
@@ -32,7 +32,7 @@ type SysConfigResponse struct {
 	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified"`
 	EnableHideContent          bool                `json:"enableHideContent"`
 	Modules                    model.ModulesConfig `json:"modules"`
-	EmailWhitelist             []string            `json:"emailWhitelist"` // 邮箱白名单
+	EmailWhitelist             []string            `json:"emailWhitelist"` // Email whitelist
 }
 
 func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {

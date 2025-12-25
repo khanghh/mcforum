@@ -1,14 +1,13 @@
 <template>
   <LoadMoreAsync v-slot="{ items }" :cursor="followingCursor">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-      <UserCard v-for="u in items" :key="u.id" :user="u" :isFollowing="true" />
+      <UserCard v-for="user in items" :key="user.id" :user="user" />
     </div>
   </LoadMoreAsync>
 
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { UserProfile } from '@/types/user'
 import UserCard from './UserCard.vue'
 import { useApi } from '@/composables/api'
@@ -22,6 +21,7 @@ const props = defineProps<Props>()
 
 const loggedInUser = userStore.user
 const isSelf = loggedInUser?.username === props.user.username
+
 
 const getUserFollowing = async () => {
   if (isSelf) {

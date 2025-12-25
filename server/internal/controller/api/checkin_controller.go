@@ -16,7 +16,7 @@ type CheckinController struct {
 	Ctx iris.Context
 }
 
-// PostCheckin 签到
+// PostCheckin Check in
 func (c *CheckinController) PostCheckin() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
@@ -30,7 +30,7 @@ func (c *CheckinController) PostCheckin() *web.JsonResult {
 	}
 }
 
-// GetCheckin 获取签到信息
+// GetCheckin Get check-in info
 func (c *CheckinController) GetCheckin() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
@@ -40,13 +40,13 @@ func (c *CheckinController) GetCheckin() *web.JsonResult {
 	if checkIn != nil {
 		today := dates.GetDay(time.Now())
 		return web.NewRspBuilder(checkIn).
-			Put("checkIn", checkIn.LatestDayName == today). // 今日是否已签到
+			Put("checkIn", checkIn.LatestDayName == today). // whether checked in today
 			JsonResult()
 	}
 	return web.JsonSuccess()
 }
 
-// GetRank 获取当天签到排行榜（最早签到的排在最前面）
+// GetRank Get today's check-in leaderboard (earliest check-ins first)
 func (c *CheckinController) GetRank() *web.JsonResult {
 	list := cache.UserCache.GetCheckInRank()
 	var itemList []map[string]interface{}

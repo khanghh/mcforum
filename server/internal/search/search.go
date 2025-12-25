@@ -46,14 +46,14 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 		CreateTime:  topic.CreateTime,
 	}
 
-	// 处理内容
+	// process content
 	content := markdown.ToHTML(topic.Content)
 	content = utils.GetHtmlText(content)
 	content = html.EscapeString(content)
 
 	doc.Content = content
 
-	// 处理用户
+	// process user
 	user := cache.UserCache.Get(topic.UserId)
 	if user != nil {
 		doc.Nickname = user.Nickname
@@ -62,7 +62,7 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 	return doc
 }
 
-// IndexData 索引数据
+// IndexData index data
 func UpdateTopicIndex(topic *model.Topic) {
 	doc := NewTopicDoc(topic)
 	if doc == nil {
@@ -80,7 +80,7 @@ func DeleteTopicIndex(id int64) error {
 	return index.Delete(cast.ToString(id))
 }
 
-// 分页查询
+// paginated query
 func SearchTopic(keyword string, nodeId int64, timeRange, page, limit int) (docs []TopicDocument, paging *sqls.Paging, err error) {
 	paging = &sqls.Paging{Page: page, Limit: limit}
 
@@ -92,7 +92,7 @@ func SearchTopic(keyword string, nodeId int64, timeRange, page, limit int) (docs
 	}
 
 	if nodeId != 0 {
-		if nodeId == -1 { // 推荐
+		if nodeId == -1 { // recommended
 			boolFieldQuery := bleve.NewBoolFieldQuery(true)
 			boolFieldQuery.SetField("recommended")
 			query.AddMust(boolFieldQuery)
@@ -106,13 +106,13 @@ func SearchTopic(keyword string, nodeId int64, timeRange, page, limit int) (docs
 	}
 	if timeRange != 0 {
 		var beginTime int64
-		if timeRange == 1 { // 一天内
+		if timeRange == 1 { // within one day
 			beginTime = dates.Timestamp(time.Now().Add(-24 * time.Hour))
-		} else if timeRange == 2 { // 一周内
+		} else if timeRange == 2 { // within one week
 			beginTime = dates.Timestamp(time.Now().Add(-7 * 24 * time.Hour))
-		} else if timeRange == 3 { // 一月内
+		} else if timeRange == 3 { // within one month
 			beginTime = dates.Timestamp(time.Now().AddDate(0, -1, 0))
-		} else if timeRange == 4 { // 一年内
+		} else if timeRange == 4 { // within one year
 			beginTime = dates.Timestamp(time.Now().AddDate(-1, 0, 0))
 		}
 
@@ -133,7 +133,7 @@ func SearchTopic(keyword string, nodeId int64, timeRange, page, limit int) (docs
 
 	result, err := index.Search(searchRequest)
 	if err != nil {
-		slog.Error("搜索失败:", slog.Any("err", err))
+		slog.Error("Search failed:", slog.Any("err", err))
 	}
 
 	for _, hit := range result.Hits {

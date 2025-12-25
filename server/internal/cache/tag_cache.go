@@ -13,7 +13,7 @@ import (
 )
 
 type tagCache struct {
-	cache cache.LoadingCache // 标签缓存
+	cache cache.LoadingCache // tag cache
 }
 
 var TagCache = newTagCache()

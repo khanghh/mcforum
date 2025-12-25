@@ -21,13 +21,13 @@ import (
 )
 
 func xssProtection(htmlContent string) string {
-	ugcProtection := bluemonday.UGCPolicy() // 用户生成内容模式
+	ugcProtection := bluemonday.UGCPolicy() // User generated content policy
 	ugcProtection.AllowAttrs("class").OnElements("code")
 	ugcProtection.AllowAttrs("start").OnElements("ol", "ul", "li")
 	return ugcProtection.Sanitize(htmlContent)
 }
 
-// handleHtmlContent 处理html内容
+// handleHtmlContent process html content
 func handleHtmlContent(htmlContent string) string {
 	htmlContent = xssProtection(htmlContent)
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlContent))
@@ -42,38 +42,38 @@ func handleHtmlContent(htmlContent string) string {
 			return
 		}
 
-		// 不是内部链接
+		// not internal link
 		if !bbsurls.IsInternalUrl(href) {
 			selection.SetAttr("target", "_blank")
-			selection.SetAttr("rel", "external nofollow") // 标记站外链接，搜索引擎爬虫不传递权重值
+			selection.SetAttr("rel", "external nofollow") // mark external link, search engine crawler does not pass weight
 
 			showRedirectPage := service.SysConfigService.IsEnabledUrlRedirectPage()
-			if showRedirectPage { // 开启非内部链接跳转
+			if showRedirectPage { // enable non-internal link redirect
 				newHref := urls.ParseUrl(bbsurls.AbsUrl("/redirect")).AddQuery("url", href).BuildStr()
 				selection.SetAttr("href", newHref)
 			}
 		}
 
-		// 如果a标签没有title，那么设置title
+		// If a tag has no title, then set title
 		title := selection.AttrOr("title", "")
 		if len(title) == 0 {
 			selection.SetAttr("title", selection.Text())
 		}
 	})
 
-	// 处理图片
+	// Process images
 	doc.Find("img").Each(func(_ int, selection *goquery.Selection) {
 		src := selection.AttrOr("src", "")
 
-		// 处理第三方图片
+		// process third-party images
 		if strings.Contains(src, "qpic.cn") {
 			src = urls.ParseUrl("/api/img/proxy").AddQuery("url", src).BuildStr()
 		}
 
-		// 处理图片样式
+		// process image style
 		src = HandleOssImageStyleDetail(src)
 
-		// // 处理lazyload
+		// // process lazyload
 		// selection.SetAttr("data-src", src)
 		// selection.RemoveAttr("src")
 
@@ -87,12 +87,12 @@ func handleHtmlContent(htmlContent string) string {
 }
 
 /*
-BuildLoginSuccess 处理登录成功后的返回数据
+BuildLoginSuccess processes return data after successful login
 
-Parameter:
+Parameters:
 
-	user - login user
-	redirect - 登录来源地址，需要控制登录成功之后跳转到该地址
+	user - logged in user
+	redirect - login source address, need to control jump to this address after successful login
 */
 func BuildLoginSuccess(ctx iris.Context, user *model.User, redirect string) *web.JsonResult {
 	token, err := service.UserTokenService.Generate(user.Id)

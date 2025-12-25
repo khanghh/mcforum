@@ -16,7 +16,7 @@ export interface UserInfo {
   statusMessage: string
   createTime: number
   forbidden: boolean
-  followed: boolean
+  isFollowing: boolean
 }
 
 export interface UserDetail extends UserInfo {

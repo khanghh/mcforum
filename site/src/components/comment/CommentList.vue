@@ -206,11 +206,10 @@ const deleteComment = async (comment: Comment) => {
     variant: 'warning',
     icon: 'Fa7SolidTrashCan',
     onConfirm: async () => {
-      // await api.deleteComment(comment.id)
-      // // Remove from the list
-      // if (loadMoreComment.value) {
-      //   loadMoreComment.value.removeItem(comment)
-      // }
+      await api.deleteComment(comment.id)
+      if (loadMoreComment.value) {
+        loadMoreComment.value.removeItem(comment)
+      }
     },
   })
 }

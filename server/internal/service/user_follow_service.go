@@ -74,8 +74,8 @@ func (s *userFollowService) Delete(id int64) {
 
 func (s *userFollowService) Follow(userId, otherId int64) error {
 	if userId == otherId {
-		// 自己关注自己，不进行处理。
-		// return errors.New("自己不能关注自己")
+		// Following oneself: no-op.
+		// return errors.New("Cannot follow yourself")
 		return nil
 	}
 
@@ -84,7 +84,7 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 	}
 
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		// 如果对方也关注了我，那么更新状态为互相关注
+		// If the other also follows me, update status to mutual follow
 		otherFollowed := tx.Exec("update t_user_follow set status = ? where user_id = ? and other_id = ?",
 			constants.FollowStatusBoth, otherId, userId).RowsAffected > 0
 		status := constants.FollowStatusFollow
@@ -117,7 +117,7 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 		return err
 	}
 
-	// 发送mq消息
+	// send mq message
 	event.Send(event.FollowEvent{
 		UserId:  userId,
 		OtherId: otherId,
@@ -127,7 +127,7 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 
 func (s *userFollowService) UnFollow(userId, otherId int64) error {
 	if userId == otherId {
-		// 自己关注自己，不进行处理。
+		// Following oneself: no-op.
 		return nil
 	}
 	if !s.IsFollowing(userId, otherId) {
@@ -160,7 +160,7 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 		return err
 	}
 
-	// 发送mq消息
+	// send mq message
 	event.Send(event.UnfollowEvent{
 		UserId:  userId,
 		OtherId: otherId,
@@ -168,7 +168,7 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 	return nil
 }
 
-// GetFollowers 粉丝列表
+// GetFollowers Followers list
 func (s *userFollowService) GetFollowers(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("other_id", userId)
 	if cursor > 0 {
@@ -189,7 +189,7 @@ func (s *userFollowService) GetFollowers(userId int64, cursor int64, limit int) 
 	return
 }
 
-// GetFollowing 关注列表
+// GetFollowing Following list
 func (s *userFollowService) GetFollowing(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("user_id", userId)
 	if cursor > 0 {
@@ -210,7 +210,7 @@ func (s *userFollowService) GetFollowing(userId int64, cursor int64, limit int) 
 	return
 }
 
-// ScanFollowers 扫描粉丝
+// ScanFollowers Scan followers
 func (s *userFollowService) ScanFollowers(userId int64, handle func(fansId int64)) {
 	var cursor int64 = 0
 	for {
@@ -225,7 +225,7 @@ func (s *userFollowService) ScanFollowers(userId int64, handle func(fansId int64
 	}
 }
 
-// ScanFollowing 扫描关注的用户
+// ScanFollowing scan following users of the given userId
 func (s *userFollowService) ScanFollowing(userId int64, handle func(followUserId int64)) {
 	var cursor int64 = 0
 	for {

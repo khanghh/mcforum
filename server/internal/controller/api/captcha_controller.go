@@ -19,7 +19,7 @@ func (c *CaptchaController) GetRequest() *web.JsonResult {
 	captchaId := c.Ctx.FormValue("captchaId")
 	if strs.IsNotBlank(captchaId) { // reload
 		if !captcha.Reload(captchaId) {
-			// reload 失败，重新加载验证码
+			// reload failed, generate a new captcha
 			captchaId = captcha.NewLen(4)
 		}
 	} else {

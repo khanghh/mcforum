@@ -14,7 +14,7 @@ import (
 	"bbs-go/sqls"
 )
 
-// UserInfo 用户简单信息
+// UserInfo user simple info
 type UserInfo struct {
 	Id            int64      `json:"id"`
 	Type          int        `json:"type"`
@@ -24,20 +24,20 @@ type UserInfo struct {
 	SmallAvatar   string     `json:"smallAvatar"`
 	Gender        string     `json:"gender"`
 	Birthday      *time.Time `json:"birthday"`
-	TopicCount    int        `json:"topicCount"`   // 话题数量
-	CommentCount  int        `json:"commentCount"` // 跟帖数量
-	FansCount     int        `json:"fansCount"`    // 粉丝数量
-	FollowCount   int        `json:"followCount"`  // 关注数量
-	Score         int        `json:"score"`        // 积分
+	TopicCount    int        `json:"topicCount"`   // topic count
+	CommentCount  int        `json:"commentCount"` // comment count
+	FansCount     int        `json:"fansCount"`    // fans count
+	FollowCount   int        `json:"followCount"`  // follow count
+	Score         int        `json:"score"`        // score
 	Bio           string     `json:"bio"`
 	StatusMessage string     `json:"statusMessage"`
 	CreateTime    int64      `json:"createTime"`
 
-	Forbidden   bool `json:"forbidden"`   // 是否禁言
-	IsFollowing bool `json:"isFollowing"` // 是否关注
+	Forbidden   bool `json:"forbidden"`   // whether banned
+	IsFollowing bool `json:"isFollowing"` // whether following
 }
 
-// UserDetail 用户详细信息
+// UserDetail user detailed info
 type UserDetail struct {
 	UserInfo
 	BackgroundImage      string `json:"backgroundImage"`
@@ -46,11 +46,11 @@ type UserDetail struct {
 	IsActive             bool   `json:"isActive"`
 }
 
-// UserProfile 用户个人信息
+// UserProfile user personal info
 type UserProfile struct {
 	UserDetail
 	Roles         []string `json:"roles"`
-	PasswordSet   bool     `json:"passwordSet"` // 密码已设置
+	PasswordSet   bool     `json:"passwordSet"` // password set
 	Email         string   `json:"email"`
 	EmailVerified bool     `json:"emailVerified"`
 }

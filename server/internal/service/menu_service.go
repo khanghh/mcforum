@@ -110,7 +110,7 @@ func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {
 	return ret
 }
 
-// GetMenuPath 获取菜单路径
+// GetMenuPath Get menu path
 func (s *menuService) GetMenuPath(menuId int64, menusMap map[int64]model.Menu) (ret []int64) {
 	if menuId <= 0 {
 		return

@@ -31,7 +31,7 @@ func (c *UploadController) Post() *web.JsonResult {
 	defer file.Close()
 
 	if header.Size > constants.UploadMaxBytes {
-		return web.JsonErrorMsg("图片不能超过" + strconv.Itoa(constants.UploadMaxM) + "M")
+		return web.JsonErrorMsg("Image cannot exceed " + strconv.Itoa(constants.UploadMaxM) + "M")
 	}
 
 	contentType := header.Header.Get("Content-Type")
@@ -40,7 +40,7 @@ func (c *UploadController) Post() *web.JsonResult {
 		return web.JsonError(err)
 	}
 
-	slog.Info("上传文件：", slog.Any("filename", header.Filename), slog.Any("size", header.Size))
+	slog.Info("Upload file:", slog.Any("filename", header.Filename), slog.Any("size", header.Size))
 
 	url, err := uploader.PutImage(fileBytes, contentType)
 	if err != nil {

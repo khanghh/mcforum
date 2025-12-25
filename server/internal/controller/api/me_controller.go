@@ -68,7 +68,7 @@ func (c *MeController) PostEditBy(userId int64) *web.JsonResult {
 		return web.JsonError(errs.NotLogin)
 	}
 	if user.Id != userId {
-		return web.JsonErrorMsg("无权限")
+		return web.JsonErrorMsg("No permission")
 	}
 	var (
 		nickname    = strings.TrimSpace(params.FormValue(c.Ctx, "nickname"))
@@ -81,12 +81,12 @@ func (c *MeController) PostEditBy(userId int64) *web.JsonResult {
 	)
 
 	if len(nickname) == 0 {
-		return web.JsonErrorMsg("昵称不能为空")
+		return web.JsonErrorMsg("Nickname cannot be empty")
 	}
 
 	if strs.IsNotBlank(gender) {
 		if gender != string(constants.GenderMale) && gender != string(constants.GenderFemale) {
-			return web.JsonErrorMsg("性别数据错误")
+			return web.JsonErrorMsg("Gender data error")
 		}
 	}
 	if strs.IsNotBlank(birthdayStr) {
@@ -97,7 +97,7 @@ func (c *MeController) PostEditBy(userId int64) *web.JsonResult {
 	}
 
 	if len(homePage) > 0 && validate.IsURL(homePage) != nil {
-		return web.JsonErrorMsg("个人主页地址错误")
+		return web.JsonErrorMsg("Homepage address error")
 	}
 
 	columns := map[string]interface{}{
@@ -116,15 +116,16 @@ func (c *MeController) PostEditBy(userId int64) *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-// 修改头像
+// Update avatar
 func (c *MeController) PostUpdateAvatar() *web.JsonResult {
+	// Update avatar
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
 	avatar := strings.TrimSpace(params.FormValue(c.Ctx, "avatar"))
 	if len(avatar) == 0 {
-		return web.JsonErrorMsg("头像不能为空")
+		return web.JsonErrorMsg("Avatar cannot be empty")
 	}
 	err := service.UserService.UpdateAvatar(user.Id, avatar)
 	if err != nil {
@@ -188,7 +189,7 @@ func (c *MeController) PostUpdateBirthday() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-// // 修改密码
+// // Update password
 // func (c *MeController) PostUpdatePassword() *web.JsonResult {
 // 	user := service.UserTokenService.GetCurrent(c.Ctx)
 // 	if user == nil {
@@ -205,7 +206,7 @@ func (c *MeController) PostUpdateBirthday() *web.JsonResult {
 // 	return web.JsonSuccess()
 // }
 
-// 设置背景图
+// Set background image
 func (c *MeController) PostSet_background_image() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
@@ -213,7 +214,7 @@ func (c *MeController) PostSet_background_image() *web.JsonResult {
 	}
 	backgroundImage := params.FormValue(c.Ctx, "backgroundImage")
 	if strs.IsBlank(backgroundImage) {
-		return web.JsonErrorMsg("请上传图片")
+		return web.JsonErrorMsg("Please upload image")
 	}
 	if err := service.UserService.UpdateBackgroundImage(user.Id, backgroundImage); err != nil {
 		return web.JsonError(err)

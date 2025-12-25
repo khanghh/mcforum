@@ -68,7 +68,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 	return web.JsonData(payload.BuildSimpleTopic(topic))
 }
 
-// // 标签帖子列表
+// // Tag topic list
 //
 //	func (c *TopicController) GetTagTopics() *web.JsonResult {
 //		var (
@@ -102,7 +102,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	// 审核中文章控制展示
+	// Control display of articles under review
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if topic.Status == constants.StatusReview {
 		if user != nil {
@@ -114,7 +114,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 		}
 	}
 
-	service.TopicService.IncrViewCount(topic.Id) // 增加浏览量
+	service.TopicService.IncrViewCount(topic.Id) // Increase view count
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
@@ -227,7 +227,7 @@ func (c *TopicsController) DeleteBy(topicId int64) (*web.JsonResult, error) {
 		return web.JsonError(errs.ErrBadRequest), nil
 	}
 
-	// 非作者、且非管理员
+	// Not author and not admin
 	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
 		return web.JsonError(errs.ErrForbidden), nil
 	}

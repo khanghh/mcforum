@@ -11,13 +11,13 @@ import (
 
 func TestAsync(t *testing.T) {
 	f1 := async.Exec(func() (int, error) {
-		fmt.Println("执行方法1")
+		fmt.Println("execute method 1")
 		return 1, nil
 	})
 	f2 := async.Exec(func() (int, error) {
-		fmt.Println("执行方法2")
+		fmt.Println("execute method 2")
 		time.Sleep(1 * time.Second)
-		return 2, errors.New("失败")
+		return 2, errors.New("failed")
 	})
 
 	fmt.Println(f1.Await())
@@ -26,9 +26,9 @@ func TestAsync(t *testing.T) {
 
 func TestAsyncWithNotTimeout(t *testing.T) {
 	f := async.Exec(func() (string, error) {
-		fmt.Println("执行方法")
+		fmt.Println("execute method")
 		time.Sleep(2 * time.Second)
-		return "成功", nil
+		return "success", nil
 	})
 
 	fmt.Println(f.AwaitTimeout(3 * time.Second))
@@ -36,9 +36,9 @@ func TestAsyncWithNotTimeout(t *testing.T) {
 
 func TestAsyncWithTimeout(t *testing.T) {
 	f := async.Exec(func() (string, error) {
-		fmt.Println("执行方法")
+		fmt.Println("execute method")
 		time.Sleep(5 * time.Second)
-		return "成功", nil
+		return "success", nil
 	})
 	fmt.Println(f.AwaitTimeout(3 * time.Second))
 }

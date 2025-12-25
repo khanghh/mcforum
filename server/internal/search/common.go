@@ -45,7 +45,7 @@ func newIndex(indexPath string) bleve.Index {
 
 	index, err := bleve.New(indexPath, mapping)
 	if err != nil {
-		slog.Info("创建索引失败", slog.Any("err", err))
+		slog.Info("Failed to create index", slog.Any("err", err))
 	}
 	return index
 }

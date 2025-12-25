@@ -24,7 +24,7 @@ type TopicDocument struct {
 }
 
 func TestBleve(t *testing.T) {
-	// 打开或创建索引
+	// Open or create index
 	index, err := bleve.Open("topic_index")
 	if err == bleve.ErrorIndexPathDoesNotExist {
 		indexMapping := bleve.NewIndexMapping()
@@ -37,7 +37,7 @@ func TestBleve(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	// 添加文档到索引
+	// Add document to index
 	doc := TopicDocument{
 		Id:          1,
 		NodeId:      1,
@@ -55,8 +55,8 @@ func TestBleve(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	// 执行查询
-	query := bleve.NewMatchQuery("example") // 查询示例关键词 "example"
+	// Execute query
+	query := bleve.NewMatchQuery("example") // query example keyword "example"
 	searchRequest := bleve.NewSearchRequest(query)
 	searchRequest.Fields = []string{"id", "title", "content", "createTime"}
 	searchResult, err := index.Search(searchRequest)
@@ -64,7 +64,7 @@ func TestBleve(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	// 输出查询结果
+	// Print query results
 	for _, hit := range searchResult.Hits {
 		var topicDoc TopicDocument
 		err := json.Unmarshal(hit.Fields["title"].(json.RawMessage), &topicDoc)

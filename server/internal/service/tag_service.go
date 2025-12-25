@@ -69,7 +69,7 @@ func (s *tagService) Update(t *model.Tag) error {
 // 	repositories.TagRepository.Delete(sqls.DB(), id)
 // }
 
-// 自动完成
+// Autocomplete
 func (s *tagService) Autocomplete(input string) []model.Tag {
 	input = strings.TrimSpace(input)
 	if len(input) == 0 {
@@ -95,7 +95,7 @@ func (s *tagService) GetTagInIds(tagIds []int64) []model.Tag {
 	return repository.TagRepository.GetTagInIds(tagIds)
 }
 
-// 扫描
+// Scan
 func (s *tagService) Scan(callback func(tags []model.Tag)) {
 	var cursor int64
 	for {

@@ -41,7 +41,7 @@ func (c *FavoritesController) PostAdd() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-// 取消收藏
+// Remove favorite
 func (c *FavoritesController) PostDelete() *web.JsonResult {
 	var (
 		user       = service.UserTokenService.GetCurrent(c.Ctx)

@@ -1,7 +1,7 @@
 <template>
   <LoadMoreAsync v-slot="{ items }" :cursor="followingCursor">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-      <UserCard v-for="u in items" :key="u.id" :user="u" :isFollowing="true" />
+      <UserCard v-for="user in items" :key="user.id" :user="user" />
     </div>
   </LoadMoreAsync>
 
@@ -29,10 +29,6 @@ const getUserFollowing = async () => {
   return await api.getUserFollowers(props.user.username)
 }
 
-const followingCursor = await getUserFollowing().catch(err => {
-  const status = err.statusCode || 500
-  const message = err.message || 'Server error'
-  throw createError({ statusCode: status, statusMessage: message, fatal: true })
-})
+const followingCursor = await getUserFollowing()
 
 </script>

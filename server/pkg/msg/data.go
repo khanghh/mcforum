@@ -1,14 +1,14 @@
 package msg
 
-// 消息状态
+// Message status
 const (
-	StatusUnread   = 0 // 消息未读
-	StatusHaveRead = 1 // 消息已读
+	StatusUnread   = 0 // Message unread
+	StatusHaveRead = 1 // Message read
 )
 
 type Type int
 
-// 消息类型
+// Message type
 const (
 	TypeTopicComment   Type = 0
 	TypeCommentReply   Type = 1

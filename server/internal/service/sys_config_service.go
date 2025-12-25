@@ -63,7 +63,7 @@ func (s *sysConfigService) SetAll(configStr string) error {
 	json := gjson.Parse(configStr)
 	configs, ok := json.Value().(map[string]interface{})
 	if !ok {
-		return errors.New("配置数据格式错误")
+		return errors.New("Invalid config data format")
 	}
 	return sqls.DB().Transaction(func(tx *gorm.DB) error {
 		for k := range configs {
@@ -76,7 +76,7 @@ func (s *sysConfigService) SetAll(configStr string) error {
 	})
 }
 
-// Set 设置配置，如果配置不存在，那么创建
+// Set Set configuration; if the key does not exist, create it
 func (s *sysConfigService) Set(key, value, name, description string) error {
 	return sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := s.setSingle(tx, key, value, name, description); err != nil {
@@ -263,7 +263,7 @@ func (s *sysConfigService) GetModules() model.ModulesConfig {
 	}
 }
 
-// GetEmailWhitelist 邮箱白名单
+// GetEmailWhitelist Email whitelist
 func (s *sysConfigService) GetEmailWhitelist() []string {
 	str := cache.SysConfigCache.GetValue(constants.SysConfigEmailWhitelist)
 	var emailWhitelist []string

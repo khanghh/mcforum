@@ -50,7 +50,7 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 	return *form
 }
 
-// CreateCommentForm 发表评论
+// CreateCommentForm post comment
 type CreateCommentForm struct {
 	QuoteId int64    `form:"quoteId"`
 	Content string   `form:"content"`

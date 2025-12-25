@@ -55,6 +55,7 @@ type Props = {
 const props = defineProps<Props>()
 defineExpose({
   unshiftResults,
+  removeItem
 })
 
 const loading = ref(false)
@@ -62,6 +63,7 @@ const pageItems = ref<any[]>([])
 const hasMore = ref<boolean>(true)
 
 const preloadItems = await props.cursor.loadNext().catch(() => [])
+console.log('preloadItems', props.cursor.url, preloadItems)
 pageItems.value = preloadItems
 hasMore.value = props.cursor.hasMore
 
@@ -76,6 +78,15 @@ const empty = computed(() => {
 function unshiftResults(item: any) {
   if (item && pageItems.value) {
     pageItems.value.unshift(item)
+  }
+}
+
+function removeItem(item: any) {
+  if (item && pageItems.value) {
+    const index = pageItems.value.indexOf(item)
+    if (index !== -1) {
+      pageItems.value.splice(index, 1)
+    }
   }
 }
 

@@ -28,11 +28,11 @@ var (
 	antPathMatcher = urls.NewAntPathMatcher()
 )
 
-// AdminAuth 后台权限
+// AdminAuth admin permission
 func AdminAuth(ctx iris.Context) {
 	roles := getPathRoles(ctx)
 
-	// 不需要任何角色既能访问
+	// no role required to access
 	if len(roles) == 0 {
 		return
 	}
@@ -51,7 +51,7 @@ func AdminAuth(ctx iris.Context) {
 	ctx.Next()
 }
 
-// getPathRoles 获取请求该路径所需的角色
+// getPathRoles get roles required for this path
 func getPathRoles(ctx iris.Context) []string {
 	p := ctx.Path()
 	for _, pathRole := range config {
@@ -62,13 +62,13 @@ func getPathRoles(ctx iris.Context) []string {
 	return nil
 }
 
-// notLogin 未登录返回
+// notLogin not logged in response
 func notLogin(ctx iris.Context) {
 	_ = ctx.JSON(web.JsonError(errs.NotLogin))
 	ctx.StopExecution()
 }
 
-// noPermission 无权限返回
+// noPermission no permission response
 func noPermission(ctx iris.Context) {
 	_ = ctx.JSON(web.JsonErrorCode(iris.StatusForbidden, errors.New(locale.T("errors.permission_denied"))))
 	ctx.StopExecution()

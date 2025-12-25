@@ -114,7 +114,7 @@ func (r *tagRepository) GetTagInIds(tagIds []int64) []model.Tag {
 
 func (r *tagRepository) GetOrCreate(db *gorm.DB, name string) (*model.Tag, error) {
 	if len(name) == 0 {
-		return nil, errors.New("标签为空")
+		return nil, errors.New("tag is empty")
 	}
 	tag := r.GetByName(db, name)
 	if tag != nil {

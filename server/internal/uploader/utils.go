@@ -12,7 +12,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-// generateKey 生成图片Key
+// generateImageKey Generate image key
 func generateImageKey(data []byte, contentType string) string {
 	md5 := digests.MD5Bytes(data)
 	ext := ""

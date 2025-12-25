@@ -38,11 +38,11 @@ func (s *userTokenService) GetCurrentUserId(ctx iris.Context) int64 {
 func (s *userTokenService) GetCurrent(ctx iris.Context) *model.User {
 	token := s.GetUserToken(ctx)
 	userToken := cache.UserTokenCache.Get(token)
-	// 没找到授权
+	// Authorization not found
 	if userToken == nil || userToken.Status == constants.StatusDeleted {
 		return nil
 	}
-	// 授权过期
+	// Authorization expired
 	if userToken.ExpiredAt <= dates.NowTimestamp() {
 		return nil
 	}

@@ -93,8 +93,8 @@ func (s *roleMenuService) SaveRoleMenus(roleId int64, menuIds []int64) error {
 	currentMenuIds := s.GetMenuIdsByRole(roleId)
 	return sqls.DB().Transaction(func(tx *gorm.DB) error {
 		var (
-			addIds []int64 // 本次需要新增的
-			delIds []int64 // 本次需要删除的
+			addIds []int64 // ids to add this time
+			delIds []int64 // ids to delete this time
 		)
 		for _, menuId := range menuIds {
 			if !arrays.Contains(currentMenuIds, menuId) {

@@ -3,12 +3,15 @@
     <Avatar :src="user.avatar" :username="user.username" :size="48" class="w-12 h-12 object-cover" />
     <div class="flex-1">
       <div class="flex items-center gap-2">
-        <div class="font-bold text-sm text-white">{{ user.nickname || user.username }}</div>
+        <nuxt-link :to="`/users/${user.username}`"
+          class="font-bold text-sm text-white hover:text-purple-400 transition-colors">{{ user.username }}</nuxt-link>
         <span class="px-1 py-0.5 bg-blue-500 text-white text-[8px] font-bold rounded-full">LVL {{ level }}</span>
       </div>
-      <div class="text-xs text-gray-400 mt-1 line-clamp-1">{{ user.statusMessage || '' }}</div>
+      <div :class="['text-xs text-gray-400 mt-1 line-clamp-1 min-h-4', user.statusMessage ? '' : 'invisible']">
+        {{ user.statusMessage || '' }}
+      </div>
     </div>
-    <div>
+    <div v-if="showFollowButton">
       <button
         @click="toggleFollow"
         :class="isFollowing
@@ -23,39 +26,44 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import Avatar from '@/components/Avatar.vue'
-import { useApi } from '@/composables/api'
+import { useMsgSuccess, useMsgError } from '@/composables/useMsg'
 import type { UserProfile } from '@/types'
+
 const api = useApi()
+const userStore = useUserStore()
 
 type Props = {
   user: UserProfile
-  isFollowing: boolean
 }
 
 const props = defineProps<Props>()
 const user = props.user
 
-const isFollowing = ref(props.isFollowing)
+const isFollowing = ref(user.isFollowing || false)
+console.log('isFollowing', user.username, isFollowing.value)
+
+const showFollowButton = computed(() => {
+  return userStore.isLogin && userStore.user?.username !== user.username
+})
 const level = computed(() => Math.floor(Math.sqrt(((user as any)?.score) || 0)) + 1)
+
 
 async function toggleFollow() {
   if (isFollowing.value) {
     try {
       await api.unfollowUser(user.username)
       isFollowing.value = false
-      // useMsgSuccess('Unfollowed')
+      useMsgSuccess('Unfollowed')
     } catch (e) {
-      console.error(e)
-      // useMsgError('Unfollow failed')
+      useMsgError('Unfollow failed', e)
     }
   } else {
     try {
       await api.followUser(user.username)
       isFollowing.value = true
-      // useMsgSuccess('Followed')
+      useMsgSuccess('Followed')
     } catch (e) {
-      console.error(e)
-      // useMsgError('Follow failed')
+      useMsgError('Follow failed', e)
     }
   }
 }

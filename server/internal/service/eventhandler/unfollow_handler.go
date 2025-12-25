@@ -13,6 +13,6 @@ func init() {
 func handleUnFollowEvent(i interface{}) {
 	e := i.(event.UnfollowEvent)
 
-	// 清理该用户下的信息流
+	// Clean up the user's feed
 	service.UserFeedService.DeleteByUser(e.UserId, e.OtherId)
 }

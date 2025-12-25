@@ -80,19 +80,19 @@ func (s *messageService) Delete(id int64) {
 	repository.MessageRepository.Delete(sqls.DB(), id)
 }
 
-// GetUnReadCount 获取未读消息数量
+// GetUnReadCount Get unread message count
 func (s *messageService) GetUnReadCount(userId int64) (count int64) {
 	sqls.DB().Where("user_id = ? and status = ?", userId, msg.StatusUnread).Model(&model.Message{}).Count(&count)
 	return
 }
 
-// MarkRead 将所有消息标记为已读
+// MarkRead Mark all messages as read
 func (s *messageService) MarkRead(userId int64) {
 	sqls.DB().Exec("update t_message set status = ? where user_id = ? and status = ?", msg.StatusHaveRead,
 		userId, msg.StatusUnread)
 }
 
-// SendMsg 发送消息
+// SendMsg Send a message
 func (s *messageService) SendMsg(args SendMessageArgs) {
 	t := &model.Message{
 		FromId:       args.FromId,
@@ -113,11 +113,11 @@ func (s *messageService) SendMsg(args SendMessageArgs) {
 	}
 }
 
-// SendEmailNotice 发送邮件通知
+// SendEmailNotice Send email notification
 func (s *messageService) SendEmailNotice(t *model.Message) {
 	msgType := msg.Type(t.Type)
 
-	// 话题被删除不发送邮件提醒
+	// Do not send email when a topic is deleted
 	if msgType == msg.TypeTopicDelete {
 		return
 	}
@@ -127,21 +127,21 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 	}
 	var (
 		siteTitle  = cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
-		emailTitle = siteTitle + " - 新消息提醒"
+		emailTitle = siteTitle + " - New message"
 	)
 
 	if msgType == msg.TypeTopicComment {
-		emailTitle = siteTitle + " - 收到话题评论"
+		emailTitle = siteTitle + " - New topic comment"
 	} else if msgType == msg.TypeCommentReply {
-		emailTitle = siteTitle + " - 收到他人回复"
+		emailTitle = siteTitle + " - New reply"
 	} else if msgType == msg.TypeTopicLike {
-		emailTitle = siteTitle + " - 收到点赞"
+		emailTitle = siteTitle + " - New like"
 	} else if msgType == msg.TypeTopicFavorite {
-		emailTitle = siteTitle + " - 话题被收藏"
+		emailTitle = siteTitle + " - Topic favorited"
 	} else if msgType == msg.TypeTopicRecommend {
-		emailTitle = siteTitle + " - 话题被设为推荐"
+		emailTitle = siteTitle + " - Topic recommended"
 	} else if msgType == msg.TypeTopicDelete {
-		emailTitle = siteTitle + " - 话题被删除"
+		emailTitle = siteTitle + " - Topic deleted"
 	}
 
 	var from *model.User
@@ -150,7 +150,7 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 	}
 	err := notification.SendTemplateEmail(from, user.Email.String, emailTitle, emailTitle, t.Content,
 		t.QuoteContent, &model.ActionLink{
-			Title: "点击查看详情",
+			Title: "Click to view details",
 			Url:   bbsurls.AbsUrl("/user/messages"),
 		})
 	if err != nil {

@@ -7,21 +7,21 @@ import (
 )
 
 type Cnd struct {
-	SelectCols []string     // 要查询的字段，如果为空，表示查询所有字段
-	Params     []ParamPair  // 参数
-	Orders     []OrderByCol // 排序
-	Paging     *Paging      // 分页
+	SelectCols []string     // Fields to query, if empty, means query all fields
+	Params     []ParamPair  // Parameters
+	Orders     []OrderByCol // Sorting
+	Paging     *Paging      // Pagination
 }
 
 type ParamPair struct {
-	Query string        // 查询
-	Args  []interface{} // 参数
+	Query string        // Query
+	Args  []interface{} // Parameters
 }
 
-// OrderByCol 排序信息
+// OrderByCol sorting info
 type OrderByCol struct {
-	Column string // 排序字段
-	Asc    bool   // 是否正序
+	Column string // Sorting field
+	Asc    bool   // Whether ascending order
 }
 
 func NewCnd() *Cnd {

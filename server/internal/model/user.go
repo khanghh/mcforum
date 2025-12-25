@@ -19,92 +19,92 @@ type UserToken struct {
 	CreateTime int64  `gorm:"not null" json:"createTime" form:"createTime"`
 }
 
-// 用户点赞
+// User like
 type UserLike struct {
 	Model
-	UserId     int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;" json:"userId" form:"userId"`                                            // 用户
-	EntityId   int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"topicId" form:"topicId"`               // 实体编号
-	EntityType string `gorm:"not null;size:32;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"entityType" form:"entityType"` // 实体类型
-	Status     int    `gorm:"type:int(11);not null" json:"status" form:"status"`                                                                 // 状态：0：未读、1：已读
-	CreateTime int64  `json:"createTime" form:"createTime"`                                                                                      // 创建时间
+	UserId     int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;" json:"userId" form:"userId"`                                            // User
+	EntityId   int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"topicId" form:"topicId"`               // Entity ID
+	EntityType string `gorm:"not null;size:32;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"entityType" form:"entityType"` // Entity type
+	Status     int    `gorm:"type:int(11);not null" json:"status" form:"status"`                                                                 // Status: 0: unread, 1: read
+	CreateTime int64  `json:"createTime" form:"createTime"`                                                                                      // Create time
 }
 
-// 用户积分流水
+// User score log
 type UserScoreLog struct {
 	Model
-	UserId      int64  `gorm:"not null;index:idx_user_score_log_user_id" json:"userId" form:"userId"`   // 用户编号
-	SourceType  string `gorm:"not null;index:idx_user_score_score" json:"sourceType" form:"sourceType"` // 积分来源类型
-	SourceId    string `gorm:"not null;index:idx_user_score_score" json:"sourceId" form:"sourceId"`     // 积分来源编号
-	Description string `json:"description" form:"description"`                                          // 描述
-	Type        int    `gorm:"type:int(11)" json:"type" form:"type"`                                    // 类型(增加、减少)
-	Score       int    `gorm:"type:int(11)" json:"score" form:"score"`                                  // 积分
-	CreateTime  int64  `json:"createTime" form:"createTime"`                                            // 创建时间
+	UserId      int64  `gorm:"not null;index:idx_user_score_log_user_id" json:"userId" form:"userId"`   // User ID
+	SourceType  string `gorm:"not null;index:idx_user_score_score" json:"sourceType" form:"sourceType"` // Score source type
+	SourceId    string `gorm:"not null;index:idx_user_score_score" json:"sourceId" form:"sourceId"`     // Score source ID
+	Description string `json:"description" form:"description"`                                          // Description
+	Type        int    `gorm:"type:int(11)" json:"type" form:"type"`                                    // Type (increase, decrease)
+	Score       int    `gorm:"type:int(11)" json:"score" form:"score"`                                  // Score
+	CreateTime  int64  `json:"createTime" form:"createTime"`                                            // Create time
 }
 
-// 签到
+// Check in
 type CheckIn struct {
 	Model
-	UserId          int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"userId" form:"userId"`         // 用户编号
-	LatestDayName   int   `gorm:"type:int(11);not null;index:idx_latest" json:"dayName" form:"dayName"` // 最后一次签到
-	ConsecutiveDays int   `gorm:"type:int(11);not null;" json:"consecutiveDays" form:"consecutiveDays"` // 连续签到天数
-	CreateTime      int64 `json:"createTime" form:"createTime"`                                         // 创建时间
-	UpdateTime      int64 `gorm:"index:idx_latest" json:"updateTime" form:"updateTime"`                 // 更新时间
+	UserId          int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"userId" form:"userId"`         // User ID
+	LatestDayName   int   `gorm:"type:int(11);not null;index:idx_latest" json:"dayName" form:"dayName"` // Latest check-in day
+	ConsecutiveDays int   `gorm:"type:int(11);not null;" json:"consecutiveDays" form:"consecutiveDays"` // Consecutive check-in days
+	CreateTime      int64 `json:"createTime" form:"createTime"`                                         // Create time
+	UpdateTime      int64 `gorm:"index:idx_latest" json:"updateTime" form:"updateTime"`                 // Update time
 }
 
-// UserReport 用户举报
+// UserReport user report
 type UserReport struct {
 	Model
-	DataId      int64  `json:"dataId" form:"dataId"`           // 举报数据ID
-	DataType    string `json:"dataType" form:"dataType"`       // 举报数据类型
-	UserId      int64  `json:"userId" form:"userId"`           // 举报人ID
-	Reason      string `json:"reason" form:"reason"`           // 举报原因
-	AuditStatus int64  `json:"auditStatus" form:"auditStatus"` // 审核状态
-	AuditTime   int64  `json:"auditTime" form:"auditTime"`     // 审核时间
-	AuditUserId int64  `json:"auditUserId" form:"auditUserId"` // 审核人ID
-	CreateTime  int64  `json:"createTime" form:"createTime"`   // 举报时间
+	DataId      int64  `json:"dataId" form:"dataId"`           // Report data ID
+	DataType    string `json:"dataType" form:"dataType"`       // Report data type
+	UserId      int64  `json:"userId" form:"userId"`           // Reporter ID
+	Reason      string `json:"reason" form:"reason"`           // Report reason
+	AuditStatus int64  `json:"auditStatus" form:"auditStatus"` // Audit status
+	AuditTime   int64  `json:"auditTime" form:"auditTime"`     // Audit time
+	AuditUserId int64  `json:"auditUserId" form:"auditUserId"` // Auditor ID
+	CreateTime  int64  `json:"createTime" form:"createTime"`   // Report time
 }
 
 type User struct {
 	Model
-	Type             int            `gorm:"not null;default:0" json:"type" form:"type"`                                    // 用户类型（0：用户、1：员工）
-	Username         sql.NullString `gorm:"size:32;unique;" json:"username" form:"username"`                               // 用户名
-	Email            sql.NullString `gorm:"size:128;unique;" json:"email" form:"email"`                                    // 邮箱
-	EmailVerified    bool           `gorm:"not null;default:false" json:"emailVerified" form:"emailVerified"`              // 邮箱是否验证
-	Nickname         string         `gorm:"size:16;" json:"nickname" form:"nickname"`                                      // 昵称
-	Avatar           string         `gorm:"type:text" json:"avatar" form:"avatar"`                                         // 头像
-	Gender           string         `gorm:"size:16;default:''" json:"gender" form:"gender"`                                // 性别
-	Birthday         *time.Time     `json:"birthday" form:"birthday"`                                                      // 生日
-	BackgroundImage  string         `gorm:"type:text" json:"backgroundImage" form:"backgroundImage"`                       // 个人中心背景图片
-	Password         string         `gorm:"size:512" json:"password" form:"password"`                                      // 密码
-	HomePage         string         `gorm:"size:1024" json:"homePage" form:"homePage"`                                     // 个人主页
-	Bio              string         `gorm:"type:text" json:"description" form:"description"`                               // 个人描述
-	StatusMessage    string         `gorm:"type:varchar(255)" json:"statusMessage" form:"statusMessage"`                   // 状态信息
-	Score            int            `gorm:"type:int(11);not null;index:idx_user_score" json:"score" form:"score"`          // 积分
-	IsActive         bool           `gorm:"type:int(11);index:idx_user_status;not null" json:"activated" form:"activated"` // 状态
-	TopicCount       int            `gorm:"type:int(11);not null" json:"topicCount" form:"topicCount"`                     // 帖子数量
-	CommentCount     int            `gorm:"type:int(11);not null" json:"commentCount" form:"commentCount"`                 // 跟帖数量
-	FollowCount      int            `gorm:"type:int(11);not null" json:"followCount" form:"followCount"`                   // 关注数量
-	FansCount        int            `gorm:"type:int(11);not null" json:"fansCount" form:"fansCount"`                       // 粉丝数量
-	Roles            string         `gorm:"type:text" json:"roles" form:"roles"`                                           // 角色
-	ForbiddenEndTime int64          `gorm:"not null;default:0" json:"forbiddenEndTime" form:"forbiddenEndTime"`            // 禁言结束时间
-	CreateTime       int64          `json:"createTime" form:"createTime"`                                                  // 创建时间
-	UpdateTime       int64          `json:"updateTime" form:"updateTime"`                                                  // 更新时间
+	Type             int            `gorm:"not null;default:0" json:"type" form:"type"`                                    // User type (0: user, 1: staff)
+	Username         sql.NullString `gorm:"size:32;unique;" json:"username" form:"username"`                               // Username
+	Email            sql.NullString `gorm:"size:128;unique;" json:"email" form:"email"`                                    // Email
+	EmailVerified    bool           `gorm:"not null;default:false" json:"emailVerified" form:"emailVerified"`              // Email verified
+	Nickname         string         `gorm:"size:16;" json:"nickname" form:"nickname"`                                      // Nickname
+	Avatar           string         `gorm:"type:text" json:"avatar" form:"avatar"`                                         // Avatar
+	Gender           string         `gorm:"size:16;default:''" json:"gender" form:"gender"`                                // Gender
+	Birthday         *time.Time     `json:"birthday" form:"birthday"`                                                      // Birthday
+	BackgroundImage  string         `gorm:"type:text" json:"backgroundImage" form:"backgroundImage"`                       // Background image
+	Password         string         `gorm:"size:512" json:"password" form:"password"`                                      // Password
+	HomePage         string         `gorm:"size:1024" json:"homePage" form:"homePage"`                                     // Home page
+	Bio              string         `gorm:"type:text" json:"description" form:"description"`                               // Bio
+	StatusMessage    string         `gorm:"type:varchar(255)" json:"statusMessage" form:"statusMessage"`                   // Status message
+	Score            int            `gorm:"type:int(11);not null;index:idx_user_score" json:"score" form:"score"`          // Score
+	IsActive         bool           `gorm:"type:int(11);index:idx_user_status;not null" json:"activated" form:"activated"` // Status
+	TopicCount       int            `gorm:"type:int(11);not null" json:"topicCount" form:"topicCount"`                     // Topic count
+	CommentCount     int            `gorm:"type:int(11);not null" json:"commentCount" form:"commentCount"`                 // Comment count
+	FollowCount      int            `gorm:"type:int(11);not null" json:"followCount" form:"followCount"`                   // Follow count
+	FansCount        int            `gorm:"type:int(11);not null" json:"fansCount" form:"fansCount"`                       // Fans count
+	Roles            string         `gorm:"type:text" json:"roles" form:"roles"`                                           // Roles
+	ForbiddenEndTime int64          `gorm:"not null;default:0" json:"forbiddenEndTime" form:"forbiddenEndTime"`            // Forbidden end time
+	CreateTime       int64          `json:"createTime" form:"createTime"`                                                  // Create time
+	UpdateTime       int64          `json:"updateTime" form:"updateTime"`                                                  // Update time
 }
 
-// IsForbidden 是否禁言
+// IsForbidden whether forbidden
 func (u *User) IsForbidden() bool {
 	if u.ForbiddenEndTime == 0 {
 		return false
 	}
-	// 永久禁言
+	// Permanent forbidden
 	if u.ForbiddenEndTime == -1 {
 		return true
 	}
-	// 判断禁言时间
+	// Check forbidden time
 	return u.ForbiddenEndTime > dates.NowTimestamp()
 }
 
-// HasRole 是否有指定角色
+// HasRole whether has specified role
 func (u *User) HasRole(role string) bool {
 	roles := strings.Split(u.Roles, ",")
 	if len(roles) == 0 {
@@ -113,7 +113,7 @@ func (u *User) HasRole(role string) bool {
 	return arrays.Contains(roles, role)
 }
 
-// HasAnyRole 是否有指定的任意角色
+// HasAnyRole whether has any of the specified roles
 func (u *User) HasAnyRole(roles ...string) bool {
 	if len(roles) == 0 {
 		return false
@@ -127,12 +127,12 @@ func (u *User) HasAnyRole(roles ...string) bool {
 	return false
 }
 
-// IsOwnerOrAdmin 是否是管理员
+// IsOwnerOrAdmin whether owner or admin
 func (u *User) IsOwnerOrAdmin() bool {
 	return u.HasAnyRole(constants.RoleOwner, constants.RoleAdmin)
 }
 
-// GetRoles 获取角色
+// GetRoles get roles
 func (u *User) GetRoles() []string {
 	if strs.IsBlank(u.Roles) {
 		return nil
@@ -151,8 +151,8 @@ func (u *User) GetRoles() []string {
 	return roles
 }
 
-// InObservationPeriod 是否在观察期
-// observeSeconds 观察时长
+// InObservationPeriod whether in observation period
+// observeSeconds observation duration
 func (u *User) InObservationPeriod(observeSeconds int) bool {
 	if observeSeconds <= 0 {
 		return false

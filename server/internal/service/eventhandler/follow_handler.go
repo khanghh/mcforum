@@ -15,7 +15,7 @@ func init() {
 func handleFollowEvent(i interface{}) {
 	e := i.(event.FollowEvent)
 
-	// 将该用户下的帖子添加到信息流
+	// Add the user's topics to the feed
 	// service.TopicService.ScanByUser(e.OtherId, func(topics []model.Topic) {
 	// 	for _, topic := range topics {
 	// 		if topic.Status != constants.StatusOK {

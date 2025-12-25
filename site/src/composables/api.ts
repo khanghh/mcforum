@@ -187,6 +187,10 @@ export const useApi = () => {
     return useHttpDelete(`/api/comments/${commentId}/reactions`)
   }
 
+  const deleteComment = (commentId: number): Promise<void> => {
+    return useHttpDelete(`/api/comments/${commentId}`)
+  }
+
 
   return {
     // me api endpoints (declared order)
@@ -223,5 +227,6 @@ export const useApi = () => {
     addCommentReply,
     addCommentReaction,
     removeCommentReaction,
+    deleteComment,
   }
 }

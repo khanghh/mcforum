@@ -62,7 +62,7 @@ func getHandlerList(i interface{}) []func(i interface{}) {
 	if ok {
 		return handlerList
 	} else {
-		slog.Error("没找到任务处理器", slog.String("type", t.String()))
+		slog.Error("No task handler found", slog.String("type", t.String()))
 		return nil
 	}
 }

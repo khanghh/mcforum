@@ -23,12 +23,12 @@ func initLogger() {
 		writer = io.MultiWriter(
 			os.Stdout,
 			&lumberjack.Logger{
-				Filename:   conf.Filename,   // 日志文件的位置
-				MaxSize:    conf.MaxSize,    // 文件最大尺寸（以MB为单位）
-				MaxAge:     conf.MaxAge,     // 保留旧文件的最大天数
-				MaxBackups: conf.MaxBackups, // 保留的最大旧文件数量
-				LocalTime:  true,            // 使用本地时间创建时间戳
-				Compress:   true,            // 是否压缩/归档旧文件
+				Filename:   conf.Filename,   // Log file location
+				MaxSize:    conf.MaxSize,    // Max file size (in MB)
+				MaxAge:     conf.MaxAge,     // Max age to retain old files (days)
+				MaxBackups: conf.MaxBackups, // Max number of old files to keep
+				LocalTime:  true,            // Use local time for timestamps
+				Compress:   true,            // Whether to compress/archive old files
 			},
 		)
 	}

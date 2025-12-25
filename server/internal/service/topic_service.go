@@ -61,7 +61,7 @@ func (s *topicService) Updates(id int64, columns map[string]interface{}) error {
 		return err
 	}
 
-	// 添加索引
+	// Update search index
 	search.UpdateTopicIndex(s.Get(id))
 
 	return nil
@@ -72,13 +72,13 @@ func (s *topicService) UpdateColumn(id int64, name string, value interface{}) er
 		return err
 	}
 
-	// 添加索引
+	// Update search index
 	search.UpdateTopicIndex(s.Get(id))
 
 	return nil
 }
 
-// Delete 删除
+// Delete Remove
 func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) error {
 	topic := s.Get(topicId)
 	if topic == nil {
@@ -86,11 +86,11 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 	}
 	err := repository.TopicRepository.UpdateColumn(sqls.DB(), topicId, "status", constants.StatusDeleted)
 	if err == nil {
-		// 添加索引
+		// Remove from search index
 		search.DeleteTopicIndex(topicId)
-		// 删掉标签文章
+		// Remove topic tags
 		TopicTagService.DeleteByTopicId(topicId)
-		// 发送事件
+		// send event
 		event.Send(event.TopicDeleteEvent{
 			UserId:       topic.UserId,
 			TopicId:      topic.Id,
@@ -100,19 +100,19 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 	return err
 }
 
-// Undelete 取消删除
+// Undelete Restore
 func (s *topicService) Undelete(id int64) error {
 	err := repository.TopicRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusActive)
 	if err == nil {
-		// 删掉标签文章
+		// Restore topic tags
 		TopicTagService.UndeleteByTopicId(id)
-		// 添加索引
+		// Update search index
 		search.UpdateTopicIndex(s.Get(id))
 	}
 	return err
 }
 
-// 更新
+// Update
 func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, content, hideContent string) error {
 	if title == "" {
 		return errors.New(locale.T("topic.edit.title_required"))
@@ -139,18 +139,18 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 			return err
 		}
 
-		repository.TopicTagRepository.DeleteTopicTags(tx, topicId)    // 先删掉所有的标签
-		repository.TopicTagRepository.AddTopicTags(tx, topicId, tags) // 然后重新添加标签
+		repository.TopicTagRepository.DeleteTopicTags(tx, topicId)    // remove all tags first
+		repository.TopicTagRepository.AddTopicTags(tx, topicId, tags) // then re-add tags
 		return nil
 	})
 
-	// 添加索引
+	// Add index
 	search.UpdateTopicIndex(s.Get(topicId))
 
 	return err
 }
 
-// GetTopicTags 话题的标签
+// GetTopicTags Topic tags
 func (s *topicService) GetTopicTags(topicId int64) []string {
 	topicTags := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().Where("topic_id = ?", topicId))
 	tagNames := make([]string, len(topicTags))
@@ -160,7 +160,7 @@ func (s *topicService) GetTopicTags(topicId int64) []string {
 	return tagNames
 }
 
-// GetTopics 帖子列表（最新、推荐、关注、节点）
+// GetTopics Topic lists (newest, recommended, followed, node)
 // func (s *topicService) GetTopics(user *model.User, forumId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 // 	if forumId == constants.NodeIdFollow {
 // 		if user != nil {
@@ -172,7 +172,7 @@ func (s *topicService) GetTopicTags(topicId int64) []string {
 // 	}
 // }
 
-// GetForumTopics 帖子列表（最新、推荐、节点）
+// GetForumTopics Forum topics (newest, recommended, node)
 func (s *topicService) GetForumTopics(forumId, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 	const limit = 20
 	cnd := sqls.NewCnd().Eq("forum_id", forumId)
@@ -224,7 +224,7 @@ func (s *topicService) GetRecommendedTopics(cursor int64) (topics []model.Topic,
 	return
 }
 
-// _GetFollowTopics 关注帖子列表
+// _GetFollowTopics Followed topics list
 func (s *topicService) GetFollowedTopics(userId int64, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 	const limit = 20
 	cnd := sqls.NewCnd().Eq("user_id", userId)
@@ -250,7 +250,7 @@ func (s *topicService) GetFollowedTopics(userId int64, cursor int64) (topics []m
 	return
 }
 
-// 指定标签下话题列表
+// Get topics under a specific tag
 func (s *topicService) GetTopicsByTag(tag string, cursor int64) (topics []model.Topic, nextCursor int64, hasMore bool) {
 	limit := 20
 	tagTopics := repository.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
@@ -290,7 +290,7 @@ func (s *topicService) GetTopicByIds(topicIds []int64) (topics []model.Topic) {
 	return
 }
 
-// GetTopicInIds 根据编号批量获取主题
+// GetTopicInIds Get topics by IDs
 func (s *topicService) GetTopicInIds(topicIds []int64) map[int64]model.Topic {
 	if len(topicIds) == 0 {
 		return nil
@@ -305,12 +305,12 @@ func (s *topicService) GetTopicInIds(topicIds []int64) map[int64]model.Topic {
 	return topicsMap
 }
 
-// 浏览数+1
+// Increment view count
 func (s *topicService) IncrViewCount(topicId int64) {
 	sqls.DB().Exec("update t_topic set view_count = view_count + 1 where id = ?", topicId)
 }
 
-// 当帖子被评论的时候，更新最后回复时间、回复数量+1
+// When a topic is commented, update last reply time and increment reply count
 func (s *topicService) onComment(tx *gorm.DB, comment *model.Comment) error {
 	if err := repository.TopicRepository.Updates(tx, comment.TopicId, map[string]interface{}{
 		"last_comment_time":    comment.CreateTime,
@@ -352,7 +352,7 @@ func (s *topicService) Scan(callback func(topics []model.Topic)) {
 	}
 }
 
-// 倒序扫描
+// Scan in descending order
 func (s *topicService) ScanDesc(callback func(topics []model.Topic)) {
 	var cursor int64 = math.MaxInt64
 	for {
@@ -366,7 +366,7 @@ func (s *topicService) ScanDesc(callback func(topics []model.Topic)) {
 	}
 }
 
-// 倒序扫描
+// Scan in descending order with date range
 func (s *topicService) ScanDescWithDate(dateFrom, dateTo int64, callback func(topics []model.Topic)) {
 	var cursor int64 = math.MaxInt64
 	for {
@@ -424,13 +424,13 @@ func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
 	}
 }
 
-// 推荐
+// Recommend
 func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusActive {
 		return errors.New(locale.T("topic.not_found"))
 	}
-	if topic.Recommended == recommended { // 推荐状态没变更
+	if topic.Recommended == recommended { // Recommended status not changed
 		return nil
 	}
 	if recommended {
@@ -446,13 +446,13 @@ func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) erro
 		}
 	}
 
-	// 发送事件
+	// Send event
 	event.Send(event.TopicRecommendedEvent{
 		Topic:       topic,
 		Recommended: recommended,
 	})
 
-	// 添加索引
+	// Add index
 	search.UpdateTopicIndex(s.Get(topicId))
 
 	return nil

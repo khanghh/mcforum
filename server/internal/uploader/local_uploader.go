@@ -9,7 +9,7 @@ import (
 	"bbs-go/internal/config"
 )
 
-// 本地文件系统
+// Local filesystem
 type localUploader struct{}
 
 func (local *localUploader) PutImage(data []byte, contentType string) (string, error) {

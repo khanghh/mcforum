@@ -13,7 +13,7 @@ import (
 	"bbs-go/common/strs"
 )
 
-// 帖子列表返回实体
+// topic list response entity
 type TopicResponse struct {
 	Id              int64               `json:"id"`
 	Slug            string              `json:"slug"`
@@ -50,7 +50,7 @@ func BuildTopic(topic *model.Topic, currentUser *model.User) *TopicResponse {
 }
 
 func BuildSimpleTopic(topic *model.Topic) *TopicResponse {
-	buildContent := topic.Type == constants.TopicTypeTweet // 动态时渲染内容
+	buildContent := topic.Type == constants.TopicTypeTweet // render content when tweet
 	return _buildTopic(topic, buildContent)
 }
 
@@ -101,7 +101,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 	rsp.Status = topic.Status
 	rsp.IpLocation = topic.IpLocation
 
-	// 构建内容
+	// build content
 	if isBriefContent {
 		if topic.Type == constants.TopicTypeTopic {
 			content := markdown.ToHTML(topic.Content)
@@ -115,7 +115,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 
 	if topic.Type == constants.TopicTypeTweet {
 		if strs.IsBlank(topic.Content) {
-			rsp.Content = "分享图片"
+			rsp.Content = "share image"
 		} else {
 			rsp.Content = html.EscapeString(topic.Content)
 		}

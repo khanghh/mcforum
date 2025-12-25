@@ -28,7 +28,7 @@ func (c *FeedsController) GetWhatsNew() *web.JsonResult {
 	}
 	topics, cursor, hasMore := service.TopicService.GetNewestTopics(cursor)
 	for _, topic := range topics {
-		topic.Pinned = false // 正常列表不要渲染置顶
+		topic.Pinned = false // do not render pinned in normal lists
 		temp = append(temp, topic)
 	}
 	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
@@ -40,6 +40,7 @@ func (c *FeedsController) GetRecommended() *web.JsonResult {
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
 	)
+	// Recommended topics
 	var temp []model.Topic
 	if cursor <= 0 {
 		pinnedTopics := service.TopicService.GetPinnedTopics(0, 3)

@@ -10,8 +10,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// GetRequestIP 尽最大努力实现获取客户端 IP 的算法。
-// 解析 X-Real-IP 和 X-Forwarded-For 以便于反向代理（nginx 或 haproxy）可以正常工作。
+// GetRequestIP attempts to determine the client's IP address.
+// It parses X-Real-IP and X-Forwarded-For to support reverse proxies (nginx/haproxy).
 func GetRequestIP(r *http.Request) string {
 	xForwardedFor := r.Header.Get("X-Forwarded-For")
 	ip := strings.TrimSpace(strings.Split(xForwardedFor, ",")[0])
@@ -34,7 +34,7 @@ func GetUserAgent(r *http.Request) string {
 	return r.Header.Get("User-Agent")
 }
 
-// GetHtmlText 获取html文本
+// GetHtmlText extracts plain text from an HTML string.
 func GetHtmlText(html string) string {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 	if err != nil {
@@ -44,6 +44,7 @@ func GetHtmlText(html string) string {
 	return doc.Text()
 }
 
+// GetSummaryText returns a trimmed summary of s up to length runes.
 func GetSummaryText(s string, length int) string {
 	s = strings.TrimSpace(s)
 	summary := strs.Substr(s, 0, length)
@@ -53,6 +54,7 @@ func GetSummaryText(s string, length int) string {
 	return summary
 }
 
+// GetSummaryHtml extracts text from HTML and returns a summary of the given length.
 func GetSummaryHtml(htmlStr string, summaryLen int) string {
 	if summaryLen <= 0 || strs.IsEmpty(htmlStr) {
 		return ""

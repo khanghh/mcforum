@@ -6,6 +6,7 @@ import (
 	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
+	"log/slog"
 
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
@@ -18,27 +19,6 @@ import (
 type CommentsController struct {
 	Ctx iris.Context
 }
-
-// func (c *CommentController) GetClean() *web.JsonResult {
-// 	go func() {
-// 		p, _ := ants.NewPool(10)
-// 		service.CommentService.Scan(func(comments []model.Comment) {
-// 			var ids []int64
-// 			for _, comment := range comments {
-// 				if comment.ContentType == constants.ContentTypeHtml {
-// 					ids = append(ids, comment.Id)
-// 				}
-// 			}
-// 			if len(ids) > 0 {
-// 				p.Submit(func() {
-// 					sqls.DB().Delete(&model.Comment{}, "id in ?", ids)
-// 					slog.Info("Comments cleaned up", "ids", ids)
-// 				})
-// 			}
-// 		})
-// 	}()
-// 	return web.JsonSuccess()
-// }
 
 func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
@@ -117,3 +97,44 @@ func (c *CommentsController) DeleteByReactions(commentId int64) (*web.JsonResult
 	}
 	return web.JsonSuccess(), nil
 }
+
+func (c *CommentsController) DeleteBy(commentId int64) *web.JsonResult {
+	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+	if currentUser == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+	comment := service.CommentService.Get(commentId)
+	if comment == nil {
+		return web.JsonError(errs.ErrCommentNotFound)
+	}
+
+	if comment.UserId != currentUser.Id && !currentUser.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
+		return web.JsonError(errs.ErrForbidden)
+	}
+	if err := service.CommentService.Delete(comment.Id); err != nil {
+		slog.Error("Delete comment failed", "error", err, "commentId", commentId)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	return web.JsonSuccess()
+}
+
+// func (c *CommentsController) GetClean() *web.JsonResult {
+// 	go func() {
+// 		p, _ := ants.NewPool(10)
+// 		service.CommentService.Scan(func(comments []model.Comment) {
+// 			var ids []int64
+// 			for _, comment := range comments {
+// 				if comment.ContentType == constants.ContentTypeHtml {
+// 					ids = append(ids, comment.Id)
+// 				}
+// 			}
+// 			if len(ids) > 0 {
+// 				p.Submit(func() {
+// 					sqls.DB().Delete(&model.Comment{}, "id in ?", ids)
+// 					slog.Info("Comments cleaned up", "ids", ids)
+// 				})
+// 			}
+// 		})
+// 	}()
+// 	return web.JsonSuccess()
+// }

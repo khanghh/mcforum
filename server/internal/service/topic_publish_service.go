@@ -57,7 +57,7 @@ func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
 	return nil
 }
 
-// Publish 发表
+// Publish Publish a topic
 func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 	if err := s.checkArgs(args); err != nil {
 		return nil, err
@@ -106,7 +106,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 	return topic, nil
 }
 
-// IsNeedReview 是否需要审核
+// IsNeedReview Determine whether review is required
 func (s *topicService) isNeedReview(args *PublishTopicArgs) bool {
 	if hits := ForbiddenWordService.Check(args.Title); len(hits) > 0 {
 		slog.Info(locale.T("topic.prohibited_word_in_title"), slog.String("hits", strings.Join(hits, ",")))

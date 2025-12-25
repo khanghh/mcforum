@@ -58,7 +58,7 @@ func (c *RoleController) PostCreate() *web.JsonResult {
 	}
 
 	if service.RoleService.GetByCode(t.Code) != nil {
-		return web.JsonErrorMsg("角色编码已存在")
+		return web.JsonErrorMsg("Role code already exists")
 	}
 
 	t.SortNo = service.RoleService.GetNextSortNo()
@@ -82,7 +82,7 @@ func (c *RoleController) PostUpdate() *web.JsonResult {
 	}
 
 	if t.Type == constants.RoleTypeSystem {
-		return web.JsonErrorMsg("系统角色不允许编辑")
+		return web.JsonErrorMsg("System roles cannot be edited")
 	}
 
 	if err := params.ReadForm(c.Ctx, t); err != nil {
@@ -90,7 +90,7 @@ func (c *RoleController) PostUpdate() *web.JsonResult {
 	}
 
 	if exists := service.RoleService.GetByCode(t.Code); exists != nil && exists.Id != t.Id {
-		return web.JsonErrorMsg("角色编码已存在")
+		return web.JsonErrorMsg("Role code already exists")
 	}
 
 	t.UpdateTime = dates.NowTimestamp()

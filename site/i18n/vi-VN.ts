@@ -40,6 +40,12 @@ export default {
       view_details: 'Xem chi tiết',
     },
   },
+  forum: {
+    actions: {
+      create_topic: 'Tạo chủ đề',
+      filter_topics: 'Tìm kiếm',
+    }
+  },
   publish: {
     action: {
       edit: 'Chỉnh sửa',

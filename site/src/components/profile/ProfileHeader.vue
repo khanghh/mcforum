@@ -33,7 +33,7 @@
             <div
               :class="['gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center', { invisible: !user.statusMessage }]">
               <Icon name="TablerQuoteFilled" class="text-purple-400 text-sm mr-2" />
-              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage || ' ' }}</span>
+              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage || '' }}</span>
             </div>
           </div>
         </div>
@@ -73,6 +73,7 @@
 
 <script setup>
 import AvatarDecorated from '../AvatarDecorated.vue'
+import { useMsgSuccess, useMsgError } from '@/composables/useMsg'
 
 const userStore = useUserStore()
 const api = useApi()
@@ -102,7 +103,7 @@ const handleFollow = async () => {
   try {
     await api.followUser(props.user.username)
     isFollowing.value = true
-    useMsgSuccess('Followed successfully')
+    useMsgSuccess('Follow successfully')
   }
   catch (e) {
     console.error(e)
@@ -114,11 +115,10 @@ const handleUnfollow = async () => {
   try {
     await api.unfollowUser(props.user.username)
     isFollowing.value = false
-    useMsgSuccess('Unfollowed successfully')
+    useMsgSuccess('Unfollow successfully')
   }
   catch (e) {
-    console.error(e)
-    useMsgError('Unfollow failed')
+    useMsgError('Unfollow failed', e)
   }
 }
 

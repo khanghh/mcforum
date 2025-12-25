@@ -49,7 +49,7 @@ func (c *TagController) PostCreate() *web.JsonResult {
 		return web.JsonErrorMsg("name is required")
 	}
 	if service.TagService.GetByName(t.Name) != nil {
-		return web.JsonErrorMsg("标签「" + t.Name + "」已存在")
+		return web.JsonErrorMsg("Tag \"" + t.Name + "\" already exists")
 	}
 
 	t.Status = constants.StatusActive
@@ -82,7 +82,7 @@ func (c *TagController) PostUpdate() *web.JsonResult {
 		return web.JsonErrorMsg("name is required")
 	}
 	if tmp := service.TagService.GetByName(t.Name); tmp != nil && tmp.Id != id {
-		return web.JsonErrorMsg("标签「" + t.Name + "」已存在")
+		return web.JsonErrorMsg("Tag \"" + t.Name + "\" already exists")
 	}
 
 	t.UpdateTime = dates.NowTimestamp()
@@ -93,7 +93,7 @@ func (c *TagController) PostUpdate() *web.JsonResult {
 	return web.JsonData(t)
 }
 
-// 自动完成
+// Autocomplete
 func (c *TagController) GetAutocomplete() *web.JsonResult {
 	keyword := strings.TrimSpace(c.Ctx.URLParam("keyword"))
 	var tags []model.Tag
@@ -105,7 +105,7 @@ func (c *TagController) GetAutocomplete() *web.JsonResult {
 	return web.JsonData(payload.BuildTags(tags))
 }
 
-// 根据标签编号批量获取
+// GetTags Get tags by IDs
 func (c *TagController) GetTags() *web.JsonResult {
 	tagIds := params.FormValueInt64Array(c.Ctx, "tagIds")
 	var tags *[]payload.TagResponse

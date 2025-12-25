@@ -51,7 +51,7 @@ func Distinct[T any](input []T, getKey func(T) any) (output []T) {
 	for _, item := range input {
 		l := len(tempMap)
 		tempMap[getKey(item)] = 0
-		if len(tempMap) != l { // 数量发生变化，说明不存在
+		if len(tempMap) != l { // length changed, the item was not present
 			output = append(output, item)
 		}
 	}

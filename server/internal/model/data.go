@@ -1,6 +1,6 @@
 package model
 
-// 站点导航
+// Site navigation
 type ActionLink struct {
 	Title string `json:"title"`
 	Url   string `json:"url"`
@@ -12,11 +12,11 @@ type MenuItem struct {
 	LogoURL string `json:"logoUrl,omitempty"`
 }
 
-// 积分配置
+// Score configuration
 type ScoreConfig struct {
-	PostTopicScore   int `json:"postTopicScore"`   // 发帖获得积分
-	PostCommentScore int `json:"postCommentScore"` // 跟帖获得积分
-	CheckInScore     int `json:"checkInScore"`     // 签到积分
+	PostTopicScore   int `json:"postTopicScore"`   // points for posting
+	PostCommentScore int `json:"postCommentScore"` // points for commenting
+	CheckInScore     int `json:"checkInScore"`     // check-in points
 }
 
 type LoginMethod struct {
@@ -28,7 +28,7 @@ type LoginMethod struct {
 
 // ModulesConfig
 //
-//	模块配置
+//	Modules configuration
 type ModulesConfig struct {
 	Tweet   bool `json:"tweet"`
 	Topic   bool `json:"topic"`

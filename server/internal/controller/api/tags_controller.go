@@ -19,7 +19,7 @@ type TagsController struct {
 	Ctx iris.Context
 }
 
-// 标签详情
+// Tag details
 func (c *TagsController) GetBy(tagName string) *web.JsonResult {
 	tag := cache.TagCache.Get(tagName)
 	if tag == nil {
@@ -28,7 +28,7 @@ func (c *TagsController) GetBy(tagName string) *web.JsonResult {
 	return web.JsonData(payload.BuildTag(tag))
 }
 
-// 标签列表
+// Tag list
 func (c *TagsController) GetTags() *web.JsonResult {
 	page := params.FormValueIntDefault(c.Ctx, "page", 1)
 	tags, paging := service.TagService.FindPageByCnd(sqls.NewCnd().
@@ -38,7 +38,7 @@ func (c *TagsController) GetTags() *web.JsonResult {
 	return web.JsonPageData(payload.BuildTags(tags), paging)
 }
 
-// 标签自动完成
+// Tag autocomplete
 func (c *TagsController) PostAutocomplete() *web.JsonResult {
 	input := c.Ctx.FormValue("input")
 	tags := service.TagService.Autocomplete(input)

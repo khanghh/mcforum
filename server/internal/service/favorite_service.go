@@ -77,16 +77,16 @@ func (s *favoriteService) GetBy(userId int64, entityType string, entityId int64)
 		userId, entityType, entityId)
 }
 
-// AddArticleFavorite 收藏文章
+// AddArticleFavorite Favorite an article
 func (s *favoriteService) AddArticleFavorite(userId, articleId int64) error {
 	article := repository.ArticleRepository.Get(sqls.DB(), articleId)
 	if article == nil || article.Status != constants.StatusActive {
-		return errors.New("收藏的文章不存在")
+		return errors.New("The article to favorite does not exist")
 	}
 	return s.addFavorite(userId, constants.EntityArticle, articleId)
 }
 
-// AddTopicFavorite 收藏主题
+// AddTopicFavorite Favorite a topic
 func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
 	if topic == nil || topic.Status != constants.StatusActive {
@@ -95,13 +95,13 @@ func (s *favoriteService) AddTopicFavorite(userId, topicId int64) error {
 	return s.addFavorite(userId, constants.EntityTopic, topicId)
 }
 
-// AddTopicFavorite 收藏主题
+// RemoveTopicFavorite Remove topic favorite
 func (s *favoriteService) RemoveTopicFavorite(userId, topicId int64) error {
 	return s.removeFavorite(userId, constants.EntityTopic, topicId)
 }
 
 func (s *favoriteService) addFavorite(userId int64, entityType string, entityId int64) error {
-	if s.IsFavorited(userId, entityType, entityId) { // 已经收藏
+	if s.IsFavorited(userId, entityType, entityId) { // already favorited
 		return nil
 	}
 	if err := repository.FavoriteRepository.Create(sqls.DB(), &model.Favorite{
@@ -113,7 +113,7 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 		return err
 	}
 
-	// 发送事件
+	// send event
 	event.Send(event.UserFavoriteEvent{
 		UserId:     userId,
 		EntityId:   entityId,

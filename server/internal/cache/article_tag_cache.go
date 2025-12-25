@@ -28,7 +28,7 @@ func newArticleTagCache() *articleTagCache {
 					}
 					value = tagIds
 				} else {
-					e = errors.New("文章没标签")
+					e = errors.New("article has no tags")
 				}
 				return
 			},

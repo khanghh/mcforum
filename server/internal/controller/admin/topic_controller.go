@@ -41,7 +41,7 @@ func (c *TopicController) GetList() *web.JsonResult {
 	return web.JsonData(&web.PageResult{Results: results, Page: paging})
 }
 
-// 推荐
+// Recommend
 func (c *TopicController) PostRecommend() *web.JsonResult {
 	id, err := params.FormValueInt64(c.Ctx, "id")
 	if err != nil {
@@ -54,7 +54,7 @@ func (c *TopicController) PostRecommend() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-// 取消推荐
+// Unrecommend
 func (c *TopicController) DeleteRecommend() *web.JsonResult {
 	id, err := params.FormValueInt64(c.Ctx, "id")
 	if err != nil {

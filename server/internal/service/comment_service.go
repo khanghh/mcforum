@@ -90,7 +90,7 @@ func (s *commentService) Delete(id int64) error {
 	return repository.CommentRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusDeleted)
 }
 
-// Publish 发表评论
+// Publish Post a comment
 func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, error) {
 	args.Content = strings.TrimSpace(args.Content)
 	if strs.IsBlank(args.Content) {
@@ -148,12 +148,12 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 	return comment, nil
 }
 
-// onComment 评论被回复（二级评论）
+// onComment Reply to a comment (second-level comment)
 func (s *commentService) onComment(tx *gorm.DB, comment *model.Comment) error {
 	return repository.CommentRepository.UpdateColumn(tx, comment.ParentId, "comment_count", gorm.Expr("comment_count + 1"))
 }
 
-// GetComments 列表
+// GetComments List of comments
 func (s *commentService) GetComments(topicId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("topic_id", topicId).Eq("parent_id", 0).Eq("status", constants.StatusActive).Desc("id").Limit(limit)
 	if cursor > 0 {
@@ -169,7 +169,7 @@ func (s *commentService) GetComments(topicId int64, cursor int64, limit int) (co
 	return
 }
 
-// GetReplies 二级回复列表
+// GetReplies List of second-level replies
 func (s *commentService) GetReplies(commentId int64, cursor int64, limit int) (comments []model.Comment, nextCursor int64, hasMore bool) {
 	cnd := sqls.NewCnd().Eq("parent_id", commentId).Eq("status", constants.StatusActive).Desc("id").Limit(limit)
 	if cursor > 0 {
@@ -185,7 +185,7 @@ func (s *commentService) GetReplies(commentId int64, cursor int64, limit int) (c
 	return
 }
 
-// ScanByUser 按照用户扫描数据
+// ScanByUser Scan data by user
 func (s *commentService) ScanByUser(userId int64, callback func(comments []model.Comment)) {
 	var cursor int64 = 0
 	for {
@@ -199,7 +199,7 @@ func (s *commentService) ScanByUser(userId int64, callback func(comments []model
 	}
 }
 
-// ScanByUser 按照用户扫描数据
+// Scan Scan data
 func (s *commentService) Scan(callback func(comments []model.Comment)) {
 	var cursor int64 = 0
 	for {

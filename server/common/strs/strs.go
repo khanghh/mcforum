@@ -96,7 +96,7 @@ func UUID() string {
 	return strings.ReplaceAll(u.String(), "-", "")
 }
 
-// RuneLen 字符成长度
+// RuneLen returns the number of runes (characters) in the string.
 func RuneLen(s string) int {
 	bt := []rune(s)
 	return len(bt)

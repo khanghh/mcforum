@@ -16,7 +16,7 @@ import (
 )
 
 var emailTemplate = `
-<div style="background-color:white;border-top:2px solid #12ADDB;box-shadow:0 1px 3px #AAAAAA;line-height:180%;padding:0 15px 12px;width:500px;margin:50px auto;color:#555555;font-family:'Century Gothic','Trebuchet MS','Hiragino Sans GB',微软雅黑,'Microsoft Yahei',Tahoma,Helvetica,Arial,'SimSun',sans-serif;font-size:12px;">
+<div style="background-color:white;border-top:2px solid #12ADDB;box-shadow:0 1px 3px #AAAAAA;line-height:180%;padding:0 15px 12px;width:500px;margin:50px auto;color:#555555;font-family:'Century Gothic','Trebuchet MS','Hiragino Sans GB','Microsoft Yahei',Tahoma,Helvetica,Arial,'SimSun',sans-serif;font-size:12px;">
     <h2 style="border-bottom:1px solid #DDD;font-size:14px;font-weight:normal;padding:13px 0 10px 8px;">
         <span style="color: #12ADDB;font-weight:bold;">
             {{.Title}}
@@ -41,7 +41,7 @@ var emailTemplate = `
 </div>
 `
 
-// SendTemplateEmail 发送模版邮件
+// SendTemplateEmail Send template email
 func SendTemplateEmail(from *model.User, to, subject, title, content, quote string, link *model.ActionLink) error {
 	tpl, err := template.New("emailTemplate").Parse(emailTemplate)
 	if err != nil {
@@ -69,7 +69,7 @@ func SendTemplateEmail(from *model.User, to, subject, title, content, quote stri
 	return SendEmail(to, subject, html)
 }
 
-// SendEmail 发送邮件
+// SendEmail Send email
 func SendEmail(to string, subject, html string) error {
 	var (
 		host      = config.Instance().Smtp.Host
@@ -93,12 +93,12 @@ func SendEmail(to string, subject, html string) error {
 
 	if ssl {
 		if err := e.SendWithTLS(addr, auth, tlsConfig); err != nil {
-			slog.Error("发送邮件异常", slog.Any("err", err))
+			slog.Error("Failed to send email", slog.Any("err", err))
 			return err
 		}
 	} else {
 		if err := e.Send(addr, auth); err != nil {
-			slog.Error("发送邮件异常", slog.Any("err", err))
+			slog.Error("Failed to send email", slog.Any("err", err))
 			return err
 		}
 	}

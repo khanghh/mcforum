@@ -18,12 +18,11 @@ func init() {
 func handleCommentCreate(i interface{}) {
 	e := i.(event.CommentCreatedEvent)
 
-	// service.UserService.IncrCommentCount(userId)
-	// service.UserService.IncrScoreForPostComment(comment)
-
 	sendCommentTopicNotification(&e)
 	sendReplyCommentNotification(&e)
 	sendQuoteCommentNofitication(&e)
+	service.UserService.IncreaseCommentCount(e.Comment.UserId)
+	service.UserService.IncrScoreForPostComment(e.Comment)
 }
 
 // sendCommentTopicNotification send message to notify topic owner of new comment created

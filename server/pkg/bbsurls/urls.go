@@ -10,7 +10,7 @@ import (
 	"bbs-go/internal/config"
 )
 
-// 是否是内部链接
+// Whether it is an internal link
 func IsInternalUrl(href string) bool {
 	if IsAnchor(href) {
 		return true
@@ -23,7 +23,7 @@ func IsInternalUrl(href string) bool {
 	return strings.Contains(href, u.Host)
 }
 
-// 是否是锚链接
+// Whether it is an anchor link
 func IsAnchor(href string) bool {
 	return strings.Index(href, "#") == 0
 }
@@ -36,7 +36,7 @@ func UserUrl(username string) string {
 	return "/u/" + username
 }
 
-// 用户主页
+// User homepage
 func AbsUserUrl(username string) string {
 	return AbsUrl(UserUrl(username))
 }
@@ -44,7 +44,7 @@ func TagUrl(tagName string) string {
 	return "/tags/" + tagName
 }
 
-// 标签文章列表
+// Tag article list
 func AbsTagUrl(tagName string) string {
 	return AbsUrl(TagUrl(tagName))
 }
@@ -53,7 +53,7 @@ func TopicUrl(slug string, id int64) string {
 	return fmt.Sprintf("/t/%s.%s", slug, base62.Encode(id))
 }
 
-// 话题详情
+// Topic details
 func AbsTopicUrl(slug string, id int64) string {
 	return AbsUrl(TopicUrl(slug, id))
 }

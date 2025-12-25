@@ -86,7 +86,7 @@ func (s *checkInService) CheckIn(userId int64) error {
 	)
 
 	if checkIn != nil && checkIn.LatestDayName == dayName {
-		return errors.New("你已签到")
+		return errors.New("You have already checked in")
 	}
 
 	if checkIn != nil && checkIn.LatestDayName == yesterdayName {
@@ -109,15 +109,16 @@ func (s *checkInService) CheckIn(userId int64) error {
 		err = s.Update(checkIn)
 	}
 	if err == nil {
-		// 清理签到排行榜缓存
+		// Refresh check-in leaderboard cache
 		cache.UserCache.RefreshCheckInRank()
-		// 处理签到积分
+		// Handle check-in points
 		config := SysConfigService.GetPointConfig()
 		if config.CheckInScore > 0 {
 			_ = UserService.IncrScore(userId, config.CheckInScore, constants.EntityCheckIn,
-				strconv.FormatInt(userId, 10), "签到"+strconv.Itoa(dayName))
+				strconv.FormatInt(userId, 10), "Check in "+strconv.Itoa(dayName))
+
 		} else {
-			slog.Warn("签到积分未配置...")
+			slog.Warn("Check-in points not configured...")
 		}
 	}
 	return err

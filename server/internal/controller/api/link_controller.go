@@ -20,12 +20,12 @@ type LinkController struct {
 func (c *LinkController) GetBy(id int64) *web.JsonResult {
 	link := service.LinkService.Get(id)
 	if link == nil || link.Status == constants.StatusDeleted {
-		return web.JsonErrorMsg("数据不存在")
+		return web.JsonErrorMsg("Not found")
 	}
 	return web.JsonData(c.buildLink(*link))
 }
 
-// 列表
+// List
 func (c *LinkController) GetList() *web.JsonResult {
 	links := service.LinkService.Find(sqls.NewCnd().
 		Eq("status", constants.StatusActive).Asc("id"))
@@ -37,7 +37,7 @@ func (c *LinkController) GetList() *web.JsonResult {
 	return web.JsonData(itemList)
 }
 
-// 列表
+// List
 func (c *LinkController) GetLinks() *web.JsonResult {
 	page := params.FormValueIntDefault(c.Ctx, "page", 1)
 
@@ -51,7 +51,7 @@ func (c *LinkController) GetLinks() *web.JsonResult {
 	return web.JsonPageData(itemList, paging)
 }
 
-// 前10个链接
+// Top 10 links
 func (c *LinkController) GetToplinks() *web.JsonResult {
 	links := service.LinkService.Find(sqls.NewCnd().
 		Eq("status", constants.StatusActive).Limit(10).Asc("id"))

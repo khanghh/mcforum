@@ -17,7 +17,7 @@ func init() {
 func handleTopicCreatedEvent(i interface{}) {
 	e := i.(event.TopicCreatedEvent)
 
-	// 积分
+	// Points
 	search.UpdateTopicIndex(e.Topic)
 	service.UserService.IncrScoreForPostTopic(e.Topic)
 	service.UserFollowService.ScanFollowers(e.Topic.UserId, func(fansId int64) {

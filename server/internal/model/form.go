@@ -39,7 +39,7 @@ type CreateArticleForm struct {
 	SourceUrl   string
 }
 
-// CreateCommentForm 发表评论
+// CreateCommentForm post comment
 type CreateCommentForm struct {
 	EntityType string     `form:"entityType"`
 	EntityId   int64      `form:"entityId"`

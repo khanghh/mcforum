@@ -44,7 +44,7 @@ func Search(ip string) string {
 }
 
 func IpLocation(ip string) string {
-	region := Search(ip) // eg. 中国|0|湖北省|武汉市|电信
+	region := Search(ip) // eg. China|0|Hubei|Wuhan|Telecom
 	if strs.IsBlank(region) {
 		return ""
 	}

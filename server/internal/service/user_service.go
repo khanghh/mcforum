@@ -29,7 +29,7 @@ import (
 	"bbs-go/internal/repository"
 )
 
-// 邮箱验证邮件有效期（小时）
+// Email verification token expiration (hours)
 const emailVerifyExpireHour = 24
 
 var UserService = newUserService()
@@ -96,7 +96,7 @@ func (s *userService) Delete(id int64) {
 	cache.UserCache.Invalidate(id)
 }
 
-// Scan 扫描
+// Scan
 func (s *userService) Scan(callback func(users []model.User)) {
 	var cursor int64
 	for {
@@ -109,10 +109,10 @@ func (s *userService) Scan(callback func(users []model.User)) {
 	}
 }
 
-// Forbidden 禁言
+// Forbidden (mute)
 func (s *userService) Forbidden(operatorId, userId int64, days int, reason string, r *http.Request) error {
 	var forbiddenEndTime int64
-	if days == -1 { // 永久禁言
+	if days == -1 { // permanent mute
 		forbiddenEndTime = -1
 	} else if days > 0 {
 		forbiddenEndTime = dates.Timestamp(time.Now().Add(time.Hour * 24 * time.Duration(days)))
@@ -128,12 +128,12 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 		OperateLogService.AddOperateLog(operatorId, constants.OpTypeForbidden, constants.EntityUser, userId,
 			description, r)
 
-		// 永久禁言
+		// Permanent ban
 		if days == -1 {
 			user := cache.UserCache.Get(userId)
-			_ = s.DecrScore(userId, user.Score, constants.EntityUser, strconv.FormatInt(operatorId, 10), "永久禁言")
+			_ = s.DecrScore(userId, user.Score, constants.EntityUser, strconv.FormatInt(operatorId, 10), "Permanent ban")
 			go func() {
-				// 删除话题
+				// delete topics
 				TopicService.ScanByUser(userId, func(topics []model.Topic) {
 					for _, topic := range topics {
 						if topic.Status != constants.StatusDeleted {
@@ -142,7 +142,7 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 					}
 				})
 
-				// 删除评论
+				// delete comments
 				CommentService.ScanByUser(userId, func(comments []model.Comment) {
 					for _, comment := range comments {
 						if comment.Status != constants.StatusDeleted {
@@ -157,7 +157,7 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 	return nil
 }
 
-// RemoveForbidden 移除禁言
+// RemoveForbidden (remove mute)
 func (s *userService) RemoveForbidden(operatorId, userId int64, r *http.Request) {
 	user := s.Get(userId)
 	if user == nil || !user.IsForbidden() {
@@ -169,34 +169,34 @@ func (s *userService) RemoveForbidden(operatorId, userId int64, r *http.Request)
 	}
 }
 
-// GetByEmail 根据邮箱查找
+// GetByEmail find by email
 func (s *userService) GetByEmail(email string) *model.User {
 	return repository.UserRepository.GetByEmail(sqls.DB(), email)
 }
 
-// GetByUsername 根据用户名查找
+// GetByUsername find by username
 func (s *userService) GetByUsername(username string) *model.User {
 	return repository.UserRepository.GetByUsername(sqls.DB(), username)
 }
 
-// SignUp 注册
+// SignUp register
 func (s *userService) SignUp(username, email, nickname, password, rePassword string) (*model.User, error) {
 	username = strings.TrimSpace(username)
 	email = strings.TrimSpace(email)
 	nickname = strings.TrimSpace(nickname)
 
-	// 验证昵称
+	// validate nickname
 	if len(nickname) == 0 {
 		return nil, errors.New(locale.T("errors.sigup_nickname_required"))
 	}
 
-	// 验证密码
+	// validate password
 	err := validate.IsValidPassword(password, rePassword)
 	if err != nil {
 		return nil, err
 	}
 
-	// 验证邮箱
+	// validate email
 	if email != "" {
 		if err := validate.IsEmail(email); err != nil {
 			return nil, err
@@ -208,7 +208,7 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 		return nil, errors.New(locale.T("errors.sigup_email_required"))
 	}
 
-	// 验证用户名
+	// validate username
 	if username != "" {
 		if err := validate.IsUsername(username); err != nil {
 			return nil, err
@@ -235,7 +235,7 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 	return user, nil
 }
 
-// SignIn 登录
+// SignIn login
 func (s *userService) SignIn(username, password string) (*model.User, error) {
 	if strs.IsBlank(username) {
 		return nil, errors.New(locale.T("errors.sigin_email_username_required"))
@@ -247,7 +247,7 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 		return nil, err
 	}
 	var user *model.User = nil
-	if err := validate.IsEmail(username); err == nil { // 如果用户输入的是邮箱
+	if err := validate.IsEmail(username); err == nil { // if the user entered an email
 		user = s.GetByEmail(username)
 	} else {
 		user = s.GetByUsername(username)
@@ -262,35 +262,35 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 	return user, nil
 }
 
-// isEmailExists 邮箱是否存在
+// isEmailExists whether email exists
 func (s *userService) isEmailExists(email string) bool {
-	if len(email) == 0 { // 如果邮箱为空，那么就认为是不存在
+	if len(email) == 0 { // if email is empty, consider it non-existent
 		return false
 	}
 	return s.GetByEmail(email) != nil
 }
 
-// isUsernameExists 用户名是否存在
+// isUsernameExists whether username exists
 func (s *userService) isUsernameExists(username string) bool {
 	return s.GetByUsername(username) != nil
 }
 
-// UpdateAvatar 更新头像
+// UpdateAvatar update avatar
 func (s *userService) UpdateAvatar(userId int64, avatar string) error {
 	return s.UpdateColumn(userId, "avatar", avatar)
 }
 
-// UpdateNickname 更新昵称
+// UpdateNickname update nickname
 func (s *userService) UpdateNickname(userId int64, nickname string) error {
 	return s.UpdateColumn(userId, "nickname", nickname)
 }
 
-// UpdateDescription 更新简介
+// UpdateDescription update description
 func (s *userService) UpdateDescription(userId int64, description string) error {
 	return s.UpdateColumn(userId, "description", description)
 }
 
-// UpdateGender 修改性别
+// UpdateGender update gender
 func (s *userService) UpdateGender(userId int64, gender string) error {
 	if strs.IsBlank(gender) {
 		return s.UpdateColumn(userId, "gender", "")
@@ -302,7 +302,7 @@ func (s *userService) UpdateGender(userId int64, gender string) error {
 	}
 }
 
-// UpdateBirthday 修改生日
+// UpdateBirthday update birthday
 func (s *userService) UpdateBirthday(userId int64, birthdayStr string) error {
 	if strs.IsBlank(birthdayStr) {
 		return s.UpdateColumn(userId, "birthday", "")
@@ -315,12 +315,12 @@ func (s *userService) UpdateBirthday(userId int64, birthdayStr string) error {
 	}
 }
 
-// UpdateBackgroundImage 修改背景图
+// UpdateBackgroundImage update background image
 func (s *userService) UpdateBackgroundImage(userId int64, backgroundImage string) error {
 	return s.UpdateColumn(userId, "background_image", backgroundImage)
 }
 
-// SetUsername 设置用户名
+// SetUsername set username
 func (s *userService) SetUsername(userId int64, username string) error {
 	username = strings.TrimSpace(username)
 	if err := validate.IsUsername(username); err != nil {
@@ -329,15 +329,15 @@ func (s *userService) SetUsername(userId int64, username string) error {
 
 	user := s.Get(userId)
 	if len(user.Username.String) > 0 {
-		return errors.New("你已设置了用户名，无法重复设置。")
+		return errors.New("You have already set a username and cannot set it again.")
 	}
 	if s.isUsernameExists(username) {
-		return errors.New("用户名：" + username + " 已被占用")
+		return errors.New("Username " + username + " is already taken")
 	}
 	return s.UpdateColumn(userId, "username", username)
 }
 
-// SetEmail 设置密码
+// SetEmail set email
 func (s *userService) SetEmail(userId int64, email string) error {
 	email = strings.TrimSpace(email)
 	if err := validate.IsEmail(email); err != nil {
@@ -348,7 +348,7 @@ func (s *userService) SetEmail(userId int64, email string) error {
 		return errors.New(locale.T("user.not_found"))
 	}
 	if user.Email.String == email {
-		// 用户邮箱没做变更
+		// user's email not changed
 		return nil
 	}
 	if s.isEmailExists(email) {
@@ -360,7 +360,7 @@ func (s *userService) SetEmail(userId int64, email string) error {
 	})
 }
 
-// SetPassword 设置密码
+// SetPassword set password
 func (s *userService) SetPassword(userId int64, password, rePassword string) error {
 	if err := validate.IsValidPassword(password, rePassword); err != nil {
 		return err
@@ -373,7 +373,7 @@ func (s *userService) SetPassword(userId int64, password, rePassword string) err
 	return s.UpdateColumn(userId, "password", password)
 }
 
-// UpdatePassword 修改密码
+// UpdatePassword change password
 func (s *userService) UpdatePassword(userId int64, oldPassword, password, rePassword string) error {
 	if err := validate.IsValidPassword(password, rePassword); err != nil {
 		return err
@@ -381,11 +381,11 @@ func (s *userService) UpdatePassword(userId int64, oldPassword, password, rePass
 	user := s.Get(userId)
 
 	if len(user.Password) == 0 {
-		return errors.New("你没设置密码，请先设置密码")
+		return errors.New("You haven't set a password, please set one first")
 	}
 
 	if !passwd.ValidatePassword(user.Password, oldPassword) {
-		return errors.New("旧密码验证失败")
+		return errors.New("Old password verification failed")
 	}
 
 	return s.UpdateColumn(userId, "password", passwd.EncodePassword(password))
@@ -411,7 +411,7 @@ func (s *userService) IncreaseCommentCount(userId int64) error {
 	return nil
 }
 
-// SyncUserCount 同步用户计数
+// SyncUserCount sync user counts
 func (s *userService) SyncUserCount() {
 	s.Scan(func(users []model.User) {
 		for _, user := range users {
@@ -424,7 +424,7 @@ func (s *userService) SyncUserCount() {
 	})
 }
 
-// SendEmailVerifyEmail 发送邮箱验证邮件
+// SendEmailVerifyEmail send email verification
 func (s *userService) SendEmailVerifyEmail(userId int64) error {
 	user := s.Get(userId)
 	if user == nil {
@@ -436,7 +436,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 	if err := validate.IsEmail(user.Email.String); err != nil {
 		return err
 	}
-	// 如果设置了邮箱白名单
+	// If an email whitelist is set
 	if emailWhitelist := SysConfigService.GetEmailWhitelist(); len(emailWhitelist) > 0 {
 		isInWhitelist := false
 		for _, whitelist := range emailWhitelist {
@@ -446,7 +446,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 			}
 		}
 		if !isInWhitelist {
-			// 直接返回，也不抛出异常了，就是不发邮件
+			// return silently (do not send verification email)
 			slog.Error("Verification with this email is not supported", slog.String("email", user.Email.String))
 			return errors.New(locale.T("errors.email_not_accepted"))
 		}
@@ -454,11 +454,11 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 	var (
 		token     = strs.UUID()
 		url       = bbsurls.AbsUrl("/user/email/verify?token=" + token)
-		link      = &model.ActionLink{Title: "点击这里验证邮箱>>", Url: url}
+		link      = &model.ActionLink{Title: "Click here to verify your email >>", Url: url}
 		siteTitle = cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
-		subject   = "邮箱验证 - " + siteTitle
-		title     = "邮箱验证 - " + siteTitle
-		content   = "该邮件用于验证你在 " + siteTitle + " 中设置邮箱的正确性，请在" + strconv.Itoa(emailVerifyExpireHour) + "小时内完成验证。验证链接：" + url
+		subject   = "Email verification - " + siteTitle
+		title     = "Email verification - " + siteTitle
+		content   = "This email is used to verify the email address you set on " + siteTitle + ". Please complete verification within " + strconv.Itoa(emailVerifyExpireHour) + " hours. Verification link: " + url
 	)
 	return sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := repository.EmailCodeRepository.Create(tx, &model.EmailCode{
@@ -481,7 +481,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 	})
 }
 
-// VerifyEmail 验证邮箱
+// VerifyEmail verify email
 func (s *userService) VerifyEmail(token string) (string, error) {
 	emailCode := EmailCodeService.FindOne(sqls.NewCnd().Eq("token", token))
 	if emailCode == nil || emailCode.Used {
@@ -508,7 +508,7 @@ func (s *userService) VerifyEmail(token string) (string, error) {
 	return emailCode.Email, nil
 }
 
-// CheckPostStatus 用于在发表内容时检查用户状态
+// CheckPostStatus checks user status when posting
 func (s *userService) CheckPostStatus(user *model.User) error {
 	if user == nil {
 		return errs.ErrUnauthorized
@@ -518,12 +518,12 @@ func (s *userService) CheckPostStatus(user *model.User) error {
 	}
 	observeSeconds := SysConfigService.GetInt(constants.SysConfigUserObserveSeconds, 0)
 	if user.InObservationPeriod(observeSeconds) {
-		return web.NewError(errs.InObservationPeriod.Code, "账号尚在观察期，观察期时长："+strconv.Itoa(observeSeconds)+"秒，请稍后再试")
+		return web.NewError(errs.InObservationPeriod.Code, "Account is under observation for "+strconv.Itoa(observeSeconds)+" seconds, please try again later")
 	}
 	return nil
 }
 
-// IncrScoreForPostTopic 发帖获积分
+// IncrScoreForPostTopic points for posting a topic
 func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 	config := SysConfigService.GetPointConfig()
 	if config.PostTopicScore <= 0 {
@@ -537,20 +537,20 @@ func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 	}
 }
 
-// IncrScoreForPostComment 跟帖获积分
+// IncrScoreForPostComment points for posting a comment
 func (s *userService) IncrScoreForPostComment(comment *model.Comment) {
 	config := SysConfigService.GetPointConfig()
 	if config.PostCommentScore <= 0 {
 		slog.Info(locale.T("errors.points_config_missing"))
 		return
 	}
-	err := s.addScore(comment.UserId, config.PostCommentScore, constants.EntityComment, strconv.FormatInt(comment.Id, 10), "发表跟帖")
+	err := s.addScore(comment.UserId, config.PostCommentScore, constants.EntityComment, strconv.FormatInt(comment.Id, 10), locale.T("points.reason_post_comment"))
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}
 }
 
-// IncrScore 增加分数
+// IncrScore increase score
 func (s *userService) IncrScore(userId int64, score int, sourceType, sourceId, description string) error {
 	if score <= 0 {
 		return errors.New(locale.T("user.points.adjustment_must_be_positive"))
@@ -558,7 +558,7 @@ func (s *userService) IncrScore(userId int64, score int, sourceType, sourceId, d
 	return s.addScore(userId, score, sourceType, sourceId, description)
 }
 
-// DecrScore 减少分数
+// DecrScore decrease score
 func (s *userService) DecrScore(userId int64, score int, sourceType, sourceId, description string) error {
 	if score <= 0 {
 		return errors.New(locale.T("user.points.adjustment_must_be_positive"))
@@ -566,7 +566,7 @@ func (s *userService) DecrScore(userId int64, score int, sourceType, sourceId, d
 	return s.addScore(userId, -score, sourceType, sourceId, description)
 }
 
-// addScore 加分数，也可以加负数
+// addScore add score (can be negative)
 func (s *userService) addScore(userId int64, score int, sourceType, sourceId, description string) error {
 	user := s.Get(userId)
 	if user == nil {

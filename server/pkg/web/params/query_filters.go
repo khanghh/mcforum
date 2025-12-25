@@ -25,10 +25,10 @@ const (
 )
 
 type QueryFilter struct {
-	ParamName    string                     // 请求参数名
-	Op           QueryOp                    // 操作符
-	ColumnName   string                     // 列名
-	ValueWrapper func(origin string) string // Value修饰器，可以
+	ParamName    string                     // Request parameter name
+	Op           QueryOp                    // Operator
+	ColumnName   string                     // Column name
+	ValueWrapper func(origin string) string // Value decorator, can
 }
 
 func NewPagedSqlCnd(ctx iris.Context, filters ...QueryFilter) *sqls.Cnd {

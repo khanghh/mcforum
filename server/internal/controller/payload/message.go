@@ -7,16 +7,16 @@ import (
 	"strings"
 )
 
-// 消息
+// Message
 type MessageResponse struct {
 	Id           int64     `json:"id"`
-	From         *UserInfo `json:"from"`    // 消息发送人
-	UserId       int64     `json:"userId"`  // 消息接收人编号
-	Title        string    `json:"title"`   // 标题
-	Content      string    `json:"content"` // 消息内容
+	From         *UserInfo `json:"from"`    // message sender
+	UserId       int64     `json:"userId"`  // message receiver id
+	Title        string    `json:"title"`   // title
+	Content      string    `json:"content"` // message content
 	QuoteContent string    `json:"quoteContent"`
 	Type         int       `json:"type"`
-	DetailUrl    string    `json:"detailUrl"` // 消息详情url
+	DetailUrl    string    `json:"detailUrl"` // message detail url
 	ExtraData    string    `json:"extraData"`
 	Status       int       `json:"status"`
 	CreateTime   int64     `json:"createTime"`
@@ -47,7 +47,7 @@ func BuildMessage(msg *model.Message) *MessageResponse {
 	return resp
 }
 
-// BuildMessages 渲染消息列表
+// BuildMessages render message list
 func BuildMessages(messages []model.Message) []MessageResponse {
 	if len(messages) == 0 {
 		return nil

@@ -14,15 +14,15 @@ func init() {
 func handleTopicDeleteEvent(i interface{}) {
 	e := i.(event.TopicDeleteEvent)
 
-	// 处理userFeed
+	// handle user feed
 	service.UserFeedService.DeleteByDataId(e.TopicId, constants.EntityTopic)
 
-	// 操作日志
+	// operation log
 	service.OperateLogService.AddOperateLog(e.DeleteUserId, constants.OpTypeDelete, constants.EntityTopic,
 		e.TopicId, "", nil)
 }
 
-// sendTopicDeleteMsg 话题被删除消息
+// sendTopicDeleteMsg topic deleted message
 // func sendTopicDeleteMsg(topicId, deleteUserId int64) {
 // 	topic := repository.TopicRepository.Get(sqls.DB(), topicId)
 // 	if topic == nil {

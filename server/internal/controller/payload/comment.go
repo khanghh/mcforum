@@ -25,7 +25,7 @@ type CommentUserInfo struct {
 	SmallAvatar string `json:"smallAvatar"`
 }
 
-// CommentResponse 评论返回数据
+// CommentResponse comment response data
 type CommentResponse struct {
 	Id           int64             `json:"id"`
 	User         *CommentUserInfo  `json:"user"`
@@ -101,9 +101,9 @@ func buildCommentUserInfo(userId int64) *CommentUserInfo {
 	}
 }
 
-// doBuildComment 渲染评论
-// isBuildReplies 是否渲染评论的二级回复，一级评论时要设置为true，其他时候都为false
-// isBuildQuote 是否渲染评论的引用，二级回复时要设置为true，其他时候都为false
+// doBuildComment renders comment
+// isBuildReplies whether to render comment's secondary replies, set to true for first level comments, false otherwise
+// isBuildQuote whether to render comment's quote, set to true for secondary replies, false otherwise
 func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildReplies bool, isBuildQuote bool) *CommentResponse {
 	if comment == nil {
 		return nil
@@ -133,7 +133,7 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 		}
 		ret.ImageList = BuildImageList(comment.ImageList)
 	} else {
-		ret.Content = "内容已删除"
+		ret.Content = "Content deleted"
 	}
 
 	if isBuildReplies && comment.CommentCount > 0 {

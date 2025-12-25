@@ -23,7 +23,7 @@ type UsersController struct {
 	Ctx iris.Context
 }
 
-// 用户详情
+// User details
 func (c *UsersController) GetBy(username string) *web.JsonResult {
 	user := cache.UserCache.GetByUsername(username)
 	if user != nil && user.IsActive {
@@ -32,17 +32,17 @@ func (c *UsersController) GetBy(username string) *web.JsonResult {
 	return web.JsonError(errs.ErrUserNotFound)
 }
 
-// 用户收藏
+// User favorites
 func (c *UsersController) GetFavorites() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 
-	// 用户必须登录
+	// User must be logged in
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
 
-	// 查询列表
+	// Query list
 	limit := 20
 	var favorites []model.Favorite
 	if cursor > 0 {
@@ -61,7 +61,7 @@ func (c *UsersController) GetFavorites() *web.JsonResult {
 	return web.JsonCursorData(payload.BuildFavorites(favorites), cursor, hasMore)
 }
 
-// 获取最近3条未读消息
+// Get last 3 unread messages
 func (c *UsersController) GetMsgrecent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	var count int64 = 0
@@ -74,7 +74,7 @@ func (c *UsersController) GetMsgrecent() *web.JsonResult {
 	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", payload.BuildMessages(messages)).JsonResult()
 }
 
-// 用户消息
+// User messages
 func (c *UsersController) GetMessages() *web.JsonResult {
 	user, err := service.UserTokenService.CheckLogin(c.Ctx)
 	if err != nil {
@@ -100,13 +100,13 @@ func (c *UsersController) GetMessages() *web.JsonResult {
 		hasMore = len(list) == limit
 	}
 
-	// 全部标记为已读
+	// Mark all as read
 	service.MessageService.MarkRead(user.Id)
 
 	return web.JsonCursorData(payload.BuildMessages(list), nextCursor, hasMore)
 }
 
-// 用户积分记录
+// User score logs
 func (c *UsersController) GetScore_logs() *web.JsonResult {
 	user, err := service.UserTokenService.CheckLogin(c.Ctx)
 	if err != nil {
@@ -134,7 +134,7 @@ func (c *UsersController) GetScore_logs() *web.JsonResult {
 	return web.JsonCursorData(list, nextCursor, hasMore)
 }
 
-// 积分排行
+// Score ranking
 func (c *UsersController) GetScoreRank() *web.JsonResult {
 	users := cache.UserCache.GetScoreRank()
 	var results []*payload.UserInfo
@@ -144,14 +144,14 @@ func (c *UsersController) GetScoreRank() *web.JsonResult {
 	return web.JsonData(results)
 }
 
-// 禁言
+// Ban
 func (c *UsersController) PostForbidden() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
 	if !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-		return web.JsonErrorMsg("无权限")
+		return web.JsonErrorMsg("No permission")
 	}
 	var (
 		userId = params.FormValueInt64Default(c.Ctx, "userId", 0)
@@ -159,10 +159,10 @@ func (c *UsersController) PostForbidden() *web.JsonResult {
 		reason = params.FormValue(c.Ctx, "reason")
 	)
 	if userId < 0 {
-		return web.JsonErrorMsg("请传入：userId")
+		return web.JsonErrorMsg("Please provide: userId")
 	}
 	if days == -1 && !user.HasRole(constants.RoleOwner) {
-		return web.JsonErrorMsg("无永久禁言权限")
+		return web.JsonErrorMsg("No permanent ban permission")
 	}
 	if days == 0 {
 		service.UserService.RemoveForbidden(user.Id, userId, c.Ctx.Request())
@@ -174,7 +174,7 @@ func (c *UsersController) PostForbidden() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-// PostEmailVerify 请求邮箱验证邮件
+// Request email verification mail
 func (c *UsersController) PostSend_verify_email() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
@@ -186,7 +186,7 @@ func (c *UsersController) PostSend_verify_email() *web.JsonResult {
 	return web.JsonSuccess()
 }
 
-// PostVerify_email 获取邮箱验证码
+// Get email verification code
 func (c *UsersController) PostVerify_email() *web.JsonResult {
 	token := params.FormValue(c.Ctx, "token")
 	if strs.IsBlank(token) {

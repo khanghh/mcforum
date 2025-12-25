@@ -12,37 +12,37 @@ const (
 	FmtDateTimeNoSeconds = "2006-01-02 15:04"
 )
 
-// NowUnix 秒时间戳
+// NowUnix returns the current Unix timestamp in seconds.
 func NowUnix() int64 {
 	return time.Now().Unix()
 }
 
-// FromUnix 秒时间戳转时间
+// FromUnix converts a seconds-based Unix timestamp to time.Time.
 func FromUnix(unix int64) time.Time {
 	return time.Unix(unix, 0)
 }
 
-// NowTimestamp 当前毫秒时间戳
+// NowTimestamp returns the current timestamp in milliseconds.
 func NowTimestamp() int64 {
 	return Timestamp(time.Now())
 }
 
-// Timestamp 毫秒时间戳
+// Timestamp returns the milliseconds timestamp for t.
 func Timestamp(t time.Time) int64 {
 	return t.UnixNano() / 1e6
 }
 
-// FromTimestamp 毫秒时间戳转时间
+// FromTimestamp converts a milliseconds timestamp to time.Time.
 func FromTimestamp(timestamp int64) time.Time {
 	return time.Unix(0, timestamp*int64(time.Millisecond))
 }
 
-// Format 时间格式化
+// Format formats a time according to the provided layout.
 func Format(time time.Time, layout string) string {
 	return time.Format(layout)
 }
 
-// Parse 字符串时间转时间类型
+// Parse parses a time string according to layout.
 func Parse(timeStr, layout string) (time.Time, error) {
 	return time.Parse(layout, timeStr)
 }
@@ -53,8 +53,7 @@ func GetDay(time time.Time) int {
 	return ret
 }
 
-// WithTimeAsStartOfDay
-// 返回指定时间当天的开始时间
+// WithTimeAsStartOfDay returns the start of the day for the given time.
 func WithTimeAsStartOfDay(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 }

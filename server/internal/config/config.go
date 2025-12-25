@@ -48,25 +48,25 @@ func init() {
 }
 
 type Config struct {
-	Env            string   // 环境
+	Env            string   // Environment
 	BaseUrl        string   // base url
-	Port           string   // 端口
-	IpDataPath     string   // IP数据文件
-	AllowedOrigins []string // 跨域白名单
+	Port           string   // Port
+	IpDataPath     string   // IP data file
+	AllowedOrigins []string // CORS whitelist
 	Language       string
 
-	// 日志配置
+	// Log configuration
 	Logger struct {
-		Filename   string // 日志文件的位置
-		MaxSize    int    // 文件最大尺寸（以MB为单位）
-		MaxAge     int    // 保留旧文件的最大天数
-		MaxBackups int    // 保留的最大旧文件数量
+		Filename   string // Log file location
+		MaxSize    int    // Max file size (in MB)
+		MaxAge     int    // Max age to retain old files (days)
+		MaxBackups int    // Max number of old files to keep
 	}
 
-	// 数据库配置
+	// Database configuration
 	DB sqls.DbConfig
 
-	// 阿里云oss配置
+	// Aliyun OSS configuration
 	Uploader struct {
 		Enable    string
 		AliyunOss struct {
@@ -87,15 +87,15 @@ type Config struct {
 		}
 	}
 
-	// 百度SEO相关配置
-	// 文档：https://ziyuan.baidu.com/college/courseinfo?id=267&page=2#h2_article_title14
+	// Baidu SEO configuration
+	// Doc: https://ziyuan.baidu.com/college/courseinfo?id=267&page=2#h2_article_title14
 	BaiduSEO struct {
 		Site  string
 		Token string
 	}
 
-	// 神马搜索SEO相关
-	// 文档：https://zhanzhang.sm.cn/open/mip
+	// Shenma (Sm) SEO configuration
+	// Doc: https://zhanzhang.sm.cn/open/mip
 	SmSEO struct {
 		Site     string
 		UserName string

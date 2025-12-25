@@ -8,7 +8,7 @@ import (
 	"bbs-go/pkg/markdown"
 )
 
-// 收藏返回数据
+// Favorite response data
 type FavoriteResponse struct {
 	Id         int64     `json:"id"`
 	EntityType string    `json:"entityType"`

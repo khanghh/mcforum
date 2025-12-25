@@ -6,10 +6,10 @@ import (
 )
 
 type Strategy interface {
-	// Name 策略名称
+	// Name Strategy name
 	Name() string
-	// CheckTopic 检查话题
+	// CheckTopic Check topic
 	CheckTopic(user *model.User, form payload.CreateTopicForm) error
-	// CheckComment 检查评论
+	// CheckComment Check comment
 	CheckComment(user *model.User, form payload.CreateCommentForm) error
 }

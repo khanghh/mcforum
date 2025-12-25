@@ -178,7 +178,7 @@ func FormValue(ctx iris.Context, name string) string {
 func FormValueRequired(ctx iris.Context, name string) (string, error) {
 	str := FormValue(ctx, name)
 	if len(str) == 0 {
-		return "", errors.New("参数：" + name + "不能为空")
+		return "", errors.New("Parameter: " + name + " cannot be empty")
 	}
 	return str, nil
 }
@@ -286,7 +286,7 @@ func FormValueBoolDefault(ctx iris.Context, name string, def bool) bool {
 	return value
 }
 
-// 从请求中获取日期
+// Get date from request
 func FormDate(ctx iris.Context, name string) *time.Time {
 	value := FormValue(ctx, name)
 	if strs.IsBlank(value) {

@@ -2,13 +2,13 @@ package event
 
 import "bbs-go/internal/model"
 
-// FollowEvent 关注
+// FollowEvent Follow
 type FollowEvent struct {
 	UserId  int64 `json:"userId"`
 	OtherId int64 `json:"otherId"`
 }
 
-// UnfollowEvent 取消关注
+// UnfollowEvent Unfollow
 type UnfollowEvent struct {
 	UserId  int64 `json:"userId"`
 	OtherId int64 `json:"otherId"`

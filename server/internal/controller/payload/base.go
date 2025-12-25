@@ -8,7 +8,7 @@ import (
 	"bbs-go/common/strs"
 )
 
-// 图片
+// Image
 type ImageInfo struct {
 	Url     string `json:"url"`
 	Preview string `json:"preview"`

@@ -51,7 +51,7 @@ func (c *CommentController) GetList() *web.JsonResult {
 	}
 
 	if id <= 0 && userId <= 0 && (strs.IsBlank(entityType) || entityId <= 0) {
-		// return web.JsonErrorMsg("请输入必要的查询参数。")
+		// return web.JsonErrorMsg("Please provide required query parameters.")
 		return web.JsonSuccess()
 	}
 
@@ -61,17 +61,17 @@ func (c *CommentController) GetList() *web.JsonResult {
 	for _, comment := range list {
 		builder := web.NewRspBuilder(comment)
 
-		// 用户
+		// user
 		builder = builder.Put("user", payload.BuildUserInfoDefaultIfNull(comment.UserId))
 
-		// 内容
+		// content
 		if comment.ContentType == constants.ContentTypeMarkdown {
 			builder.Put("content", markdown.ToHTML(comment.Content))
 		} else {
 			builder.Put("content", comment.Content)
 		}
 
-		// 图片
+		// images
 		if strs.IsNotBlank(comment.ImageList) {
 			var imageList []model.ImageDTO
 			_ = jsons.Parse(comment.ImageList, &imageList)

@@ -102,14 +102,14 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 	return web.JsonData(c.buildUserItem(user, true))
 }
 
-// 禁言
+// Ban
 func (c *UserController) PostForbidden() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
 	if !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-		return web.JsonErrorMsg("无权限")
+		return web.JsonErrorMsg("No permission")
 	}
 	var (
 		userId = params.FormValueInt64Default(c.Ctx, "userId", 0)
@@ -117,7 +117,7 @@ func (c *UserController) PostForbidden() *web.JsonResult {
 		reason = params.FormValue(c.Ctx, "reason")
 	)
 	if userId < 0 {
-		return web.JsonErrorMsg("请传入：userId")
+		return web.JsonErrorMsg("Please provide: userId")
 	}
 	if days == 0 {
 		service.UserService.RemoveForbidden(user.Id, userId, c.Ctx.Request())
