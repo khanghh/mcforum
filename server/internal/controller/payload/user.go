@@ -37,22 +37,30 @@ type UserInfo struct {
 	IsFollowing bool `json:"isFollowing"` // whether following
 }
 
+type UserSettings struct {
+	LockedProfile bool `json:"lockedProfile"` // Locked profile
+	ShowLocation  bool `json:"showLocation"`  // Show location
+	EmailNotify   bool `json:"emailNotify"`   // Email notifications
+}
+
 // UserDetail user detailed info
 type UserDetail struct {
 	UserInfo
 	BackgroundImage      string `json:"backgroundImage"`
 	SmallBackgroundImage string `json:"smallBackgroundImage"`
-	HomePage             string `json:"homePage"`
-	IsActive             bool   `json:"isActive"`
+	Location             string `json:"location"`
 }
 
 // UserProfile user personal info
 type UserProfile struct {
 	UserDetail
-	Roles         []string `json:"roles"`
-	PasswordSet   bool     `json:"passwordSet"` // password set
-	Email         string   `json:"email"`
-	EmailVerified bool     `json:"emailVerified"`
+	Roles         []string     `json:"roles"`
+	PasswordSet   bool         `json:"passwordSet"` // password set
+	Email         string       `json:"email"`
+	EmailVerified bool         `json:"emailVerified"`
+	JoinTime      int64        `json:"joinTime"`
+	IsActive      bool         `json:"isActive"`
+	Settings      UserSettings `json:"settings,omitempty"`
 }
 
 func BuildUserInfoDefaultIfNull(id int64) *UserInfo {
@@ -98,7 +106,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		ret.SmallAvatar = avatar
 	}
 	if !user.IsActive {
-		ret.Nickname = ret.Username
+		ret.Nickname = "Unknown"
 		ret.Bio = ""
 		ret.Score = 0
 		ret.Forbidden = true
@@ -114,12 +122,7 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		UserInfo:             *BuildUserInfo(user),
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
-		HomePage:             user.HomePage,
-		IsActive:             user.IsActive,
-	}
-	if !user.IsActive {
-		ret.Username = "blacklist"
-		ret.HomePage = ""
+		Location:             user.Location,
 	}
 	return ret
 }
@@ -133,6 +136,7 @@ func BuildUserProfile(user *model.User) *UserProfile {
 		Email:         user.Email.String,
 		EmailVerified: user.EmailVerified,
 		PasswordSet:   len(user.Password) > 0,
+		IsActive:      user.IsActive,
 	}
 
 	if strs.IsNotBlank(user.Roles) {

@@ -76,3 +76,37 @@ func GetCreateCommentForm(ctx iris.Context) CreateCommentForm {
 
 	return form
 }
+
+type UpdateProfileForm struct {
+	Avatar        string `form:"avatar"`
+	Nickname      string `form:"nickname"`
+	Bio           string `form:"bio"`
+	Location      string `form:"location"`
+	LockedProfile bool   `form:"lockedProfile"`
+	ShowLocation  bool   `form:"showLocation"`
+	EmailNotify   bool   `form:"emailNotify"`
+}
+
+func GetUpdateProfileForm(ctx iris.Context) UpdateProfileForm {
+	contentType := ctx.GetHeader("Content-Type")
+
+	if contentType == "application/json" {
+		var form UpdateProfileForm
+		if err := ctx.ReadJSON(&form); err != nil {
+			slog.Error(err.Error(), slog.Any("err", err))
+		}
+		return form
+	}
+
+	form := UpdateProfileForm{
+		Avatar:        strings.TrimSpace(params.FormValue(ctx, "avatar")),
+		Nickname:      strings.TrimSpace(params.FormValue(ctx, "nickname")),
+		Bio:           strings.TrimSpace(params.FormValue(ctx, "bio")),
+		Location:      strings.TrimSpace(params.FormValue(ctx, "location")),
+		LockedProfile: params.FormValueBoolDefault(ctx, "lockedProfile", false),
+		ShowLocation:  params.FormValueBoolDefault(ctx, "showLocation", false),
+		EmailNotify:   params.FormValueBoolDefault(ctx, "emailNotify", false),
+	}
+
+	return form
+}

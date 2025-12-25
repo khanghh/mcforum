@@ -71,7 +71,6 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 		nickname    = params.FormValue(c.Ctx, "nickname")
 		avatar      = params.FormValue(c.Ctx, "avatar")
 		gender      = params.FormValue(c.Ctx, "gender")
-		homePage    = params.FormValue(c.Ctx, "homePage")
 		description = params.FormValue(c.Ctx, "description")
 		roleIds     = params.FormValueInt64Array(c.Ctx, "roleIds")
 		isActive    = params.FormValueBoolDefault(c.Ctx, "is_active", false)
@@ -88,7 +87,6 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 	user.Nickname = nickname
 	user.Avatar = avatar
 	user.Gender = gender
-	user.HomePage = homePage
 	user.Bio = description
 	user.IsActive = isActive
 

@@ -7,6 +7,11 @@ const (
 	UploadMaxM                   = 10
 	UploadMaxBytes         int64 = 1024 * 1024 * 1024 * UploadMaxM
 	CookieTokenKey               = "bbsgo_token"
+	BioMaxLength                 = 200
+	NicknameMaxLength            = 50
+	StatusMaxLength              = 150
+	ForumTitleMaxLength          = 128
+	LocationMaxLength            = 100
 )
 
 // System config

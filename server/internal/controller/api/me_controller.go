@@ -1,17 +1,15 @@
 package api
 
 import (
-	"bbs-go/common/dates"
 	"bbs-go/common/strs"
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
+	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
-	"bbs-go/internal/validate"
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
-	"strings"
-	"time"
+	"log/slog"
 
 	"github.com/kataras/iris/v12"
 )
@@ -22,9 +20,55 @@ type MeController struct {
 
 func (c *MeController) Get() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user != nil {
-		return web.JsonData(payload.BuildUserProfile(user))
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
 	}
+	profile := payload.BuildUserProfile(user)
+	profile.Settings = payload.UserSettings{
+		LockedProfile: user.LockedProfile,
+		ShowLocation:  user.ShowLocation,
+		EmailNotify:   user.EmailNotify,
+	}
+	return web.JsonData(profile)
+}
+
+func (c *MeController) Patch() *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
+	form := payload.GetUpdateProfileForm(c.Ctx)
+	if (len(form.Bio)) > constants.BioMaxLength {
+
+		return web.JsonError(errs.NewBadRequestError(locale.T("user.bio_max_length_exceeded")))
+	}
+
+	if strs.IsBlank(form.Nickname) {
+		return web.JsonError(errs.NewBadRequestError(locale.T("user.nickname_required")))
+	}
+	if len(form.Nickname) > constants.NicknameMaxLength {
+		return web.JsonError(errs.NewBadRequestError(locale.T("user.nickname_max_length_exceeded")))
+	}
+
+	if len(form.Location) > constants.LocationMaxLength {
+		return web.JsonError(errs.NewBadRequestError(locale.T("user.location_max_length_exceeded")))
+	}
+
+	columns := map[string]interface{}{
+		"avatar":         form.Avatar,
+		"nickname":       form.Nickname,
+		"bio":            form.Bio,
+		"location":       form.Location,
+		"locked_profile": form.LockedProfile,
+		"show_location":  form.ShowLocation,
+		"email_notify":   form.EmailNotify,
+	}
+	if err := service.UserService.Updates(user.Id, columns); err != nil {
+		slog.Error("Failed to update user profile:", "error", err, "userId", user.Id, "columns", columns)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+
 	return web.JsonSuccess()
 }
 
@@ -61,133 +105,60 @@ func (c *MeController) DeleteFavoritesBy(topicId int64) (*web.JsonResult, error)
 	return web.JsonSuccess(), nil
 }
 
-// POST /api/me/edit/{userId}
-func (c *MeController) PostEditBy(userId int64) *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	if user.Id != userId {
-		return web.JsonErrorMsg("No permission")
-	}
-	var (
-		nickname    = strings.TrimSpace(params.FormValue(c.Ctx, "nickname"))
-		homePage    = params.FormValue(c.Ctx, "homePage")
-		description = params.FormValue(c.Ctx, "description")
-		gender      = strings.TrimSpace(params.FormValue(c.Ctx, "gender"))
-		birthdayStr = strings.TrimSpace(params.FormValue(c.Ctx, "birthday"))
-		birthday    *time.Time
-		err         error
-	)
+// // POST /api/me/edit/{userId}
+// func (c *MeController) PostEditBy(userId int64) *web.JsonResult {
+// 	user := service.UserTokenService.GetCurrent(c.Ctx)
+// 	if user == nil {
+// 		return web.JsonError(errs.NotLogin)
+// 	}
+// 	if user.Id != userId {
+// 		return web.JsonErrorMsg("No permission")
+// 	}
+// 	var (
+// 		nickname    = strings.TrimSpace(params.FormValue(c.Ctx, "nickname"))
+// 		homePage    = params.FormValue(c.Ctx, "homePage")
+// 		description = params.FormValue(c.Ctx, "description")
+// 		gender      = strings.TrimSpace(params.FormValue(c.Ctx, "gender"))
+// 		birthdayStr = strings.TrimSpace(params.FormValue(c.Ctx, "birthday"))
+// 		birthday    *time.Time
+// 		err         error
+// 	)
 
-	if len(nickname) == 0 {
-		return web.JsonErrorMsg("Nickname cannot be empty")
-	}
+// 	if len(nickname) == 0 {
+// 		return web.JsonErrorMsg("Nickname cannot be empty")
+// 	}
 
-	if strs.IsNotBlank(gender) {
-		if gender != string(constants.GenderMale) && gender != string(constants.GenderFemale) {
-			return web.JsonErrorMsg("Gender data error")
-		}
-	}
-	if strs.IsNotBlank(birthdayStr) {
-		*birthday, err = dates.Parse(birthdayStr, dates.FmtDate)
-		if err != nil {
-			return web.JsonError(err)
-		}
-	}
+// 	if strs.IsNotBlank(gender) {
+// 		if gender != string(constants.GenderMale) && gender != string(constants.GenderFemale) {
+// 			return web.JsonErrorMsg("Gender data error")
+// 		}
+// 	}
+// 	if strs.IsNotBlank(birthdayStr) {
+// 		*birthday, err = dates.Parse(birthdayStr, dates.FmtDate)
+// 		if err != nil {
+// 			return web.JsonError(err)
+// 		}
+// 	}
 
-	if len(homePage) > 0 && validate.IsURL(homePage) != nil {
-		return web.JsonErrorMsg("Homepage address error")
-	}
+// 	if len(homePage) > 0 && validate.IsURL(homePage) != nil {
+// 		return web.JsonErrorMsg("Homepage address error")
+// 	}
 
-	columns := map[string]interface{}{
-		"nickname":    nickname,
-		"home_page":   homePage,
-		"description": description,
-		"gender":      gender,
-	}
-	if birthday != nil {
-		columns["birthday"] = birthday
-	}
-	err = service.UserService.Updates(user.Id, columns)
-	if err != nil {
-		return web.JsonError(err)
-	}
-	return web.JsonSuccess()
-}
-
-// Update avatar
-func (c *MeController) PostUpdateAvatar() *web.JsonResult {
-	// Update avatar
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	avatar := strings.TrimSpace(params.FormValue(c.Ctx, "avatar"))
-	if len(avatar) == 0 {
-		return web.JsonErrorMsg("Avatar cannot be empty")
-	}
-	err := service.UserService.UpdateAvatar(user.Id, avatar)
-	if err != nil {
-		return web.JsonError(err)
-	}
-	return web.JsonSuccess()
-}
-
-func (c *MeController) PostUpdateNickname() *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	nickname := strings.TrimSpace(params.FormValue(c.Ctx, "nickname"))
-	if len(nickname) == 0 {
-		return web.JsonErrorMsg("Nickname cannot be empty")
-	}
-	err := service.UserService.UpdateNickname(user.Id, nickname)
-	if err != nil {
-		return web.JsonErrorMsg(err.Error())
-	}
-	return web.JsonSuccess()
-}
-
-func (c *MeController) PostUpdateBio() *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	description := strings.TrimSpace(params.FormValue(c.Ctx, "description"))
-	err := service.UserService.UpdateDescription(user.Id, description)
-	if err != nil {
-		return web.JsonErrorMsg(err.Error())
-	}
-	return web.JsonSuccess()
-}
-
-func (c *MeController) PostUpdateGender() *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	gender := strings.TrimSpace(params.FormValue(c.Ctx, "gender"))
-	err := service.UserService.UpdateGender(user.Id, gender)
-	if err != nil {
-		return web.JsonErrorMsg(err.Error())
-	}
-	return web.JsonSuccess()
-}
-
-func (c *MeController) PostUpdateBirthday() *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	birthday := strings.TrimSpace(params.FormValue(c.Ctx, "birthday"))
-	err := service.UserService.UpdateBirthday(user.Id, birthday)
-	if err != nil {
-		return web.JsonErrorMsg(err.Error())
-	}
-	return web.JsonSuccess()
-}
+// 	columns := map[string]interface{}{
+// 		"nickname":    nickname,
+// 		"home_page":   homePage,
+// 		"description": description,
+// 		"gender":      gender,
+// 	}
+// 	if birthday != nil {
+// 		columns["birthday"] = birthday
+// 	}
+// 	err = service.UserService.Updates(user.Id, columns)
+// 	if err != nil {
+// 		return web.JsonError(err)
+// 	}
+// 	return web.JsonSuccess()
+// }
 
 // // Update password
 // func (c *MeController) PostUpdatePassword() *web.JsonResult {

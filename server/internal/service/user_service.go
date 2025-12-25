@@ -219,13 +219,14 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 	}
 
 	user := &model.User{
-		Username:   sqls.SqlNullString(username),
-		Email:      sqls.SqlNullString(email),
-		Nickname:   nickname,
-		Password:   passwd.EncodePassword(password),
-		IsActive:   true,
-		CreateTime: dates.NowTimestamp(),
-		UpdateTime: dates.NowTimestamp(),
+		Username:      sqls.SqlNullString(username),
+		Email:         sqls.SqlNullString(email),
+		EmailVerified: true,
+		Nickname:      nickname,
+		Password:      passwd.EncodePassword(password),
+		IsActive:      true,
+		CreateTime:    dates.NowTimestamp(),
+		UpdateTime:    dates.NowTimestamp(),
 	}
 
 	err = repository.UserRepository.Create(sqls.DB(), user)
