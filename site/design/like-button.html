@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Like Button Effects</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom styles for additional effects -->
+    <style>
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40%, 60%, 80% { transform: scale(1); }
+            50%, 70% { transform: scale(1.05); }
+        }
+        
+        @keyframes burst {
+            0% { 
+                transform: scale(0.5); 
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(1.2); 
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(1); 
+                opacity: 1;
+            }
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-30px) scale(0.5);
+                opacity: 0;
+            }
+        }
+        
+        .heart-beat {
+            animation: heartBeat 1.2s ease-in-out;
+        }
+        
+        .burst-effect {
+            animation: burst 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #ec4899;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .float-up {
+            animation: floatUp 0.8s forwards;
+        }
+        
+        .like-button {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(236, 72, 153, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        /* Custom checkbox for toggle effect */
+        .toggle-checkbox:checked + .toggle-label .toggle-icon {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black text-white min-h-screen p-6">
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent mb-4">Awesome Like Button Effects</h1>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">Interactive like buttons with various animations using TailwindCSS and FontAwesome icons</p>
+        </header>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Effect 1: Heartbeat Button -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-pink-400">1. Heartbeat Effect</h2>
+                <p class="text-gray-300 mb-6">A classic like button with a heartbeat animation when clicked.</p>
+                <div class="flex justify-center">
+                    <button id="heartbeat-btn" class="like-button flex items-center justify-center w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-2xl text-gray-300 hover:text-pink-400">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+                <div class="mt-6 text-center text-gray-400">
+                    <span id="heartbeat-count" class="font-bold">0</span> likes
+                </div>
+            </div>
+            
+            <!-- Effect 2: Burst Particles -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-yellow-400">2. Particle Burst</h2>
+                <p class="text-gray-300 mb-6">Click to create a burst of particles around the button.</p>
+                <div class="flex justify-center">
+                    <div class="relative" id="particle-container">
+                        <button id="particle-btn" class="like-button flex items-center justify-center w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-2xl text-gray-300 hover:text-yellow-400">
+                            <i class="far fa-star"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-gray-400">
+                    <span id="particle-count" class="font-bold">0</span> likes
+                </div>
+            </div>
+            
+            <!-- Effect 3: Ripple Wave -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-blue-400">3. Ripple Wave</h2>
+                <p class="text-gray-300 mb-6">Creates a ripple effect when you click the button.</p>
+                <div class="flex justify-center">
+                    <div class="relative overflow-visible" id="ripple-container">
+                        <button id="ripple-btn" class="like-button flex items-center justify-center w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-2xl text-gray-300 hover:text-blue-400">
+                            <i class="far fa-thumbs-up"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-gray-400">
+                    <span id="ripple-count" class="font-bold">0</span> likes
+                </div>
+            </div>
+            
+            <!-- Effect 4: Double Tap -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-green-400">4. Double Tap</h2>
+                <p class="text-gray-300 mb-6">Double tap to like with a special animation.</p>
+                <div class="flex justify-center">
+                    <div class="relative" id="doubletap-container">
+                        <button id="doubletap-btn" class="like-button flex items-center justify-center w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-2xl text-gray-300 hover:text-green-400">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div id="doubletap-overlay" class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
+                            <i class="fas fa-heart text-green-400 text-4xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-gray-400">
+                    <span id="doubletap-count" class="font-bold">0</span> likes
+                </div>
+            </div>
+            
+            <!-- Effect 5: Slide Toggle -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-purple-400">5. Slide Toggle</h2>
+                <p class="text-gray-300 mb-6">A toggle switch style like button with sliding animation.</p>
+                <div class="flex justify-center">
+                    <div class="relative inline-block w-20 h-10 bg-gray-700 rounded-full cursor-pointer" id="toggle-container">
+                        <input type="checkbox" class="toggle-checkbox absolute opacity-0 w-0 h-0" id="toggle-like">
+                        <label for="toggle-like" class="toggle-label block w-full h-full rounded-full cursor-pointer">
+                            <div class="absolute left-1 top-1 w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center toggle-icon transition-transform duration-300">
+                                <i class="far fa-heart text-white text-sm"></i>
+                            </div>
+                            <div class="absolute right-3 top-2.5 text-gray-400">
+                                <i class="fas fa-heart text-sm"></i>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-gray-400">
+                    <span id="toggle-count" class="font-bold">0</span> likes
+                </div>
+            </div>
+            
+            <!-- Effect 6: Counter Animation -->
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold mb-4 text-red-400">6. Counter Animation</h2>
+                <p class="text-gray-300 mb-6">Like counter animates when button is clicked with floating numbers.</p>
+                <div class="flex justify-center items-center space-x-6">
+                    <button id="counter-btn" class="like-button flex items-center justify-center w-16 h-16 rounded-full bg-gray-700 hover:bg-gray-600 text-2xl text-gray-300 hover:text-red-400">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="relative">
+                        <div id="counter" class="text-3xl font-bold text-red-400">0</div>
+                        <div id="float-numbers" class="absolute -top-8 left-0 w-full text-center"></div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center text-gray-400">
+                    Click to see the counter animation
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-12 p-6 bg-gray-800 rounded-2xl shadow-xl">
+            <h2 class="text-2xl font-bold mb-4 text-center text-white">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center p-4">
+                    <div class="text-4xl text-pink-400 mb-3"><i class="fas fa-code"></i></div>
+                    <h3 class="text-xl font-bold mb-2">TailwindCSS</h3>
+                    <p class="text-gray-300">All buttons are styled using TailwindCSS utility classes for rapid UI development.</p>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl text-yellow-400 mb-3"><i class="fas fa-icons"></i></div>
+                    <h3 class="text-xl font-bold mb-2">FontAwesome</h3>
+                    <p class="text-gray-300">Using FontAwesome icons for beautiful, scalable vector icons that work everywhere.</p>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl text-blue-400 mb-3"><i class="fas fa-bolt"></i></div>
+                    <h3 class="text-xl font-bold mb-2">Custom Animations</h3>
+                    <p class="text-gray-300">Custom CSS animations and JavaScript to create interactive, engaging effects.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-gray-400">
+            <p>Awesome Like Button Effects with TailwindCSS & FontAwesome</p>
+            <p class="mt-2">Click on each button to see different animation effects!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Effect 1: Heartbeat Button
+        const heartbeatBtn = document.getElementById('heartbeat-btn');
+        const heartbeatCount = document.getElementById('heartbeat-count');
+        let heartbeatLikes = 0;
+        
+        heartbeatBtn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far', 'fa-heart');
+                icon.classList.add('fas', 'fa-heart', 'heart-beat', 'text-pink-500');
+                heartbeatLikes++;
+            } else {
+                icon.classList.remove('fas', 'fa-heart', 'heart-beat', 'text-pink-500');
+                icon.classList.add('far', 'fa-heart');
+                heartbeatLikes--;
+            }
+            
+            heartbeatCount.textContent = heartbeatLikes;
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                icon.classList.remove('heart-beat');
+            }, 1200);
+        });
+        
+        // Effect 2: Particle Burst
+        const particleBtn = document.getElementById('particle-btn');
+        const particleContainer = document.getElementById('particle-container');
+        const particleCount = document.getElementById('particle-count');
+        let particleLikes = 0;
+        let isParticleLiked = false;
+        
+        particleBtn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            
+            if (!isParticleLiked) {
+                icon.classList.remove('far', 'fa-star');
+                icon.classList.add('fas', 'fa-star', 'burst-effect', 'text-yellow-400');
+                particleLikes++;
+                isParticleLiked = true;
+                
+                // Create particles
+                createParticles(particleContainer, 15, 'yellow');
+            } else {
+                icon.classList.remove('fas', 'fa-star', 'burst-effect', 'text-yellow-400');
+                icon.classList.add('far', 'fa-star');
+                particleLikes--;
+                isParticleLiked = false;
+            }
+            
+            particleCount.textContent = particleLikes;
+        });
+        
+        // Effect 3: Ripple Wave
+        const rippleBtn = document.getElementById('ripple-btn');
+        const rippleContainer = document.getElementById('ripple-container');
+        const rippleCount = document.getElementById('ripple-count');
+        let rippleLikes = 0;
+        let isRippleLiked = false;
+        
+        rippleBtn.addEventListener('click', function(e) {
+            const icon = this.querySelector('i');
+            
+            if (!isRippleLiked) {
+                icon.classList.remove('far', 'fa-thumbs-up');
+                icon.classList.add('fas', 'fa-thumbs-up', 'text-blue-400');
+                rippleLikes++;
+                isRippleLiked = true;
+            } else {
+                icon.classList.remove('fas', 'fa-thumbs-up', 'text-blue-400');
+                icon.classList.add('far', 'fa-thumbs-up');
+                rippleLikes--;
+                isRippleLiked = false;
+            }
+            
+            rippleCount.textContent = rippleLikes;
+            
+            // Create ripple effect
+            createRipple(e, rippleContainer, 'blue');
+        });
+        
+        // Effect 4: Double Tap
+        const doubletapBtn = document.getElementById('doubletap-btn');
+        const doubletapOverlay = document.getElementById('doubletap-overlay');
+        const doubletapCount = document.getElementById('doubletap-count');
+        let doubletapLikes = 0;
+        let tapCount = 0;
+        let tapTimeout;
+        
+        doubletapBtn.addEventListener('click', function() {
+            tapCount++;
+            
+            if (tapCount === 1) {
+                tapTimeout = setTimeout(() => {
+                    tapCount = 0;
+                }, 300);
+            } else if (tapCount === 2) {
+                clearTimeout(tapTimeout);
+                
+                const icon = this.querySelector('i');
+                
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far', 'fa-heart');
+                    icon.classList.add('fas', 'fa-heart', 'text-green-400');
+                    doubletapLikes++;
+                    
+                    // Show the overlay animation
+                    doubletapOverlay.classList.remove('opacity-0');
+                    doubletapOverlay.classList.add('opacity-100');
+                    
+                    setTimeout(() => {
+                        doubletapOverlay.classList.remove('opacity-100');
+                        doubletapOverlay.classList.add('opacity-0');
+                    }, 800);
+                } else {
+                    icon.classList.remove('fas', 'fa-heart', 'text-green-400');
+                    icon.classList.add('far', 'fa-heart');
+                    doubletapLikes--;
+                }
+                
+                doubletapCount.textContent = doubletapLikes;
+                tapCount = 0;
+            }
+        });
+        
+        // Effect 5: Slide Toggle
+        const toggleCheckbox = document.getElementById('toggle-like');
+        const toggleCount = document.getElementById('toggle-count');
+        let toggleLikes = 0;
+        
+        toggleCheckbox.addEventListener('change', function() {
+            const toggleIcon = document.querySelector('.toggle-icon i');
+            
+            if (this.checked) {
+                toggleIcon.classList.remove('far', 'fa-heart');
+                toggleIcon.classList.add('fas', 'fa-heart');
+                toggleLikes++;
+            } else {
+                toggleIcon.classList.remove('fas', 'fa-heart');
+                toggleIcon.classList.add('far', 'fa-heart');
+                toggleLikes--;
+            }
+            
+            toggleCount.textContent = toggleLikes;
+        });
+        
+        // Effect 6: Counter Animation
+        const counterBtn = document.getElementById('counter-btn');
+        const counter = document.getElementById('counter');
+        const floatNumbers = document.getElementById('float-numbers');
+        let counterLikes = 0;
+        let isCounterLiked = false;
+        
+        counterBtn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            
+            if (!isCounterLiked) {
+                icon.classList.remove('far', 'fa-heart');
+                icon.classList.add('fas', 'fa-heart', 'text-red-400');
+                counterLikes++;
+                isCounterLiked = true;
+            } else {
+                icon.classList.remove('fas', 'fa-heart', 'text-red-400');
+                icon.classList.add('far', 'fa-heart');
+                counterLikes--;
+                isCounterLiked = false;
+            }
+            
+            // Animate the counter
+            animateCounter(counter, counterLikes);
+            
+            // Create floating number
+            createFloatingNumber(floatNumbers, counterLikes);
+        });
+        
+        // Helper Functions
+        function createParticles(container, count, color) {
+            const colors = {
+                'yellow': '#fbbf24',
+                'pink': '#ec4899',
+                'blue': '#3b82f6',
+                'green': '#10b981',
+                'purple': '#8b5cf6',
+                'red': '#ef4444'
+            };
+            
+            const particleColor = colors[color] || '#fbbf24';
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.backgroundColor = particleColor;
+                
+                // Random position around the button
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 30 + Math.random() * 30;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                particle.style.left = `calc(50% + ${x}px)`;
+                particle.style.top = `calc(50% + ${y}px)`;
+                
+                container.appendChild(particle);
+                
+                // Animate the particle
+                setTimeout(() => {
+                    particle.style.transition = 'all 0.8s ease-out';
+                    particle.style.transform = `translate(${x * 2}px, ${y * 2}px)`;
+                    particle.style.opacity = '0';
+                    
+                    // Remove particle after animation
+                    setTimeout(() => {
+                        if (particle.parentNode === container) {
+                            container.removeChild(particle);
+                        }
+                    }, 800);
+                }, 50);
+            }
+        }
+        
+        function createRipple(event, container, color) {
+            const ripple = document.createElement('span');
+            const rect = container.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.classList.add('ripple');
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            if (color === 'blue') {
+                ripple.style.backgroundColor = 'rgba(59, 130, 246, 0.4)';
+            } else if (color === 'pink') {
+                ripple.style.backgroundColor = 'rgba(236, 72, 153, 0.4)';
+            } else {
+                ripple.style.backgroundColor = 'rgba(59, 130, 246, 0.4)';
+            }
+            
+            container.appendChild(ripple);
+            
+            // Remove ripple after animation
+            setTimeout(() => {
+                if (ripple.parentNode === container) {
+                    container.removeChild(ripple);
+                }
+            }, 600);
+        }
+        
+        function animateCounter(element, newValue) {
+            const oldValue = parseInt(element.textContent);
+            const difference = newValue - oldValue;
+            
+            // Flash the counter
+            element.classList.add('scale-125');
+            setTimeout(() => {
+                element.classList.remove('scale-125');
+            }, 300);
+            
+            // Update the counter value
+            element.textContent = newValue;
+        }
+        
+        function createFloatingNumber(container, value) {
+            const floatNumber = document.createElement('div');
+            floatNumber.textContent = `+1`;
+            floatNumber.classList.add('float-up', 'text-red-400', 'font-bold', 'text-lg');
+            
+            container.appendChild(floatNumber);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (floatNumber.parentNode === container) {
+                    container.removeChild(floatNumber);
+                }
+            }, 800);
+        }
+        
+        // Initialize some likes for demo purposes
+        window.addEventListener('DOMContentLoaded', () => {
+            heartbeatCount.textContent = '24';
+            particleCount.textContent = '42';
+            rippleCount.textContent = '18';
+            doubletapCount.textContent = '56';
+            toggleCount.textContent = '33';
+            counter.textContent = '127';
+        });
+    </script>
+</body>
+</html>

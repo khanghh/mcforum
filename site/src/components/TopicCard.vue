@@ -9,8 +9,8 @@
     <div class="flex-1 min-w-0">
       <h3 class="text-lg font-bold mb-2 flex items-center gap-4">
         <nuxt-link :to="`/topics/${topic.slug}`"
-          class="text-white hover:text-purple-400 transition-colors gaming-title flex-1 min-w-0">
-          <span class="truncate block">{{ topic.title }}</span>
+          class="text-white hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
+          {{ topic.title }}
         </nuxt-link>
         <div v-if="showPinned && topic.pinned"
           class="absolute -top-3 -right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold shadow-lg shadow-purple-500/30 z-20">
@@ -49,12 +49,7 @@
 
       <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
         <!-- Like -->
-        <button class="flex items-center gap-1 hover:text-blue-400 transition-colors"
-          :class="{ 'text-blue-400': topic.liked }"
-          @click.prevent="likeTopic">
-          <Icon name="MaterialSymbolsThumbUp" :class="{ 'text-blue-400': topic.liked }" />
-          {{ topic.likeCount }}
-        </button>
+        <LikeButton :liked="topic.liked" :count="topic.likeCount" :onClick="likeTopic" />
 
         <!-- Comment -->
         <nuxt-link :to="`/topics/${topic.slug || topic.id}`"

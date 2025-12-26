@@ -92,32 +92,19 @@
 
         <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
           <div class="flex items-center gap-4">
-            <button
-              class="group flex items-center gap-1 transition-all duration-200"
-              :class="topic.liked ? 'text-blue-400' : 'text-gray-400 hover:text-blue-400'"
-              @click="toggleLike">
-              <Icon name="MaterialSymbolsThumbUp"
-                class="transform group-hover:-translate-y-0.5 transition-transform" />
-              <span class="font-bold">{{ topic.likeCount || 0 }}</span>
-            </button>
+            <LikeButton :liked="topic.liked" :count="topic.likeCount" @click="toggleLike" />
 
             <div class="flex items-center gap-1 text-gray-400">
               <Icon name="IcRoundRemoveRedEye" />
-              <span>{{ topic.viewCount }} Views</span>
+              <span>{{ topic.viewCount }} {{ $t('feed.view_count') }}</span>
             </div>
 
             <div class="flex items-center gap-1 text-gray-400">
               <Icon name="TablerMessageCircle" />
-              <span>{{ topic.commentCount }} Comments</span>
+              <span>{{ topic.commentCount }} {{ $t('feed.comment_count') }}</span>
             </div>
 
-            <button
-              class="flex items-center gap-1 transition-colors duration-200"
-              :class="topic.favorited ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'"
-              @click="toggleFavorite">
-              <Icon name="TablerBookmark" />
-              <span>{{ topic.favorited ? 'Saved' : 'Save' }}</span>
-            </button>
+            <FavoriteButton v-if="user" :favorited="topic.favorited" @click="toggleFavorite" />
           </div>
 
           <div class="flex items-center gap-2">
@@ -152,11 +139,11 @@
 <script setup>
 const i18n = useI18n()
 const route = useRoute()
-const userStore = useUserStore()
+const toast = useToast()
 const api = useApi()
+const userStore = useUserStore()
 
 const slug = route.params.slug
-const user = userStore.user
 const topic = ref(null)
 
 topic.value = await api.getTopic(slug).catch((e) => {
@@ -166,6 +153,10 @@ topic.value = await api.getTopic(slug).catch((e) => {
     throw e
   }
 })
+
+const user = computed(() => userStore.user)
+
+console.log('Loaded topic:', topic.value.favorited)
 
 definePageMeta({
   layout: 'default',
@@ -189,6 +180,7 @@ function calculateLevel(score) {
 
 async function toggleLike() {
   try {
+    if (!user.value) return
     if (topic.value.liked) {
       await api.removeTopicReaction(slug)
       topic.value.liked = false
@@ -208,20 +200,17 @@ async function toggleLike() {
 async function toggleFavorite() {
   try {
     if (topic.value.favorited) {
-      await useHttpDelete(`/api/me/favorites/${topic.value.id}`)
+      await api.setTopicFavorite(topic.value.id, false)
       topic.value.favorited = false
-      useMsgSuccess(i18n.t('message.removed_from_favorite'))
     }
     else {
-      await useHttpPutForm(`/api/me/favorites`, {
-        body: { topicId: topic.value.id },
-      })
+      await api.setTopicFavorite(topic.value.id, true)
       topic.value.favorited = true
-      useMsgSuccess(i18n.t('message.added_to_favorite'))
     }
   }
   catch (e) {
-    useCatchError(e)
+    const errMsg = e.data?.error?.message || e.message || e
+    toast.error(i18n.t('message.opration_failed', { error: errMsg }))
   }
 }
 

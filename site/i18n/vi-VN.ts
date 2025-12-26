@@ -149,6 +149,7 @@ export default {
     dont_have_account: 'Chưa có tài khoản? Đăng ký>>',
   },
   message: {
+    opration_failed: 'Thao tác thất bại: {error}',
     username_email_required: 'Vui lòng nhập username hoặc email.',
     password_required: 'Vui lòng nhập mật khẩu.',
     captcha_required: 'Vui lòng nhập mã bảo mật.',

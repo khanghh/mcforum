@@ -101,10 +101,14 @@ export const useApi = () => {
     return new CursorResult<Topic[]>("/api/users/me/topics")
   }
 
-  // other user api endpoints
-  const toggleMyFavorite = (topicId: string): Promise<boolean> => {
-    return useHttpPut(`/api/users/me/favorites/${topicId}`)
+  const setTopicFavorite = (topicId: number, favorited: boolean): Promise<boolean> => {
+    if (favorited) {
+      return useHttpPut(`/api/users/me/favorites/${topicId}`)
+    }
+    return useHttpDelete(`/api/users/me/favorites/${topicId}`)
   }
+
+  // other user api endpoints
 
   const getUser = (username: string): Promise<UserProfile> => {
     return useHttpGet(`/api/users/${username}`) as Promise<UserProfile>
@@ -223,9 +227,9 @@ export const useApi = () => {
     getMyFollowers,
     getMyFollowing,
     getMyTopics,
+    setTopicFavorite,
 
     // other user api endpoints
-    toggleMyFavorite,
     getUser,
     followUser,
     unfollowUser,
