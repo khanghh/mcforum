@@ -156,6 +156,10 @@ export const useApi = () => {
     return useHttpDelete(`/api/topics/${topicSlug}`)
   }
 
+  const setTopicFlags = (topicSlug: string, attrs: { recommended?: boolean, pinned?: boolean }): Promise<void> => {
+    return useHttpPatch(`/api/topics/${topicSlug}`, { body: { ...attrs } })
+  }
+
   const getTopicComments = (topicSlug: string): CursorResult<Comment[]> => {
     return new CursorResult<Comment[]>(`/api/topics/${topicSlug}/comments`)
   }
@@ -238,6 +242,7 @@ export const useApi = () => {
     getTopic,
     getTopicsByTag,
     deleteTopic,
+    setTopicFlags,
     getTopicComments,
     addTopicComment,
     addTopicReaction,

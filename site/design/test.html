@@ -107,231 +107,219 @@
   <!-- Main Content -->
   <main class="flex-grow py-8 relative z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <!-- Profile Edit Card -->
-      <div class="max-w-3xl mx-auto">
-        <!-- Header with back button -->
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
-              <i class="fas fa-user-edit text-purple-400 text-lg"></i>
-            </div>
-            <h1
-              class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
-              Chỉnh sửa hồ sơ</h1>
-          </div>
-          <a href="/users/admin"
-            class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50">
-            <i class="fas fa-arrow-left mr-2"></i>
-            <span>Quay lại hồ sơ</span>
-          </a>
-        </div>
-
-        <!-- Edit Form Container - Lighter -->
-        <div
-          class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
-          <!-- Subtle gradient overlay -->
-          <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
-
+      <div class="flex-1 min-w-0">
+        <div class="gaming-card rounded-xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+          <div class="absolute inset-0 animated-border opacity-10"></div>
           <div class="relative z-10">
-            <form class="space-y-8">
-              <!-- Avatar Section -->
-              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
-                  <i class="fas fa-image mr-2"></i>Ảnh đại diện
-                </label>
-                <div class="flex-1">
-                  <div class="flex flex-col sm:flex-row items-center gap-6">
-                    <!-- Current Avatar Preview -->
-                    <div class="relative group">
-                      <div
-                        class="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500/40 avatar-upload shadow-lg shadow-purple-500/20">
-                        <img loading="lazy" src="/images/avatars/steve.png" alt="avatar"
-                          class="w-full h-full object-cover">
-                      </div>
-                      <div
-                        class="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                      </div>
-                    </div>
-
-                    <!-- Avatar Upload -->
-                    <div class="flex-1">
-                      <label class="file-upload-label relative inline-block cursor-pointer">
-                        <div
-                          class="border-2 border-dashed border-purple-500/40 rounded-xl p-6 text-center hover:border-purple-500/60 transition-colors bg-gray-800/30">
-                          <div
-                            class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
-                            <i class="fas fa-cloud-upload-alt text-purple-400 text-xl"></i>
-                          </div>
-                          <h4 class="text-white font-medium mb-2">Thay đổi ảnh đại diện</h4>
-                          <p class="text-sm text-gray-300 mb-4">PNG, JPG hoặc GIF (Tối đa 5MB)</p>
-                          <div
-                            class="px-4 py-2 bg-gradient-to-r from-purple-600/40 to-pink-600/40 rounded-lg inline-block hover:from-purple-600/50 hover:to-pink-600/50 transition-all">
-                            <span class="text-sm text-white">Chọn ảnh</span>
-                          </div>
-                          <input type="file" accept="image/*" class="sr-only" id="avatar-upload">
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Divider -->
-              <div class="border-t border-gray-700/50"></div>
-
-              <!-- Nickname -->
-              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                <label for="nickname" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
-                  <i class="fas fa-user-tag mr-2"></i>Biệt danh
-                </label>
-                <div class="flex-1">
-                  <div class="relative">
-                    <input type="text" id="nickname" autocomplete="off"
-                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors"
-                      placeholder="Nhập biệt danh của bạn">
-                    <div class="absolute right-3 top-3">
-                      <i class="fas fa-pen text-gray-400"></i>
-                    </div>
-                  </div>
-                  <p class="text-xs text-gray-400 mt-2">Biệt danh sẽ hiển thị công khai trên diễn đàn</p>
-                </div>
-              </div>
-
-              <!-- Username (read-only) -->
-              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
-                  <i class="fas fa-at mr-2"></i>Username
-                </label>
-                <div class="flex-1">
-                  <div
-                    class="w-full px-4 py-3 bg-gray-800/40 border border-gray-700 rounded-lg text-gray-300 flex items-center justify-between">
-                    <div class="flex items-center">
-                      <span class="font-mono text-purple-300">@</span>
-                      <span class="ml-1 font-medium">admin</span>
-                    </div>
-                    <span class="text-xs px-2 py-1 bg-gray-700/50 rounded text-gray-300">Không thể thay đổi</span>
-                  </div>
-                  <p class="text-xs text-gray-400 mt-2">Username không thể thay đổi sau khi đăng ký</p>
-                </div>
-              </div>
-
-              <!-- Email -->
-              <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                <label for="email" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
-                  <i class="fas fa-envelope mr-2"></i>Email
-                </label>
-                <div class="flex-1">
-                  <div class="relative">
-                    <input type="email" id="email"
-                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors"
-                      value="admin@mineviet.com">
-                    <div class="absolute right-3 top-3">
-                      <i class="fas fa-envelope text-gray-400"></i>
-                    </div>
-                  </div>
-                  <div class="flex justify-between items-center mt-2">
-                    <p class="text-xs text-gray-400">Email được sử dụng để nhận thông báo</p>
-                    <a href="https://example.com/account" target="_blank" rel="noopener"
-                      class="text-sm text-purple-400 hover:text-purple-300 flex items-center transition-colors">
-                      <i class="fas fa-external-link-alt mr-1"></i>
-                      <span>Thay đổi trong tài khoản</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Bio -->
-              <div class="flex flex-col sm:flex-row sm:items-start gap-6">
-                <label for="bio" class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-start pt-3">
-                  <i class="fas fa-info-circle mr-2 mt-0.5"></i>Giới thiệu
-                </label>
-                <div class="flex-1">
-                  <div class="relative">
-                    <textarea id="bio" rows="4"
-                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors resize-none"
-                      placeholder="Giới thiệu về bản thân..."></textarea>
-                    <div class="absolute right-3 top-3">
-                      <i class="fas fa-align-left text-gray-400"></i>
-                    </div>
-                  </div>
-                  <div class="flex justify-between items-center mt-2">
-                    <p class="text-xs text-gray-400">Mô tả ngắn về bạn (tối đa 500 ký tự)</p>
-                    <span class="text-xs text-gray-300" id="bio-counter">0/500</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Additional Settings -->
-              <div class="flex flex-col sm:flex-row sm:items-start gap-6">
-                <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-start pt-3">
-                  <i class="fas fa-cog mr-2 mt-0.5"></i>Cài đặt khác
-                </label>
-                <div class="flex-1 space-y-4">
-                  <!-- Privacy Setting -->
-                  <div
-                    class="flex items-center justify-between p-4 bg-gray-800/40 rounded-lg border border-gray-700/50">
-                    <div>
-                      <h4 class="font-medium text-white">Hồ sơ công khai</h4>
-                      <p class="text-sm text-gray-300 mt-1">Cho phép mọi người xem hồ sơ của bạn</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" class="sr-only peer" checked>
-                      <div
-                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
-                      </div>
-                    </label>
-                  </div>
-
-                  <!-- Email Notifications -->
-                  <div
-                    class="flex items-center justify-between p-4 bg-gray-800/40 rounded-lg border border-gray-700/50">
-                    <div>
-                      <h4 class="font-medium text-white">Thông báo qua email</h4>
-                      <p class="text-sm text-gray-300 mt-1">Nhận email về hoạt động mới</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" class="sr-only peer" checked>
-                      <div
-                        class="w-12 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600">
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Divider -->
-              <div class="border-t border-gray-700/50"></div>
-
-              <!-- Action Buttons -->
-              <div class="flex flex-col sm:flex-row justify-end gap-4 pt-4">
-                <button type="button"
-                  class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700">
-                  Hủy bỏ
-                </button>
-                <button type="submit"
-                  class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3),0_0_25px_rgba(139,92,246,0.2)] gaming-title tracking-[0.5px] transition-all hover:scale-[1.02] active:scale-[0.98]">
-                  <i class="fas fa-save mr-2"></i> Lưu thay đổi
-                </button>
-              </div>
-            </form>
+            <h1
+              class="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 gaming-title py-3">
+              Mới nhất</h1>
+            <p class="text-gray-300 mb-4">Khám phá các chủ đề mới nhất trong cộng đồng, cập nhật nhanh những tin tức,
+              thảo luận và nội dung vừa được tạo.</p>
           </div>
         </div>
 
-        <!-- Information Notice -->
-        <div
-          class="mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-lg border border-purple-500/30 backdrop-blur-sm">
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <i class="fas fa-info-circle text-purple-400"></i>
+        <!-- Threads List -->
+        <div id="threads-container" class="space-y-4">
+          <div class="w-full">
+            <div class="space-y-4">
+              <!-- Pinned Thread with enhanced styling -->
+              <div class="relative group">
+                <!-- Glow effect for pinned card -->
+                <div
+                  class="absolute -inset-0.5 bg-gradient-to-r from-purple-500/30 via-pink-500/20 to-purple-500/30 rounded-xl blur-sm opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+                </div>
+
+                <div
+                  class="relative gaming-card rounded-xl p-5 transition-all duration-300 bg-gradient-to-br from-gray-900 via-gray-900/95 to-gray-900 border-l-4 border-purple-500 shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 hover:-translate-y-0.5">
+                  <!-- Floating Pinned Badge -->
+                  <div
+                    class="absolute -top-3 -right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold shadow-lg shadow-purple-500/30 z-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                      aria-hidden="true" name="TablerPinnedFilled" class="icon w-3.5 h-3.5 animate-pulse"
+                      style="animation-duration: 2s;">
+                      <path fill="currentColor"
+                        d="M16 3a1 1 0 0 1 .117 1.993L16 5v4.764l1.894 3.789a1 1 0 0 1 .1.331L18 14v2a1 1 0 0 1-.883.993L17 17h-4v4a1 1 0 0 1-1.993.117L11 21v-4H7a1 1 0 0 1-.993-.883L6 16v-2a1 1 0 0 1 .06-.34l.046-.107L8 9.762V5a1 1 0 0 1-.117-1.993L8 3z">
+                      </path>
+                    </svg>
+                    <span class="tracking-wide">GHIM</span>
+                  </div>
+
+                  <!-- Pinned indicator ribbon corner -->
+                  <div class="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+                    <div
+                      class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 transform rotate-45 translate-x-8 -translate-y-8">
+                    </div>
+                  </div>
+
+                  <div class="flex-1 min-w-0 relative z-10">
+                    <h3 class="text-lg font-bold mb-2 flex items-center gap-4">
+                      <a href="/topics/rewrawrawr.x4FJFc"
+                        class="text-white hover:text-purple-300 transition-colors gaming-title flex-1 min-w-0">
+                        <span
+                          class="block truncate bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">rewrawrawr</span>
+                      </a>
+                    </h3>
+
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                      <!-- Avatar -->
+                      <div class="flex items-center gap-2">
+                        <img loading="lazy" src="http://172.17.0.3:3000/images/avatars/steve.png" alt="admin" width="24"
+                          height="24"
+                          class="object-cover select-none bg-gray-200 w-6 h-6 rounded-full border-2 border-purple-500/70 flex-shrink-0">
+                        <a href="/users/admin"
+                          class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors">admin</a>
+                      </div>
+                      <!-- Time -->
+                      <span class="text-xs text-gray-400">2025-10-21 11:11</span>
+                    </div>
+
+                    <p class="text-gray-200 text-sm mb-3 line-clamp-2">fbdfbsdbd</p>
+
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                      <a href="/tags/help"
+                        class="px-2 py-1 bg-purple-500/10 text-purple-300 text-sm rounded-lg hover:bg-purple-500/20 border border-purple-500/30 transition-colors">#help</a>
+                      <a href="/tags/test"
+                        class="px-2 py-1 bg-pink-500/10 text-pink-300 text-sm rounded-lg hover:bg-pink-500/20 border border-pink-500/30 transition-colors">#test</a>
+                      <a href="/tags/abc"
+                        class="px-2 py-1 bg-blue-500/10 text-blue-300 text-sm rounded-lg hover:bg-blue-500/20 border border-blue-500/30 transition-colors">#abc</a>
+                    </div>
+
+                    <div class="flex items-center gap-4 text-sm text-gray-400 flex-wrap">
+                      <!-- Like -->
+                      <button
+                        class="text-blue-400 flex items-center gap-1.5 hover:text-blue-300 transition-colors group">
+                        <div class="p-1.5 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                            aria-hidden="true" name="MaterialSymbolsThumbUp" class="icon text-blue-400"
+                            style="font-size:1.2em;">
+                            <path fill="currentColor"
+                              d="M18 21H8V8l7-7l1.25 1.25q.175.175.288.475t.112.575v.35L15.55 8H21q.8 0 1.4.6T23 10v2q0 .175-.037.375t-.113.375l-3 7.05q-.225.5-.75.85T18 21M6 8v13H2V8z">
+                            </path>
+                          </svg>
+                        </div>
+                        <span class="font-semibold">54</span>
+                      </button>
+
+                      <!-- Comment -->
+                      <a href="/topics/rewrawrawr.x4FJFc"
+                        class="flex items-center gap-1.5 hover:text-gray-300 transition-colors group">
+                        <div class="p-1.5 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                            aria-hidden="true" name="TablerMessageCircle" class="icon" style="font-size:1.2em;">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2"
+                              d="m3 20l1.3-3.9C1.976 12.663 2.874 8.228 6.4 5.726c3.526-2.501 8.59-2.296 11.845.48c3.255 2.777 3.695 7.266 1.029 10.501S11.659 20.922 7.7 19z">
+                            </path>
+                          </svg>
+                        </div>
+                        <span class="font-semibold">153</span>
+                      </a>
+
+                      <!-- View -->
+                      <a href="/topics/rewrawrawr.x4FJFc"
+                        class="flex items-center gap-1.5 hover:text-gray-300 transition-colors group">
+                        <div class="p-1.5 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                            aria-hidden="true" name="IcRoundRemoveRedEye" class="icon" style="font-size:1.2em;">
+                            <path fill="currentColor"
+                              d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3">
+                            </path>
+                          </svg>
+                        </div>
+                        <span class="font-semibold">586</span>
+                      </a>
+
+                      <!-- Forum Name -->
+                      <span
+                        class="ml-auto px-3 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-purple-600/20 to-pink-600/20 text-purple-300 border border-purple-500/30">THÔNG
+                        BÁO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Regular Thread (unchanged except for visual adjustments to match new style) -->
+              <div
+                class="gaming-card rounded-xl p-5 hover:bg-white/5 transition-colors bg-gray-900/50 border border-gray-800 hover:border-gray-700">
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold mb-2 flex items-center gap-4">
+                    <a href="/topics/test.ntFJFc"
+                      class="text-white hover:text-purple-400 transition-colors gaming-title flex-1 min-w-0">
+                      <span class="truncate block">test</span>
+                    </a>
+                  </h3>
+
+                  <div class="flex items-center gap-2 mb-2 flex-wrap">
+                    <!-- Avatar -->
+                    <div class="flex items-center gap-2">
+                      <img loading="lazy" src="http://172.17.0.3:3000/images/avatars/steve.png" alt="admin" width="24"
+                        height="24"
+                        class="object-cover select-none bg-gray-200 w-6 h-6 rounded-full border border-purple-500/50 flex-shrink-0">
+                      <a href="/users/admin"
+                        class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors">admin</a>
+                    </div>
+                    <!-- Time -->
+                    <span class="text-xs text-gray-500">2025-10-21 10:57</span>
+                  </div>
+
+                  <p class="text-gray-300 text-sm mb-3 line-clamp-2">asdfasfdasfd</p>
+
+                  <div class="flex items-center gap-2 flex-wrap mb-3">
+                    <a href="/tags/help"
+                      class="px-2 py-1 bg-white/5 text-sm text-gray-400 rounded-lg hover:text-gray-300 border border-white/10 hover:bg-white/10 transition-colors">#help</a>
+                  </div>
+
+                  <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+                    <!-- Like -->
+                    <button class="text-blue-400 flex items-center gap-1.5 hover:text-blue-300 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                        aria-hidden="true" name="MaterialSymbolsThumbUp" class="icon text-blue-400"
+                        style="font-size:1.3em;">
+                        <path fill="currentColor"
+                          d="M18 21H8V8l7-7l1.25 1.25q.175.175.288.475t.112.575v.35L15.55 8H21q.8 0 1.4.6T23 10v2q0 .175-.037.375t-.113.375l-3 7.05q-.225.5-.75.85T18 21M6 8v13H2V8z">
+                        </path>
+                      </svg>
+                      <span>12</span>
+                    </button>
+
+                    <!-- Comment -->
+                    <a href="/topics/test.ntFJFc"
+                      class="flex items-center gap-1.5 hover:text-gray-400 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                        aria-hidden="true" name="TablerMessageCircle" class="icon" style="font-size:1.3em;">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m3 20l1.3-3.9C1.976 12.663 2.874 8.228 6.4 5.726c3.526-2.501 8.59-2.296 11.845.48c3.255 2.777 3.695 7.266 1.029 10.501S11.659 20.922 7.7 19z">
+                        </path>
+                      </svg>
+                      <span>17</span>
+                    </a>
+
+                    <!-- View -->
+                    <a href="/topics/test.ntFJFc"
+                      class="flex items-center gap-1.5 hover:text-gray-400 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                        aria-hidden="true" name="IcRoundRemoveRedEye" class="icon" style="font-size:1.3em;">
+                        <path fill="currentColor"
+                          d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3">
+                        </path>
+                      </svg>
+                      <span>153</span>
+                    </a>
+
+                    <!-- Forum Name -->
+                    <span
+                      class="ml-auto px-2 py-1 text-xs font-bold rounded bg-orange-500/20 text-orange-400 border border-orange-500/50">THẢO
+                      LUẬN</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-white">Thông tin quan trọng</h3>
-              <p class="text-xs text-gray-300 mt-1">
-                Thay đổi thông tin sẽ được cập nhật ngay lập tức. Một số thay đổi (như avatar) có thể mất vài phút để
-                hiển thị trên toàn hệ thống.
-                Liên hệ với đội ngũ hỗ trợ nếu bạn gặp bất kỳ vấn đề nào.
-              </p>
+
+            <!-- Custom Loading Skeleton -->
+            <div class="text-center py-8">
+              <div class="text-gray-500 text-sm font-medium py-4">Không còn nội dung</div>
             </div>
           </div>
         </div>

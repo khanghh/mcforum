@@ -87,6 +87,11 @@ func NewServer() {
 	// 	m.Party("/role").Handle(new(admin.RoleController))
 	// 	m.Party("/menu").Handle(new(admin.MenuController))
 	// })
+	// for _, route := range app.GetRoutes() {
+	// 	if route.Method != iris.MethodOptions {
+	// 		fmt.Printf("%s\t\t%s\n", route.Method, route.Path)
+	// 	}
+	// }
 
 	if err := app.Listen(":"+conf.Port,
 		iris.WithConfiguration(iris.Configuration{

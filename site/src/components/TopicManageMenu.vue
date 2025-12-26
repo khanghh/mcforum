@@ -1,5 +1,5 @@
 <template>
-  <div v-if="menus && menus.length" ref="root" class="relative inline-block text-left">
+  <div v-if="isTopicOwner || isOwner || isAdmin" ref="root" class="relative inline-block text-left">
     <button type="button"
       :class="['gap-2 px-2 py-1 rounded text-sm border border-purple-500/20 hover:bg-purple-600/20', open ? 'bg-purple-600/20' : 'text-purple-300']"
       aria-haspopup="true"
@@ -14,12 +14,46 @@
       <div v-if="open"
         class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
         <div class="py-1">
-          <button v-for="item in menus"
-            :key="item.command"
+          <button v-if="isTopicOwner"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="select(item.command)">
-            <Icon :name="item.icon" class="mr-2" />
-            {{ item.label }}
+            @click="open = false; toggleEditing()">
+            <Icon name="Fa7SolidFileEdit" class="mr-2" />
+            {{ $t('publish.action.edit') }}
+          </button>
+
+          <button v-if="isTopicOwner || isOwner || isAdmin"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; deleteTopic()">
+            <Icon name="Fa7SolidTrashCan" class="mr-2" />
+            {{ $t('publish.action.delete') }}
+          </button>
+
+          <button v-if="isOwner || isAdmin"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; toggleRecommended()">
+            <Icon :name="recommended ? 'PhSealCheckFill' : 'PhSealCheckBold'" class="mr-2" />
+            {{ recommended ? $t('publish.action.unrecommend') : $t('publish.action.recommend') }}
+          </button>
+
+          <button v-if="isOwner || isAdmin"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; togglePinned()">
+            <Icon :name="pinned ? 'TablerPinFilled' : 'TablerPin'" class="mr-2" />
+            {{ pinned ? $t('publish.action.unpin') : $t('publish.action.pin') }}
+          </button>
+
+          <button v-if="isOwner || isAdmin"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; forbidden(7)">
+            <Icon name="TablerBan" class="mr-2" />
+            {{ $t('profile.actions.mute_7days') }}
+          </button>
+
+          <button v-if="isOwner"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; forbidden(-1)">
+            <Icon name="TablerBan" class="mr-2" />
+            {{ $t('profile.actions.mute_permanent') }}
           </button>
         </div>
       </div>
@@ -51,59 +85,12 @@ const root = ref(null)
 const userStore = useUserStore()
 const isOwner = userIsOwner(userStore.user)
 const isAdmin = userIsAdmin(userStore.user)
+const isTopicOwner = computed(() => !!userStore.user && !!topic.value && !!topic.value.user && userStore.user.id === topic.value.user.id)
+const editing = computed(() => !!topic.value && !!topic.value.editing)
+const recommended = computed(() => !!topic.value && !!topic.value.recommended)
+const pinned = computed(() => !!topic.value && !!topic.value.pinned)
 
-const menus = computed(() => {
-  const isTopicOwner = userStore.user && userStore.user.id === topic.value.user.id
-  const items = []
-  if (isTopicOwner) {
-    items.push({
-      command: 'edit',
-      label: topic.value.editing ? i18n.t('publish.action.save') : i18n.t('publish.action.edit'),
-      icon: 'Fa7SolidFileEdit',
-    })
-  }
-  if (isTopicOwner || isOwner || isAdmin) {
-    items.push({
-      command: 'delete',
-      label: i18n.t('publish.action.delete'),
-      icon: 'Fa7SolidTrashCan',
-    })
-  }
-  if (isOwner || isAdmin) {
-    items.push({
-      command: 'recommend',
-      label: topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend'),
-      icon: 'TablerStar',
-    })
-  }
-  if (isOwner || isAdmin) {
-    items.push({
-      command: 'pin',
-      icon: 'TablerPin',
-      label: topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin'),
-    })
-  }
-  if (isOwner || isAdmin) {
-    items.push({
-      command: 'forbidden7Days',
-      icon: 'TablerBan',
-      label: i18n.t('profile.actions.mute_7days'),
-    })
-  }
-  if (isOwner) {
-    items.push({
-      icon: 'TablerBan',
-      command: 'forbiddenForever',
-      label: i18n.t('profile.actions.mute_permanent'),
-    })
-  }
-  return items
-})
-
-function select(command) {
-  open.value = false
-  handleCommand(command)
-}
+// Note: menu actions are called directly from the template now.
 
 function onClickOutside(e) {
   if (!root.value) return
@@ -118,30 +105,6 @@ function onClickOutside(e) {
 
 onMounted(() => window.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
-
-async function handleCommand(command) {
-  if (command === 'edit') {
-    toggleEditing()
-  }
-  else if (command === 'delete') {
-    deleteTopic()
-  }
-  else if (command === 'recommend') {
-    toggleRecommended()
-  }
-  else if (command === 'pin') {
-    togglePinned()
-  }
-  else if (command === 'forbidden7Days') {
-    await forbidden(7)
-  }
-  else if (command === 'forbiddenForever') {
-    await forbidden(-1)
-  }
-  else {
-    console.log('click on item ' + command)
-  }
-}
 
 async function forbidden(days) {
   try {
@@ -194,32 +157,29 @@ function toggleEditing() {
 
 function toggleRecommended() {
   const action = topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
-  console.log(topic.value.recommended)
-  useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    useHttpPatchForm(`/api/topics/${topic.value.slug}`, {
-      body: { recommended: !topic.value.recommended },
-    }).then(() => {
+  return api.setTopicFlags(topic.value.slug, { recommended: !topic.value.recommended })
+    .then(() => {
       topic.value.recommended = !topic.value.recommended
       emit('update:modelValue', topic.value)
-      useMsgSuccess({ message: i18n.t('message.action_success', { action }) })
+      toast.success(i18n.t('message.action_success', { action }))
     }).catch((e) => {
-      useMsgError(i18n.t('message.action_failure', { action, error: e.message || e }))
+      const errMsg = e.data?.error.message || e.message || e
+      const msg = i18n.t('message.action_failure', { action, error: errMsg })
+      toast.error(msg)
     })
-  })
 }
 
 function togglePinned() {
   const action = topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
-  useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(function () {
-    useHttpPatchForm(`/api/topics/${topic.value.slug}`, {
-      body: { pinned: !topic.value.pinned },
-    }).then(() => {
+  return api.setTopicFlags(topic.value.slug, { pinned: !topic.value.pinned })
+    .then(() => {
       topic.value.pinned = !topic.value.pinned
       emit('update:modelValue', topic.value)
-      useMsgSuccess({ message: i18n.t('message.action_success', { action: action }) })
+      toast.success(i18n.t('message.action_success', { action }))
     }).catch((e) => {
-      useMsgError(i18n.t('message.action_failure', { action: action, error: e.message || e }))
+      const errMsg = e.data?.error.message || e.message || e
+      const msg = i18n.t('message.action_failure', { action, error: errMsg })
+      toast.error(msg)
     })
-  })
 }
 </script>

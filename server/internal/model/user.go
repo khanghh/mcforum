@@ -104,7 +104,8 @@ func (u *User) IsForbidden() bool {
 		return true
 	}
 	// Check forbidden time
-	return u.ForbiddenEndTime > dates.NowTimestamp()
+	tmp := dates.NowTimestamp()
+	return u.ForbiddenEndTime > tmp
 }
 
 // HasRole whether has specified role

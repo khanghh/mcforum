@@ -68,7 +68,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 	return web.JsonData(payload.BuildSimpleTopic(topic))
 }
 
-// // Tag topic list
+// // 标签帖子列表
 //
 //	func (c *TopicController) GetTagTopics() *web.JsonResult {
 //		var (
@@ -102,7 +102,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	// Control display of articles under review
+	// 审核中文章控制展示
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if topic.Status == constants.StatusReview {
 		if user != nil {
@@ -114,7 +114,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 		}
 	}
 
-	service.TopicService.IncrViewCount(topic.Id) // Increase view count
+	service.TopicService.IncrViewCount(topic.Id) // 增加浏览量
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
@@ -193,46 +193,51 @@ func (c *TopicsController) setTopicRecommended(topicId int64, recommended bool) 
 
 // PATCH /topics/{slugId} => pin/unpin, recommend/unrecommend
 func (c *TopicsController) PatchBy(slugId string) (*web.JsonResult, error) {
+	var patch struct {
+		Pinned      *bool `json:"pinned,omitempty"`
+		Recommended *bool `json:"recommended,omitempty"`
+	}
 	topic, err := c.getTopicBySlugId(slugId)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
-	var (
-		pinned      = params.FormValueBoolDefault(c.Ctx, "pinned", topic.Pinned)
-		recommended = params.FormValueBoolDefault(c.Ctx, "recommended", topic.Recommended)
-	)
+
+	if err := c.Ctx.ReadJSON(&patch); err != nil {
+		return web.JsonError(errs.ErrBadRequest), nil
+	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
 		return web.JsonError(errs.ErrForbidden), nil
 	}
 
-	if pinned != topic.Pinned {
-		return c.setTopicPinned(topic.Id, pinned)
-	} else if recommended != topic.Recommended {
-		return c.setTopicRecommended(topic.Id, recommended)
+	if patch.Pinned != nil {
+		return c.setTopicPinned(topic.Id, *patch.Pinned)
 	}
+	if patch.Recommended != nil {
+		return c.setTopicRecommended(topic.Id, *patch.Recommended)
+	}
+
 	return nil, errs.ErrBadRequest
 }
 
 // DELETE /topics/{slug}
-func (c *TopicsController) DeleteBy(topicId int64) (*web.JsonResult, error) {
+func (c *TopicsController) DeleteBy(slugId string) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
-	topic := service.TopicService.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusActive {
-		return web.JsonError(errs.ErrBadRequest), nil
+	topic, err := c.getTopicBySlugId(slugId)
+	if topic == nil || err != nil {
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 
-	// Not author and not admin
 	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
 		return web.JsonError(errs.ErrForbidden), nil
 	}
 
-	if err := service.TopicService.Delete(topicId, user.Id, c.Ctx.Request()); err != nil {
+	if err := service.TopicService.Delete(topic.Id, user.Id, c.Ctx.Request()); err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
