@@ -50,7 +50,7 @@
 
       <div>
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="MdiChartLine" class="mr-2" /> Level Progress
+          <Icon name="MdiChartLine" class="mr-2" /> Level
         </h3>
         <div
           class="mt-3 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30">

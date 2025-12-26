@@ -29,6 +29,10 @@
 
 <script setup>
 const i18n = useI18n()
+const api = useApi()
+const dialog = useConfirmDialog()
+const toast = useToast()
+
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -155,17 +159,24 @@ async function forbidden(days) {
 }
 
 function deleteTopic() {
-  useConfirm(i18n.t('dialog.message.confirm_delete_post')).then(function () {
-    useHttpDelete(`/api/topics/${topic.value.id}`).then(() => {
-      useMsg({
-        message: i18n.t('message.delete_success'),
-        onClose() {
-          useLinkTo('/')
-        },
-      })
-    }).catch((e) => {
-      useMsgError(i18n.t('message.delete_failure', { error: (e.message || e) }))
-    })
+  dialog.show({
+    title: i18n.t('dialog.title.confirm_delete'),
+    message: i18n.t('dialog.message.confirm_delete_post'),
+    confirmText: i18n.t('dialog.button.confirm'),
+    cancelText: i18n.t('dialog.button.cancel'),
+    variant: 'warning',
+    icon: 'Fa7SolidTrashCan',
+    onConfirm() {
+      return api.deleteTopic(topic.value.slug)
+        .then(() => {
+          toast.success(i18n.t('message.delete_success'))
+          navigateTo(`/forums/${topic.value.forum.slug}`)
+        }).catch((e) => {
+          const errMsg = e.data?.error.message || e.message || e
+          const msg = i18n.t('message.delete_failure', { error: errMsg })
+          toast.error(msg)
+        })
+    },
   })
 }
 

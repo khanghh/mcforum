@@ -152,6 +152,10 @@ export const useApi = () => {
     return new CursorResult<Topic[]>(`/api/topics?tag=${encodeURIComponent(tag)}`)
   }
 
+  const deleteTopic = (topicSlug: string): Promise<void> => {
+    return useHttpDelete(`/api/topics/${topicSlug}`)
+  }
+
   const getTopicComments = (topicSlug: string): CursorResult<Comment[]> => {
     return new CursorResult<Comment[]>(`/api/topics/${topicSlug}/comments`)
   }
@@ -165,6 +169,7 @@ export const useApi = () => {
     }
     return useHttpPost(`/api/topics/${topicSlug}/comments`, { body })
   }
+
 
   const addTopicReaction = (topicSlug: string, reactionType: string): Promise<boolean> => {
     return useHttpPost(`/api/topics/${topicSlug}/reactions`, {
@@ -232,6 +237,7 @@ export const useApi = () => {
     // topics api endpoints
     getTopic,
     getTopicsByTag,
+    deleteTopic,
     getTopicComments,
     addTopicComment,
     addTopicReaction,

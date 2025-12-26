@@ -299,7 +299,7 @@ export default {
       basic_info: 'Thông tin',
       join_date: 'Tham gia vào',
       play_time: 'Thời gian chơi',
-      location: 'Địa điểm',
+      location: 'Đến từ',
       website: 'Trang web',
       member_since: 'Tham gia từ',
       last_active: 'Hoạt động gần đây',

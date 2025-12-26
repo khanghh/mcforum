@@ -63,7 +63,6 @@ const pageItems = ref<any[]>([])
 const hasMore = ref<boolean>(true)
 
 const preloadItems = await props.cursor.loadNext().catch(() => [])
-console.log('preloadItems', props.cursor.url, preloadItems)
 pageItems.value = preloadItems
 hasMore.value = props.cursor.hasMore
 

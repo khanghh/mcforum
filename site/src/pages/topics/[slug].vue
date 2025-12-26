@@ -94,7 +94,7 @@
           <div class="flex items-center gap-4">
             <button
               class="group flex items-center gap-1 transition-all duration-200"
-              :class="liked ? 'text-blue-400' : 'text-gray-400 hover:text-blue-400'"
+              :class="topic.liked ? 'text-blue-400' : 'text-gray-400 hover:text-blue-400'"
               @click="toggleLike">
               <Icon name="MaterialSymbolsThumbUp"
                 class="transform group-hover:-translate-y-0.5 transition-transform" />
@@ -157,13 +157,15 @@ const api = useApi()
 
 const slug = route.params.slug
 const user = userStore.user
+const topic = ref(null)
 
-const { data: topic } = await useAsyncData('topic', () => api.getTopic(slug))
-
-// Handle 404 manually if topic is null (handled by v-if/v-else logic currently, but strict check is better)
-if (!topic.value) {
-  // Falls through to NotFound component via v-else
-}
+topic.value = await api.getTopic(slug).catch((e) => {
+  if (e.statusCode === 404) {
+    throw createError({ statusCode: 404, statusMessage: 'Topic not found' })
+  } else {
+    throw e
+  }
+})
 
 definePageMeta({
   layout: 'default',
@@ -180,7 +182,6 @@ const isPending = computed(() => {
   return topic.value?.status === 2
 })
 
-const liked = ref(topic.value?.liked || false)
 
 function calculateLevel(score) {
   return Math.floor(Math.sqrt(score || 0)) + 1
@@ -188,14 +189,14 @@ function calculateLevel(score) {
 
 async function toggleLike() {
   try {
-    if (liked.value) {
+    if (topic.value.liked) {
       await api.removeTopicReaction(slug)
-      liked.value = false
+      topic.value.liked = false
       topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
     }
     else {
       await api.addTopicReaction(slug, 'like')
-      liked.value = true
+      topic.value.liked = true
       topic.value.likeCount++
     }
   }
