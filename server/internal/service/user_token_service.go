@@ -30,7 +30,7 @@ type userTokenService struct {
 func (s *userTokenService) GetCurrentUserId(ctx iris.Context) int64 {
 	user := s.GetCurrent(ctx)
 	if user != nil {
-		return user.Id
+		return user.ID
 	}
 	return 0
 }
@@ -67,7 +67,7 @@ func (s *userTokenService) Signout(ctx iris.Context) error {
 	if userToken == nil {
 		return nil
 	}
-	err := repository.UserTokenRepository.UpdateColumn(sqls.DB(), userToken.Id, "status", constants.StatusDeleted)
+	err := repository.UserTokenRepository.UpdateColumn(sqls.DB(), userToken.ID, "status", constants.StatusDeleted)
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func (s *userTokenService) Disable(token string) error {
 	if t == nil {
 		return nil
 	}
-	err := repository.UserTokenRepository.UpdateColumn(sqls.DB(), t.Id, "status", constants.StatusDeleted)
+	err := repository.UserTokenRepository.UpdateColumn(sqls.DB(), t.ID, "status", constants.StatusDeleted)
 	if err != nil {
 		cache.UserTokenCache.Invalidate(token)
 	}

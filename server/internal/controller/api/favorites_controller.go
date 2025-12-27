@@ -28,9 +28,9 @@ func (c *FavoritesController) PostAdd() *web.JsonResult {
 	}
 	var err error
 	if entityType == constants.EntityTopic {
-		err = service.FavoriteService.AddTopicFavorite(user.Id, entityId)
+		err = service.FavoriteService.AddTopicFavorite(user.ID, entityId)
 	} else if entityType == constants.EntityArticle {
-		err = service.FavoriteService.AddArticleFavorite(user.Id, entityId)
+		err = service.FavoriteService.AddArticleFavorite(user.ID, entityId)
 	} else {
 		err = errors.New("unsupproted")
 	}
@@ -51,9 +51,9 @@ func (c *FavoritesController) PostDelete() *web.JsonResult {
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
-	tmp := service.FavoriteService.GetBy(user.Id, entityType, entityId)
+	tmp := service.FavoriteService.GetBy(user.ID, entityType, entityId)
 	if tmp != nil {
-		service.FavoriteService.Delete(tmp.Id)
+		service.FavoriteService.Delete(tmp.ID)
 	}
 	return web.JsonSuccess()
 }

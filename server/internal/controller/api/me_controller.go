@@ -5,10 +5,13 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
+	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
+	"bbs-go/pkg/msg"
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
+	"bbs-go/sqls"
 	"log/slog"
 
 	"github.com/kataras/iris/v12"
@@ -64,8 +67,8 @@ func (c *MeController) Patch() *web.JsonResult {
 		"show_location":  form.ShowLocation,
 		"email_notify":   form.EmailNotify,
 	}
-	if err := service.UserService.Updates(user.Id, columns); err != nil {
-		slog.Error("Failed to update user profile:", "error", err, "userId", user.Id, "columns", columns)
+	if err := service.UserService.Updates(user.ID, columns); err != nil {
+		slog.Error("Failed to update user profile:", "error", err, "userId", user.ID, "columns", columns)
 		return web.JsonError(errs.ErrInternalServer)
 	}
 
@@ -79,7 +82,7 @@ func (c *MeController) PutFavoritesBy(topicId int64) (*web.JsonResult, error) {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
-	err := service.FavoriteService.AddTopicFavorite(user.Id, topicId)
+	err := service.FavoriteService.AddTopicFavorite(user.ID, topicId)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +96,7 @@ func (c *MeController) DeleteFavoritesBy(topicId int64) (*web.JsonResult, error)
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
 
-	err := service.FavoriteService.RemoveTopicFavorite(user.Id, topicId)
+	err := service.FavoriteService.RemoveTopicFavorite(user.ID, topicId)
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +185,7 @@ func (c *MeController) PostSetCoverPhoto() *web.JsonResult {
 	if strs.IsBlank(backgroundImage) {
 		return web.JsonErrorMsg("Please upload image")
 	}
-	if err := service.UserService.UpdateBackgroundImage(user.Id, backgroundImage); err != nil {
+	if err := service.UserService.UpdateBackgroundImage(user.ID, backgroundImage); err != nil {
 		return web.JsonError(err)
 	}
 	return web.JsonSuccess()
@@ -194,7 +197,7 @@ func (c *MeController) GetTopics() *web.JsonResult {
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
-	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.Id, cursor)
+	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.ID, cursor)
 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
@@ -206,8 +209,8 @@ func (c *MeController) GetFollowers() *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 
-	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(currentUser.Id, cursor, 10)
-	followedSet := service.UserFollowService.GetMutualFollowers(currentUser.Id, followerIds...)
+	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(currentUser.ID, cursor, 10)
+	followedSet := service.UserFollowService.GetMutualFollowers(currentUser.ID, followerIds...)
 
 	itemList := make([]payload.UserInfo, 0, len(followerIds))
 	for _, id := range followerIds {
@@ -226,10 +229,11 @@ func (c *MeController) GetFollowing() *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 
-	followingIds, cursor, hasMore := service.UserFollowService.GetFollowing(currentUser.Id, cursor, 10)
+	followingIds, cursor, hasMore := service.UserFollowService.GetFollowing(currentUser.ID, cursor, 10)
 	itemList := make([]payload.UserInfo, 0, len(followingIds))
 	for _, id := range followingIds {
 		item := payload.BuildUserInfoDefaultIfNull(id)
+		item.IsFollowing = true
 		itemList = append(itemList, *item)
 	}
 	return web.JsonCursorData(itemList, cursor, hasMore)
@@ -240,6 +244,51 @@ func (c *MeController) GetFollowingBy(userId int64) *web.JsonResult {
 	if currentUser == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
-	following := service.UserFollowService.IsFollowing(currentUser.Id, userId)
+	following := service.UserFollowService.IsFollowing(currentUser.ID, userId)
 	return web.JsonData(map[string]bool{"following": following})
+}
+
+// Get last 3 unread messages
+func (c *MeController) GetMsgrecent() *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	var count int64 = 0
+	var messages []model.Message
+	if user != nil {
+		count = service.MessageService.GetUnReadCount(user.ID)
+		messages = service.MessageService.Find(sqls.NewCnd().Eq("user_id", user.ID).
+			Eq("status", msg.StatusUnread).Limit(3).Desc("id"))
+	}
+	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", payload.BuildMessages(messages)).JsonResult()
+}
+
+// User messages
+func (c *MeController) GetMessages() *web.JsonResult {
+	user, err := service.UserTokenService.CheckLogin(c.Ctx)
+	if err != nil {
+		return web.JsonError(errs.NotLogin)
+	}
+	var (
+		limit     = 20
+		cursor, _ = params.GetInt64(c.Ctx, "cursor")
+	)
+
+	cnd := sqls.NewCnd().Eq("user_id", user.ID).Limit(limit).Desc("id")
+	if cursor > 0 {
+		cnd.Lt("id", cursor)
+	}
+	list := service.MessageService.Find(cnd)
+
+	var (
+		nextCursor = cursor
+		hasMore    = false
+	)
+	if len(list) > 0 {
+		nextCursor = list[len(list)-1].ID
+		hasMore = len(list) == limit
+	}
+
+	// Mark all as read
+	service.MessageService.MarkRead(user.ID)
+
+	return web.JsonCursorData(payload.BuildMessages(list), nextCursor, hasMore)
 }

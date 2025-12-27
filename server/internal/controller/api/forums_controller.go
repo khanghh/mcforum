@@ -46,16 +46,16 @@ func (c *ForumsController) GetBy(slug string) *web.JsonResult {
 
 	var temp []model.Topic
 	if cursor <= 0 {
-		pinnedTopics := service.TopicService.GetPinnedTopics(forum.Id, 3)
+		pinnedTopics := service.TopicService.GetPinnedTopics(forum.ID, 3)
 		temp = append(temp, pinnedTopics...)
 	}
-	topics, cursor, hasMore := service.TopicService.GetForumTopics(forum.Id, cursor)
+	topics, cursor, hasMore := service.TopicService.GetForumTopics(forum.ID, cursor)
 	for _, topic := range topics {
 		if !topic.Pinned {
 			temp = append(temp, topic)
 		}
 	}
-	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
+	list := arrays.Distinct(temp, func(t model.Topic) any { return t.ID })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), cursor, hasMore)
 }
 

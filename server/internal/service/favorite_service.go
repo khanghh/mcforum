@@ -105,9 +105,9 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 		return nil
 	}
 	if err := repository.FavoriteRepository.Create(sqls.DB(), &model.Favorite{
-		UserId:     userId,
+		UserID:     userId,
 		EntityType: entityType,
-		EntityId:   entityId,
+		EntityID:   entityId,
 		CreateTime: dates.NowTimestamp(),
 	}); err != nil {
 		return err
@@ -125,7 +125,7 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 func (s *favoriteService) removeFavorite(userId int64, entityType string, entityId int64) error {
 	tmp := s.GetBy(userId, entityType, entityId)
 	if tmp != nil {
-		repository.FavoriteRepository.Delete(sqls.DB(), tmp.Id)
+		repository.FavoriteRepository.Delete(sqls.DB(), tmp.ID)
 		event.Send(event.UserUnfavoriteEvent{
 			UserId:     userId,
 			EntityId:   entityId,

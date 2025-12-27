@@ -93,10 +93,10 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 	if err := service.UserService.Update(user); err != nil {
 		return web.JsonError(err)
 	}
-	if err := service.UserRoleService.UpdateUserRoles(user.Id, roleIds); err != nil {
+	if err := service.UserRoleService.UpdateUserRoles(user.ID, roleIds); err != nil {
 		return web.JsonError(err)
 	}
-	user = service.UserService.Get(user.Id)
+	user = service.UserService.Get(user.ID)
 	return web.JsonData(c.buildUserItem(user, true))
 }
 
@@ -118,9 +118,9 @@ func (c *UserController) PostForbidden() *web.JsonResult {
 		return web.JsonErrorMsg("Please provide: userId")
 	}
 	if days == 0 {
-		service.UserService.RemoveForbidden(user.Id, userId, c.Ctx.Request())
+		service.UserService.RemoveForbidden(user.ID, userId, c.Ctx.Request())
 	} else {
-		if err := service.UserService.Forbidden(user.Id, userId, days, reason, c.Ctx.Request()); err != nil {
+		if err := service.UserService.Forbidden(user.ID, userId, days, reason, c.Ctx.Request()); err != nil {
 			return web.JsonError(err)
 		}
 	}
@@ -135,7 +135,7 @@ func (c *UserController) buildUserItem(user *model.User, buildRoleIds bool) map[
 		Put("score", user.Score).
 		Put("forbidden", user.IsForbidden())
 	if buildRoleIds {
-		b.Put("roleIds", service.UserRoleService.GetUserRoleIds(user.Id))
+		b.Put("roleIds", service.UserRoleService.GetUserRoleIds(user.ID))
 	}
 	return b.Build()
 }

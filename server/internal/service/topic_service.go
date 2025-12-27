@@ -92,8 +92,8 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 		TopicTagService.DeleteByTopicId(topicId)
 		// send event
 		event.Send(event.TopicDeleteEvent{
-			UserId:       topic.UserId,
-			TopicId:      topic.Id,
+			UserId:       topic.UserID,
+			TopicId:      topic.ID,
 			DeleteUserId: deleteUserId,
 		})
 	}
@@ -244,7 +244,7 @@ func (s *topicService) GetFollowedTopics(userId int64, cursor int64) (topics []m
 
 	var topicIds []int64
 	for _, item := range userFeeds {
-		topicIds = append(topicIds, item.DataId)
+		topicIds = append(topicIds, item.DataID)
 	}
 	topics = TopicService.GetTopicByIds(topicIds)
 	return
@@ -300,7 +300,7 @@ func (s *topicService) GetTopicInIds(topicIds []int64) map[int64]model.Topic {
 
 	topicsMap := make(map[int64]model.Topic, len(topics))
 	for _, topic := range topics {
-		topicsMap[topic.Id] = topic
+		topicsMap[topic.ID] = topic
 	}
 	return topicsMap
 }
@@ -312,15 +312,15 @@ func (s *topicService) IncrViewCount(topicId int64) {
 
 // When a topic is commented, update last reply time and increment reply count
 func (s *topicService) onComment(tx *gorm.DB, comment *model.Comment) error {
-	if err := repository.TopicRepository.Updates(tx, comment.TopicId, map[string]interface{}{
+	if err := repository.TopicRepository.Updates(tx, comment.TopicID, map[string]interface{}{
 		"last_comment_time":    comment.CreateTime,
-		"last_comment_user_id": comment.UserId,
+		"last_comment_user_id": comment.UserID,
 		"comment_count":        gorm.Expr("comment_count + 1"),
 	}); err != nil {
 		return err
 	}
 	if err := tx.Exec("update t_topic_tag set last_comment_time = ?, last_comment_user_id = ? where topic_id = ?",
-		comment.CreateTime, comment.UserId, comment.TopicId).Error; err != nil {
+		comment.CreateTime, comment.UserID, comment.TopicID).Error; err != nil {
 		return err
 	}
 	return nil
@@ -334,7 +334,7 @@ func (s *topicService) ScanByUser(userId int64, callback func(topics []model.Top
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }
@@ -347,7 +347,7 @@ func (s *topicService) Scan(callback func(topics []model.Topic)) {
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }
@@ -361,7 +361,7 @@ func (s *topicService) ScanDesc(callback func(topics []model.Topic)) {
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }
@@ -376,7 +376,7 @@ func (s *topicService) ScanDescWithDate(dateFrom, dateTo int64, callback func(to
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }
@@ -393,7 +393,7 @@ func (s *topicService) GetUserTopics(userId, cursor int64) (topics []model.Topic
 	cnd.Eq("status", constants.StatusActive).Desc("id").Limit(limit)
 	topics = repository.TopicRepository.Find(sqls.DB(), cnd)
 	if len(topics) > 0 {
-		nextCursor = topics[len(topics)-1].Id
+		nextCursor = topics[len(topics)-1].ID
 		hasMore = len(topics) >= limit
 	} else {
 		nextCursor = cursor

@@ -66,7 +66,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 	now := dates.NowTimestamp()
 	topic := &model.Topic{
 		Type:            constants.TopicTypeTopic,
-		UserId:          args.UserId,
+		UserID:          args.UserId,
 		ForumId:         args.ForumId,
 		Title:           args.Title,
 		Slug:            urls.GenerateSlug(args.Title),
@@ -74,8 +74,8 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		HideContent:     args.HideContent,
 		Status:          constants.StatusActive,
 		UserAgent:       args.UserAgent,
-		Ip:              args.IPAddress,
-		IpLocation:      iplocator.IpLocation(args.IPAddress),
+		IP:              args.IPAddress,
+		IPLocation:      iplocator.IpLocation(args.IPAddress),
 		LastCommentTime: now,
 		CreateTime:      now,
 	}
@@ -96,7 +96,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 			return err
 		}
 		cache.UserCache.Invalidate(args.UserId)
-		return repository.TopicTagRepository.AddTopicTags(tx, topic.Id, args.Tags)
+		return repository.TopicTagRepository.AddTopicTags(tx, topic.ID, args.Tags)
 	})
 	if err != nil {
 		return nil, err

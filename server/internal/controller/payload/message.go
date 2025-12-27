@@ -27,14 +27,14 @@ func BuildMessage(msg *model.Message) *MessageResponse {
 		return nil
 	}
 
-	from := BuildUserInfoDefaultIfNull(msg.FromId)
-	if msg.FromId <= 0 {
+	from := BuildUserInfoDefaultIfNull(msg.FromID)
+	if msg.FromID <= 0 {
 		from.Nickname = locale.T("system.user")
 	}
 	resp := &MessageResponse{
-		Id:           msg.Id,
+		Id:           msg.ID,
 		From:         from,
-		UserId:       msg.UserId,
+		UserId:       msg.UserID,
 		Title:        msg.Title,
 		Content:      msg.Content,
 		QuoteContent: msg.QuoteContent,

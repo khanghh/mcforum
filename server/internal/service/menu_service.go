@@ -85,7 +85,7 @@ func (s *menuService) GetUserMenuIds(userId int64) []int64 {
 }
 
 func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {
-	menuIds := s.GetUserMenuIds(user.Id)
+	menuIds := s.GetUserMenuIds(user.ID)
 	if len(menuIds) == 0 {
 		return nil
 	}
@@ -93,7 +93,7 @@ func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {
 	menus := s.Find(sqls.NewCnd().Eq("status", constants.StatusActive).Asc("sort_no").Desc("id"))
 	menusMap := make(map[int64]model.Menu, len(menus))
 	for _, menu := range menus {
-		menusMap[menu.Id] = menu
+		menusMap[menu.ID] = menu
 	}
 
 	var showMenuIds []int64
@@ -103,7 +103,7 @@ func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {
 	}
 
 	for _, menu := range menus {
-		if arrays.Contains(showMenuIds, menu.Id) {
+		if arrays.Contains(showMenuIds, menu.ID) {
 			ret = append(ret, menu)
 		}
 	}
@@ -120,7 +120,7 @@ func (s *menuService) GetMenuPath(menuId int64, menusMap map[int64]model.Menu) (
 		if !found {
 			break
 		}
-		ret = append(ret, menu.Id)
+		ret = append(ret, menu.ID)
 		if menu.ParentId > 0 {
 			menuId = menu.ParentId
 		} else {

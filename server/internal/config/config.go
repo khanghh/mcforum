@@ -54,6 +54,7 @@ type Config struct {
 	IpDataPath     string   // IP data file
 	AllowedOrigins []string // CORS whitelist
 	Language       string
+	TablePrefix    string
 
 	// Log configuration
 	Logger struct {

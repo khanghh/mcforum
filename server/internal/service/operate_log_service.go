@@ -73,15 +73,15 @@ func (s *operateLogService) AddOperateLog(userId int64, opType, dataType string,
 	description string, r *http.Request) {
 
 	operateLog := &model.OperateLog{
-		UserId:      userId,
+		UserID:      userId,
 		OpType:      opType,
 		DataType:    dataType,
-		DataId:      dataId,
+		DataID:      dataId,
 		Description: description,
 		CreateTime:  dates.NowTimestamp(),
 	}
 	if r != nil {
-		operateLog.Ip = utils.GetRequestIP(r)
+		operateLog.IP = utils.GetRequestIP(r)
 		operateLog.UserAgent = utils.GetUserAgent(r)
 		operateLog.Referer = r.Header.Get("Referer")
 	}

@@ -31,8 +31,7 @@ func initDB() {
 	conf := config.Instance().DB
 	db, err := gorm.Open(mysql.Open(conf.Url), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "t_",
-			SingularTable: true,
+			TablePrefix: config.Instance().TablePrefix,
 		},
 	})
 

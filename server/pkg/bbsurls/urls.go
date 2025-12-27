@@ -33,7 +33,7 @@ func AbsUrl(path string) string {
 }
 
 func UserUrl(username string) string {
-	return "/u/" + username
+	return "/users/" + username
 }
 
 // User homepage
@@ -50,7 +50,7 @@ func AbsTagUrl(tagName string) string {
 }
 
 func TopicUrl(slug string, id int64) string {
-	return fmt.Sprintf("/t/%s.%s", slug, base62.Encode(id))
+	return fmt.Sprintf("/topics/%s.%s", slug, base62.Encode(id))
 }
 
 // Topic details

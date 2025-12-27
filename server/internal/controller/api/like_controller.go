@@ -27,9 +27,9 @@ func (c *LikeController) PostLike() *web.JsonResult {
 		return web.JsonError(errs.NotLogin)
 	}
 	if entityType == constants.EntityTopic {
-		err = service.UserLikeService.TopicLike(user.Id, entityId)
+		err = service.UserLikeService.TopicLike(user.ID, entityId)
 	} else if entityType == constants.EntityComment {
-		err = service.UserLikeService.CommentLike(user.Id, entityId)
+		err = service.UserLikeService.CommentLike(user.ID, entityId)
 	}
 	if err != nil {
 		return web.JsonError(err)
@@ -48,9 +48,9 @@ func (c *LikeController) PostUnlike() *web.JsonResult {
 		return web.JsonError(errs.NotLogin)
 	}
 	if entityType == constants.EntityTopic {
-		err = service.UserLikeService.TopicUnLike(user.Id, entityId)
+		err = service.UserLikeService.TopicUnLike(user.ID, entityId)
 	} else if entityType == constants.EntityComment {
-		err = service.UserLikeService.CommentUnLike(user.Id, entityId)
+		err = service.UserLikeService.CommentUnLike(user.ID, entityId)
 	}
 	if err != nil {
 		return web.JsonError(err)
@@ -66,7 +66,7 @@ func (c *LikeController) GetLiked_ids() *web.JsonResult {
 		likedEntityIds []int64
 	)
 	if user != nil {
-		likedEntityIds = service.UserLikeService.GetUserLikes(user.Id, entityType, entityIds)
+		likedEntityIds = service.UserLikeService.GetUserLikes(user.ID, entityType, entityIds)
 	}
 	return web.JsonData(likedEntityIds)
 }
@@ -80,7 +80,7 @@ func (c *LikeController) GetLiked() *web.JsonResult {
 	if user == nil || strs.IsBlank(entityType) || entityId <= 0 {
 		return web.JsonData(false)
 	} else {
-		liked := service.UserLikeService.IsLiked(user.Id, entityType, entityId)
+		liked := service.UserLikeService.IsLiked(user.ID, entityType, entityId)
 		return web.JsonData(liked)
 	}
 }

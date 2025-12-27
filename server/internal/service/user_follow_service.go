@@ -107,8 +107,8 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 		cache.UserCache.Invalidate(otherId)
 
 		return repository.UserFollowRepository.Create(tx, &model.UserFollow{
-			UserId:     userId,
-			OtherId:    otherId,
+			UserID:     userId,
+			OtherID:    otherId,
 			Status:     status,
 			CreateTime: dates.NowTimestamp(),
 		})
@@ -178,10 +178,10 @@ func (s *userFollowService) GetFollowers(userId int64, cursor int64, limit int) 
 	list := repository.UserFollowRepository.Find(sqls.DB(), cnd)
 
 	if len(list) > 0 {
-		nextCursor = list[len(list)-1].Id
+		nextCursor = list[len(list)-1].ID
 		hasMore = len(list) >= limit
 		for _, e := range list {
-			itemList = append(itemList, e.UserId)
+			itemList = append(itemList, e.UserID)
 		}
 	} else {
 		nextCursor = cursor
@@ -199,10 +199,10 @@ func (s *userFollowService) GetFollowing(userId int64, cursor int64, limit int) 
 	list := repository.UserFollowRepository.Find(sqls.DB(), cnd)
 
 	if len(list) > 0 {
-		nextCursor = list[len(list)-1].Id
+		nextCursor = list[len(list)-1].ID
 		hasMore = len(list) >= limit
 		for _, e := range list {
-			itemList = append(itemList, e.OtherId)
+			itemList = append(itemList, e.OtherID)
 		}
 	} else {
 		nextCursor = cursor
@@ -218,9 +218,9 @@ func (s *userFollowService) ScanFollowers(userId int64, handle func(fansId int64
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		for _, item := range list {
-			handle(item.UserId)
+			handle(item.UserID)
 		}
 	}
 }
@@ -233,9 +233,9 @@ func (s *userFollowService) ScanFollowing(userId int64, handle func(followUserId
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		for _, item := range list {
-			handle(item.OtherId)
+			handle(item.OtherID)
 		}
 	}
 }
@@ -253,7 +253,7 @@ func (s *userFollowService) GetMutualFollowers(userId int64, followerIds ...int6
 	set := hashset.New()
 	list := s.Find(sqls.NewCnd().Eq("user_id", userId).In("other_id", followerIds))
 	for _, follow := range list {
-		set.Add(follow.OtherId)
+		set.Add(follow.OtherID)
 	}
 	return set
 }

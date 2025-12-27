@@ -20,7 +20,7 @@ func CheckTopic(user *model.User, form payload.CreateTopicForm) error {
 	}
 	for _, strategy := range strategies {
 		if err := strategy.CheckTopic(user, form); err != nil {
-			slog.Warn("[Topic] strategy hit", slog.Any("strategy", strategy.Name()), slog.Any("userId", user.Id))
+			slog.Warn("[Topic] strategy hit", slog.Any("strategy", strategy.Name()), slog.Any("userId", user.ID))
 			return err
 		}
 	}
@@ -33,7 +33,7 @@ func CheckComment(user *model.User, form payload.CreateCommentForm) error {
 	}
 	for _, strategy := range strategies {
 		if err := strategy.CheckComment(user, form); err != nil {
-			slog.Warn("[Comment] strategy hit", slog.Any("strategy", strategy.Name()), slog.Any("userId", user.Id))
+			slog.Warn("[Comment] strategy hit", slog.Any("strategy", strategy.Name()), slog.Any("userId", user.ID))
 			return err
 		}
 	}

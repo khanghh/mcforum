@@ -23,16 +23,16 @@ type FavoriteResponse struct {
 
 func BuildFavorite(favorite *model.Favorite) *FavoriteResponse {
 	rsp := &FavoriteResponse{}
-	rsp.Id = favorite.Id
+	rsp.Id = favorite.ID
 	rsp.EntityType = favorite.EntityType
 	rsp.CreateTime = favorite.CreateTime
 
-	topic := service.TopicService.Get(favorite.EntityId)
+	topic := service.TopicService.Get(favorite.EntityID)
 	if topic == nil || topic.Status != constants.StatusActive {
 		rsp.Deleted = true
 	} else {
-		rsp.Url = bbsurls.AbsTopicUrl(topic.Slug, topic.Id)
-		rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
+		rsp.Url = bbsurls.AbsTopicUrl(topic.Slug, topic.ID)
+		rsp.User = BuildUserInfoDefaultIfNull(topic.UserID)
 		rsp.Title = topic.Title
 		rsp.Content = markdown.GetSummary(topic.Content, constants.SummaryLen)
 	}

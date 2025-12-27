@@ -4,7 +4,6 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
-	"bbs-go/pkg/msg"
 
 	"bbs-go/common/strs"
 	"bbs-go/pkg/web"
@@ -47,63 +46,18 @@ func (c *UsersController) GetFavorites() *web.JsonResult {
 	var favorites []model.Favorite
 	if cursor > 0 {
 		favorites = service.FavoriteService.Find(sqls.NewCnd().Where("user_id = ? and id < ?",
-			user.Id, cursor).Desc("id").Limit(20))
+			user.ID, cursor).Desc("id").Limit(20))
 	} else {
-		favorites = service.FavoriteService.Find(sqls.NewCnd().Where("user_id = ?", user.Id).Desc("id").Limit(limit))
+		favorites = service.FavoriteService.Find(sqls.NewCnd().Where("user_id = ?", user.ID).Desc("id").Limit(limit))
 	}
 
 	hasMore := false
 	if len(favorites) > 0 {
-		cursor = favorites[len(favorites)-1].Id
+		cursor = favorites[len(favorites)-1].ID
 		hasMore = len(favorites) >= limit
 	}
 
 	return web.JsonCursorData(payload.BuildFavorites(favorites), cursor, hasMore)
-}
-
-// Get last 3 unread messages
-func (c *UsersController) GetMsgrecent() *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	var count int64 = 0
-	var messages []model.Message
-	if user != nil {
-		count = service.MessageService.GetUnReadCount(user.Id)
-		messages = service.MessageService.Find(sqls.NewCnd().Eq("user_id", user.Id).
-			Eq("status", msg.StatusUnread).Limit(3).Desc("id"))
-	}
-	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", payload.BuildMessages(messages)).JsonResult()
-}
-
-// User messages
-func (c *UsersController) GetMessages() *web.JsonResult {
-	user, err := service.UserTokenService.CheckLogin(c.Ctx)
-	if err != nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	var (
-		limit     = 20
-		cursor, _ = params.GetInt64(c.Ctx, "cursor")
-	)
-
-	cnd := sqls.NewCnd().Eq("user_id", user.Id).Limit(limit).Desc("id")
-	if cursor > 0 {
-		cnd.Lt("id", cursor)
-	}
-	list := service.MessageService.Find(cnd)
-
-	var (
-		nextCursor = cursor
-		hasMore    = false
-	)
-	if len(list) > 0 {
-		nextCursor = list[len(list)-1].Id
-		hasMore = len(list) == limit
-	}
-
-	// Mark all as read
-	service.MessageService.MarkRead(user.Id)
-
-	return web.JsonCursorData(payload.BuildMessages(list), nextCursor, hasMore)
 }
 
 // User score logs
@@ -116,7 +70,7 @@ func (c *UsersController) GetScore_logs() *web.JsonResult {
 		limit     = 20
 		cursor, _ = params.GetInt64(c.Ctx, "cursor")
 	)
-	cnd := sqls.NewCnd().Eq("user_id", user.Id).Limit(limit).Desc("id")
+	cnd := sqls.NewCnd().Eq("user_id", user.ID).Limit(limit).Desc("id")
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
@@ -127,7 +81,7 @@ func (c *UsersController) GetScore_logs() *web.JsonResult {
 		hasMore    = false
 	)
 	if len(list) > 0 {
-		nextCursor = list[len(list)-1].Id
+		nextCursor = list[len(list)-1].ID
 		hasMore = len(list) == limit
 	}
 
@@ -165,9 +119,9 @@ func (c *UsersController) PostForbidden() *web.JsonResult {
 		return web.JsonErrorMsg("No permanent ban permission")
 	}
 	if days == 0 {
-		service.UserService.RemoveForbidden(user.Id, userId, c.Ctx.Request())
+		service.UserService.RemoveForbidden(user.ID, userId, c.Ctx.Request())
 	} else {
-		if err := service.UserService.Forbidden(user.Id, userId, days, reason, c.Ctx.Request()); err != nil {
+		if err := service.UserService.Forbidden(user.ID, userId, days, reason, c.Ctx.Request()); err != nil {
 			return web.JsonError(err)
 		}
 	}
@@ -180,7 +134,7 @@ func (c *UsersController) PostSend_verify_email() *web.JsonResult {
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
-	if err := service.UserService.SendEmailVerifyEmail(user.Id); err != nil {
+	if err := service.UserService.SendEmailVerifyEmail(user.ID); err != nil {
 		return web.JsonError(err)
 	}
 	return web.JsonSuccess()
@@ -208,7 +162,7 @@ func (c *UsersController) GetByTopics(username string) *web.JsonResult {
 		return web.JsonError(errs.ErrUserNotFound)
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.Id, cursor)
+	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.ID, cursor)
 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
@@ -219,12 +173,12 @@ func (c *UsersController) GetByFollowers(username string) *web.JsonResult {
 	}
 
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(user.Id, cursor, 10)
+	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(user.ID, cursor, 10)
 
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	var followedSet *hashset.Set
 	if currentUser != nil {
-		followedSet = service.UserFollowService.GetMutualFollowers(currentUser.Id, followerIds...)
+		followedSet = service.UserFollowService.GetMutualFollowers(currentUser.ID, followerIds...)
 	} else {
 		followedSet = hashset.New()
 	}
@@ -245,18 +199,18 @@ func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
 	}
 
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	userIds, cursor, hasMore := service.UserFollowService.GetFollowing(user.Id, cursor, 10)
+	userIds, cursor, hasMore := service.UserFollowService.GetFollowing(user.ID, cursor, 10)
 
 	current := service.UserTokenService.GetCurrent(c.Ctx)
 	var followedSet *hashset.Set
 	if current != nil {
-		if current.Id == user.Id {
+		if current.ID == user.ID {
 			followedSet = hashset.New()
 			for _, id := range userIds {
 				followedSet.Add(id)
 			}
 		} else {
-			followedSet = service.UserFollowService.GetMutualFollowers(current.Id, userIds...)
+			followedSet = service.UserFollowService.GetMutualFollowers(current.ID, userIds...)
 		}
 	}
 
@@ -280,7 +234,7 @@ func (c *UsersController) PostByFollow(username string) *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 
-	err := service.UserFollowService.Follow(currentUser.Id, user.Id)
+	err := service.UserFollowService.Follow(currentUser.ID, user.ID)
 	if err != nil {
 		return web.JsonError(err)
 	}
@@ -298,7 +252,7 @@ func (c *UsersController) DeleteByFollow(username string) *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 
-	err := service.UserFollowService.UnFollow(currentUser.Id, user.Id)
+	err := service.UserFollowService.UnFollow(currentUser.ID, user.ID)
 	if err != nil {
 		return web.JsonError(err)
 	}

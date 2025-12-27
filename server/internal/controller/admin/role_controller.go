@@ -89,7 +89,7 @@ func (c *RoleController) PostUpdate() *web.JsonResult {
 		return web.JsonErrorMsg(err.Error())
 	}
 
-	if exists := service.RoleService.GetByCode(t.Code); exists != nil && exists.Id != t.Id {
+	if exists := service.RoleService.GetByCode(t.Code); exists != nil && exists.ID != t.ID {
 		return web.JsonErrorMsg("Role code already exists")
 	}
 

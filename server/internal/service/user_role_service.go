@@ -74,8 +74,8 @@ func (s *userRoleService) UpdateUserRoles(userId int64, roleIds []int64) error {
 		} else {
 			for _, role := range roles {
 				if err := repository.UserRoleRepository.Create(tx, &model.UserRole{
-					UserId:     userId,
-					RoleId:     role.Id,
+					UserID:     userId,
+					RoleID:     role.ID,
 					CreateTime: dates.NowTimestamp(),
 				}); err != nil {
 					return err
@@ -94,7 +94,21 @@ func (s *userRoleService) UpdateUserRoles(userId int64, roleIds []int64) error {
 func (s *userRoleService) GetUserRoleIds(userId int64) (roleIds []int64) {
 	list := s.Find(sqls.NewCnd().Eq("user_id", userId))
 	for _, userRole := range list {
-		roleIds = append(roleIds, userRole.RoleId)
+		roleIds = append(roleIds, userRole.RoleID)
 	}
 	return roleIds
+}
+
+func (s *userRoleService) HasAnyRoles(userID uint64, roleNames ...string) (bool, error) {
+	var roles []model.Role
+	err := sqls.DB().
+		Model(&model.Role{}).
+		Joins("JOIN user_roles ur ON ur.role_id = roles.id").
+		Where("ur.user_id = ? AND roles.name IN ?", userID, roleNames).
+		Find(&roles).
+		Error
+	if err != nil {
+		return false, err
+	}
+	return len(roles) > 0, nil
 }

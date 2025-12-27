@@ -37,9 +37,9 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 		return nil
 	}
 	doc := &TopicDocument{
-		Id:          topic.Id,
+		Id:          topic.ID,
 		ForumId:     topic.ForumId,
-		UserId:      topic.UserId,
+		UserId:      topic.UserID,
 		Title:       topic.Title,
 		Status:      topic.Status,
 		Recommended: topic.Recommended,
@@ -54,7 +54,7 @@ func NewTopicDoc(topic *model.Topic) *TopicDocument {
 	doc.Content = content
 
 	// process user
-	user := cache.UserCache.Get(topic.UserId)
+	user := cache.UserCache.Get(topic.UserID)
 	if user != nil {
 		doc.Nickname = user.Nickname
 	}
@@ -68,11 +68,11 @@ func UpdateTopicIndex(topic *model.Topic) {
 	if doc == nil {
 		return
 	}
-	err := index.Index(cast.ToString(topic.Id), doc)
+	err := index.Index(cast.ToString(topic.ID), doc)
 	if err != nil {
 		slog.Error(err.Error())
 	} else {
-		slog.Info("add topic search index", slog.Any("id", topic.Id))
+		slog.Info("add topic search index", slog.Any("id", topic.ID))
 	}
 }
 

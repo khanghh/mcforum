@@ -28,17 +28,17 @@ func (PostFrequencyStrategy) CheckTopic(user *model.User, topic model.CreateTopi
 		maxCountInOneDay     int64 = 3 // max posts within one day
 	)
 
-	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour*24)))) >= maxCountInOneDay {
 		return errors.New("Posting too frequently, please take a break")
 	}
 
-	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour)))) >= maxCountInOneHour {
 		return errors.New("Posting too frequently, please take a break")
 	}
 
-	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Minute*10)))) >= maxCountInTenMinutes {
 		return errors.New("Posting too frequently, please take a break")
 	}
@@ -58,17 +58,17 @@ func (s PostFrequencyStrategy) CheckComment(user *model.User, form model.CreateC
 		maxCountInOneDay     int64 = 1 // max posts within one day
 	)
 
-	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour*24)))) >= maxCountInOneDay {
 		return errors.New("Posting too frequently, please take a break")
 	}
 
-	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Hour)))) >= maxCountInOneHour {
 		return errors.New("Posting too frequently, please take a break")
 	}
 
-	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).
+	if repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).
 		Gt("create_time", dates.Timestamp(time.Now().Add(-time.Minute*10)))) >= maxCountInTenMinutes {
 		return errors.New("Posting too frequently, please take a break")
 	}

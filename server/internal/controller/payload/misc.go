@@ -95,7 +95,7 @@ Parameters:
 	redirect - login source address, need to control jump to this address after successful login
 */
 func BuildLoginSuccess(ctx iris.Context, user *model.User, redirect string) *web.JsonResult {
-	token, err := service.UserTokenService.Generate(user.Id)
+	token, err := service.UserTokenService.Generate(user.ID)
 	if err != nil {
 		return web.JsonError(err)
 	}

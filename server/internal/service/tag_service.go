@@ -103,7 +103,7 @@ func (s *tagService) Scan(callback func(tags []model.Tag)) {
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }

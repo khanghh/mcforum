@@ -39,17 +39,18 @@ func sendTopicLikedNotification(topicId, likeUserId int64) {
 	if topic == nil || topic.Status != constants.StatusActive {
 		return
 	}
-	if topic.UserId == likeUserId {
+	if topic.UserID == likeUserId {
 		return
 	}
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       likeUserId,
-		ToId:         topic.UserId,
+		ToId:         topic.UserID,
 		Title:        locale.T("message.title.liked_your_topic"),
 		QuoteContent: topic.GetTitle(),
-		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.Id),
+		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.ID),
+		Type:         msg.TypeTopicLike,
 		ExtraData: &msg.TopicLikeExtraData{
-			TopicId: topic.Id,
+			TopicId: topic.ID,
 			UserId:  likeUserId,
 		},
 	})
@@ -61,23 +62,24 @@ func sendCommentLikedNotification(commentId, likedUserId int64) {
 	if comment == nil || comment.Status != constants.StatusActive {
 		return
 	}
-	if comment.UserId == likedUserId {
+	if comment.UserID == likedUserId {
 		return
 	}
 
-	topic := service.TopicService.Get(comment.TopicId)
+	topic := service.TopicService.Get(comment.TopicID)
 	if topic == nil || topic.Status != constants.StatusActive {
 		return
 	}
 
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       likedUserId,
-		ToId:         comment.UserId,
+		ToId:         comment.UserID,
 		Title:        locale.T("message.title.liked_your_comment"),
 		QuoteContent: utils.GetSummaryHtml(comment.Content, constants.SummaryLen),
-		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.Id),
+		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.ID),
+		Type:         msg.TypeCommentLike,
 		ExtraData: &msg.CommentLikeExtraData{
-			TopicId:   topic.Id,
+			TopicId:   topic.ID,
 			CommentId: commentId,
 			UserId:    likedUserId,
 		},

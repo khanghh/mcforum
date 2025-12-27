@@ -141,7 +141,7 @@ func (r *tagRepository) GetOrCreates(db *gorm.DB, tags []string) (tagIds []int64
 		if err != nil {
 			return
 		}
-		tagIds = append(tagIds, tag.Id)
+		tagIds = append(tagIds, tag.ID)
 	}
 	return
 }

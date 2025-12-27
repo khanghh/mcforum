@@ -24,14 +24,15 @@ func sendTopicFavoriteMsg(topicId, favoriteUserId int64) {
 	if topic == nil || topic.Status != constants.StatusActive {
 		return
 	}
-	if topic.UserId == favoriteUserId {
+	if topic.UserID == favoriteUserId {
 		return
 	}
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       favoriteUserId,
-		ToId:         topic.UserId,
+		ToId:         topic.UserID,
 		Title:        locale.T("message.title.topic_favorited"),
 		QuoteContent: topic.GetTitle(),
+		Type:         msg.TypeTopicFavorite,
 		ExtraData: &msg.TopicFavoriteExtraData{
 			TopicId: topicId,
 			UserId:  favoriteUserId,

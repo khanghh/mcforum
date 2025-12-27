@@ -98,16 +98,16 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 	}
 
 	comment := &model.Comment{
-		UserId:      args.UserId,
-		TopicId:     args.TopicId,
-		ParentId:    args.ParentId,
-		QuoteId:     args.QuoteId,
+		UserID:      args.UserId,
+		TopicID:     args.TopicId,
+		ParentID:    args.ParentId,
+		QuoteID:     args.QuoteId,
 		Content:     args.Content,
 		ContentType: constants.ContentTypeText,
 		Status:      constants.StatusActive,
 		UserAgent:   args.UserAgent,
-		Ip:          args.IPAddress,
-		IpLocation:  iplocator.IpLocation(args.IPAddress),
+		IP:          args.IPAddress,
+		IPLocation:  iplocator.IpLocation(args.IPAddress),
 		CreateTime:  dates.NowTimestamp(),
 	}
 
@@ -125,12 +125,12 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 			return err
 		}
 
-		if err := repository.UserRepository.IncreaseCommentCount(tx, comment.UserId); err != nil {
+		if err := repository.UserRepository.IncreaseCommentCount(tx, comment.UserID); err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(comment.UserId)
+		cache.UserCache.Invalidate(comment.UserID)
 
-		if comment.ParentId == 0 {
+		if comment.ParentID == 0 {
 			return TopicService.onComment(tx, comment)
 		}
 		return s.onComment(tx, comment)
@@ -150,7 +150,7 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 
 // onComment Reply to a comment (second-level comment)
 func (s *commentService) onComment(tx *gorm.DB, comment *model.Comment) error {
-	return repository.CommentRepository.UpdateColumn(tx, comment.ParentId, "comment_count", gorm.Expr("comment_count + 1"))
+	return repository.CommentRepository.UpdateColumn(tx, comment.ParentID, "comment_count", gorm.Expr("comment_count + 1"))
 }
 
 // GetComments List of comments
@@ -194,7 +194,7 @@ func (s *commentService) ScanByUser(userId int64, callback func(comments []model
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }
@@ -209,7 +209,7 @@ func (s *commentService) Scan(callback func(comments []model.Comment)) {
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }

@@ -21,22 +21,22 @@ func handleCommentCreate(i interface{}) {
 	sendCommentTopicNotification(&e)
 	sendReplyCommentNotification(&e)
 	sendQuoteCommentNofitication(&e)
-	service.UserService.IncreaseCommentCount(e.Comment.UserId)
+	service.UserService.IncreaseCommentCount(e.Comment.UserID)
 	service.UserService.IncrScoreForPostComment(e.Comment)
 }
 
 // sendCommentTopicNotification send message to notify topic owner of new comment created
 func sendCommentTopicNotification(e *event.CommentCreatedEvent) {
 	var (
-		from = e.Comment.UserId
-		to   = e.Topic.UserId
+		from = e.Comment.UserID
+		to   = e.Topic.UserID
 	)
 	if from == to {
 		return
 	}
 
 	// do not process replying to comment
-	if e.Comment.ParentId != 0 {
+	if e.Comment.ParentID != 0 {
 		return
 	}
 
@@ -46,68 +46,68 @@ func sendCommentTopicNotification(e *event.CommentCreatedEvent) {
 		Type:         msg.TypeTopicComment,
 		Title:        locale.T("message.title.commented_your_topic"),
 		QuoteContent: utils.GetSummaryHtml(e.Comment.Content, constants.CommentSummaryLen),
-		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.Id),
+		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 		ExtraData: msg.CommentExtraData{
-			TopicId: e.Topic.Id,
+			TopicId: e.Topic.ID,
 		},
 	})
 }
 
 func sendReplyCommentNotification(e *event.CommentCreatedEvent) {
-	if e.Comment.ParentId == 0 {
+	if e.Comment.ParentID == 0 {
 		return
 	}
 
-	parentComment := service.CommentService.Get(e.Comment.ParentId)
+	parentComment := service.CommentService.Get(e.Comment.ParentID)
 	if parentComment == nil || parentComment.Status != constants.StatusActive {
 		return
 	}
 
-	if e.Comment.UserId == parentComment.UserId {
+	if e.Comment.UserID == parentComment.UserID {
 		return
 	}
 
 	service.MessageService.SendMsg(service.SendMessageArgs{
-		FromId:       e.Comment.UserId,
-		ToId:         parentComment.UserId,
+		FromId:       e.Comment.UserID,
+		ToId:         parentComment.UserID,
 		Title:        locale.T("message.title.replied_your_comment"),
 		Type:         msg.TypeCommentReply,
 		QuoteContent: utils.GetSummaryHtml(e.Comment.Content, constants.CommentSummaryLen),
-		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.Id),
+		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 		ExtraData: msg.CommentExtraData{
-			TopicId:  e.Topic.Id,
-			ParentId: e.Comment.ParentId,
-			QuoteId:  e.Comment.QuoteId,
+			TopicId:  e.Topic.ID,
+			ParentId: e.Comment.ParentID,
+			QuoteId:  e.Comment.QuoteID,
 		},
 	})
 
 }
 
 func sendQuoteCommentNofitication(e *event.CommentCreatedEvent) {
-	if e.Comment.QuoteId == 0 {
+	if e.Comment.QuoteID == 0 {
 		return
 	}
 
-	quoteComment := service.CommentService.Get(e.Comment.QuoteId)
+	quoteComment := service.CommentService.Get(e.Comment.QuoteID)
 	if quoteComment == nil || quoteComment.Status != constants.StatusActive {
 		return
 	}
 
-	if e.Comment.UserId == quoteComment.UserId {
+	if e.Comment.UserID == quoteComment.UserID {
 		return
 	}
 
 	service.MessageService.SendMsg(service.SendMessageArgs{
-		FromId:       e.Comment.UserId,
-		ToId:         quoteComment.UserId,
+		FromId:       e.Comment.UserID,
+		ToId:         quoteComment.UserID,
 		Title:        locale.T("message.title.replied_your_comment"),
 		Type:         msg.TypeCommentReply,
 		QuoteContent: utils.GetSummaryHtml(e.Comment.Content, constants.CommentSummaryLen),
-		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.Id),
+		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 		ExtraData: msg.CommentExtraData{
-			TopicId:  e.Topic.Id,
-			ParentId: e.Comment.ParentId,
-			QuoteId:  e.Comment.QuoteId,
+			TopicId:  e.Topic.ID,
+			ParentId: e.Comment.ParentID,
+			QuoteId:  e.Comment.QuoteID,
 		},
 	})
 }

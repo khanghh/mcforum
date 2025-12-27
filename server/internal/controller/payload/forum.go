@@ -15,7 +15,7 @@ func BuildForum(forum *model.Forum) *ForumResponse {
 		return nil
 	}
 	return &ForumResponse{
-		Id:          forum.Id,
+		Id:          forum.ID,
 		Name:        forum.Name,
 		Slug:        forum.Slug,
 		Logo:        forum.Logo,

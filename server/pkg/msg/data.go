@@ -17,6 +17,7 @@ const (
 	TypeTopicRecommend Type = 4
 	TypeTopicDelete    Type = 5
 	TypeUserFollow     Type = 6
+	TypeCommentLike    Type = 7
 )
 
 type TopicLikeExtraData struct {

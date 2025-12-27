@@ -81,7 +81,7 @@ func (c *TagController) PostUpdate() *web.JsonResult {
 	if len(t.Name) == 0 {
 		return web.JsonErrorMsg("name is required")
 	}
-	if tmp := service.TagService.GetByName(t.Name); tmp != nil && tmp.Id != id {
+	if tmp := service.TagService.GetByName(t.Name); tmp != nil && tmp.ID != id {
 		return web.JsonErrorMsg("Tag \"" + t.Name + "\" already exists")
 	}
 

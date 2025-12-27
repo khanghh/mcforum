@@ -43,8 +43,8 @@ type TopicResponse struct {
 func BuildTopic(topic *model.Topic, currentUser *model.User) *TopicResponse {
 	resp := _buildTopic(topic, true)
 	if currentUser != nil {
-		resp.Liked = service.UserLikeService.IsLiked(currentUser.Id, constants.EntityTopic, topic.Id)
-		resp.Favorited = service.FavoriteService.IsFavorited(currentUser.Id, constants.EntityTopic, topic.Id)
+		resp.Liked = service.UserLikeService.IsLiked(currentUser.ID, constants.EntityTopic, topic.ID)
+		resp.Favorited = service.FavoriteService.IsFavorited(currentUser.ID, constants.EntityTopic, topic.ID)
 	}
 	return resp
 }
@@ -63,15 +63,15 @@ func BuildSimpleTopics(topics []model.Topic, currentUser *model.User) []TopicRes
 	if currentUser != nil {
 		var topicIds []int64
 		for _, topic := range topics {
-			topicIds = append(topicIds, topic.Id)
+			topicIds = append(topicIds, topic.ID)
 		}
-		likedTopicIds = service.UserLikeService.GetUserLikes(currentUser.Id, constants.EntityTopic, topicIds)
+		likedTopicIds = service.UserLikeService.GetUserLikes(currentUser.ID, constants.EntityTopic, topicIds)
 	}
 
 	var responses []TopicResponse
 	for _, topic := range topics {
 		item := BuildSimpleTopic(&topic)
-		item.Liked = arrays.Contains(likedTopicIds, topic.Id)
+		item.Liked = arrays.Contains(likedTopicIds, topic.ID)
 		responses = append(responses, *item)
 	}
 	return responses
@@ -84,11 +84,11 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 
 	rsp := &TopicResponse{}
 
-	rsp.Id = topic.Id
+	rsp.Id = topic.ID
 	rsp.Type = topic.Type
-	rsp.Slug = fmt.Sprintf("%s.%s", topic.Slug, base62.Encode(topic.Id))
+	rsp.Slug = fmt.Sprintf("%s.%s", topic.Slug, base62.Encode(topic.ID))
 	rsp.Title = topic.Title
-	rsp.User = BuildUserInfoDefaultIfNull(topic.UserId)
+	rsp.User = BuildUserInfoDefaultIfNull(topic.UserID)
 	rsp.LastCommentTime = topic.LastCommentTime
 	rsp.CreateTime = topic.CreateTime
 	rsp.ViewCount = topic.ViewCount
@@ -99,7 +99,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 	rsp.Pinned = topic.Pinned
 	rsp.PinnedTime = topic.PinnedTime
 	rsp.Status = topic.Status
-	rsp.IpLocation = topic.IpLocation
+	rsp.IpLocation = topic.IPLocation
 
 	// build content
 	if isBriefContent {
@@ -127,7 +127,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		rsp.Forum = BuildForum(node)
 	}
 
-	rsp.Tags = service.TopicService.GetTopicTags(topic.Id)
+	rsp.Tags = service.TopicService.GetTopicTags(topic.ID)
 
 	return rsp
 }

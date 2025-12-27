@@ -22,7 +22,7 @@ func (c *CheckinController) PostCheckin() *web.JsonResult {
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
 	}
-	err := service.CheckInService.CheckIn(user.Id)
+	err := service.CheckInService.CheckIn(user.ID)
 	if err == nil {
 		return web.JsonSuccess()
 	} else {
@@ -36,7 +36,7 @@ func (c *CheckinController) GetCheckin() *web.JsonResult {
 	if user == nil {
 		return web.JsonSuccess()
 	}
-	checkIn := service.CheckInService.GetByUserId(user.Id)
+	checkIn := service.CheckInService.GetByUserId(user.ID)
 	if checkIn != nil {
 		today := dates.GetDay(time.Now())
 		return web.NewRspBuilder(checkIn).

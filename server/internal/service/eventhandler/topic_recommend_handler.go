@@ -22,12 +22,13 @@ func handleTopicRecommend(i interface{}) {
 
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       0,
-		ToId:         e.Topic.UserId,
+		ToId:         e.Topic.UserID,
 		Title:        locale.T("message.title.topic_recommended"),
 		QuoteContent: e.Topic.GetTitle(),
-		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.Id),
+		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
+		Type:         msg.TypeTopicRecommend,
 		ExtraData: &msg.TopicRecommendExtraData{
-			TopicId: e.Topic.Id,
+			TopicId: e.Topic.ID,
 		},
 	})
 }

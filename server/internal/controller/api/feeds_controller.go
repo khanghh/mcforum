@@ -31,7 +31,7 @@ func (c *FeedsController) GetWhatsNew() *web.JsonResult {
 		topic.Pinned = false // do not render pinned in normal lists
 		temp = append(temp, topic)
 	}
-	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
+	list := arrays.Distinct(temp, func(t model.Topic) any { return t.ID })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), cursor, hasMore)
 }
 
@@ -56,7 +56,7 @@ func (c *FeedsController) GetRecommended() *web.JsonResult {
 			temp = append(temp, topic)
 		}
 	}
-	list := arrays.Distinct(temp, func(t model.Topic) any { return t.Id })
+	list := arrays.Distinct(temp, func(t model.Topic) any { return t.ID })
 	return web.JsonCursorData(payload.BuildSimpleTopics(list, user), cursor, hasMore).
 		SetProperty("forum", "recommended")
 }
@@ -66,7 +66,7 @@ func (c *FeedsController) GetFollowed() *web.JsonResult {
 		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
 		user   = service.UserTokenService.GetCurrent(c.Ctx)
 	)
-	topics, cursor, hasMore := service.TopicService.GetFollowedTopics(user.Id, cursor)
+	topics, cursor, hasMore := service.TopicService.GetFollowedTopics(user.ID, cursor)
 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 

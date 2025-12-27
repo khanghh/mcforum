@@ -108,7 +108,7 @@ func (s *sysConfigService) setSingle(db *gorm.DB, key, value, name, description 
 	}
 
 	var err error
-	if sysConfig.Id > 0 {
+	if sysConfig.ID > 0 {
 		err = repository.SysConfigRepository.Update(db, sysConfig)
 	} else {
 		err = repository.SysConfigRepository.Create(db, sysConfig)

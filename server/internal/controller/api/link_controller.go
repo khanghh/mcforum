@@ -65,9 +65,9 @@ func (c *LinkController) GetToplinks() *web.JsonResult {
 
 func (c *LinkController) buildLink(link model.Link) map[string]interface{} {
 	return map[string]interface{}{
-		"id":         link.Id,
-		"linkId":     link.Id,
-		"url":        link.Url,
+		"id":         link.ID,
+		"linkId":     link.ID,
+		"url":        link.URL,
 		"title":      link.Title,
 		"summary":    link.Summary,
 		"logo":       link.Logo,

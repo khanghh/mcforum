@@ -22,14 +22,14 @@ func (c *UserReportController) PostSubmit() *web.JsonResult {
 		reason    = params.FormValue(c.Ctx, "reason")
 	)
 	report := &model.UserReport{
-		DataId:     dataId,
+		DataID:     dataId,
 		DataType:   dataType,
 		Reason:     reason,
 		CreateTime: dates.NowTimestamp(),
 	}
 
 	if user := service.UserTokenService.GetCurrent(c.Ctx); user != nil {
-		report.UserId = user.Id
+		report.UserID = user.ID
 	}
 	service.UserReportService.Create(report)
 	return web.JsonSuccess()

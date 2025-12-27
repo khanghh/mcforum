@@ -15,7 +15,6 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 )
 
 var db *gorm.DB
@@ -26,7 +25,7 @@ var roles = []map[string]any{
 		"type":   constants.RoleTypeSystem,
 		"name":   "Owner",
 		"code":   constants.RoleOwner,
-		"remark": "Owner",
+		"remark": "",
 		"status": constants.StatusActive,
 	},
 	{
@@ -34,26 +33,27 @@ var roles = []map[string]any{
 		"type":   constants.RoleTypeSystem,
 		"name":   "Admin",
 		"code":   constants.RoleAdmin,
-		"remark": "Admin",
+		"remark": "",
 		"status": constants.StatusActive,
 	},
 }
 
 var adminUser = model.User{
+	Model:         model.Model{ID: 1},
 	Username:      sqls.SqlNullString("admin"),
 	Email:         sqls.SqlNullString("admin@mineviet.com"),
 	EmailVerified: true,
 	Nickname:      "admin",
 	Password:      passwd.EncodePassword("123456"),
+	Roles:         []model.Role{{Model: model.Model{ID: 1}}},
 	IsActive:      true,
-	Roles:         "owner",
 }
 
 var forums = []model.Forum{
 	{
 		Name:        "Thông báo",
 		Slug:        "announcement",
-		Description: "",
+		Description: "Nơi đăng các thông báo quan trọng về game, cập nhật phiên bản, sự kiện và bảo trì.",
 		SortNo:      0,
 		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
@@ -61,24 +61,24 @@ var forums = []model.Forum{
 	{
 		Name:        "Hỗ trợ",
 		Slug:        "support",
-		Description: "",
-		SortNo:      0,
+		Description: "Khu vực hỗ trợ người chơi gặp lỗi, vấn đề tài khoản hoặc cần hướng dẫn khi chơi game.",
+		SortNo:      1,
 		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
 	{
 		Name:        "Thảo luận",
 		Slug:        "discussion",
-		Description: "",
-		SortNo:      0,
+		Description: "Diễn đàn dành cho người chơi thảo luận về các chủ đề liên quan đến game, chia sẻ kinh nghiệm và mẹo chơi.",
+		SortNo:      2,
 		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
 	{
 		Name:        "Nhân sự",
 		Slug:        "staff",
-		Description: "",
-		SortNo:      0,
+		Description: " Khu vực riêng tư dành cho nhân viên và quản trị viên thảo luận về công việc nội bộ và quản lý cộng đồng.",
+		SortNo:      3,
 		Status:      constants.StatusActive,
 		CreateTime:  dates.NowTimestamp(),
 	},
@@ -260,19 +260,14 @@ var roleMenuConfig = map[int][]int{
 func init() {
 	connStr := os.Getenv("DB_URL")
 	var err error
-	db, err = gorm.Open(mysql.Open(connStr), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "t_",
-			SingularTable: true,
-		},
-	})
+	db, err = gorm.Open(mysql.Open(connStr))
 	if err != nil {
 		panic(err)
 	}
 }
 
 func TestCreateUser(t *testing.T) {
-	adminUser.Id = 1
+	adminUser.ID = 1
 	adminUser.CreateTime = dates.NowTimestamp()
 	adminUser.UpdateTime = dates.NowTimestamp()
 	err := repository.UserRepository.Create(db, &adminUser)
@@ -296,8 +291,8 @@ func TestCreateRoles(t *testing.T) {
 func TestCreateUserRole(t *testing.T) {
 	err := repository.UserRoleRepository.Create(db, &model.UserRole{
 		Model:      model.Model{1},
-		UserId:     adminUser.Id,
-		RoleId:     1,
+		UserID:     adminUser.ID,
+		RoleID:     1,
 		CreateTime: dates.NowTimestamp(),
 	})
 	if err != nil {
@@ -307,7 +302,7 @@ func TestCreateUserRole(t *testing.T) {
 
 func TestCreateForums(t *testing.T) {
 	for idx, item := range forums {
-		item.Id = int64(idx + 1)
+		item.ID = int64(idx + 1)
 		item.SortNo = idx
 		item.CreateTime = dates.NowTimestamp()
 		err := repository.ForumRepository.Create(db, &item)
@@ -319,7 +314,7 @@ func TestCreateForums(t *testing.T) {
 
 func TestCreateSysConfigs(t *testing.T) {
 	for idx, item := range sysConfigs {
-		item.Id = int64(idx + 1)
+		item.ID = int64(idx + 1)
 		item.CreateTime = dates.NowTimestamp()
 		item.UpdateTime = dates.NowTimestamp()
 		err := repository.SysConfigRepository.Create(db, &item)
@@ -413,7 +408,7 @@ var adminMenuItems = []model.Menu{
 
 func TestCreateMenu(t *testing.T) {
 	for idx, item := range adminMenuItems {
-		item.Id = int64(idx + 1)
+		item.ID = int64(idx + 1)
 		item.SortNo = idx
 		item.CreateTime = dates.NowTimestamp()
 		item.UpdateTime = dates.NowTimestamp()
@@ -448,16 +443,40 @@ func TestInitializeDatabase(t *testing.T) {
 	if err := db.AutoMigrate(model.Models...); nil != err {
 		panic(err)
 	}
-	fmt.Println(";")
+	fmt.Println("aaa")
 
-	// TestCreateUser(t)
 	// TestCreateRoles(t)
-	// TestCreateUserRole(t)
+	// TestCreateUser(t)
+	TestCreateUserRole(t)
 	// TestCreateForums(t)
 	// TestCreateSysConfigs(t)
 	// TestCreateMenu(t)
 	// TestCreateRoleMenu(t)
 
+}
+
+func TestAddUser(t *testing.T) {
+	user := model.User{
+		Username:      sqls.SqlNullString("user01"),
+		Email:         sqls.SqlNullString(""),
+		EmailVerified: false,
+		Nickname:      "",
+		Password:      passwd.EncodePassword("123456"),
+		IsActive:      true,
+		Roles:         []model.Role{{Model: model.Model{ID: 1}}},
+		CreateTime:    dates.NowTimestamp(),
+	}
+	err := repository.UserRepository.Create(db, &user)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func TestGetUser(t *testing.T) {
+	var user model.User
+	db.Preload("Roles").Where("username = ?", "khang").First(&user)
+	fmt.Println(user.Roles)
 }
 
 func TestSetForumMenu(t *testing.T) {
@@ -469,23 +488,6 @@ func TestSetForumMenu(t *testing.T) {
 		}
 	}
 	err := repository.SysConfigRepository.Update(db, &menuConfig)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func TestAddUser(t *testing.T) {
-	user := model.User{
-		Username:      sqls.SqlNullString("khang"),
-		Email:         sqls.SqlNullString(""),
-		EmailVerified: false,
-		Nickname:      "khang",
-		Password:      passwd.EncodePassword("123456"),
-		IsActive:      true,
-		Roles:         "admin",
-		CreateTime:    dates.NowTimestamp(),
-	}
-	err := repository.UserRepository.Create(db, &user)
 	if err != nil {
 		panic(err)
 	}

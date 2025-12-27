@@ -68,14 +68,14 @@ func (s *userService) FindPageByCnd(cnd *sqls.Cnd) (list []model.User, paging *s
 func (s *userService) Create(t *model.User) error {
 	err := repository.UserRepository.Create(sqls.DB(), t)
 	if err == nil {
-		cache.UserCache.Invalidate(t.Id)
+		cache.UserCache.Invalidate(t.ID)
 	}
 	return nil
 }
 
 func (s *userService) Update(t *model.User) error {
 	err := repository.UserRepository.Update(sqls.DB(), t)
-	cache.UserCache.Invalidate(t.Id)
+	cache.UserCache.Invalidate(t.ID)
 	return err
 }
 
@@ -104,7 +104,7 @@ func (s *userService) Scan(callback func(users []model.User)) {
 		if len(list) == 0 {
 			break
 		}
-		cursor = list[len(list)-1].Id
+		cursor = list[len(list)-1].ID
 		callback(list)
 	}
 }
@@ -137,7 +137,7 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 				TopicService.ScanByUser(userId, func(topics []model.Topic) {
 					for _, topic := range topics {
 						if topic.Status != constants.StatusDeleted {
-							_ = TopicService.Delete(topic.Id, operatorId, nil)
+							_ = TopicService.Delete(topic.ID, operatorId, nil)
 						}
 					}
 				})
@@ -146,7 +146,7 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 				CommentService.ScanByUser(userId, func(comments []model.Comment) {
 					for _, comment := range comments {
 						if comment.Status != constants.StatusDeleted {
-							_ = CommentService.Delete(comment.Id)
+							_ = CommentService.Delete(comment.ID)
 						}
 					}
 				})
@@ -164,7 +164,7 @@ func (s *userService) RemoveForbidden(operatorId, userId int64, r *http.Request)
 		return
 	}
 	if repository.UserRepository.UpdateColumn(sqls.DB(), userId, "forbidden_end_time", 0) == nil {
-		cache.UserCache.Invalidate(user.Id)
+		cache.UserCache.Invalidate(user.ID)
 		OperateLogService.AddOperateLog(operatorId, constants.OpTypeRemoveForbidden, constants.EntityUser, userId, "", r)
 	}
 }
@@ -416,11 +416,11 @@ func (s *userService) IncreaseCommentCount(userId int64) error {
 func (s *userService) SyncUserCount() {
 	s.Scan(func(users []model.User) {
 		for _, user := range users {
-			topicCount := repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusActive))
-			commentCount := repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.Id).Eq("status", constants.StatusActive))
-			_ = repository.UserRepository.UpdateColumn(sqls.DB(), user.Id, "topic_count", topicCount)
-			_ = repository.UserRepository.UpdateColumn(sqls.DB(), user.Id, "comment_count", commentCount)
-			cache.UserCache.Invalidate(user.Id)
+			topicCount := repository.TopicRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).Eq("status", constants.StatusActive))
+			commentCount := repository.CommentRepository.Count(sqls.DB(), sqls.NewCnd().Eq("user_id", user.ID).Eq("status", constants.StatusActive))
+			_ = repository.UserRepository.UpdateColumn(sqls.DB(), user.ID, "topic_count", topicCount)
+			_ = repository.UserRepository.UpdateColumn(sqls.DB(), user.ID, "comment_count", commentCount)
+			cache.UserCache.Invalidate(user.ID)
 		}
 	})
 }
@@ -464,7 +464,7 @@ func (s *userService) SendEmailVerifyEmail(userId int64) error {
 	return sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := repository.EmailCodeRepository.Create(tx, &model.EmailCode{
 			Model:      model.Model{},
-			UserId:     userId,
+			UserID:     userId,
 			Email:      user.Email.String,
 			Code:       "",
 			Token:      token,
@@ -489,7 +489,7 @@ func (s *userService) VerifyEmail(token string) (string, error) {
 		return "", errors.New(locale.T("errors.verify_email_code_invalid"))
 	}
 
-	user := s.Get(emailCode.UserId)
+	user := s.Get(emailCode.UserID)
 	if user == nil || emailCode.Email != user.Email.String {
 		return "", errors.New(locale.T("errors.captcha_expired"))
 	}
@@ -497,11 +497,11 @@ func (s *userService) VerifyEmail(token string) (string, error) {
 		return "", errors.New(locale.T("errors.verify_email_expired"))
 	}
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		if err := repository.UserRepository.UpdateColumn(tx, emailCode.UserId, "email_verified", true); err != nil {
+		if err := repository.UserRepository.UpdateColumn(tx, emailCode.UserID, "email_verified", true); err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(emailCode.UserId)
-		return repository.EmailCodeRepository.UpdateColumn(tx, emailCode.Id, "used", true)
+		cache.UserCache.Invalidate(emailCode.UserID)
+		return repository.EmailCodeRepository.UpdateColumn(tx, emailCode.ID, "used", true)
 	})
 	if err != nil {
 		return "", err
@@ -531,8 +531,8 @@ func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 		slog.Info(locale.T("errors.points_config_missing"))
 		return
 	}
-	err := s.addScore(topic.UserId, config.PostTopicScore, constants.EntityTopic,
-		strconv.FormatInt(topic.Id, 10), locale.T("errors.points_added_for_comment"))
+	err := s.addScore(topic.UserID, config.PostTopicScore, constants.EntityTopic,
+		strconv.FormatInt(topic.ID, 10), locale.T("errors.points_added_for_comment"))
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}
@@ -545,7 +545,7 @@ func (s *userService) IncrScoreForPostComment(comment *model.Comment) {
 		slog.Info(locale.T("errors.points_config_missing"))
 		return
 	}
-	err := s.addScore(comment.UserId, config.PostCommentScore, constants.EntityComment, strconv.FormatInt(comment.Id, 10), locale.T("points.reason_post_comment"))
+	err := s.addScore(comment.UserID, config.PostCommentScore, constants.EntityComment, strconv.FormatInt(comment.ID, 10), locale.T("points.reason_post_comment"))
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}

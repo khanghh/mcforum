@@ -30,7 +30,7 @@ type TreeNode struct {
 
 func BuildMenu(element *model.Menu) MenuResponse {
 	item := MenuResponse{
-		Id:         element.Id,
+		Id:         element.ID,
 		Name:       element.Name,
 		Title:      element.Title,
 		Icon:       element.Icon,
@@ -57,7 +57,7 @@ func _BuildMenuTree(parentId int64, level int, list []model.Menu) (ret []MenuTre
 			ret = append(ret, MenuTreeResponse{
 				MenuResponse: menu,
 				Level:        level,
-				Children:     _BuildMenuTree(element.Id, level+1, list),
+				Children:     _BuildMenuTree(element.ID, level+1, list),
 			})
 		}
 	}
@@ -72,10 +72,10 @@ func _BuildMenuSimpleTree(parentId int64, list []model.Menu) (ret []TreeNode) {
 	for _, element := range list {
 		if element.ParentId == parentId {
 			ret = append(ret, TreeNode{
-				Id:       element.Id,
-				Key:      element.Id,
+				Id:       element.ID,
+				Key:      element.ID,
 				Title:    element.Title,
-				Children: _BuildMenuSimpleTree(element.Id, list),
+				Children: _BuildMenuSimpleTree(element.ID, list),
 			})
 		}
 	}

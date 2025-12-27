@@ -95,8 +95,8 @@ func (s *messageService) MarkRead(userId int64) {
 // SendMsg Send a message
 func (s *messageService) SendMsg(args SendMessageArgs) {
 	t := &model.Message{
-		FromId:       args.FromId,
-		UserId:       args.ToId,
+		FromID:       args.FromId,
+		UserID:       args.ToId,
 		Title:        args.Title,
 		Content:      args.Content,
 		QuoteContent: args.QuoteContent,
@@ -121,7 +121,7 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 	if msgType == msg.TypeTopicDelete {
 		return
 	}
-	user := cache.UserCache.Get(t.UserId)
+	user := cache.UserCache.Get(t.UserID)
 	if user == nil || len(user.Email.String) == 0 {
 		return
 	}
@@ -145,8 +145,8 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 	}
 
 	var from *model.User
-	if t.FromId > 0 {
-		from = cache.UserCache.Get(t.FromId)
+	if t.FromID > 0 {
+		from = cache.UserCache.Get(t.FromID)
 	}
 	err := notification.SendTemplateEmail(from, user.Email.String, emailTitle, emailTitle, t.Content,
 		t.QuoteContent, &model.ActionLink{

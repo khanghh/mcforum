@@ -81,8 +81,8 @@ func (c *userCache) GetByUsername(username string) *model.User {
 	}
 	user := repository.UserRepository.GetByUsername(sqls.DB(), username)
 	if user != nil {
-		c.cache.Put(user.Id, user)
-		c.idCache.Put(username, user.Id)
+		c.cache.Put(user.ID, user)
+		c.idCache.Put(username, user.ID)
 	}
 	return user
 }

@@ -39,19 +39,19 @@ func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 		return web.JsonError(errs.ErrCommentDeleted)
 	}
 
-	topic := service.TopicService.Get(parent.TopicId)
+	topic := service.TopicService.Get(parent.TopicID)
 	if topic == nil || topic.Status != constants.StatusActive {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	parentId := parent.Id
-	if parent.ParentId != 0 {
-		parentId = parent.ParentId
+	parentId := parent.ID
+	if parent.ParentID != 0 {
+		parentId = parent.ParentID
 	}
 
 	comment, err := service.CommentService.CreateComment(service.CreateCommentArgs{
-		UserId:    user.Id,
-		TopicId:   parent.TopicId,
+		UserId:    user.ID,
+		TopicId:   parent.TopicID,
 		ParentId:  parentId,
 		QuoteId:   form.QuoteId,
 		Content:   form.Content,
@@ -80,7 +80,7 @@ func (c *CommentsController) PostByReactions(commentId int64) (*web.JsonResult, 
 	if user == nil {
 		return nil, errs.ErrUnauthorized
 	}
-	if err := service.UserLikeService.CommentLike(user.Id, commentId); err != nil {
+	if err := service.UserLikeService.CommentLike(user.ID, commentId); err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
@@ -92,7 +92,7 @@ func (c *CommentsController) DeleteByReactions(commentId int64) (*web.JsonResult
 	if user == nil {
 		return nil, errs.ErrUnauthorized
 	}
-	if err := service.UserLikeService.CommentUnLike(user.Id, commentId); err != nil {
+	if err := service.UserLikeService.CommentUnLike(user.ID, commentId); err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
@@ -108,10 +108,10 @@ func (c *CommentsController) DeleteBy(commentId int64) *web.JsonResult {
 		return web.JsonError(errs.ErrCommentNotFound)
 	}
 
-	if comment.UserId != currentUser.Id && !currentUser.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
+	if comment.UserID != currentUser.ID && !currentUser.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
 		return web.JsonError(errs.ErrForbidden)
 	}
-	if err := service.CommentService.Delete(comment.Id); err != nil {
+	if err := service.CommentService.Delete(comment.ID); err != nil {
 		slog.Error("Delete comment failed", "error", err, "commentId", commentId)
 		return web.JsonError(errs.ErrInternalServer)
 	}

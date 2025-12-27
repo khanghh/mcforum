@@ -6,7 +6,6 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/pkg/bbsurls"
 	"strconv"
-	"strings"
 	"time"
 
 	"bbs-go/common/dates"
@@ -67,7 +66,7 @@ func BuildUserInfoDefaultIfNull(id int64) *UserInfo {
 	user := cache.UserCache.Get(id)
 	if user == nil {
 		user = &model.User{}
-		user.Id = id
+		user.ID = id
 		user.Type = constants.UserTypeNormal
 		user.Username = sqls.SqlNullString(strconv.FormatInt(id, 10))
 		user.Nickname = "user" + strconv.FormatInt(id, 10)
@@ -81,7 +80,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		return nil
 	}
 	ret := &UserInfo{
-		Id:            user.Id,
+		Id:            user.ID,
 		Type:          user.Type,
 		Username:      user.Username.String,
 		Nickname:      user.Nickname,
@@ -138,9 +137,12 @@ func BuildUserProfile(user *model.User) *UserProfile {
 		PasswordSet:   len(user.Password) > 0,
 		IsActive:      user.IsActive,
 	}
-
-	if strs.IsNotBlank(user.Roles) {
-		ret.Roles = strings.Split(user.Roles, ",")
+	if len(user.Roles) > 0 {
+		var roles []string
+		for _, role := range user.Roles {
+			roles = append(roles, role.Name)
+		}
+		ret.Roles = roles
 	}
 	return ret
 }

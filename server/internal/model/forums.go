@@ -46,18 +46,18 @@ type ArticleTag struct {
 // Comment
 type Comment struct {
 	Model
-	UserId       int64  `gorm:"index:idx_comment_user_id;not null" json:"userId" form:"userId"`       // User ID
-	TopicId      int64  `gorm:"index:idx_comment_topic_id;not null" json:"topicId" form:"topicId"`    // Topic ID
-	ParentId     int64  `gorm:"index:idx_comment_parent_id;not null" json:"parentId" form:"parentId"` // Parent ID
-	QuoteId      int64  `gorm:"not null" json:"quoteId" form:"quoteId"`                               // Quoted comment ID
+	UserID       int64  `gorm:"index:idx_comment_user_id;not null" json:"userId" form:"userId"`       // User ID
+	TopicID      int64  `gorm:"index:idx_comment_topic_id;not null" json:"topicId" form:"topicId"`    // Topic ID
+	ParentID     int64  `gorm:"index:idx_comment_parent_id;not null" json:"parentId" form:"parentId"` // Parent ID
+	QuoteID      int64  `gorm:"not null" json:"quoteId" form:"quoteId"`                               // Quoted comment ID
 	Content      string `gorm:"type:text;not null" json:"content" form:"content"`                     // Content
 	ImageList    string `gorm:"type:longtext" json:"imageList" form:"imageList"`                      // Image list
 	ContentType  string `gorm:"type:varchar(32);not null" json:"contentType" form:"contentType"`      // Content type: markdown, html
 	LikeCount    int64  `gorm:"not null;default:0" json:"likeCount" form:"likeCount"`                 // Like count
 	CommentCount int64  `gorm:"not null;default:0" json:"commentCount" form:"commentCount"`           // Comment count
 	UserAgent    string `gorm:"size:1024" json:"userAgent" form:"userAgent"`                          // UserAgent
-	Ip           string `gorm:"size:128" json:"ip" form:"ip"`                                         // IP
-	IpLocation   string `gorm:"size:64" json:"ipLocation" form:"ipLocation"`                          // IP location
+	IP           string `gorm:"size:128" json:"ip" form:"ip"`                                         // IP
+	IPLocation   string `gorm:"size:64" json:"ipLocation" form:"ipLocation"`                          // IP location
 	Status       int    `gorm:"type:int(11);index:idx_comment_status" json:"status" form:"status"`    // Status: 0: pending review, 1: approved, 2: rejected, 3: published
 	CreateTime   int64  `json:"createTime" form:"createTime"`                                         // Create time
 }
@@ -65,9 +65,9 @@ type Comment struct {
 // Favorite
 type Favorite struct {
 	Model
-	UserId     int64  `gorm:"index:idx_favorite_user_id;not null" json:"userId" form:"userId"`                     // User ID
+	UserID     int64  `gorm:"index:idx_favorite_user_id;not null" json:"userId" form:"userId"`                     // User ID
 	EntityType string `gorm:"index:idx_favorite_entity_type;size:32;not null" json:"entityType" form:"entityType"` // Entity type
-	EntityId   int64  `gorm:"index:idx_favorite_entity_id;not null" json:"entityId" form:"entityId"`               // Entity ID
+	EntityID   int64  `gorm:"index:idx_favorite_entity_id;not null" json:"entityId" form:"entityId"`               // Entity ID
 	CreateTime int64  `json:"createTime" form:"createTime"`                                                        // Create time
 }
 
@@ -89,7 +89,7 @@ type Topic struct {
 	Slug              string              `gorm:"size:128;not null:default:'untitled'" json:"slug" form:"slug"`                            // Name
 	Type              constants.TopicType `gorm:"type:int(11);not null:default:0" json:"type" form:"type"`                                 // Type
 	ForumId           int64               `gorm:"not null;index:idx_topic_forum_id;" json:"forumId" form:"forumId"`                        // Forum ID
-	UserId            int64               `gorm:"not null;index:idx_topic_user_id;" json:"userId" form:"userId"`                           // User ID
+	UserID            int64               `gorm:"not null;index:idx_topic_user_id;" json:"userId" form:"userId"`                           // User ID
 	Title             string              `gorm:"size:128" json:"title" form:"title"`                                                      // Title
 	Content           string              `gorm:"type:longtext" json:"content" form:"content"`                                             // Content
 	ImageList         string              `gorm:"type:longtext" json:"imageList" form:"imageList"`                                         // Image list
@@ -105,8 +105,8 @@ type Topic struct {
 	LastCommentTime   int64               `gorm:"index:idx_topic_last_comment_time" json:"lastCommentTime" form:"lastCommentTime"`         // Last comment time
 	LastCommentUserId int64               `json:"lastCommentUserId" form:"lastCommentUserId"`                                              // Last comment user ID
 	UserAgent         string              `gorm:"size:1024" json:"userAgent" form:"userAgent"`                                             // UserAgent
-	Ip                string              `gorm:"size:128" json:"ip" form:"ip"`                                                            // IP
-	IpLocation        string              `gorm:"size:64" json:"ipLocation" form:"ipLocation"`                                             // IP location
+	IP                string              `gorm:"size:128" json:"ip" form:"ip"`                                                            // IP
+	IPLocation        string              `gorm:"size:64" json:"ipLocation" form:"ipLocation"`                                             // IP location
 	CreateTime        int64               `gorm:"index:idx_topic_create_time" json:"createTime" form:"createTime"`                         // Create time
 	ExtraData         string              `gorm:"type:text" json:"extraData" form:"extraData"`                                             // Extra data
 }
@@ -137,8 +137,8 @@ type TopicTag struct {
 // Message
 type Message struct {
 	Model
-	FromId       int64  `gorm:"not null" json:"fromId" form:"fromId"`                            // Sender ID
-	UserId       int64  `gorm:"not null;index:idx_message_user_id;" json:"userId" form:"userId"` // User ID (recipient)
+	FromID       int64  `gorm:"not null" json:"fromId" form:"fromId"`                            // Sender ID
+	UserID       int64  `gorm:"not null;index:idx_message_user_id;" json:"userId" form:"userId"` // User ID (recipient)
 	Title        string `gorm:"size:1024" json:"title" form:"title"`                             // Title
 	Content      string `gorm:"type:text;not null" json:"content" form:"content"`                // Content
 	QuoteContent string `gorm:"type:text" json:"quoteContent" form:"quoteContent"`               // Quoted content
@@ -163,7 +163,7 @@ type SysConfig struct {
 // Link
 type Link struct {
 	Model
-	Url        string `gorm:"not null;type:text" json:"url" form:"url"`          // URL
+	URL        string `gorm:"not null;type:text" json:"url" form:"url"`          // URL
 	Title      string `gorm:"not null;size:128" json:"title" form:"title"`       // Title
 	Summary    string `gorm:"size:1024" json:"summary" form:"summary"`           // Site description
 	Logo       string `gorm:"type:text" json:"logo" form:"logo"`                 // Logo
@@ -174,12 +174,12 @@ type Link struct {
 // Operation log
 type OperateLog struct {
 	Model
-	UserId      int64  `gorm:"not null;index:idx_operate_log_user_id" json:"userId" form:"userId"`  // User ID
+	UserID      int64  `gorm:"not null;index:idx_operate_log_user_id" json:"userId" form:"userId"`  // User ID
 	OpType      string `gorm:"not null;index:idx_op_type;size:32" json:"opType" form:"opType"`      // Operation type
 	DataType    string `gorm:"not null;index:idx_operate_log_data" json:"dataType" form:"dataType"` // Data type
-	DataId      int64  `gorm:"not null;index:idx_operate_log_data" json:"dataId" form:"dataId" `    // Data ID
+	DataID      int64  `gorm:"not null;index:idx_operate_log_data" json:"dataId" form:"dataId" `    // Data ID
 	Description string `gorm:"not null;size:1024" json:"description" form:"description"`            // Description
-	Ip          string `gorm:"size:128" json:"ip" form:"ip"`                                        // IP address
+	IP          string `gorm:"size:128" json:"ip" form:"ip"`                                        // IP address
 	UserAgent   string `gorm:"type:text" json:"userAgent" form:"userAgent"`                         // UserAgent
 	Referer     string `gorm:"type:text" json:"referer" form:"referer"`                             // Referer
 	CreateTime  int64  `json:"createTime" form:"createTime"`                                        // Create time
@@ -188,7 +188,7 @@ type OperateLog struct {
 // Email code
 type EmailCode struct {
 	Model
-	UserId     int64  `gorm:"not null;index:idx_user_score_log_user_id" json:"userId" form:"userId"` // User ID
+	UserID     int64  `gorm:"not null;index:idx_user_score_log_user_id" json:"userId" form:"userId"` // User ID
 	Email      string `gorm:"not null;size:128" json:"email" form:"email"`                           // Email
 	Code       string `gorm:"not null;size:8" json:"code" form:"code"`                               // Code
 	Token      string `gorm:"not null;size:32;unique" json:"token" form:"token"`                     // Code token
@@ -201,8 +201,8 @@ type EmailCode struct {
 // UserFollow fans follow
 type UserFollow struct {
 	Model
-	UserId     int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"userId"`           // User ID
-	OtherId    int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"otherId"`          // Other ID (followed user ID)
+	UserID     int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"userId"`           // User ID
+	OtherID    int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"otherId"`          // Other ID (followed user ID)
 	Status     int   `gorm:"type:int(11);not null" json:"status"`                      // Follow status
 	CreateTime int64 `gorm:"type:bigint;not null" json:"createTime" form:"createTime"` // Create time
 }
@@ -210,10 +210,10 @@ type UserFollow struct {
 // UserFeed user feed
 type UserFeed struct {
 	Model
-	UserId     int64  `gorm:"not null;uniqueIndex:idx_data;index:idx_user_id;index:idx_search" json:"userId"`                   // User ID
-	DataId     int64  `gorm:"not null;uniqueIndex:idx_data;index:idx_data_id" json:"dataId" form:"dataId"`                      // Data ID
+	UserID     int64  `gorm:"not null;uniqueIndex:idx_data;index:idx_user_id;index:idx_search" json:"userId"`                   // User ID
+	DataID     int64  `gorm:"not null;uniqueIndex:idx_data;index:idx_data_id" json:"dataId" form:"dataId"`                      // Data ID
 	DataType   string `gorm:"not null;uniqueIndex:idx_data;index:idx_data_id;index:idx_search" json:"dataType" form:"dataType"` // Data type
-	AuthorId   int64  `gorm:"not null;index:idx_user_id" json:"authorId" form:"authorId"`                                       // Author ID
+	AuthorID   int64  `gorm:"not null;index:idx_user_id" json:"authorId" form:"authorId"`                                       // Author ID
 	CreateTime int64  `gorm:"type:bigint;not null;index:idx_search" json:"createTime" form:"createTime"`                        // Data create time
 }
 

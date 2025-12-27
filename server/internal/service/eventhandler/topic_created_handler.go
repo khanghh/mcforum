@@ -20,13 +20,13 @@ func handleTopicCreatedEvent(i interface{}) {
 	// Points
 	search.UpdateTopicIndex(e.Topic)
 	service.UserService.IncrScoreForPostTopic(e.Topic)
-	service.UserFollowService.ScanFollowers(e.Topic.UserId, func(fansId int64) {
-		slog.With(slog.Any("topicId", e.Topic.Id), slog.Any("userId", e.Topic.UserId), slog.Any("fansId", fansId)).Info("Notify new topic created to followers")
+	service.UserFollowService.ScanFollowers(e.Topic.UserID, func(fansId int64) {
+		slog.With(slog.Any("topicId", e.Topic.ID), slog.Any("userId", e.Topic.UserID), slog.Any("fansId", fansId)).Info("Notify new topic created to followers")
 		if err := service.UserFeedService.Create(&model.UserFeed{
-			UserId:     fansId,
-			DataId:     e.Topic.Id,
+			UserID:     fansId,
+			DataID:     e.Topic.ID,
 			DataType:   constants.EntityTopic,
-			AuthorId:   e.Topic.UserId,
+			AuthorID:   e.Topic.UserID,
 			CreateTime: e.Topic.CreateTime,
 		}); err != nil {
 			slog.Error(err.Error(), slog.Any("err", err))

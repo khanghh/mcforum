@@ -62,7 +62,7 @@ func (c *CommentController) GetList() *web.JsonResult {
 		builder := web.NewRspBuilder(comment)
 
 		// user
-		builder = builder.Put("user", payload.BuildUserInfoDefaultIfNull(comment.UserId))
+		builder = builder.Put("user", payload.BuildUserInfoDefaultIfNull(comment.UserID))
 
 		// content
 		if comment.ContentType == constants.ContentTypeMarkdown {

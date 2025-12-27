@@ -52,7 +52,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 	}
 
 	topic, err := service.TopicService.Publish(service.PublishTopicArgs{
-		UserId:      user.Id,
+		UserId:      user.ID,
 		Title:       form.Title,
 		ForumId:     form.ForumId,
 		Content:     form.Content,
@@ -106,7 +106,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if topic.Status == constants.StatusReview {
 		if user != nil {
-			if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
+			if topic.UserID != user.ID && !user.IsOwnerOrAdmin() {
 				return web.JsonError(errs.ErrForbidden)
 			}
 		} else {
@@ -114,7 +114,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 		}
 	}
 
-	service.TopicService.IncrViewCount(topic.Id) // 增加浏览量
+	service.TopicService.IncrViewCount(topic.ID) // 增加浏览量
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
@@ -126,7 +126,7 @@ func (c *TopicsController) GetByEdit(slugId string) *web.JsonResult {
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserId != user.Id) {
+	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserID != user.ID) {
 		return web.JsonError(errs.ErrForbidden)
 	}
 
@@ -136,9 +136,9 @@ func (c *TopicsController) GetByEdit(slugId string) *web.JsonResult {
 
 	// revision := params.FormValueInt64Default(c.Ctx, "revision", 0)
 
-	tags := service.TopicService.GetTopicTags(topic.Id)
+	tags := service.TopicService.GetTopicTags(topic.ID)
 	return web.NewEmptyRspBuilder().
-		Put("id", topic.Id).
+		Put("id", topic.ID).
 		Put("forumId", topic.ForumId).
 		Put("title", topic.Title).
 		Put("content", topic.Content).
@@ -158,7 +158,7 @@ func (c *TopicsController) PutBy(slugId string) *web.JsonResult {
 		return web.JsonErrorCode(iris.StatusForbidden, err)
 	}
 
-	if topic.UserId != user.Id && !user.IsOwnerOrAdmin() {
+	if topic.UserID != user.ID && !user.IsOwnerOrAdmin() {
 		return web.JsonError(errs.ErrForbidden)
 	}
 
@@ -167,11 +167,11 @@ func (c *TopicsController) PutBy(slugId string) *web.JsonResult {
 	topic.Content = strings.TrimSpace(params.FormValueDefault(c.Ctx, "content", topic.Content))
 	tags := params.FormValueStringArray(c.Ctx, "tags")
 
-	err = service.TopicService.Edit(topic.Id, topic.ForumId, tags, topic.Title, topic.Slug, topic.Content, topic.HideContent)
+	err = service.TopicService.Edit(topic.ID, topic.ForumId, tags, topic.Title, topic.Slug, topic.Content, topic.HideContent)
 	if err != nil {
 		return web.JsonError(err)
 	}
-	service.OperateLogService.AddOperateLog(user.Id, constants.OpTypeUpdate, constants.EntityTopic, topic.Id, "", c.Ctx.Request())
+	service.OperateLogService.AddOperateLog(user.ID, constants.OpTypeUpdate, constants.EntityTopic, topic.ID, "", c.Ctx.Request())
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
@@ -212,10 +212,10 @@ func (c *TopicsController) PatchBy(slugId string) (*web.JsonResult, error) {
 	}
 
 	if patch.Pinned != nil {
-		return c.setTopicPinned(topic.Id, *patch.Pinned)
+		return c.setTopicPinned(topic.ID, *patch.Pinned)
 	}
 	if patch.Recommended != nil {
-		return c.setTopicRecommended(topic.Id, *patch.Recommended)
+		return c.setTopicRecommended(topic.ID, *patch.Recommended)
 	}
 
 	return nil, errs.ErrBadRequest
@@ -233,11 +233,11 @@ func (c *TopicsController) DeleteBy(slugId string) (*web.JsonResult, error) {
 		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 
-	if topic.UserId != user.Id && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
+	if topic.UserID != user.ID && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
 		return web.JsonError(errs.ErrForbidden), nil
 	}
 
-	if err := service.TopicService.Delete(topic.Id, user.Id, c.Ctx.Request()); err != nil {
+	if err := service.TopicService.Delete(topic.ID, user.ID, c.Ctx.Request()); err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
@@ -253,7 +253,7 @@ func (c *TopicsController) PostByReactions(slugId string) (*web.JsonResult, erro
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
-	err = service.UserLikeService.TopicLike(user.Id, topic.Id)
+	err = service.UserLikeService.TopicLike(user.ID, topic.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +270,7 @@ func (c *TopicsController) DeleteByReactions(slugId string) (*web.JsonResult, er
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
-	err = service.UserLikeService.TopicUnLike(user.Id, topic.Id)
+	err = service.UserLikeService.TopicUnLike(user.ID, topic.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -285,7 +285,7 @@ func (c *TopicsController) GetByComments(slugId string) (*web.JsonResult, error)
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
-	comments, cursor, hasMore := service.CommentService.GetComments(topic.Id, cursor, 20)
+	comments, cursor, hasMore := service.CommentService.GetComments(topic.ID, cursor, 20)
 	resp := payload.BuildComments(comments, currentUser, true, false)
 	return web.JsonCursorData(resp, cursor, hasMore), nil
 }
@@ -308,8 +308,8 @@ func (c *TopicsController) PostByComments(slugId string) (*web.JsonResult, error
 	}
 
 	comment, err := service.CommentService.CreateComment(service.CreateCommentArgs{
-		UserId:    user.Id,
-		TopicId:   topic.Id,
+		UserId:    user.ID,
+		TopicId:   topic.ID,
 		Content:   form.Content,
 		Images:    form.Images,
 		UserAgent: utils.GetUserAgent(c.Ctx.Request()),

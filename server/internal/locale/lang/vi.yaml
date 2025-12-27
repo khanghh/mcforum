@@ -20,7 +20,7 @@ message.title.commented_your_topic: "Đã bình luận bài viết của bạn"
 message.title.replied_your_comment: "Đã phản hồi bình luận của bạn"
 message.title.topic_added_to_recommended_list: "Chủ đề đã được thêm vào đề xuất"
 message.title.topic_recommended: "Chủ đề đã được thêm vào đề xuất"
-message.title.topic_favorited: "Chủ đề đã được thêm vào danh sách yêu thích"
+message.title.topic_favorited: "Đã thêm chủ đề của bạn vào danh sách yêu thích"
 message.title.started_following_you: "Đã bắt đầu theo dõi bạn"
 
 topic.title_required: "Tiêu đề không thể bỏ trống"
