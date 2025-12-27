@@ -38,8 +38,8 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async getCurrent(): Promise<UserProfile> {
-      this.user = await api.getCurrentUser()
+    async getCurrent(): Promise<UserProfile | null> {
+      this.user = await api.getCurrentUser().catch((err) => null)
       return this.user
     },
     async signin(body: SigninForm) {

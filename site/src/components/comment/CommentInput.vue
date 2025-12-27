@@ -3,7 +3,7 @@
     <div
       class="bg-gray-800/40 rounded-xl border border-purple-500/20 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/40 focus-within:border-purple-500/60 focus-within:bg-gray-800/60 focus-within:shadow-[0_0_15px_rgba(168,85,247,0.1)] overflow-hidden group">
       <CommentTextEditor ref="commentEditor" v-model="value"
-        :placeholder="$t('message.type_comment_placeholder')" :disabled="sending" @submit="submitComment" />
+        :placeholder="$t('form.placeholder.enter_your_comment')" :disabled="sending" @submit="submitComment" />
     </div>
   </div>
 </template>

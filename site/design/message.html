@@ -401,385 +401,364 @@
         </div>
 
         <!-- Right Column: Content Tabs -->
+        <!-- Replace the entire Right Column (lg:col-span-2) section with this code -->
+
+        <!-- Right Column: Content Tabs -->
         <div class="lg:col-span-2">
           <div class="gaming-card rounded-2xl overflow-hidden">
-            <!-- Tabs Navigation -->
+            <!-- Messages Header -->
             <div class="border-b border-purple-500/20">
-              <div class="flex overflow-x-auto custom-scrollbar" role="tablist">
+              <div class="flex items-center justify-between p-6">
+                <div>
+                  <h2 class="text-2xl font-bold text-white gaming-title">Messages</h2>
+                  <p class="text-purple-300 text-sm mt-1">Notifications, comments, and interactions</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button
+                    class="px-4 py-2 bg-purple-600/30 text-purple-300 rounded-lg text-sm font-medium border border-purple-500/30 hover:bg-purple-600/40 transition"
+                    aria-label="Mark all as read">
+                    <i class="fas fa-check-double mr-2"></i> Mark All Read
+                  </button>
+                  <button
+                    class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold text-sm neon-border"
+                    aria-label="Filter messages">
+                    <i class="fas fa-filter mr-2"></i> Filter
+                  </button>
+                </div>
+              </div>
+
+              <!-- Message Categories -->
+              <div class="flex overflow-x-auto custom-scrollbar px-6 pb-2 gap-4">
                 <button
-                  class="tab-btn flex items-center px-6 py-4 border-b-2 border-purple-500 font-bold text-purple-400 whitespace-nowrap gaming-title"
-                  data-tab="topics"
-                  role="tab"
-                  aria-selected="true"
-                  aria-controls="topics">
-                  <i class="fas fa-fire mr-2"></i> POSTS (245)
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold text-sm whitespace-nowrap flex items-center">
+                  <i class="fas fa-bell mr-2"></i> All (12)
                 </button>
                 <button
-                  class="tab-btn flex items-center px-6 py-4 text-gray-400 border-b-2 border-transparent font-bold whitespace-nowrap gaming-title"
-                  data-tab="comments"
-                  role="tab"
-                  aria-selected="false"
-                  aria-controls="comments">
-                  <i class="fas fa-comments mr-2"></i> ACTIVITY (156)
+                  class="px-4 py-2 bg-purple-600/20 text-purple-300 rounded-lg font-bold text-sm whitespace-nowrap flex items-center border border-purple-500/20 hover:bg-purple-600/30 transition">
+                  <i class="fas fa-user-plus mr-2"></i> Follows (5)
                 </button>
                 <button
-                  class="tab-btn flex items-center px-6 py-4 text-gray-400 border-b-2 border-transparent font-bold whitespace-nowrap gaming-title"
-                  data-tab="following"
-                  role="tab"
-                  aria-selected="false"
-                  aria-controls="following">
-                  <i class="fas fa-users mr-2"></i> FOLLOWING (892)
+                  class="px-4 py-2 bg-purple-600/20 text-purple-300 rounded-lg font-bold text-sm whitespace-nowrap flex items-center border border-purple-500/20 hover:bg-purple-600/30 transition">
+                  <i class="fas fa-comment mr-2"></i> Comments (4)
                 </button>
                 <button
-                  class="tab-btn flex items-center px-6 py-4 text-gray-400 border-b-2 border-transparent font-bold whitespace-nowrap gaming-title"
-                  data-tab="followers"
-                  role="tab"
-                  aria-selected="false"
-                  aria-controls="followers">
-                  <i class="fas fa-star mr-2"></i> FANS (1.2K)
+                  class="px-4 py-2 bg-purple-600/20 text-purple-300 rounded-lg font-bold text-sm whitespace-nowrap flex items-center border border-purple-500/20 hover:bg-purple-600/30 transition">
+                  <i class="fas fa-heart mr-2"></i> Likes (3)
+                </button>
+                <button
+                  class="px-4 py-2 bg-purple-600/20 text-purple-300 rounded-lg font-bold text-sm whitespace-nowrap flex items-center border border-purple-500/20 hover:bg-purple-600/30 transition">
+                  <i class="fas fa-trophy mr-2"></i> Achievements (2)
                 </button>
               </div>
             </div>
 
-            <!-- Tab Content -->
-            <div class="p-6">
-              <!-- Topics -->
-              <div class="tab-content" id="topics" role="tabpanel" aria-labelledby="topics-tab">
-                <div class="space-y-5">
-                  <!-- Announcement 1 -->
-                  <div
-                    class="gaming-card rounded-xl p-6 border-l-4 border-red-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
-                    <div class="flex items-start justify-between">
-                      <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                          <span
-                            class="px-3 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded-full border border-red-500/50">
-                            <i class="fas fa-exclamation-triangle mr-1"></i> URGENT
-                          </span>
-                          <span class="text-xs text-purple-400 gaming-title">📌 PINNED</span>
-                        </div>
-                        <a href="#"
-                          class="text-xl font-bold text-purple-300 gaming-title block">
-                          🔧 SCHEDULED MAINTENANCE - SERVER DOWNTIME
-                        </a>
-                        <p class="mt-3 text-gray-300 leading-relaxed">Server will be offline on March 15th from 2:00 AM
-                          to 6:00 AM EST for critical updates. This includes new anti-cheat system, performance
-                          improvements, and bug fixes. Ranked matches will be disabled 1 hour before maintenance.</p>
-                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
-                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 8.2k
-                            views</span>
-                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 156
-                            replies</span>
-                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 423
-                            likes</span>
-                          <span class="flex items-center"><i class="fas fa-server mr-1.5 text-amber-400"></i> Server
-                            Updates • 2 hours ago</span>
-                        </div>
-                      </div>
+            <!-- Messages List -->
+            <div class="p-6 space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar">
+
+              <!-- New Follow Notification -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-blue-500 relative hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                      <i class="fas fa-user-plus text-white text-xl"></i>
+                    </div>
+                    <div
+                      class="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full border-2 border-gray-900 flex items-center justify-center">
+                      <i class="fas fa-plus text-white text-xs"></i>
                     </div>
                   </div>
-
-                  <!-- Announcement 2 -->
-                  <div
-                    class="gaming-card rounded-xl p-6 border-l-4 border-amber-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
-                    <div class="flex items-start justify-between">
-                      <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                          <span
-                            class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full border border-amber-500/50">
-                            <i class="fas fa-trophy mr-1"></i> EVENT
-                          </span>
-                        </div>
-                        <a href="#"
-                          class="text-xl font-bold text-purple-300 gaming-title block">
-                          🎉 WEEKEND TOURNAMENT - $5000 PRIZE POOL
-                        </a>
-                        <p class="mt-3 text-gray-300 leading-relaxed">Join our biggest tournament yet! 5v5 competitive
-                          matches starting Saturday 6 PM EST. Registration open now - limited to 128 teams. First place:
-                          $2500, Second: $1500, Third: $1000. All participants get exclusive in-game items!</p>
-                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
-                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 12.5k
-                            views</span>
-                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 289
-                            replies</span>
-                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 1.2k
-                            likes</span>
-                          <span class="flex items-center"><i class="fas fa-calendar mr-1.5 text-pink-400"></i> Events •
-                            1 day ago</span>
-                        </div>
-                      </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white gaming-title">New Follower</h4>
+                      <span class="text-xs text-purple-300 font-bold bg-purple-500/20 px-2 py-1 rounded-full">Just
+                        now</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-1">
+                      <span class="text-blue-300 font-bold">ProGamer99</span> started following you
+                    </p>
+                    <div class="flex items-center gap-3 mt-3">
+                      <button
+                        class="px-3 py-1.5 bg-blue-600/30 text-blue-300 text-xs font-bold rounded-lg border border-blue-500/30 hover:bg-blue-600/40 transition">
+                        Follow Back
+                      </button>
+                      <button
+                        class="px-3 py-1.5 bg-gray-700/50 text-gray-400 text-xs font-bold rounded-lg border border-gray-600/30 hover:bg-gray-700/70 transition">
+                        View Profile
+                      </button>
                     </div>
                   </div>
+                  <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                </div>
+              </div>
 
-                  <!-- Announcement 3 -->
-                  <div
-                    class="gaming-card rounded-xl p-6 border-l-4 border-green-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
-                    <div class="flex items-start justify-between">
-                      <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                          <span
-                            class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full border border-green-500/50">
-                            <i class="fas fa-check-circle mr-1"></i> UPDATE
-                          </span>
-                        </div>
-                        <a href="#"
-                          class="text-xl font-bold text-purple-300 gaming-title block">
-                          ✨ NEW MAP RELEASED: "NEON DISTRICT"
-                        </a>
-                        <p class="mt-3 text-gray-300 leading-relaxed">Explore our brand new cyberpunk-themed map!
-                          Features dynamic lighting, destructible environments, and multiple tactical routes. Available
-                          now in Quick Play, will be added to competitive rotation after 1 week testing period. Download
-                          size: 2.3GB.</p>
-                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
-                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 15.8k
-                            views</span>
-                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 412
-                            replies</span>
-                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 2.1k
-                            likes</span>
-                          <span class="flex items-center"><i class="fas fa-map mr-1.5 text-cyan-400"></i> Game Updates •
-                            3 days ago</span>
-                        </div>
-                      </div>
+              <!-- Comment on Your Post -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-green-500 relative hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                      <i class="fas fa-comment text-white text-xl"></i>
+                    </div>
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+                      alt="User"
+                      class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-gray-900">
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white gaming-title">Comment on Your Post</h4>
+                      <span class="text-xs text-gray-400">2 hours ago</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-1">
+                      <span class="text-green-300 font-bold">GamerGirl42</span> commented on your SkyBlock strategy
+                      guide
+                    </p>
+                    <div class="mt-3 p-3 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                      <p class="text-gray-300 text-sm italic">"Great guide! The Nether fortress strategy worked
+                        perfectly for me. Thanks for sharing!"</p>
+                    </div>
+                    <div class="flex items-center gap-3 mt-3">
+                      <button
+                        class="px-3 py-1.5 bg-green-600/30 text-green-300 text-xs font-bold rounded-lg border border-green-500/30 hover:bg-green-600/40 transition">
+                        <i class="fas fa-reply mr-1"></i> Reply
+                      </button>
+                      <button
+                        class="px-3 py-1.5 bg-gray-700/50 text-gray-400 text-xs font-bold rounded-lg border border-gray-600/30 hover:bg-gray-700/70 transition">
+                        <i class="fas fa-external-link-alt mr-1"></i> View Post
+                      </button>
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <!-- Announcement 4 -->
-                  <div
-                    class="gaming-card rounded-xl p-6 border-l-4 border-blue-500 cursor-pointer hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200">
-                    <div class="flex items-start justify-between">
-                      <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                          <span
-                            class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-full border border-blue-500/50">
-                            <i class="fas fa-info-circle mr-1"></i> INFO
-                          </span>
-                        </div>
-                        <a href="#"
-                          class="text-xl font-bold text-purple-300 gaming-title block">
-                          📋 SERVER RULES UPDATE & MODERATION POLICY
-                        </a>
-                        <p class="mt-3 text-gray-300 leading-relaxed">Updated rules regarding toxic behavior, team
-                          killing, and chat conduct. New automated moderation system is live. Appeals can be submitted
-                          through Discord. Please review the complete rules in #server-rules channel. Breaking rules may
-                          result in temporary or permanent ban.</p>
-                        <div class="mt-4 flex flex-wrap items-center text-sm text-gray-400 gap-4">
-                          <span class="flex items-center"><i class="fas fa-eye mr-1.5 text-purple-400"></i> 6.3k
-                            views</span>
-                          <span class="flex items-center"><i class="fas fa-comments mr-1.5 text-blue-400"></i> 187
-                            replies</span>
-                          <span class="flex items-center"><i class="fas fa-thumbs-up mr-1.5 text-green-400"></i> 542
-                            likes</span>
-                          <span class="flex items-center"><i class="fas fa-shield-alt mr-1.5 text-indigo-400"></i> Rules
-                            & Policy • 1 week ago</span>
-                        </div>
+              <!-- Like on Your Topic -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-pink-500 relative hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                      <i class="fas fa-heart text-white text-xl"></i>
+                    </div>
+                    <div
+                      class="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs font-bold">3</span>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white gaming-title">Likes on Your Topic</h4>
+                      <span class="text-xs text-gray-400">5 hours ago</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-1">
+                      <span class="text-pink-300 font-bold">DarkKnight</span>, <span
+                        class="text-pink-300 font-bold">PixelWarrior</span>, and <span class="text-pink-300 font-bold">1
+                        other</span> liked your topic "Best PvP Techniques 2024"
+                    </p>
+                    <div class="flex items-center gap-2 mt-3">
+                      <img
+                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
+                        alt="User"
+                        class="w-8 h-8 rounded-full border-2 border-gray-900">
+                      <img
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face"
+                        alt="User"
+                        class="w-8 h-8 rounded-full border-2 border-gray-900">
+                      <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center border-2 border-gray-900">
+                        <span class="text-white text-xs font-bold">+1</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Comments -->
-              <div class="tab-content hidden" id="comments">
-                <div class="space-y-5">
-                  <div class="gaming-card rounded-xl p-5 border-l-4 border-green-500/50">
-                    <div class="flex items-start gap-4">
-                      <i class="fas fa-user-shield text-2xl text-green-400 mt-1"></i>
-                      <div class="flex-1">
-                        <p class="text-gray-300 leading-relaxed">"Banned 3 players for toxic behavior and team killing.
-                          Zero tolerance policy in effect. Thanks to everyone reporting violations!"</p>
-                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
-                          <span class="flex items-center"><i class="fas fa-gavel mr-1.5 text-red-400"></i> Moderation
-                            Action</span>
-                          <span>•</span>
-                          <span>2 hours ago</span>
-                          <span>•</span>
-                          <span class="text-green-400 font-bold">+15 reputation</span>
+              <!-- Achievement Unlocked -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-amber-500 relative hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                      <i class="fas fa-trophy text-white text-xl"></i>
+                    </div>
+                    <div
+                      class="absolute -bottom-1 -right-1 w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center">
+                      <i class="fas fa-bolt text-white text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white gaming-title">New Achievement!</h4>
+                      <span class="text-xs text-gray-400">Yesterday</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-1">
+                      You've unlocked the <span class="text-amber-300 font-bold">"Bedwars Master"</span> achievement
+                    </p>
+                    <div
+                      class="mt-3 p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/30">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                          <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        <div>
+                          <p class="text-amber-300 font-bold text-sm">Bedwars Master</p>
+                          <p class="text-gray-400 text-xs">Win 100 Bedwars matches</p>
                         </div>
                       </div>
                     </div>
+                    <p class="text-xs text-gray-400 mt-2">Reward: 500 XP + Legendary Badge</p>
                   </div>
+                </div>
+              </div>
 
-                  <div class="gaming-card rounded-xl p-5 border-l-4 border-purple-500/50">
-                    <div class="flex items-start gap-4">
-                      <i class="fas fa-trophy text-2xl text-amber-400 mt-1"></i>
-                      <div class="flex-1">
-                        <p class="text-gray-300 leading-relaxed">"Congratulations to Team Phoenix for winning the
-                          tournament! Amazing performance. Prize money has been distributed. Next tournament in 2
-                          weeks!"</p>
-                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
-                          <span class="flex items-center"><i class="fas fa-medal mr-1.5 text-amber-400"></i> Tournament
-                            Winner Announcement</span>
-                          <span>•</span>
-                          <span>5 hours ago</span>
-                          <span>•</span>
-                          <span class="text-purple-400 font-bold">+42 reputation</span>
+              <!-- Tournament Invitation -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-purple-500 relative hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                      <i class="fas fa-swords text-white text-xl"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white gaming-title">Tournament Invitation</h4>
+                      <span class="text-xs text-gray-400">2 days ago</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mt-1">
+                      You've been invited to join <span class="text-purple-300 font-bold">"Minecraft Masters
+                        Tournament"</span>
+                    </p>
+                    <div class="mt-3 p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <p class="text-white font-bold">Prize Pool: $5,000</p>
+                          <p class="text-gray-400 text-xs">Starts: Dec 15, 2024</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-1 bg-green-500/20 text-green-300 text-xs font-bold rounded">Teams:
+                            4/16</span>
+                          <span class="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs font-bold rounded">Pro
+                            League</span>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div class="gaming-card rounded-xl p-5 border-l-4 border-blue-500/50">
-                    <div class="flex items-start gap-4">
-                      <i class="fas fa-server text-2xl text-blue-400 mt-1"></i>
-                      <div class="flex-1">
-                        <p class="text-gray-300 leading-relaxed">"Server lag issues have been resolved! Upgraded to
-                          better infrastructure. Please report if you still experience any issues. Happy gaming!"</p>
-                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
-                          <span class="flex items-center"><i class="fas fa-tools mr-1.5 text-blue-400"></i> Technical
-                            Update</span>
-                          <span>•</span>
-                          <span>1 day ago</span>
-                          <span>•</span>
-                          <span class="text-blue-400 font-bold">+28 reputation</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="gaming-card rounded-xl p-5 border-l-4 border-pink-500/50">
-                    <div class="flex items-start gap-4">
-                      <i class="fas fa-gift text-2xl text-pink-400 mt-1"></i>
-                      <div class="flex-1">
-                        <p class="text-gray-300 leading-relaxed">"Thanks for the amazing support! Giving away 50 VIP
-                          passes to celebrate 10K members milestone. Check announcement channel for details!"</p>
-                        <div class="mt-3 flex items-center gap-3 text-sm text-gray-400">
-                          <span class="flex items-center"><i class="fas fa-gift mr-1.5 text-pink-400"></i> Community
-                            Giveaway</span>
-                          <span>•</span>
-                          <span>2 days ago</span>
-                          <span>•</span>
-                          <span class="text-pink-400 font-bold">+67 reputation</span>
-                        </div>
-                      </div>
+                    <div class="flex items-center gap-3 mt-3">
+                      <button
+                        class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold rounded-lg">
+                        Accept Invitation
+                      </button>
+                      <button
+                        class="px-3 py-1.5 bg-gray-700/50 text-gray-400 text-xs font-bold rounded-lg border border-gray-600/30">
+                        View Details
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Following -->
-              <div class="tab-content hidden" id="following">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  <div class="gaming-card rounded-xl p-4 ">
-                    <div class="flex items-center space-x-3">
-                      <div class="relative">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg"
-                          class="w-14 h-14 rounded-full border-2 border-purple-500/50" />
-                        <div
-                          class="absolute -bottom-1 -right-1 bg-red-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                          <i class="fas fa-shield-alt text-xs text-white"></i>
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-bold text-purple-300 truncate gaming-title">NightHawk</p>
-                        <p class="text-xs text-gray-400 truncate">Co-Admin • Level 92</p>
-                      </div>
-                      <button
-                        class="text-xs px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/50 font-bold">FOLLOWING</button>
+              <!-- Older Follow Notification -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-blue-500/50 opacity-80 hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/50 to-cyan-500/50 flex items-center justify-center">
+                      <i class="fas fa-user-plus text-white/70 text-xl"></i>
                     </div>
                   </div>
-                  <div class="gaming-card rounded-xl p-4 ">
-                    <div class="flex items-center space-x-3">
-                      <div class="relative">
-                        <img src="https://randomuser.me/api/portraits/women/45.jpg"
-                          class="w-14 h-14 rounded-full border-2 border-amber-500/50" />
-                        <div
-                          class="absolute -bottom-1 -right-1 bg-amber-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                          <i class="fas fa-star text-xs text-white"></i>
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-bold text-purple-300 truncate gaming-title">PhoenixQueen</p>
-                        <p class="text-xs text-gray-400 truncate">Head Moderator • Level 85</p>
-                      </div>
-                      <button
-                        class="text-xs px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/50 font-bold">FOLLOWING</button>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white/70 gaming-title">New Follower</h4>
+                      <span class="text-xs text-gray-500">3 days ago</span>
                     </div>
-                  </div>
-                  <div class="gaming-card rounded-xl p-4 ">
-                    <div class="flex items-center space-x-3">
-                      <div class="relative">
-                        <img src="https://randomuser.me/api/portraits/men/66.jpg"
-                          class="w-14 h-14 rounded-full border-2 border-blue-500/50" />
-                        <div
-                          class="absolute -bottom-1 -right-1 bg-blue-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                          <i class="fas fa-code text-xs text-white"></i>
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-bold text-purple-300 truncate gaming-title">CyberDev</p>
-                        <p class="text-xs text-gray-400 truncate">Lead Developer • Level 99</p>
-                      </div>
-                      <button
-                        class="text-xs px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg border border-purple-500/50 font-bold">FOLLOWING</button>
-                    </div>
+                    <p class="text-gray-400 text-sm mt-1">
+                      <span class="text-blue-300/70 font-bold">SkyBlockPro</span> started following you
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <!-- Followers -->
-              <div class="tab-content hidden" id="followers">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  <div class="gaming-card rounded-xl p-4 ">
-                    <div class="flex items-center space-x-3">
-                      <div class="relative">
-                        <img src="https://randomuser.me/api/portraits/men/12.jpg"
-                          class="w-14 h-14 rounded-full border-2 border-green-500/50" />
-                        <div
-                          class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                          <span class="w-2 h-2 bg-white rounded-full"></span>
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-bold text-purple-300 truncate gaming-title">ToxicSniper</p>
-                        <p class="text-xs text-gray-400 truncate">Pro Player • Level 78</p>
-                      </div>
-                      <button
-                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold">+
-                        ADD</button>
+              <!-- Older Comment -->
+              <div class="gaming-card rounded-xl p-4 border-l-4 border-green-500/50 opacity-80 hover-lift">
+                <div class="flex items-start gap-4">
+                  <div class="relative">
+                    <div
+                      class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500/50 to-emerald-500/50 flex items-center justify-center">
+                      <i class="fas fa-comment text-white/70 text-xl"></i>
                     </div>
                   </div>
-                  <div class="gaming-card rounded-xl p-4 ">
-                    <div class="flex items-center space-x-3">
-                      <div class="relative">
-                        <img src="https://randomuser.me/api/portraits/women/28.jpg"
-                          class="w-14 h-14 rounded-full border-2 border-green-500/50" />
-                        <div
-                          class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                          <span class="w-2 h-2 bg-white rounded-full"></span>
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-bold text-purple-300 truncate gaming-title">MysticMage</p>
-                        <p class="text-xs text-gray-400 truncate">Content Creator • Level 82</p>
-                      </div>
-                      <button
-                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold">+
-                        ADD</button>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="font-bold text-white/70 gaming-title">Comment on Your Build</h4>
+                      <span class="text-xs text-gray-500">1 week ago</span>
                     </div>
-                  </div>
-                  <div class="gaming-card rounded-xl p-4 ">
-                    <div class="flex items-center space-x-3">
-                      <div class="relative">
-                        <img src="https://randomuser.me/api/portraits/women/52.jpg"
-                          class="w-14 h-14 rounded-full border-2 border-green-500/50" />
-                        <div
-                          class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                          <span class="w-2 h-2 bg-white rounded-full"></span>
-                        </div>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="font-bold text-purple-300 truncate gaming-title">QuantumGirl</p>
-                        <p class="text-xs text-gray-400 truncate">Streamer • Level 91</p>
-                      </div>
-                      <button
-                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold">+
-                        ADD</button>
-                    </div>
+                    <p class="text-gray-400 text-sm mt-1">
+                      <span class="text-green-300/70 font-bold">BuilderMaster</span> commented on your castle build
+                    </p>
                   </div>
                 </div>
               </div>
 
+            </div>
+
+            <!-- Load More Button -->
+            <div class="p-6 border-t border-purple-500/20">
+              <button
+                class="w-full py-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 text-purple-300 rounded-lg font-bold border border-purple-500/30 hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-pink-600/30 transition flex items-center justify-center">
+                <i class="fas fa-sync-alt mr-2"></i> Load More Messages
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Summary -->
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="gaming-card rounded-2xl p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-400 text-sm">Total Messages</p>
+                  <p class="text-3xl font-bold text-white gaming-title mt-1">124</p>
+                </div>
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <i class="fas fa-envelope text-white text-xl"></i>
+                </div>
+              </div>
+              <p class="text-green-400 text-sm mt-2">
+                <i class="fas fa-arrow-up mr-1"></i> 12% from last week
+              </p>
+            </div>
+
+            <div class="gaming-card rounded-2xl p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-400 text-sm">Unread</p>
+                  <p class="text-3xl font-bold text-white gaming-title mt-1">3</p>
+                </div>
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                  <i class="fas fa-bell text-white text-xl"></i>
+                </div>
+              </div>
+              <p class="text-purple-400 text-sm mt-2">
+                <i class="fas fa-circle mr-1"></i> Latest: 2 hours ago
+              </p>
+            </div>
+
+            <div class="gaming-card rounded-2xl p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-gray-400 text-sm">This Month</p>
+                  <p class="text-3xl font-bold text-white gaming-title mt-1">42</p>
+                </div>
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                  <i class="fas fa-chart-line text-white text-xl"></i>
+                </div>
+              </div>
+              <p class="text-blue-400 text-sm mt-2">
+                <i class="fas fa-users mr-1"></i> 28 unique senders
+              </p>
             </div>
           </div>
         </div>

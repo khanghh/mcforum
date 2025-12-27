@@ -44,7 +44,7 @@ export default {
     actions: {
       create_topic: 'Tạo chủ đề',
       filter_topics: 'Tìm kiếm',
-    }
+    },
   },
   publish: {
     action: {
@@ -138,7 +138,7 @@ export default {
       internal_server_error: 'Đã xảy ra lỗi. Nếu bạn cho rằng đây là lỗi hệ thống, vui lòng báo cho quản trị viên.',
       no_permission: 'Bạn không có quyền truy cập trang này',
       page_not_found: 'Trang bạn yêu cầu không tồn tại hoặc đã bị xóa',
-    }
+    },
   },
   links: {
     back_to_profile: 'Quay lại hồ sơ',
@@ -149,6 +149,18 @@ export default {
     dont_have_account: 'Chưa có tài khoản? Đăng ký>>',
   },
   message: {
+    topic: 'chủ đề',
+    comment: 'bình luận',
+    commented_on_topic: 'đã bình luận về {topic} của bạn',
+    favorited_topic: 'đã yêu thích {topic} của bạn',
+    replied_to_comment: 'đã trả lời {comment} của bạn',
+    liked_topic: 'đã thích {topic} của bạn',
+    liked_comment: 'đã thích bình luận của bạn',
+    follow_you: 'bắt đầu theo dõi bạn',
+    recommended_topic: 'đã đề xuất {topic} của bạn',
+    deleted_topic: 'chủ đề của bạn đã bị xóa bởi quản trị viên',
+    messages: 'Tin nhắn',
+    stay_updated: 'Cập nhật các hoạt động của bạn',
     opration_failed: 'Thao tác thất bại: {error}',
     username_email_required: 'Vui lòng nhập username hoặc email.',
     password_required: 'Vui lòng nhập mật khẩu.',
@@ -194,7 +206,7 @@ export default {
     action_failure: '{action} thất bại. {error}',
     please_enter_comment: 'Vui lòng nhập nội dung bình luận',
     offline: 'Bạn đang ngoại tuyến.',
-    tag_description: 'Bạn đang duyệt các chủ đề được gắn thẻ này. Khám phá và tham gia thảo luận!'
+    tag_description: 'Bạn đang duyệt tất cả các chủ đề được gắn thẻ này.',
   },
   form: {
     title: {
@@ -245,6 +257,7 @@ export default {
       enter_post_content: 'Viết nội dung của bạn tại đây. Kéo hoặc duyệt ảnh để tải lên.',
       enter_hidden_content: 'Nội dung này bị ẩn. Nó sẽ hiển thị sau khi bạn bình luận.',
       enter_search_content: 'Nhập nội dung bạn muốn tìm kiếm',
+      enter_your_comment: 'Nhập bình luận của bạn...',
     },
     help: {
       location_optional: 'Thành phố hoặc quốc gia của bạn (tùy chọn)',
@@ -254,14 +267,6 @@ export default {
       email_used_for_notifications: 'Email được sử dụng để nhận thông báo',
       change_in_account: 'Thay đổi',
       bio_limit: 'Mô tả ngắn về bạn (tối đa 200 ký tự)',
-    },
-    settings: {
-      locked_profile: 'Ẩn trang cá nhân',
-      locked_profile_desc: 'Cho phép hoặc không cho người khác truy cập hồ sơ của bạn.',
-      show_location_title: 'Hiển thị địa điểm',
-      show_location_desc: 'Hiển thị địa điểm của bạn trên hồ sơ',
-      email_notifications_title: 'Thông báo qua email',
-      email_notifications_desc: 'Nhận thông báo qua email',
     },
   },
   dialog: {
@@ -316,6 +321,12 @@ export default {
       unfollow: 'Bỏ theo dõi',
     },
     settings: {
+      locked_profile: 'Ẩn trang cá nhân',
+      locked_profile_desc: 'Cho phép hoặc không cho người khác truy cập hồ sơ của bạn.',
+      show_location_title: 'Hiển thị địa điểm',
+      show_location_desc: 'Hiển thị địa điểm của bạn trên hồ sơ',
+      email_notifications_title: 'Thông báo qua email',
+      email_notifications_desc: 'Nhận thông báo qua email',
       email_verified: 'Đã xác minh',
       password_set: 'Đã thiết lập',
       password_not_set: 'Chưa thiết lập',

@@ -8,8 +8,8 @@
       <span>{{ $t('feed.actions.favorite') }}</span>
     </button>
 
-    <!-- particle container (pointer-events-none so it doesn't block clicks) -->
     <div ref="particles" class="absolute inset-0 pointer-events-none overflow-visible"></div>
+
   </div>
 </template>
 
@@ -30,8 +30,9 @@ async function handleClick(event: MouseEvent) {
   if (typeof props.onClick === 'function') {
     await props.onClick()
   }
-  if (!props.favorited) return
-  spawnParticles(12)
+  if (props.favorited) {
+    spawnParticles(12)
+  }
 }
 
 function spawnParticles(count = 10) {
@@ -52,7 +53,7 @@ function spawnParticles(count = 10) {
     p.style.top = '50%'
     p.style.transform = 'translate(-50%, -50%) scale(1)'
     p.style.opacity = '1'
-    p.style.zIndex = '0'
+    p.style.zIndex = '11'
     p.style.transition = 'transform 700ms cubic-bezier(0.2,0.8,0.2,1), opacity 700ms ease-out'
 
     container.appendChild(p)
@@ -63,6 +64,7 @@ function spawnParticles(count = 10) {
     const dx = Math.cos(angle) * distance
     const dy = Math.sin(angle) * distance - (Math.random() * 8)
 
+    p.getBoundingClientRect()
     // animate on next frame
     requestAnimationFrame(() => {
       p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.6)`

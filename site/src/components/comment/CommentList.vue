@@ -140,12 +140,14 @@ const like = async (comment: Comment) => {
       await api.removeCommentReaction(comment.id)
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
-    } else {
+    }
+    else {
       await api.addCommentReaction(comment.id, 'like')
       comment.liked = true
       comment.likeCount = (comment.likeCount || 0) + 1
     }
-  } catch (e) {
+  }
+  catch (e) {
     useCatchError(e)
   }
 }
@@ -155,7 +157,8 @@ const switchShowReply = (comment: Comment) => {
 
   if (myReply.commentId === comment.id) {
     hideReply()
-  } else {
+  }
+  else {
     myReply.commentId = comment.id
     replyTo.value = comment.user
   }
@@ -173,11 +176,12 @@ const submitReply = async (parent: Comment) => {
   try {
     const ret = await api.addCommentReply(parent.id, {
       content: myReply.input.content || '',
-      imageList: myReply.input.imageList
+      imageList: myReply.input.imageList,
     })
     hideReply()
     prependReply(parent, ret)
-  } catch (e) {
+  }
+  catch (e) {
     useCatchError(e)
   }
 }
@@ -189,7 +193,8 @@ const onReply = (parent: Comment, comment: Comment) => {
 const prependReply = (parent: Comment, comment: Comment) => {
   if (parent.replies && parent.replies.items) {
     parent.replies.items.unshift(comment)
-  } else {
+  }
+  else {
     parent.replies = {
       items: [comment],
     }

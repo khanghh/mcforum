@@ -58,7 +58,6 @@ export type CreateCommentPayload = {
   quoteId?: number
 }
 
-
 export type UpdateProfilePayload = {
   nickname?: string
   bio?: string
@@ -98,7 +97,7 @@ export const useApi = () => {
   }
 
   const getMyTopics = (): CursorResult<Topic[]> => {
-    return new CursorResult<Topic[]>("/api/users/me/topics")
+    return new CursorResult<Topic[]>('/api/users/me/topics')
   }
 
   const setTopicFavorite = (topicId: number, favorited: boolean): Promise<boolean> => {
@@ -106,6 +105,10 @@ export const useApi = () => {
       return useHttpPut(`/api/users/me/favorites/${topicId}`)
     }
     return useHttpDelete(`/api/users/me/favorites/${topicId}`)
+  }
+
+  const getMessages = (): CursorResult<Comment[]> => {
+    return new CursorResult<Comment[]>('/api/users/me/messages')
   }
 
   // other user api endpoints
@@ -140,7 +143,7 @@ export const useApi = () => {
   }
 
   const getForumList = (): Promise<Forum[]> => {
-    return useHttpGet("/api/forums")
+    return useHttpGet('/api/forums')
   }
 
   const getForumTopics = (forumSlug: string): CursorResult<Topic[]> => {
@@ -168,8 +171,8 @@ export const useApi = () => {
     return new CursorResult<Comment[]>(`/api/topics/${topicSlug}/comments`)
   }
 
-  const addTopicComment = (topicSlug: string, payload: CreateCommentPayload): Promise<any> => {
-    let imageList = payload.imageList ? payload.imageList : []
+  const addTopicComment = (topicSlug: string, payload: CreateCommentPayload): Promise<void> => {
+    const imageList = payload.imageList ? payload.imageList : []
     const body = {
       content: payload.content,
       imageList: imageList.length > 0 ? JSON.stringify(imageList) : undefined,
@@ -177,7 +180,6 @@ export const useApi = () => {
     }
     return useHttpPost(`/api/topics/${topicSlug}/comments`, { body })
   }
-
 
   const addTopicReaction = (topicSlug: string, reactionType: string): Promise<boolean> => {
     return useHttpPost(`/api/topics/${topicSlug}/reactions`, {
@@ -194,8 +196,8 @@ export const useApi = () => {
     return new CursorResult<Comment[]>(`/api/comments/${commentId}/replies`)
   }
 
-  const addCommentReply = (commentId: number, payload: CreateCommentPayload): Promise<any> => {
-    let imageList = payload.imageList ? payload.imageList : []
+  const addCommentReply = (commentId: number, payload: CreateCommentPayload): Promise<Comment> => {
+    const imageList = payload.imageList ? payload.imageList : []
     const body = {
       content: payload.content,
       imageList: imageList.length > 0 ? JSON.stringify(imageList) : undefined,
@@ -217,7 +219,6 @@ export const useApi = () => {
   const deleteComment = (commentId: number): Promise<void> => {
     return useHttpDelete(`/api/comments/${commentId}`)
   }
-
 
   return {
     // me api endpoints

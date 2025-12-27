@@ -40,7 +40,6 @@ const props = defineProps<Props>()
 const user = props.user
 
 const isFollowing = ref(user.isFollowing || false)
-console.log('isFollowing', user.username, isFollowing.value)
 
 const showFollowButton = computed(() => {
   return userStore.isLogin && userStore.user?.username !== user.username

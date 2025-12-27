@@ -31,10 +31,6 @@
               class="text-2xl sm:text-3xl font-bold text-white gaming-title drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]">
               {{ user.nickname }}
             </h1>
-            <span v-if="user.id === 1 || user.type === 1"
-              class="px-3 py-1 bg-gradient-to-r from-red-600 to-red-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
-              <Icon name="shield-alt" /> ADMIN
-            </span>
           </div>
           <div class="flex items-center gap-2 mt-1">
             <div
@@ -52,14 +48,8 @@
             : 'px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center neon-border gaming-title text-sm hover:scale-105 transition-transform'"
           :aria-label="isFollowing ? 'Unfollow user' : 'Follow user'"
           @click="isFollowing ? handleUnfollow() : handleFollow()">
-          <Icon :name="isFollowing ? 'user-minus' : 'user-plus'" class="mr-2" />
+          <Icon :name="isFollowing ? 'Fa7SolidUserMinus' : 'Fa7SolidUserPlus'" class="mr-2" />
           {{ isFollowing ? 'UNFOLLOW' : 'FOLLOW' }}
-        </button>
-        <button v-if="!isSelf"
-          class="px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors"
-          aria-label="Send message"
-          @click="handleMessage">
-          <Icon name="TablerMessageCircles" class="mr-2" /> MESSAGE
         </button>
         <nuxt-link v-if="isSelf" to="/users/me/profile"
           class="px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors">
@@ -104,6 +94,7 @@ if (typeof userStore.getCurrent === 'function') {
 
 if (!isSelf.value) {
   isFollowing.value = await api.isFollowing(props.user.id).catch(() => false)
+  console.log('isFollowing', isFollowing.value)
 }
 
 const handleFollow = async () => {

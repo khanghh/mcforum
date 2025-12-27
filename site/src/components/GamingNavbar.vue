@@ -35,7 +35,7 @@
             <span class="hidden sm:inline">Vi phạm</span>
           </a>
         </li>
-        <li>
+        <li v-if="user">
           <a href="/users/me/messages" class="text-gray-300 hover:text-purple-400 transition-colors">
             <Icon name="TablerMail" class="mr-1" />
             <span class="hidden sm:inline">Tin nhắn</span>
@@ -59,4 +59,5 @@ import { useUserStore } from '~/stores/user'
 import AvatarMenu from '~/components/navbar/AvatarMenu.vue'
 
 const userStore = useUserStore()
+const user = computed(() => userStore.user)
 </script>

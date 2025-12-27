@@ -48,6 +48,7 @@ function createFloatingNumber() {
   floatNumber.style.transition = 'transform 800ms ease-out, opacity 800ms ease-out'
 
   container.appendChild(floatNumber)
+  floatNumber.getBoundingClientRect()
 
   // animate
   requestAnimationFrame(() => {

@@ -165,8 +165,8 @@
             <div
               class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 ">
               <div>
-                <h4 class="font-medium text-white">{{ $t('form.settings.locked_profile') }}</h4>
-                <p class="text-sm text-gray-400 mt-1">{{ $t('form.settings.locked_profile_desc') }}</p>
+                <h4 class="font-medium text-white">{{ $t('profile.settings.locked_profile') }}</h4>
+                <p class="text-sm text-gray-400 mt-1">{{ $t('profile.settings.locked_profile_desc') }}</p>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input v-model="form.lockedProfile" type="checkbox" class="sr-only peer" />
@@ -179,8 +179,8 @@
             <div
               class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 ">
               <div>
-                <h4 class="font-medium text-white">{{ $t('form.settings.show_location_title') }}</h4>
-                <p class="text-sm text-gray-400 mt-1">{{ $t('form.settings.show_location_desc') }}</p>
+                <h4 class="font-medium text-white">{{ $t('profile.settings.show_location_title') }}</h4>
+                <p class="text-sm text-gray-400 mt-1">{{ $t('profile.settings.show_location_desc') }}</p>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input v-model="form.showLocation" type="checkbox" class="sr-only peer" />
@@ -193,8 +193,8 @@
             <div
               class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 ">
               <div>
-                <h4 class="font-medium text-white">{{ $t('form.settings.email_notifications_title') }}</h4>
-                <p class="text-sm text-gray-400 mt-1">{{ $t('form.settings.email_notifications_desc') }}</p>
+                <h4 class="font-medium text-white">{{ $t('profile.settings.email_notifications_title') }}</h4>
+                <p class="text-sm text-gray-400 mt-1">{{ $t('profile.settings.email_notifications_desc') }}</p>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input v-model="form.emailNotify" type="checkbox" class="sr-only peer" />
