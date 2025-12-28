@@ -124,6 +124,7 @@ export default {
     profile: 'Hồ sơ của {nickname}',
     account_settings: 'Cài đặt tài khoản',
     personal_info: 'Thông tin cá nhân',
+    edit_profile: 'Chỉnh sửa hồ sơ',
     favorites: 'Yêu thích',
     messages: 'Tin nhắn',
     post_status: 'Đăng trạng thái',

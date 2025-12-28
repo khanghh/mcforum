@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="max-w-3xl mx-auto px-4 py-8">
+  <div class="max-w-3xl mx-auto px-4 py-8">
     <!-- Header with back button -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
@@ -9,7 +9,7 @@
         </div>
         <h1
           class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
-          {{ $t('form.title.edit_profile') }}
+          {{ $t('page.edit_profile') }}
         </h1>
       </div>
 
@@ -239,20 +239,16 @@ definePageMeta({
   layout: 'default',
 })
 
-useHead({
-  title: useSiteTitle(i18n.t('page.personal_info')),
-})
-
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 
 const form = ref({
-  nickname: '',
-  bio: '',
-  location: '',
-  lockedProfile: true,
-  showLocation: true,
-  emailNotify: true,
+  nickname: user.value.nickname,
+  bio: user.value.bio,
+  location: user.value.location,
+  lockedProfile: user.value.settings.lockedProfile,
+  showLocation: user.value.settings.showLocation,
+  emailNotify: user.value.settings.emailNotify,
 })
 
 const bioMax = 200
@@ -314,6 +310,11 @@ async function reload() {
 function handleCancel() {
   navigateTo(`/users/${user.value.username}`)
 }
+
+useHead({
+  title: useSiteTitle(i18n.t('page.edit_profile')),
+})
+
 </script>
 
 <style scoped>

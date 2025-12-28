@@ -2,28 +2,29 @@
 export interface UserInfo {
   id: number
   type: number
+  username: string
   nickname: string
+  role: string
   avatar: string
   smallAvatar: string
-  gender: string
-  birthday: string
-  topicCount: number
-  commentCount: number
-  fansCount: number
-  followCount: number
-  score: number
   bio: string
   statusMessage: string
-  createTime: number
-  forbidden: boolean
+  joinTime: number
+  isForbidden: boolean
   isFollowing: boolean
 }
 
 export interface UserDetail extends UserInfo {
-  username: string
+  gender: string
+  birthdate: string
+  topicCount: number
+  commentCount: number
+  followersCount: number
+  followingCount: number
+  score: number
   backgroundImage: string
   smallBackgroundImage: string
-  location: string
+  location?: string
 }
 
 export interface UserSettings {
@@ -33,7 +34,6 @@ export interface UserSettings {
 }
 
 export interface UserProfile extends UserDetail {
-  role: string
   passwordSet: boolean
   email: string
   emailVerified: boolean

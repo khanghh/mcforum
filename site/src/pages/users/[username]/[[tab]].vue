@@ -8,7 +8,7 @@
       </div>
 
       <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px]">
-        <TabsNavigation :activeTab="activeTab" />
+        <TabsNavigation :user="user" :activeTab="activeTab" />
         <div class="p-6">
           <UserTopics v-show="activeTab === 'topics'" :user="user" />
           <UserActivity v-show="activeTab === 'activity'" :user="user" />
@@ -38,6 +38,7 @@ const i18n = useI18n()
 const route = useRoute()
 const router = useRouter()
 const api = useApi()
+
 const username = route.params.username as string
 
 const user: UserProfile = await api.getUser(username).catch(() => {
