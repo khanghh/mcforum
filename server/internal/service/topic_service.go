@@ -295,9 +295,8 @@ func (s *topicService) GetTopicInIds(topicIds []int64) map[int64]model.Topic {
 	if len(topicIds) == 0 {
 		return nil
 	}
-	var topics []model.Topic
-	sqls.DB().Where("id in (?)", topicIds).Find(&topics)
-
+	cnd := sqls.NewCnd().In("id", topicIds).Eq("status", constants.StatusActive)
+	topics := repository.TopicRepository.Find(sqls.DB(), cnd)
 	topicsMap := make(map[int64]model.Topic, len(topics))
 	for _, topic := range topics {
 		topicsMap[topic.ID] = topic
@@ -319,11 +318,20 @@ func (s *topicService) onComment(tx *gorm.DB, comment *model.Comment) error {
 	}); err != nil {
 		return err
 	}
-	if err := tx.Exec("update t_topic_tag set last_comment_time = ?, last_comment_user_id = ? where topic_id = ?",
-		comment.CreateTime, comment.UserID, comment.TopicID).Error; err != nil {
-		return err
-	}
-	return nil
+	return tx.Model(&model.TopicTag{}).Where("topic_id = ?", comment.TopicID).
+		UpdateColumns(map[string]interface{}{
+			"last_comment_time":    comment.CreateTime,
+			"last_comment_user_id": comment.UserID,
+		}).Error
+
+	// repository.TopicTagRepository.up
+	// .UpdateLastCommentInfo(tx, comment.TopicID, comment.CreateTime, comment.UserID)
+
+	// if err := tx.Exec("update t_topic_tag set last_comment_time = ?, last_comment_user_id = ? where topic_id = ?",
+	// 	comment.CreateTime, comment.UserID, comment.TopicID).Error; err != nil {
+	// 	return err
+	// }
+	// return nil
 }
 
 func (s *topicService) ScanByUser(userId int64, callback func(topics []model.Topic)) {

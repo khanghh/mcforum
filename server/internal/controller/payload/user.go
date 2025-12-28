@@ -53,7 +53,7 @@ type UserDetail struct {
 // UserProfile user personal info
 type UserProfile struct {
 	UserDetail
-	Role          string       `json:"role"`
+	Role          string       `json:"role,omitempty"`
 	PasswordSet   bool         `json:"passwordSet"` // password set
 	Email         string       `json:"email"`
 	EmailVerified bool         `json:"emailVerified"`
@@ -130,13 +130,17 @@ func BuildUserProfile(user *model.User) *UserProfile {
 	if user == nil {
 		return nil
 	}
+	userRole := ""
+	if user.Role != nil {
+		userRole = user.Role.Name
+	}
 	ret := &UserProfile{
 		UserDetail:    *BuildUserDetail(user),
 		Email:         user.Email.String,
 		EmailVerified: user.EmailVerified,
 		PasswordSet:   len(user.Password) > 0,
 		IsActive:      user.IsActive,
-		Role:          user.Role.Name,
+		Role:          userRole,
 	}
 	return ret
 }

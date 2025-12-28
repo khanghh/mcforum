@@ -34,7 +34,7 @@ func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error)
 	cnd := sqls.NewCnd().
 		Eq("slug", topicSlug).
 		Eq("id", topicId).
-		Eq("status", constants.StatusActive)
+		NotEq("status", constants.StatusDeleted)
 	topic := service.TopicService.FindOne(cnd)
 	return topic, nil
 }
@@ -312,6 +312,10 @@ func (c *TopicsController) PostByComments(slugId string) (*web.JsonResult, error
 	form := payload.GetCreateCommentForm(c.Ctx)
 	if err := spam.CheckComment(user, form); err != nil {
 		return web.JsonError(err), nil
+	}
+
+	if topic.Status != constants.StatusActive && !user.IsOwnerOrAdmin() && topic.UserID != user.ID {
+		return web.JsonError(errs.ErrForbidden), nil
 	}
 
 	comment, err := service.CommentService.CreateComment(service.CreateCommentArgs{

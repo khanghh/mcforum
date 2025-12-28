@@ -116,7 +116,7 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 	}
 
 	topic := TopicService.Get(args.TopicId)
-	if topic == nil || topic.Status != constants.StatusActive {
+	if topic == nil {
 		return nil, errs.ErrTopicNotFound
 	}
 

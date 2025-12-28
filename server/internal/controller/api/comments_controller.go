@@ -40,8 +40,12 @@ func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 	}
 
 	topic := service.TopicService.Get(parent.TopicID)
-	if topic == nil || topic.Status != constants.StatusActive {
+	if topic == nil {
 		return web.JsonError(errs.ErrTopicNotFound)
+	}
+
+	if topic.Status != constants.StatusActive && !user.IsOwnerOrAdmin() && topic.UserID != user.ID {
+		return web.JsonError(errs.ErrForbidden)
 	}
 
 	parentId := parent.ID
