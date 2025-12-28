@@ -3,11 +3,13 @@
     <MdEditor
       v-model="value"
       language="en-US"
-      :theme="$colorMode.preference"
+      theme="dark"
       :toolbars="toolbars"
       :style="{ height: height }"
       :placeholder="placeholder"
+      :class="class"
       :preview="false"
+      :maxLength="contentLength"
       @on-change="change"
       @on-upload-img="uploadImg" />
   </client-only>
@@ -24,13 +26,19 @@ const props = defineProps({
   },
   height: {
     type: String,
-    default: '400px',
+    default: '500px',
   },
   placeholder: {
     type: String,
     default: '',
   },
+  class: {
+    type: [Array, String],
+    default: '',
+  },
 })
+
+const contentLength = 10000
 
 const emits = defineEmits([
   'update:modelValue',

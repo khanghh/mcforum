@@ -263,20 +263,6 @@ const bioCounterClass = computed(() => {
   return 'text-gray-400'
 })
 
-watch(
-  user,
-  (u) => {
-    if (!u) return
-    form.value.nickname = u.nickname
-    form.value.bio = u.bio
-    form.value.location = u.location
-    form.value.lockedProfile = u.settings.lockedProfile
-    form.value.showLocation = u.settings.showLocation
-    form.value.emailNotify = u.settings.emailNotify
-  },
-  { immediate: true },
-)
-
 async function submitForm() {
   try {
     await api.updateProfile({

@@ -14,7 +14,6 @@
           <UserActivity v-show="activeTab === 'activity'" :user="user" />
           <UserFollowing v-show="activeTab === 'following'" :user="user" />
           <UserFollowers v-show="activeTab === 'followers'" :user="user" />
-          <UserFavorites v-show="activeTab === 'favorites'" :user="user" />
         </div>
       </div>
     </div>
@@ -29,7 +28,6 @@ import UserTopics from '~/components/users/UserTopics.vue'
 import UserActivity from '~/components/users/UserActivity.vue'
 import UserFollowing from '~/components/users/UserFollowing.vue'
 import UserFollowers from '~/components/users/UserFollowers.vue'
-import UserFavorites from '~/components/users/UserFavorites.vue'
 import type { UserProfile } from '@/types/user'
 
 definePageMeta({

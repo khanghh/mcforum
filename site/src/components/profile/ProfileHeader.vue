@@ -18,30 +18,57 @@
     </div>
 
     <div class="px-6 -mt-12 sm:-mt-16 relative z-10 flex items-end justify-between gap-4">
-      <div class="flex items-end gap-4">
-        <div class="relative">
-          <!-- Pro Frame Inner -->
-          <div class="relative p-1">
+      <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 w-full">
+        <div class="relative flex-shrink-0">
+          <div class="relative p-1 mx-auto sm:mx-0">
             <AvatarDecorated :user="user" :is-self="isSelf" @uploaded="onUploaded" />
           </div>
         </div>
-        <div class="pb-2">
-          <div class="flex items-center gap-2 flex-wrap">
+        <div class="pb-2 w-full sm:w-auto text-center sm:text-left">
+          <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
             <h1
               class="text-2xl sm:text-3xl font-bold text-white gaming-title drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]">
               {{ user.username }}
             </h1>
           </div>
-          <div class="flex items-center gap-2 mt-1">
+          <div class="flex items-center gap-2 mt-1 justify-center sm:justify-start w-full">
             <div
-              :class="['gaming-card px-3 py-1 rounded-lg backdrop-blur-sm inline-flex items-center', { invisible: !user.statusMessage }]">
-              <Icon name="Fa7SolidQuoteLeft" class="text-purple-400 text-sm mr-2" />
-              <span class="text-sm text-purple-200 font-medium line-clamp-1">{{ user.statusMessage || '' }}</span>
+              class="gaming-card min-w-0 w-full sm:w-auto px-3 py-1 rounded-lg backdrop-blur-sm flex flex-wrap items-center group relative md:inline-flex md:flex-nowrap break-all"
+              :class="{ invisible: !user.statusMessage && !isSelf }">
+
+              <span v-if="!isEditing"
+                :class="['text-sm text-purple-200 font-medium pr-4 min-w-0 w-full md:w-auto break-words break-all whitespace-normal md:line-clamp-1', user.statusMessage ? '' : 'italic']">
+                <Icon name="Fa7SolidQuoteLeft" class="text-purple-400 text-sm mr-1" />
+                {{ user.statusMessage || 'Say something...' }}
+              </span>
+
+              <div v-if="isEditing" class="relative inline-block">
+                <input ref="statusInput" v-model="editingStatus"
+                  @input="updateWidth"
+                  @keyup.enter="saveStatus"
+                  @keyup.escape="cancelStatusMsgEditing"
+                  class="bg-transparent text-sm text-purple-200 font-medium outline-none min-w-0"
+                  placeholder="Say something..." maxlength="80" />
+                <span ref="measureSpan" aria-hidden="true"
+                  style="position:absolute; visibility:hidden; white-space:pre; font-size:0.875rem; font-weight:500;">
+                </span>
+              </div>
+
+              <div v-if="isSelf" class="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button v-if="isEditing" @click="saveStatus" type="button"
+                  class="text-purple-300 hover:text-purple-100">
+                  <Icon name="Fa7SolidCheck" class="text-xs" />
+                </button>
+                <button v-else @click="startStatusMsgEditing" type="button"
+                  class="text-purple-300 hover:text-purple-100">
+                  <Icon name="Fa7SolidPencil" class="text-xs" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="currentUser" class="hidden md:flex items-center gap-2 mb-3">
+      <div v-if="currentUser" class="hidden md:flex items-center gap-2 mb-3 whitespace-nowrap">
         <button v-if="!isSelf"
           :class="isFollowing
             ? 'px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors'
@@ -71,6 +98,7 @@
 <script setup>
 import AvatarDecorated from '../AvatarDecorated.vue'
 import { useMsgSuccess, useMsgError } from '@/composables/useMsg'
+import { nextTick, watch } from 'vue'
 
 const userStore = useUserStore()
 const api = useApi()
@@ -83,29 +111,25 @@ const props = defineProps({
 })
 
 const isFollowing = ref(false)
-
+const isEditing = ref(false)
+const editingStatus = ref('')
+const statusInput = ref()
+const measureSpan = ref()
 const currentUser = computed(() => userStore.user)
 const isSelf = computed(() => currentUser?.value && currentUser?.value?.id === props.user.id)
 
-// Resolve before render (SSR-friendly). If not logged in / any error -> false.
-if (typeof userStore.getCurrent === 'function') {
-  await userStore.getCurrent().catch(() => undefined)
-}
 
 if (!isSelf.value) {
   isFollowing.value = await api.isFollowing(props.user.id).catch(() => false)
-  console.log('isFollowing', isFollowing.value)
 }
 
 const handleFollow = async () => {
   try {
     await api.followUser(props.user.username)
     isFollowing.value = true
-    useMsgSuccess('Follow successfully')
   }
   catch (e) {
     console.error(e)
-    useMsgError('Follow failed')
   }
 }
 
@@ -113,16 +137,63 @@ const handleUnfollow = async () => {
   try {
     await api.unfollowUser(props.user.username)
     isFollowing.value = false
-    useMsgSuccess('Unfollow successfully')
   }
   catch (e) {
-    useMsgError('Unfollow failed', e)
+    console.error(e)
   }
 }
 
-const handleMessage = () => {
-  // Navigate to messages page or open chat
-  navigateTo(`/messages/${props.user.id}`)
+function startStatusMsgEditing() {
+  isEditing.value = true
+  editingStatus.value = props.user.statusMessage || ''
+  updateWidth()
+}
+
+function cancelStatusMsgEditing() {
+  isEditing.value = false
+  editingStatus.value = ''
+}
+
+function updateWidth() {
+  nextTick(() => {
+    const span = measureSpan.value
+    const input = statusInput.value
+    if (!span || !input) return
+    span.textContent = editingStatus.value || input.placeholder || ''
+    const width = span.offsetWidth
+    input.style.width = `${Math.max(60, width + 16)}px`
+  })
+}
+
+watch(isEditing, async (val) => {
+  if (val) {
+    await nextTick()
+    updateWidth()
+    const input = statusInput.value
+    if (input) {
+      input.focus()
+      const len = (editingStatus.value || '').length
+      try { input.setSelectionRange(len, len) } catch (e) { }
+    }
+  }
+})
+
+watch(editingStatus, () => updateWidth())
+
+async function saveStatus() {
+  if (editingStatus.value === props.user.statusMessage) {
+    isEditing.value = false
+    return
+  }
+  try {
+    await api.setStatusMessage(editingStatus.value)
+    props.user.statusMessage = editingStatus.value
+    isEditing.value = false
+  } catch (e) {
+    const errMsg = e?.response?.data?.error?.message || e.message || 'Unknown error'
+    useMsgError('Status update failed')
+    return
+  }
 }
 
 async function onUploaded(file) {
@@ -136,16 +207,10 @@ async function onUploaded(file) {
     })
 
     await userStore.getCurrent()
-    useMsgSuccess('头像更新成功')
   }
   catch (e) {
     console.error(e)
-    useMsgError('头像更新失败')
   }
-}
-
-function calculateLevel(score) {
-  return Math.floor(Math.sqrt(score || 0)) + 1
 }
 
 // Cover upload handlers
@@ -153,12 +218,14 @@ const coverInput = ref(null)
 const handleCoverClick = () => {
   if (coverInput?.value) coverInput.value.click()
 }
+
 async function handleCoverSelect(e) {
   const file = e.target?.files?.[0]
   if (!file) return
   await onCoverUploaded(file)
   e.target.value = ''
 }
+
 async function onCoverUploaded(file) {
   try {
     const formData = new FormData()

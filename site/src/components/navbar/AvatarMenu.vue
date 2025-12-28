@@ -9,7 +9,7 @@
     <div v-if="isDropdownOpen"
       class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-sm py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-gray-200">
       <div class="px-4 py-2 flex items-center gap-3">
-        <Avatar :src="avatarSrc" :username="username"
+        <Avatar :src="avatarSrc" :username="user?.username"
           class="w-10 h-10 object-cover border border-purple-600 rounded-lg" />
         <div class="min-w-0">
           <div class="text-sm font-semibold text-gray-800 truncate">{{ user?.username }}</div>
@@ -45,15 +45,14 @@ import type { UserProfile } from '~/types'
 import { onClickOutside } from '@vueuse/core'
 import { useUserStore } from '~/stores/user'
 
+const props = defineProps<{ user: UserProfile }>()
+
+
 const userStore = useUserStore()
 const isDropdownOpen = ref(false)
 const dropdownRef = ref(null)
-const avatarSrc = computed(() => userStore.user?.avatar || '/images/default-avatar.png')
-const username = computed(() => {
-  return userStore.user?.username
-})
 
-const user = computed<UserProfile | null>(() => userStore.user)
+const avatarSrc = computed(() => userStore.user?.avatar || '/images/default-avatar.png')
 
 onClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false

@@ -2,10 +2,10 @@
   <div class="relative p-1">
     <!-- Frame Decorations -->
     <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-      <div
+      <div v-if="roleName"
         class="bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-0.5 border-2 border-gray-900 flex items-center gap-1">
-        <Icon name="TablerCrown" class="text-white text-xs" />
-        <span class="text-white text-xs font-bold gaming-title">VIP3</span>
+        <Icon v-if="roleIcon" :name="roleIcon" class="text-white text-xs" />
+        <span class="text-white text-xs font-bold gaming-title">{{ roleName }}</span>
       </div>
     </div>
 
@@ -44,6 +44,20 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['uploaded'])
+
+const roleName = computed(() => props.user.role || '')
+const roleIcon = computed(() => {
+  switch (props.user.role) {
+    case 'owner':
+      return 'TablerCrown'
+    case 'admin':
+      return 'TablerShieldCheck'
+    case 'moderator':
+      return 'TablerStar'
+    default:
+      return null
+  }
+})
 </script>
 
 <style scoped>

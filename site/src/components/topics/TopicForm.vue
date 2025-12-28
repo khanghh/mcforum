@@ -64,13 +64,15 @@
         </div>
       </div>
 
-      <MdEditor v-model="postForm.content" class="opacity-60" language="en-US" theme="dark"
+      <MarkdownEditor v-model="postForm.content" class="opacity-50" />
+
+      <!-- <MdEditor v-model="postForm.content" class="opacity-50" language="en-US" theme="dark"
         @onSave="saveTopic"
         @onUploadImg="handleUploadImage"
         :preview="false"
         :toolbarsExclude="['save', 'github', 'catalog', 'previewOnly', 'fullscreen', 'pageFullscreen',]"
         :maxLength="10000"
-        placeholder="Enter your post content here..." />
+        placeholder="Enter your post content here..." /> -->
 
       <!-- Content Help -->
       <div
@@ -273,7 +275,7 @@
 </template>
 
 <script setup lang="ts">
-import { MdEditor } from 'md-editor-v3'
+// import { MdEditor } from 'md-editor-v3'
 import type { TopicPoll, CreateTopicPayload } from '@/composables/api'
 const api = useApi()
 const dialog = useConfirmDialog()

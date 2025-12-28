@@ -1,18 +1,5 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-    <!-- Breadcrumb -->
-    <div class="mb-6 flex items-center text-sm text-gray-400">
-      <nuxt-link to="/" class="hover:text-purple-400 transition-colors">
-        Home
-      </nuxt-link>
-      <Icon name="TablerChevronRight" class="mx-2 text-xs" />
-      <nuxt-link to="/topics" class="hover:text-purple-400 transition-colors">
-        Forum
-      </nuxt-link>
-      <Icon name="TablerChevronRight" class="mx-2 text-xs" />
-      <span class="text-purple-300">Create New Topic</span>
-    </div>
-
     <!-- Header with back button -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">

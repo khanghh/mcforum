@@ -29,13 +29,6 @@
                 </p>
               </div>
             </div>
-
-            <!-- Mark all as read button -->
-            <button
-              class="px-4 py-2 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-sm font-semibold transition-all duration-300 border border-purple-500/20 hover:border-purple-500/40">
-              <Icon name="Fa7SolidCheckDouble" class="inline mr-2" />
-              {{ $t('message.mark_all_read') || 'Mark all read' }}
-            </button>
           </div>
         </div>
 

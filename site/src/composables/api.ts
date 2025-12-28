@@ -128,6 +128,10 @@ export const useApi = () => {
     return new CursorResult<Comment[]>('/api/users/me/messages')
   }
 
+  const setStatusMessage = (message: string): Promise<void> => {
+    return useHttpPut("/api/users/me/status", { body: { message } })
+  }
+
   // other user api endpoints
 
   const getUser = (username: string): Promise<UserProfile> => {
@@ -212,6 +216,14 @@ export const useApi = () => {
     return useHttpDelete(`/api/topics/${topicSlug}/reactions`)
   }
 
+  const rejectTopic = (topicSlug: string): Promise<void> => {
+    return useHttpPost(`/api/topics/${topicSlug}/reject`)
+  }
+
+  const approveTopic = (topicSlug: string): Promise<void> => {
+    return useHttpPost(`/api/topics/${topicSlug}/approve`)
+  }
+
   // comment api endpoints
   const getCommentReplies = (commentId: number): CursorResult<Comment[]> => {
     return new CursorResult<Comment[]>(`/api/comments/${commentId}/replies`)
@@ -242,6 +254,7 @@ export const useApi = () => {
   }
 
   return {
+
     // me api endpoints
     getCurrentUser,
     updateProfile,
@@ -251,6 +264,7 @@ export const useApi = () => {
     getMyTopics,
     setTopicFavorite,
     getMessages,
+    setStatusMessage,
 
     // other user api endpoints
     getUser,
@@ -275,6 +289,8 @@ export const useApi = () => {
     addTopicComment,
     addTopicReaction,
     removeTopicReaction,
+    rejectTopic,
+    approveTopic,
 
     // comment api endpoints
     getCommentReplies,

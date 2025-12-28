@@ -26,7 +26,6 @@ const route = useRoute()
 const configStore = useConfigStore()
 
 const menuItems = configStore.config.menuItems
-console.log('Menu Items:', menuItems)
 
 function forumLogo(forum) {
   return forum.logo || '/images/node.png'

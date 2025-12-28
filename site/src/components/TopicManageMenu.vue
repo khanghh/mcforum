@@ -14,11 +14,40 @@
       <div v-if="open"
         class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
         <div class="py-1">
+
+          <button v-if="(isOwner || isAdmin) && isPending"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; approveTopic()">
+            <Icon name="Fa7SolidCheck" class="mr-2" />
+            {{ $t('publish.action.approve') }}
+          </button>
+
+          <button v-if="(isOwner || isAdmin) && isPending"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; rejectTopic()">
+            <Icon name="Fa7SolidTimes" class="mr-2" />
+            {{ $t('publish.action.reject') }}
+          </button>
+
           <button v-if="isTopicOwner"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; toggleEditing()">
             <Icon name="Fa7SolidFileEdit" class="mr-2" />
             {{ $t('publish.action.edit') }}
+          </button>
+
+          <button v-if="(isOwner || isAdmin) && !isPending"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; toggleRecommended()">
+            <Icon :name="recommended ? 'PhSealCheckFill' : 'PhSealCheckBold'" class="mr-2" />
+            {{ recommended ? $t('publish.action.unrecommend') : $t('publish.action.recommend') }}
+          </button>
+
+          <button v-if="(isOwner || isAdmin) && !isPending"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; togglePinned()">
+            <Icon :name="pinned ? 'TablerPinFilled' : 'TablerPin'" class="mr-2" />
+            {{ pinned ? $t('publish.action.unpin') : $t('publish.action.pin') }}
           </button>
 
           <button v-if="isTopicOwner || isOwner || isAdmin"
@@ -28,33 +57,6 @@
             {{ $t('publish.action.delete') }}
           </button>
 
-          <button v-if="isOwner || isAdmin"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="open = false; toggleRecommended()">
-            <Icon :name="recommended ? 'PhSealCheckFill' : 'PhSealCheckBold'" class="mr-2" />
-            {{ recommended ? $t('publish.action.unrecommend') : $t('publish.action.recommend') }}
-          </button>
-
-          <button v-if="isOwner || isAdmin"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="open = false; togglePinned()">
-            <Icon :name="pinned ? 'TablerPinFilled' : 'TablerPin'" class="mr-2" />
-            {{ pinned ? $t('publish.action.unpin') : $t('publish.action.pin') }}
-          </button>
-
-          <button v-if="isOwner || isAdmin"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="open = false; forbidden(7)">
-            <Icon name="TablerBan" class="mr-2" />
-            {{ $t('profile.actions.mute_7days') }}
-          </button>
-
-          <button v-if="isOwner"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="open = false; forbidden(-1)">
-            <Icon name="TablerBan" class="mr-2" />
-            {{ $t('profile.actions.mute_permanent') }}
-          </button>
         </div>
       </div>
     </transition>
@@ -62,6 +64,7 @@
 </template>
 
 <script setup>
+import { TopicStatus } from '@/types'
 const i18n = useI18n()
 const api = useApi()
 const dialog = useConfirmDialog()
@@ -89,7 +92,7 @@ const isTopicOwner = computed(() => !!userStore.user && !!topic.value && !!topic
 const editing = computed(() => !!topic.value && !!topic.value.editing)
 const recommended = computed(() => !!topic.value && !!topic.value.recommended)
 const pinned = computed(() => !!topic.value && !!topic.value.pinned)
-
+const isPending = computed(() => !!topic.value && topic.value.status === TopicStatus.PendingReview)
 // Note: menu actions are called directly from the template now.
 
 function onClickOutside(e) {
@@ -106,19 +109,32 @@ function onClickOutside(e) {
 onMounted(() => window.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
 
-async function forbidden(days) {
-  try {
-    await useHttpPostForm('/api/users/forbidden', {
-      body: {
-        userId: topic.value.user.id,
-        days,
-      },
+function approveTopic() {
+  const action = i18n.t('publish.action.approve')
+  return api.approveTopic(topic.value.slug)
+    .then(() => {
+      topic.value.status = 'approved'
+      emit('update:modelValue', topic.value)
+      toast.success(i18n.t('message.action_success', { action }))
+    }).catch((e) => {
+      const errMsg = e.data?.error.message || e.message || e
+      const msg = i18n.t('message.action_failure', { action, error: errMsg })
+      toast.error(msg)
     })
-    useMsgSuccess(i18n.t('message.mute_user_success'))
-  }
-  catch (e) {
-    useMsgError(i18n.t('message.mute_user_failure', { error: e }))
-  }
+}
+
+function rejectTopic() {
+  const action = i18n.t('publish.action.reject')
+  return api.rejectTopic(topic.value.slug)
+    .then(() => {
+      topic.value.status = 'rejected'
+      emit('update:modelValue', topic.value)
+      toast.success(i18n.t('message.action_success', { action }))
+    }).catch((e) => {
+      const errMsg = e.data?.error.message || e.message || e
+      const msg = i18n.t('message.action_failure', { action, error: errMsg })
+      toast.error(msg)
+    })
 }
 
 function deleteTopic() {

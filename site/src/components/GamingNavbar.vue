@@ -43,7 +43,7 @@
         </li>
 
         <li>
-          <AvatarMenu v-if="userStore.isLogin" />
+          <AvatarMenu v-if="user" :user="user" />
           <a v-else href="/signin"
             class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
             {{ $t('page.signin') }}
@@ -59,5 +59,5 @@ import { useUserStore } from '~/stores/user'
 import AvatarMenu from '~/components/navbar/AvatarMenu.vue'
 
 const userStore = useUserStore()
-const user = computed(() => userStore.user)
+const user = userStore.user
 </script>

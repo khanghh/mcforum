@@ -8,7 +8,7 @@ function applyOptions(options: any = {}): any {
   options.headers = options.headers || {}
   options.method = options.method || 'GET'
 
-  const token = useCookie('bbsgo_token')
+  const token = useCookie('sid')
   if (token.value) {
     options.headers['X-User-Token'] = token.value
   }
@@ -76,7 +76,6 @@ export function useHttpDelete(url: string, options: any = {}): Promise<any> {
 }
 
 export function useHttpPutForm(url: string, options: any = {}): Promise<any> {
-  console.log(options)
   return useHttp(url, {
     ...options,
     method: 'PUT',

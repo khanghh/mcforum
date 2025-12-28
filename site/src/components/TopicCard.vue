@@ -92,9 +92,6 @@ type Props = {
 }
 const props = defineProps<Props>()
 const topic = props.topic
-// if (!topic.slug) {
-//   console.log("bug", topic)
-// }
 
 const author = computed(() => topic.user)
 

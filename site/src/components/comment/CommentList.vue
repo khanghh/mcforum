@@ -6,7 +6,7 @@
           class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6 group">
           <div class="flex items-start gap-4">
             <div class="relative group">
-              <MyAvatar :user="comment.user" :size="30" class="rounded-lg border-2 border-purple-500/30" />
+              <Avatar :user="comment.user" :size="48" class="rounded border-2 border-purple-500/30" />
             </div>
 
             <div class="flex-1 min-w-0">
@@ -202,7 +202,6 @@ const prependReply = (parent: Comment, comment: Comment) => {
 }
 
 const deleteComment = async (comment: Comment) => {
-  console.log('delete comment', comment)
   dialog.show({
     title: $t('dialog.title.confirm_delete'),
     message: $t('dialog.message.confirm_delete_comment'),

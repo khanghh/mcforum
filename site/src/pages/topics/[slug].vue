@@ -1,9 +1,5 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6" itemscope itemtype="http://schema.org/BlogPosting">
-    <!-- Notification for pending posts -->
-    <div v-if="isPending" class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
-      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.post_under_review') }}
-    </div>
 
     <!-- Breadcrumb -->
     <div class="mb-6">
@@ -17,6 +13,11 @@
         <span class="mx-2">›</span>
         <span class="text-purple-400 truncate max-w-md">{{ topic.title }}</span>
       </nav>
+    </div>
+
+    <!-- Notification for pending posts -->
+    <div v-if="isPending" class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
+      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.post_under_review') }}
     </div>
 
     <!-- Original Post -->
@@ -127,6 +128,10 @@ const api = useApi()
 const userStore = useUserStore()
 
 const slug = route.params.slug
+if (!slug) {
+  throw createError({ statusCode: 404, statusMessage: 'Topic not found' })
+}
+
 const topic = ref(null)
 
 topic.value = await api.getTopic(slug).catch((e) => {
@@ -138,8 +143,6 @@ topic.value = await api.getTopic(slug).catch((e) => {
 })
 
 const user = computed(() => userStore.user)
-
-console.log('Loaded topic:', topic.value.favorited)
 
 definePageMeta({
   layout: 'default',
