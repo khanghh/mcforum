@@ -9,8 +9,9 @@ const (
 	CookieTokenKey               = "bbsgo_token"
 	BioMaxLength                 = 200
 	NicknameMaxLength            = 50
-	StatusMaxLength              = 150
-	ForumTitleMaxLength          = 128
+	StatusMessageMaxLength       = 100
+	ForumTitleMaxLength          = 50
+	TopicTitleMaxLength          = 128
 	LocationMaxLength            = 100
 )
 

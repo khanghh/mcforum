@@ -12,6 +12,8 @@ import (
 
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
+
+	"gorm.io/gorm"
 )
 
 var FavoriteService = newFavoriteService()
@@ -123,14 +125,11 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 }
 
 func (s *favoriteService) removeFavorite(userId int64, entityType string, entityId int64) error {
-	tmp := s.GetBy(userId, entityType, entityId)
-	if tmp != nil {
-		repository.FavoriteRepository.Delete(sqls.DB(), tmp.ID)
-		event.Send(event.UserUnfavoriteEvent{
-			UserId:     userId,
-			EntityId:   entityId,
-			EntityType: entityType,
-		})
+	err := sqls.DB().Model(&model.UserLike{}).
+		Where("user_id = ? AND entity_id = ? AND entity_type = ?", userId, entityId, entityType).
+		Update("status", constants.StatusDeleted).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
 	}
 	return nil
 }

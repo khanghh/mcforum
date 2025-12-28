@@ -90,7 +90,7 @@ type Topic struct {
 	Type              constants.TopicType `gorm:"type:int(11);not null:default:0" json:"type" form:"type"`                                 // Type
 	ForumId           int64               `gorm:"not null;index:idx_topic_forum_id;" json:"forumId" form:"forumId"`                        // Forum ID
 	UserID            int64               `gorm:"not null;index:idx_topic_user_id;" json:"userId" form:"userId"`                           // User ID
-	Title             string              `gorm:"size:128" json:"title" form:"title"`                                                      // Title
+	Title             string              `gorm:"size:256" json:"title" form:"title"`                                                      // Title
 	Content           string              `gorm:"type:longtext" json:"content" form:"content"`                                             // Content
 	ImageList         string              `gorm:"type:longtext" json:"imageList" form:"imageList"`                                         // Image list
 	HideContent       string              `gorm:"type:longtext" json:"hideContent" form:"hideContent"`                                     // Hidden content (visible after reply)

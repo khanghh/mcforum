@@ -120,13 +120,14 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 		return errs.ErrTopicNotFound
 	}
 
+	likeCreated := false
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		isLiked, err := s.isLiked(tx, userId, constants.EntityTopic, topicId)
 		if err != nil || isLiked {
 			return nil
 		}
 
-		if err := s.like(tx, userId, constants.EntityTopic, topicId); err != nil {
+		if likeCreated, err = s.like(tx, userId, constants.EntityTopic, topicId); err != nil {
 			return err
 		}
 
@@ -137,25 +138,29 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 		return err
 	}
 
-	// send event
-	event.Send(event.UserLikeEvent{
-		UserId:     userId,
-		EntityId:   topicId,
-		EntityType: constants.EntityTopic,
-	})
+	// send event for new like only
+	if likeCreated {
+		event.Send(event.UserLikeEvent{
+			UserId:     userId,
+			EntityId:   topicId,
+			EntityType: constants.EntityTopic,
+		})
+	}
 
 	return nil
 }
 
 func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
-	if !s.IsLiked(userId, constants.EntityTopic, topicId) {
-		return nil
-	}
-
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+		liked, err := s.isLiked(tx, userId, constants.EntityTopic, topicId)
+		if err != nil || !liked {
+			return nil
+		}
+
 		if err := s.unlike(tx, userId, constants.EntityTopic, topicId); err != nil {
 			return err
 		}
+
 		// update like count
 		return repository.TopicRepository.UpdateColumn(tx, topicId, "like_count", gorm.Expr("like_count - 1"))
 	}); err != nil {
@@ -163,11 +168,11 @@ func (s *userLikeService) TopicUnLike(userId int64, topicId int64) error {
 	}
 
 	// send event
-	event.Send(event.UserUnLikeEvent{
-		UserId:     userId,
-		EntityId:   topicId,
-		EntityType: constants.EntityTopic,
-	})
+	// event.Send(event.UserUnLikeEvent{
+	// 	UserId:     userId,
+	// 	EntityId:   topicId,
+	// 	EntityType: constants.EntityTopic,
+	// })
 
 	return nil
 }
@@ -179,13 +184,14 @@ func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 		return errs.ErrCommentNotFound
 	}
 
+	likeCreated := false
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		isLiked, err := s.isLiked(tx, userId, constants.EntityComment, commentId)
-		if err != nil || (err == nil && isLiked) {
+		if err != nil || isLiked {
 			return nil
 		}
 
-		if err := s.like(tx, userId, constants.EntityComment, commentId); err != nil {
+		if likeCreated, err = s.like(tx, userId, constants.EntityComment, commentId); err != nil {
 			return err
 		}
 		// update like count
@@ -194,12 +200,14 @@ func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 		return err
 	}
 
-	// send event
-	event.Send(event.UserLikeEvent{
-		UserId:     userId,
-		EntityId:   commentId,
-		EntityType: constants.EntityComment,
-	})
+	// send event for new like only
+	if likeCreated {
+		event.Send(event.UserLikeEvent{
+			UserId:     userId,
+			EntityId:   commentId,
+			EntityType: constants.EntityComment,
+		})
+	}
 
 	return nil
 }
@@ -212,6 +220,11 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 	}
 
 	if err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+		liked, err := s.isLiked(tx, userId, constants.EntityComment, commentId)
+		if err != nil || !liked {
+			return nil
+		}
+
 		if err := s.unlike(tx, userId, constants.EntityComment, commentId); err != nil {
 			return err
 		}
@@ -232,20 +245,21 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 }
 
 func (r *userLikeService) isLiked(db *gorm.DB, userId int64, entityType string, entityId int64) (bool, error) {
-	var exists bool
-	err := db.Model(&model.UserLike{}).Select("1").
-		Where("user_id = ? AND entity_id = ? AND entity_type = ? AND status = ?", userId, entityId, entityType, constants.StatusActive).
-		Take(&exists).Error
+	var existing model.UserLike
+	err := db.Model(&model.UserLike{}).
+		Where("user_id = ? AND entity_id = ? AND entity_type = ?", userId, entityId, entityType).
+		Take(&existing).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil
 		}
 		return false, err
 	}
-	return true, nil
+	return existing.Status == constants.StatusActive, nil
 }
 
-func (s *userLikeService) like(tx *gorm.DB, userId int64, entityType string, entityId int64) error {
+// like return true if a new like record is created
+func (s *userLikeService) like(tx *gorm.DB, userId int64, entityType string, entityId int64) (bool, error) {
 	like := model.UserLike{
 		UserId:     userId,
 		EntityType: entityType,
@@ -255,10 +269,14 @@ func (s *userLikeService) like(tx *gorm.DB, userId int64, entityType string, ent
 	}
 
 	// Upsert (Insert or Update)
-	return tx.Clauses(clause.OnConflict{
+	ret := tx.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "user_id"}, {Name: "entity_id"}, {Name: "entity_type"}},
 		DoUpdates: clause.Assignments(map[string]interface{}{"status": constants.StatusActive}),
-	}).Create(&like).Error
+	}).Create(&like)
+	if ret.Error != nil {
+		return false, ret.Error
+	}
+	return ret.RowsAffected > 0, nil
 }
 
 func (s userLikeService) unlike(tx *gorm.DB, userId int64, entityType string, entityId int64) error {

@@ -522,14 +522,28 @@ func (s *userService) CheckPostStatus(user *model.User) error {
 }
 
 // IncrScoreForPostTopic points for posting a topic
+func (s *userService) IncrScoreForLikeTopic(topic *model.Topic) {
+	config := SysConfigService.GetPointConfig()
+	if config.LikeTopicScore <= 0 {
+		slog.Info("Points configuration missing for liking a topic")
+		return
+	}
+	err := s.addScore(topic.UserID, config.LikeTopicScore, constants.EntityTopic,
+		strconv.FormatInt(topic.ID, 10), locale.T("points.points_added_for_liking_topic"))
+	if err != nil {
+		slog.Error(err.Error(), slog.Any("err", err))
+	}
+}
+
+// IncrScoreForPostTopic points for posting a topic
 func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 	config := SysConfigService.GetPointConfig()
 	if config.PostTopicScore <= 0 {
-		slog.Info(locale.T("errors.points_config_missing"))
+		slog.Info("Points configuration missing for posting topics")
 		return
 	}
 	err := s.addScore(topic.UserID, config.PostTopicScore, constants.EntityTopic,
-		strconv.FormatInt(topic.ID, 10), locale.T("errors.points_added_for_comment"))
+		strconv.FormatInt(topic.ID, 10), locale.T("points.points_added_for_posting_topic"))
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}
@@ -539,10 +553,11 @@ func (s *userService) IncrScoreForPostTopic(topic *model.Topic) {
 func (s *userService) IncrScoreForPostComment(comment *model.Comment) {
 	config := SysConfigService.GetPointConfig()
 	if config.PostCommentScore <= 0 {
-		slog.Info(locale.T("errors.points_config_missing"))
+		slog.Info("Points configuration missing for posting comments")
 		return
 	}
-	err := s.addScore(comment.UserID, config.PostCommentScore, constants.EntityComment, strconv.FormatInt(comment.ID, 10), locale.T("points.reason_post_comment"))
+	err := s.addScore(comment.UserID, config.PostCommentScore, constants.EntityComment,
+		strconv.FormatInt(comment.ID, 10), locale.T("points.points_added_for_commenting"))
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}
@@ -551,7 +566,7 @@ func (s *userService) IncrScoreForPostComment(comment *model.Comment) {
 // IncrScore increase score
 func (s *userService) IncrScore(userId int64, score int, sourceType, sourceId, description string) error {
 	if score <= 0 {
-		return errors.New(locale.T("user.points.adjustment_must_be_positive"))
+		return errors.New(locale.T("points.adjustment_must_be_positive"))
 	}
 	return s.addScore(userId, score, sourceType, sourceId, description)
 }
@@ -559,7 +574,7 @@ func (s *userService) IncrScore(userId int64, score int, sourceType, sourceId, d
 // DecrScore decrease score
 func (s *userService) DecrScore(userId int64, score int, sourceType, sourceId, description string) error {
 	if score <= 0 {
-		return errors.New(locale.T("user.points.adjustment_must_be_positive"))
+		return errors.New(locale.T("points.adjustment_must_be_positive"))
 	}
 	return s.addScore(userId, -score, sourceType, sourceId, description)
 }

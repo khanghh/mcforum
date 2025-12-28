@@ -38,7 +38,7 @@ func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
 		return errs.NewBadRequestError(locale.T("topic.title_required"))
 	}
 
-	if strs.RuneLen(args.Title) > constants.ForumTitleMaxLength {
+	if strs.RuneLen(args.Title) > constants.TopicTitleMaxLength {
 		return errs.NewBadRequestError(locale.T("topic.title_max_length_exceeded"))
 	}
 

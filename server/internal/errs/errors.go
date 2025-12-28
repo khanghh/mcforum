@@ -29,15 +29,18 @@ func NewBadRequestError(msg string) error {
 }
 
 var (
-	ErrForumNotFound   = ResponseError{iris.StatusNotFound, locale.T("forum.not_found")}
-	ErrTopicNotFound   = ResponseError{iris.StatusNotFound, locale.T("topic.not_found")}
-	ErrCommentNotFound = ResponseError{iris.StatusNotFound, locale.T("comment.not_found")}
-	ErrCommentDeleted  = ResponseError{iris.StatusNotFound, locale.T("comment.deleted")}
-	ErrUserNotFound    = ResponseError{iris.StatusNotFound, locale.T("user.not_found")}
-	ErrForbidden       = ResponseError{iris.StatusForbidden, locale.T("errors.permission_denied")}
-	ErrUnauthorized    = ResponseError{iris.StatusUnauthorized, locale.T("errors.unauthorized")}
-	ErrBadRequest      = ResponseError{iris.StatusBadRequest, locale.T("errors.invalid_request")}
-	ErrInternalServer  = ResponseError{iris.StatusInternalServerError, locale.T("errors.internal_server_error")}
+	ErrForbidden      = ResponseError{iris.StatusForbidden, "Forbidden"}
+	ErrUnauthorized   = ResponseError{iris.StatusUnauthorized, "Unauthorized"}
+	ErrBadRequest     = ResponseError{iris.StatusBadRequest, "Bad Request"}
+	ErrInternalServer = ResponseError{iris.StatusInternalServerError, "Internal Server Error"}
+)
+
+var (
+	ErrForumNotFound   = ResponseError{iris.StatusNotFound, locale.T("errors.forum_not_found")}
+	ErrTopicNotFound   = ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_found")}
+	ErrCommentNotFound = ResponseError{iris.StatusNotFound, locale.T("errors.comment_not_found")}
+	ErrCommentDeleted  = ResponseError{iris.StatusNotFound, locale.T("errors.comment_deleted")}
+	ErrUserNotFound    = ResponseError{iris.StatusNotFound, locale.T("errors.user_not_found")}
 )
 
 func IsDatabaseError(err error) bool {
