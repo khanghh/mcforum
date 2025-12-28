@@ -21,7 +21,7 @@ type userRepository struct {
 func (r *userRepository) Get(db *gorm.DB, id int64) *model.User {
 	ret := &model.User{}
 	err := db.Model(&model.User{}).
-		Preload("Roles").
+		Preload("Role").
 		First(ret, "id = ?", id).
 		Error
 	if err != nil {
@@ -33,7 +33,7 @@ func (r *userRepository) Get(db *gorm.DB, id int64) *model.User {
 func (r *userRepository) Take(db *gorm.DB, where ...interface{}) *model.User {
 	ret := &model.User{}
 	err := db.Model(&model.User{}).
-		Preload("Roles").
+		Preload("Role").
 		Take(ret, where...).
 		Error
 	if err != nil {
@@ -43,13 +43,13 @@ func (r *userRepository) Take(db *gorm.DB, where ...interface{}) *model.User {
 }
 
 func (r *userRepository) Find(db *gorm.DB, cnd *sqls.Cnd) (list []model.User) {
-	cnd.Find(db.Model(&model.User{}).Preload("Roles"), &list)
+	cnd.Find(db.Model(&model.User{}).Preload("Role"), &list)
 	return
 }
 
 func (r *userRepository) FindOne(db *gorm.DB, cnd *sqls.Cnd) *model.User {
 	ret := &model.User{}
-	if err := cnd.FindOne(db.Model(&model.User{}).Preload("Roles"), &ret); err != nil {
+	if err := cnd.FindOne(db.Model(&model.User{}).Preload("Role"), &ret); err != nil {
 		return nil
 	}
 	return ret
@@ -60,7 +60,7 @@ func (r *userRepository) FindPageByParams(db *gorm.DB, params *params.QueryParam
 }
 
 func (r *userRepository) FindPageByCnd(db *gorm.DB, cnd *sqls.Cnd) (list []model.User, paging *sqls.Paging) {
-	cnd.Find(db.Model(&model.User{}).Preload("Roles"), &list)
+	cnd.Find(db.Model(&model.User{}).Preload("Role"), &list)
 	count := cnd.Count(db, &model.User{})
 
 	paging = &sqls.Paging{

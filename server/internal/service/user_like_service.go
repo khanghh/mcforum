@@ -129,8 +129,10 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 		if err := s.like(tx, userId, constants.EntityTopic, topicId); err != nil {
 			return err
 		}
+
 		// update like count
-		return tx.Exec("update t_topic set like_count = like_count + 1 where id = ?", topicId).Error
+		return tx.Model(model.Topic{}).Where("id = ?", topicId).
+			UpdateColumn("like_count", gorm.Expr("like_count + 1")).Error
 	}); err != nil {
 		return err
 	}

@@ -9,12 +9,12 @@ import (
 var strategies []Strategy
 
 func init() {
-	strategies = append(strategies, &EmailVerifyStrategy{})
-	strategies = append(strategies, &CaptchaStrategy{})
+	// strategies = append(strategies, &EmailVerifyStrategy{})
+	// strategies = append(strategies, &CaptchaStrategy{})
 	// strategies = append(strategies, &PostFrequencyStrategy{})
 }
 
-func CheckTopic(user *model.User, form payload.CreateTopicForm) error {
+func CheckTopicForm(user *model.User, form payload.CreateTopicForm) error {
 	if len(strategies) == 0 {
 		return nil
 	}

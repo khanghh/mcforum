@@ -72,8 +72,8 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 		avatar      = params.FormValue(c.Ctx, "avatar")
 		gender      = params.FormValue(c.Ctx, "gender")
 		description = params.FormValue(c.Ctx, "description")
-		roleIds     = params.FormValueInt64Array(c.Ctx, "roleIds")
-		isActive    = params.FormValueBoolDefault(c.Ctx, "is_active", false)
+		// roleIds     = params.FormValueInt64Array(c.Ctx, "roleIds")
+		isActive = params.FormValueBoolDefault(c.Ctx, "is_active", false)
 	)
 
 	user := service.UserService.Get(id)
@@ -93,9 +93,9 @@ func (c *UserController) PostUpdate() *web.JsonResult {
 	if err := service.UserService.Update(user); err != nil {
 		return web.JsonError(err)
 	}
-	if err := service.UserRoleService.UpdateUserRoles(user.ID, roleIds); err != nil {
-		return web.JsonError(err)
-	}
+	// if err := service.UserRoleService.UpdateUserRoles(user.ID, roleIds); err != nil {
+	// 	return web.JsonError(err)
+	// }
 	user = service.UserService.Get(user.ID)
 	return web.JsonData(c.buildUserItem(user, true))
 }
@@ -129,13 +129,13 @@ func (c *UserController) PostForbidden() *web.JsonResult {
 
 func (c *UserController) buildUserItem(user *model.User, buildRoleIds bool) map[string]interface{} {
 	b := web.NewRspBuilder(user).
-		Put("roles", user.GetRoles()).
+		Put("role", user.Role.Name).
 		Put("username", user.Username.String).
 		Put("email", user.Email.String).
 		Put("score", user.Score).
 		Put("forbidden", user.IsForbidden())
 	if buildRoleIds {
-		b.Put("roleIds", service.UserRoleService.GetUserRoleIds(user.ID))
+		b.Put("roleIds", []int64{user.RoleID})
 	}
 	return b.Build()
 }

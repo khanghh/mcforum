@@ -42,23 +42,30 @@ func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error)
 // POST /topics -> create topic
 func (c *TopicsController) Post() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
 	}
 
 	form := payload.GetCreateTopicForm(c.Ctx)
-	if err := spam.CheckTopic(user, form); err != nil {
+	if err := spam.CheckTopicForm(user, form); err != nil {
 		return web.JsonError(err)
+	}
+	if form.ForumID == 0 {
+		return web.JsonErrorMsg(locale.T("topic.forum_required"))
 	}
 
 	topic, err := service.TopicService.Publish(service.PublishTopicArgs{
-		UserId:      user.ID,
+		UserID:      user.ID,
 		Title:       form.Title,
-		ForumId:     form.ForumId,
+		ForumID:     form.ForumID,
 		Content:     form.Content,
-		HideContent: form.HideContent,
+		HideContent: form.HiddenContent,
 		Tags:        form.Tags,
 		Images:      form.Images,
+		IsPending:   !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin),
 		UserAgent:   utils.GetUserAgent(c.Ctx.Request()),
 		IPAddress:   utils.GetRequestIP(c.Ctx.Request()),
 	})

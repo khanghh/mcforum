@@ -6,12 +6,18 @@ import (
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/search"
 	"bbs-go/internal/service"
+	"bbs-go/pkg/bbsurls"
+	"bbs-go/pkg/msg"
 	"log/slog"
 	"reflect"
 )
 
 func init() {
 	event.RegHandler(reflect.TypeOf(event.TopicCreatedEvent{}), handleTopicCreatedEvent)
+}
+
+func notifiAdminReviewTopic(topic *model.Topic) {
+	// admins := service.UserService.GetAdminUsers()
 }
 
 func handleTopicCreatedEvent(i interface{}) {
@@ -30,6 +36,19 @@ func handleTopicCreatedEvent(i interface{}) {
 			CreateTime: e.Topic.CreateTime,
 		}); err != nil {
 			slog.Error(err.Error(), slog.Any("err", err))
+			return
+		}
+		if e.Topic.Status == constants.StatusActive {
+			service.MessageService.SendMsg(service.SendMessageArgs{
+				FromId:    e.Topic.UserID,
+				ToId:      fansId,
+				Type:      msg.TypeFollowingUserCreateTopic,
+				Title:     "message.title.posted_a_topic",
+				DetailUrl: bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
+				ExtraData: &msg.TopicRecommendExtraData{
+					TopicId: e.Topic.ID,
+				},
+			})
 		}
 	})
 }

@@ -77,11 +77,8 @@ func (s *menuService) GetNextSortNo(parentId int64) int {
 }
 
 func (s *menuService) GetUserMenuIds(userId int64) []int64 {
-	roleIds := UserRoleService.GetUserRoleIds(userId)
-	if len(roleIds) == 0 {
-		return nil
-	}
-	return RoleMenuService.GetMenuIdsByRoles(roleIds)
+	user := UserService.Get(userId)
+	return RoleMenuService.GetMenuIdsByRoles([]int64{user.RoleID})
 }
 
 func (s *menuService) GetUserMenus(user *model.User) (ret []model.Menu) {

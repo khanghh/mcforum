@@ -1,6 +1,7 @@
 package spam
 
 import (
+	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/model"
 	"bbs-go/internal/repository"
 	"errors"
@@ -17,7 +18,7 @@ func (PostFrequencyStrategy) Name() string {
 	return "PostFrequencyStrategy"
 }
 
-func (PostFrequencyStrategy) CheckTopic(user *model.User, topic model.CreateTopicForm) error {
+func (PostFrequencyStrategy) CheckTopic(user *model.User, topic payload.CreateTopicForm) error {
 	// Registered more than 24 hours
 	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {
 		return nil
@@ -46,7 +47,7 @@ func (PostFrequencyStrategy) CheckTopic(user *model.User, topic model.CreateTopi
 	return nil
 }
 
-func (s PostFrequencyStrategy) CheckComment(user *model.User, form model.CreateCommentForm) error {
+func (s PostFrequencyStrategy) CheckComment(user *model.User, form payload.CreateCommentForm) error {
 	// Registered more than 24 hours
 	if user.CreateTime < dates.Timestamp(time.Now().Add(-time.Hour*24)) {
 		return nil

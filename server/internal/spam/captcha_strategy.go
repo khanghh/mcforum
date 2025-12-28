@@ -2,11 +2,7 @@ package spam
 
 import (
 	"bbs-go/internal/controller/payload"
-	"bbs-go/internal/errs"
 	"bbs-go/internal/model"
-	"bbs-go/internal/service"
-
-	"github.com/dchest/captcha"
 )
 
 type CaptchaStrategy struct{}
@@ -16,9 +12,9 @@ func (CaptchaStrategy) Name() string {
 }
 
 func (CaptchaStrategy) CheckTopic(user *model.User, form payload.CreateTopicForm) error {
-	if service.SysConfigService.IsEnabledTopicCaptcha() && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
-		return errs.CaptchaError
-	}
+	// if service.SysConfigService.IsEnabledTopicCaptcha() && !captcha.VerifyString(form.CaptchaId, form.CaptchaCode) {
+	// 	return errs.CaptchaError
+	// }
 	return nil
 }
 

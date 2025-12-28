@@ -45,7 +45,7 @@ var adminUser = model.User{
 	EmailVerified: true,
 	Nickname:      "admin",
 	Password:      passwd.EncodePassword("123456"),
-	Roles:         []model.Role{{Model: model.Model{ID: 1}}},
+	RoleID:        1,
 	IsActive:      true,
 }
 
@@ -447,7 +447,7 @@ func TestInitializeDatabase(t *testing.T) {
 
 	// TestCreateRoles(t)
 	// TestCreateUser(t)
-	TestCreateUserRole(t)
+	// TestCreateUserRole(t)
 	// TestCreateForums(t)
 	// TestCreateSysConfigs(t)
 	// TestCreateMenu(t)
@@ -463,7 +463,7 @@ func TestAddUser(t *testing.T) {
 		Nickname:      "",
 		Password:      passwd.EncodePassword("123456"),
 		IsActive:      true,
-		Roles:         []model.Role{{Model: model.Model{ID: 1}}},
+		RoleID:        1,
 		CreateTime:    dates.NowTimestamp(),
 	}
 	err := repository.UserRepository.Create(db, &user)
@@ -475,8 +475,22 @@ func TestAddUser(t *testing.T) {
 
 func TestGetUser(t *testing.T) {
 	var user model.User
-	db.Preload("Roles").Where("username = ?", "khang").First(&user)
-	fmt.Println(user.Roles)
+	db.Preload("Role").Where("username = ?", "khang").First(&user)
+	fmt.Println(user.Role)
+}
+
+func TestGetUserByRole(t *testing.T) {
+	var users []model.User
+	// adminRole
+	// var roles []model.Role
+	// roleNames := []string{"admin", "owner"}
+	err := db.Model(&model.User{}).Preload("Roles", "code IN (?)", "owner").
+		Where("username = ?", "asaa").
+		Find(&users).
+		Error
+	if err != nil {
+		panic(err)
+	}
 }
 
 func TestSetForumMenu(t *testing.T) {

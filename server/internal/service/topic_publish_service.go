@@ -21,13 +21,14 @@ import (
 )
 
 type PublishTopicArgs struct {
-	UserId      int64
+	UserID      int64
 	Title       string
-	ForumId     int64
+	ForumID     int64
 	Content     string
 	HideContent string
 	Tags        []string
 	Images      []string
+	IsPending   bool
 	UserAgent   string
 	IPAddress   string
 }
@@ -45,13 +46,13 @@ func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
 		return errs.NewBadRequestError(locale.T("topic.content_required"))
 	}
 
-	if args.ForumId <= 0 {
-		args.ForumId = SysConfigService.GetDefaultForumId()
+	if args.ForumID <= 0 {
+		args.ForumID = SysConfigService.GetDefaultForumId()
 	}
 
-	forum := repository.ForumRepository.Get(sqls.DB(), args.ForumId)
+	forum := repository.ForumRepository.Get(sqls.DB(), args.ForumID)
 	if forum == nil || forum.Status != constants.StatusActive {
-		return errs.NewBadRequestError(locale.T(" forum.not_found"))
+		return errs.NewBadRequestError(locale.T("topic.forum_not_exists"))
 	}
 
 	return nil
@@ -66,8 +67,8 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 	now := dates.NowTimestamp()
 	topic := &model.Topic{
 		Type:            constants.TopicTypeTopic,
-		UserID:          args.UserId,
-		ForumId:         args.ForumId,
+		UserID:          args.UserID,
+		ForumId:         args.ForumID,
 		Title:           args.Title,
 		Slug:            urls.GenerateSlug(args.Title),
 		Content:         args.Content,
@@ -84,7 +85,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		topic.ImageList = strings.Join(args.Images, ",")
 	}
 
-	if s.isNeedReview(&args) {
+	if args.IsPending || s.isNeedReview(&args) {
 		topic.Status = constants.StatusReview
 	}
 
@@ -92,10 +93,10 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		if err := repository.TopicRepository.Create(tx, topic); err != nil {
 			return err
 		}
-		if err := repository.UserRepository.IncreaseTopicCount(tx, args.UserId); err != nil {
+		if err := repository.UserRepository.IncreaseTopicCount(tx, args.UserID); err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(args.UserId)
+		cache.UserCache.Invalidate(args.UserID)
 		return repository.TopicTagRepository.AddTopicTags(tx, topic.ID, args.Tags)
 	})
 	if err != nil {

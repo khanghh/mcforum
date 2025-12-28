@@ -10,14 +10,15 @@ type Type int
 
 // Message type
 const (
-	TypeTopicComment   Type = 0
-	TypeCommentReply   Type = 1
-	TypeTopicLike      Type = 2
-	TypeTopicFavorite  Type = 3
-	TypeTopicRecommend Type = 4
-	TypeTopicDelete    Type = 5
-	TypeUserFollow     Type = 6
-	TypeCommentLike    Type = 7
+	TypeTopicComment             Type = 0
+	TypeCommentReply             Type = 1
+	TypeTopicLike                Type = 2
+	TypeTopicFavorite            Type = 3
+	TypeTopicRecommend           Type = 4
+	TypeTopicDelete              Type = 5
+	TypeUserFollow               Type = 6
+	TypeCommentLike              Type = 7
+	TypeFollowingUserCreateTopic Type = 8
 )
 
 type TopicLikeExtraData struct {

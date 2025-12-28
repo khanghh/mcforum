@@ -511,9 +511,6 @@ func (s *userService) VerifyEmail(token string) (string, error) {
 
 // CheckPostStatus checks user status when posting
 func (s *userService) CheckPostStatus(user *model.User) error {
-	if user == nil {
-		return errs.ErrUnauthorized
-	}
 	if !user.IsActive || user.IsForbidden() {
 		return errs.ErrForbidden
 	}
@@ -597,4 +594,14 @@ func (s *userService) addScore(userId int64, score int, sourceType, sourceId, de
 		cache.UserCache.Invalidate(userId)
 	}
 	return err
+}
+
+func (s *userService) GetUsersByRole(roles ...string) []model.User {
+	var users []model.User
+	err := sqls.DB().Model(&model.Role{}).Find(&users).Where("role IN ?", roles).Error
+	if err != nil {
+		slog.Error(err.Error(), slog.Any("err", err))
+		return nil
+	}
+	return users
 }

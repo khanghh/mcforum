@@ -74,29 +74,30 @@ type UserRole struct {
 
 type User struct {
 	Model
-	Type            int            `gorm:"not null;default:0" json:"type" form:"type"`                           // User type (0: user, 1: staff)
-	Username        sql.NullString `gorm:"size:32;unique;" json:"username" form:"username"`                      // Username
-	Email           sql.NullString `gorm:"size:128;unique;" json:"email" form:"email"`                           // Email
-	EmailVerified   bool           `gorm:"not null;default:false" json:"emailVerified" form:"emailVerified"`     // Email verified
-	Nickname        string         `gorm:"size:16;" json:"nickname" form:"nickname"`                             // Nickname
-	Avatar          string         `gorm:"type:text" json:"avatar" form:"avatar"`                                // Avatar
-	Gender          string         `gorm:"size:16;default:''" json:"gender" form:"gender"`                       // Gender
-	Birthday        *time.Time     `json:"birthday" form:"birthday"`                                             // Birthday
-	BackgroundImage string         `gorm:"type:text" json:"backgroundImage" form:"backgroundImage"`              // Background image
-	Password        string         `gorm:"size:512" json:"password" form:"password"`                             // Password
-	Bio             string         `gorm:"type:varchar(255)" json:"bio" form:"bio"`                              // Bio
-	StatusMessage   string         `gorm:"type:varchar(128)" json:"statusMessage" form:"statusMessage"`          // Status message
-	Location        string         `gorm:"size:128" json:"location" form:"location"`                             // Location
-	LockedProfile   bool           `gorm:"not null;default:false" json:"lockedProfile" form:"lockedProfile"`     // Locked profile
-	ShowLocation    bool           `gorm:"not null;default:true" json:"showLocation" form:"showLocation"`        // Show location
-	EmailNotify     bool           `gorm:"not null;default:true" json:"emailNotify" form:"emailNotify"`          // Email notifications
-	Score           int            `gorm:"type:int(11);not null;index:idx_user_score" json:"score" form:"score"` // Score
-	IsActive        bool           `gorm:"not null;default:true" json:"isActive" form:"isActive"`                // Status
-	TopicCount      int            `gorm:"type:int(11);not null" json:"topicCount" form:"topicCount"`            // Topic count
-	CommentCount    int            `gorm:"type:int(11);not null" json:"commentCount" form:"commentCount"`        // Comment count
-	FollowCount     int            `gorm:"type:int(11);not null" json:"followCount" form:"followCount"`          // Follow count
-	FansCount       int            `gorm:"type:int(11);not null" json:"fansCount" form:"fansCount"`              // Fans count
-	Roles           []Role         `gorm:"many2many:user_roles;"`
+	Type            int            `gorm:"not null;default:0" json:"type" form:"type"`                            // User type (0: user, 1: staff)
+	Username        sql.NullString `gorm:"size:32;unique;" json:"username" form:"username"`                       // Username
+	Email           sql.NullString `gorm:"size:128;unique;" json:"email" form:"email"`                            // Email
+	EmailVerified   bool           `gorm:"not null;default:false" json:"emailVerified" form:"emailVerified"`      // Email verified
+	Nickname        string         `gorm:"size:16;" json:"nickname" form:"nickname"`                              // Nickname
+	Avatar          string         `gorm:"type:text" json:"avatar" form:"avatar"`                                 // Avatar
+	Gender          string         `gorm:"size:16;default:''" json:"gender" form:"gender"`                        // Gender
+	Birthday        *time.Time     `json:"birthday" form:"birthday"`                                              // Birthday
+	BackgroundImage string         `gorm:"type:text" json:"backgroundImage" form:"backgroundImage"`               // Background image
+	Password        string         `gorm:"size:512" json:"password" form:"password"`                              // Password
+	Bio             string         `gorm:"type:varchar(255)" json:"bio" form:"bio"`                               // Bio
+	StatusMessage   string         `gorm:"type:varchar(128)" json:"statusMessage" form:"statusMessage"`           // Status message
+	Location        string         `gorm:"size:128" json:"location" form:"location"`                              // Location
+	LockedProfile   bool           `gorm:"not null;default:false" json:"lockedProfile" form:"lockedProfile"`      // Locked profile
+	ShowLocation    bool           `gorm:"not null;default:true" json:"showLocation" form:"showLocation"`         // Show location
+	EmailNotify     bool           `gorm:"not null;default:true" json:"emailNotify" form:"emailNotify"`           // Email notifications
+	Score           int            `gorm:"type:int(11);not null;index:idx_user_score" json:"score" form:"score"`  // Score
+	IsActive        bool           `gorm:"not null;default:true" json:"isActive" form:"isActive"`                 // Status
+	TopicCount      int            `gorm:"type:int(11);not null" json:"topicCount" form:"topicCount"`             // Topic count
+	CommentCount    int            `gorm:"type:int(11);not null" json:"commentCount" form:"commentCount"`         // Comment count
+	FollowCount     int            `gorm:"type:int(11);not null" json:"followCount" form:"followCount"`           // Follow count
+	FansCount       int            `gorm:"type:int(11);not null" json:"fansCount" form:"fansCount"`               // Fans count
+	RoleID          int64          `gorm:"not null;default:0;index:idx_user_role_id" json:"roleId" form:"roleId"` // Role ID
+	Role            *Role          `gorm:"foreignKey:RoleID;constraint:constraint:OnDelete:SET 0;"`
 
 	ForbiddenEndTime int64 `gorm:"not null;default:0" json:"forbiddenEndTime" form:"forbiddenEndTime"` // Forbidden end time
 	CreateTime       int64 `json:"createTime" form:"createTime"`                                       // Create time
@@ -119,10 +120,8 @@ func (u *User) IsForbidden() bool {
 
 // HasRole whether has specified role
 func (u *User) HasRole(roleName string) bool {
-	for _, role := range u.Roles {
-		if role.Name == roleName {
-			return true
-		}
+	if u.Role != nil && u.Role.Name == roleName {
+		return true
 	}
 	return false
 }
@@ -143,18 +142,6 @@ func (u *User) HasAnyRole(roleNames ...string) bool {
 // IsOwnerOrAdmin whether owner or admin
 func (u *User) IsOwnerOrAdmin() bool {
 	return u.HasAnyRole(constants.RoleOwner, constants.RoleAdmin)
-}
-
-// GetRoles get roles
-func (u *User) GetRoles() []string {
-	if len(u.Roles) == 0 {
-		return nil
-	}
-	roleNames := make([]string, 0, len(u.Roles))
-	for _, role := range u.Roles {
-		roleNames = append(roleNames, role.Name)
-	}
-	return roleNames
 }
 
 // InObservationPeriod whether in observation period
