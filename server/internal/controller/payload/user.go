@@ -24,9 +24,9 @@ type UserInfo struct {
 	SmallAvatar   string `json:"smallAvatar"`             // Small avatar URL
 	Bio           string `json:"bio,omitempty"`           // User bio
 	StatusMessage string `json:"statusMessage,omitempty"` // Status message
-	CreateTime    int64  `json:"createTime"`              // Account creation timestamp
+	JoinTime      int64  `json:"joinTime"`                // Account creation timestamp
 
-	Forbidden   bool `json:"forbidden,omitempty"`   // Whether the user is banned
+	IsForbidden bool `json:"isForbidden,omitempty"` // Whether the user is banned
 	IsFollowing bool `json:"isFollowing,omitempty"` // Whether the current user is following this user
 }
 
@@ -37,8 +37,8 @@ type UserDetail struct {
 	Birthday             *time.Time `json:"birthday,omitempty"`             // User birthday
 	TopicCount           int        `json:"topicCount"`                     // Number of topics created
 	CommentCount         int        `json:"commentCount"`                   // Number of comments made
-	FansCount            int        `json:"fansCount"`                      // Number of fans
-	FollowCount          int        `json:"followCount"`                    // Number of users followed
+	FollowersCount       int        `json:"followersCount"`                 // Number of fans
+	FollowingCount       int        `json:"followingCount"`                 // Number of users followed
 	Score                int        `json:"score"`                          // User score
 	BackgroundImage      string     `json:"backgroundImage,omitempty"`      // Background image URL
 	SmallBackgroundImage string     `json:"smallBackgroundImage,omitempty"` // Small background image URL
@@ -51,7 +51,6 @@ type UserProfile struct {
 	PasswordSet   bool         `json:"passwordSet"`        // Whether password is set
 	Email         string       `json:"email"`              // User email
 	EmailVerified bool         `json:"emailVerified"`      // Whether email is verified
-	JoinTime      int64        `json:"joinTime"`           // Account join timestamp
 	IsActive      bool         `json:"isActive"`           // Whether account is active
 	Settings      UserSettings `json:"settings,omitempty"` // User settings
 }
@@ -91,8 +90,8 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		Role:          roleName,
 		Bio:           user.Bio,
 		StatusMessage: user.StatusMessage,
-		CreateTime:    user.CreateTime,
-		Forbidden:     user.IsForbidden(),
+		JoinTime:      user.CreateTime,
+		IsForbidden:   user.IsForbidden(),
 	}
 	if strs.IsNotBlank(user.Avatar) {
 		ret.Avatar = user.Avatar
@@ -105,7 +104,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 	if !user.IsActive {
 		ret.Nickname = "Unknown"
 		ret.Bio = ""
-		ret.Forbidden = true
+		ret.IsForbidden = true
 	}
 	return ret
 }
@@ -120,8 +119,8 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		Birthday:             user.Birthday,
 		TopicCount:           user.TopicCount,
 		CommentCount:         user.CommentCount,
-		FansCount:            user.FansCount,
-		FollowCount:          user.FollowCount,
+		FollowersCount:       user.FollowersCount,
+		FollowingCount:       user.FollowingCount,
 		Score:                user.Score,
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
@@ -139,7 +138,6 @@ func BuildUserProfile(user *model.User) *UserProfile {
 		Email:         user.Email.String,
 		EmailVerified: user.EmailVerified,
 		PasswordSet:   len(user.Password) > 0,
-		JoinTime:      user.CreateTime,
 		IsActive:      user.IsActive,
 		Settings: UserSettings{
 			LockedProfile: user.LockedProfile,

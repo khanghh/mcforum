@@ -93,14 +93,14 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 		}
 
 		if err := repository.UserRepository.Updates(tx, userId, map[string]interface{}{
-			"follow_count": gorm.Expr("follow_count + 1"),
+			"following_count": gorm.Expr("following_count + 1"),
 		}); err != nil {
 			return err
 		}
 		cache.UserCache.Invalidate(userId)
 
 		if err := repository.UserRepository.Updates(tx, otherId, map[string]interface{}{
-			"fans_count": gorm.Expr("fans_count + 1"),
+			"followers_count": gorm.Expr("followers_count+ 1"),
 		}); err != nil {
 			return err
 		}
@@ -140,15 +140,15 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 				constants.FollowStatusFollow, otherId, userId)
 		}
 
-		if err := tx.Model(&model.User{}).Where("id = ? and follow_count > 0", userId).Updates(map[string]interface{}{
-			"follow_count": gorm.Expr("follow_count - 1"),
+		if err := tx.Model(&model.User{}).Where("id = ? and following_count > 0", userId).Updates(map[string]interface{}{
+			"following_count": gorm.Expr("following_count - 1"),
 		}).Error; err != nil {
 			return err
 		}
 		cache.UserCache.Invalidate(userId)
 
-		if err := tx.Model(&model.User{}).Where("id = ? and fans_count > 0", otherId).Updates(map[string]interface{}{
-			"fans_count": gorm.Expr("fans_count - 1"),
+		if err := tx.Model(&model.User{}).Where("id = ? and followers_count > 0", otherId).Updates(map[string]interface{}{
+			"followers_count": gorm.Expr("followers_count - 1"),
 		}).Error; err != nil {
 			return err
 		}
