@@ -21,9 +21,7 @@ export class CursorResult<T extends any[]> {
       reqParams.cursor = cursor
     }
 
-    const res = await useHttpGet(this.url, {
-      params: reqParams,
-    })
+    const res = await useHttpGet(this.url, { params: reqParams, })
 
     const payload = res.data ? res.data : res
     const items: T = payload.items
@@ -65,6 +63,25 @@ export type UpdateProfilePayload = {
   lockedProfile?: boolean
   showLocation?: boolean
   emailNotify?: boolean
+}
+
+export type CreateTopicPayload = {
+  forumId: number
+  title: string
+  content: string
+  tags?: string[]
+  imageList?: string[]
+  hideContent?: string
+  poll?: TopicPoll
+}
+
+export type TopicPoll = {
+  question: string
+  options: string[]
+  durationHours: number
+  multiSelect: boolean
+  publicResults: boolean
+  allowVoteChange: boolean
 }
 
 export enum FeedType {
@@ -155,6 +172,10 @@ export const useApi = () => {
     return useHttpGet(`/api/topics/${topicSlug}`) as Promise<Topic>
   }
 
+  const createTopic = (payload: CreateTopicPayload): Promise<Topic> => {
+    return useHttpPost(`/api/topics`, { body: payload }) as Promise<Topic>
+  }
+
   const getTopicsByTag = (tag: string): CursorResult<Topic[]> => {
     return new CursorResult<Topic[]>(`/api/topics?tag=${encodeURIComponent(tag)}`)
   }
@@ -229,6 +250,7 @@ export const useApi = () => {
     getMyFollowing,
     getMyTopics,
     setTopicFavorite,
+    getMessages,
 
     // other user api endpoints
     getUser,
@@ -245,6 +267,7 @@ export const useApi = () => {
 
     // topics api endpoints
     getTopic,
+    createTopic,
     getTopicsByTag,
     deleteTopic,
     setTopicFlags,

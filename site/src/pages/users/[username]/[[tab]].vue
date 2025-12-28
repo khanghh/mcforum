@@ -46,7 +46,7 @@ const user: UserProfile = await api.getUser(username).catch(() => {
   throw createError({ statusCode: 404, statusMessage: 'User not found' })
 })
 
-const allowedTabs = ['topics', 'activity', 'followers', 'following' ]
+const allowedTabs = ['topics', 'activity', 'followers', 'following']
 const tabParam: string = route.params.tab as string
 if (tabParam && !allowedTabs.includes(tabParam)) {
   throw createError({ statusCode: 404, statusMessage: 'Tab not found' })
@@ -55,7 +55,7 @@ if (tabParam && !allowedTabs.includes(tabParam)) {
 const activeTab = computed(() => tabParam || 'topics')
 
 useHead({
-  title: useSiteTitle(i18n.t('page.profile', { nickname: user.nickname })),
+  title: useSiteTitle(i18n.t('page.profile', { nickname: user.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

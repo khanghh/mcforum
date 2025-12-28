@@ -30,7 +30,7 @@
                 <span class="favorite-meta-item">
                   <nuxt-link :to="'/users/' + item.user.id">
                     {{
-                      item.user.nickname
+                      item.user.username
                     }}
                   </nuxt-link>
                 </span>

@@ -32,7 +32,7 @@
           <div class="flex items-center gap-3">
             <div class="relative group">
               <Avatar :src="topic.user.avatar || '/images/default-avatar.png'"
-                :username="topic.user.nickname"
+                :username="topic.user.username"
                 class="w-12 h-12 rounded border-2 border-purple-500/50 flex-shrink-0 object-cover" />
             </div>
             <div>
@@ -40,7 +40,7 @@
                 <nuxt-link :to="`/users/${topic.user.username}`"
                   class="font-bold text-purple-300 gaming-title text-lg hover:text-purple-400 transition-colors"
                   itemprop="author">
-                  {{ topic.user.nickname }}
+                  {{ topic.user.username }}
                 </nuxt-link>
                 <span v-if="topic.user.type === 1 || topic.user.id === 1"
                   class="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-bold rounded">
@@ -68,27 +68,10 @@
           <TopicManageMenu v-model="topic" class="relative z-20" @onSwitchEditMode="onSwitchEditMode" />
         </div>
 
-        <h1 class="text-3xl font-bold mb-6 text-white" itemprop="headline">
-          <span v-if="topic.sticky" class="text-red-500 mr-2" title="Sticky Post">
-            <Icon name="TablerPin" />
-          </span>
-          <span v-if="topic.recommend" class="text-yellow-500 mr-2" title="Recommended">
-            <Icon name="TablerStar" />
-          </span>
-          {{ topic.title }}
-        </h1>
-
         <div class="prose prose-invert max-w-none mb-6 text-gray-300" itemprop="articleBody">
-          <topic-content v-model="topic" :editing="topic.editing" />
+          <TopicContent v-model="topic" :editing="topic.editing" />
         </div>
 
-        <!-- Tags -->
-        <div v-if="topic.tags && topic.tags.length" class="flex flex-wrap gap-2 mb-6">
-          <nuxt-link v-for="tag in topic.tags" :key="tag" :to="`/tags/${tag}`"
-            class="px-3 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors">
-            #{{ tag }}
-          </nuxt-link>
-        </div>
 
         <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
           <div class="flex items-center gap-4">
@@ -129,8 +112,8 @@
 
       <!-- Wrapped Comment Component -->
       <CommentSection
-        :topicSlug="topic.slug"
-        :commentCount="topic.commentCount"
+        :topic-slug="topic.slug"
+        :comment-count="topic.commentCount"
         @created="commentCreated" />
     </div>
   </div>
@@ -173,7 +156,6 @@ const isPending = computed(() => {
   return topic.value?.status === 2
 })
 
-
 function calculateLevel(score) {
   return Math.floor(Math.sqrt(score || 0)) + 1
 }
@@ -185,14 +167,12 @@ async function toggleLike() {
       await api.removeTopicReaction(slug)
       topic.value.liked = false
       topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
-    }
-    else {
+    } else {
       await api.addTopicReaction(slug, 'like')
       topic.value.liked = true
       topic.value.likeCount++
     }
-  }
-  catch (e) {
+  } catch (e) {
     throw e
   }
 }
@@ -202,13 +182,11 @@ async function toggleFavorite() {
     if (topic.value.favorited) {
       await api.setTopicFavorite(topic.value.id, false)
       topic.value.favorited = false
-    }
-    else {
+    } else {
       await api.setTopicFavorite(topic.value.id, true)
       topic.value.favorited = true
     }
-  }
-  catch (e) {
+  } catch (e) {
     const errMsg = e.data?.error?.message || e.message || e
     toast.error(i18n.t('message.opration_failed', { error: errMsg }))
   }
@@ -231,8 +209,7 @@ async function onSwitchEditMode() {
     }).catch((err) => {
       alert(err)
     })
-  }
-  else {
+  } else {
     useHttpGet(`/api/topics/${topic.value.slug}/edit`).then((tmp) => {
       topic.value.content = tmp.content
       topic.value.editing = true

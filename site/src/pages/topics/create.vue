@@ -1,228 +1,176 @@
 <template>
-  <section class="main">
-    <div class="container">
-      <article v-if="isNeedEmailVerify" class="message is-warning">
-        <div class="message-header">
-          <p>{{ $t('publish.verify_email_title') }}</p>
-        </div>
-        <div class="message-body">
-          <i18n-t keypath="publish.verify_email_action" tag="p">
-            <strong>
-              <nuxt-link
-                to="/users/me/account"
-                style="color: var(--text-link-color)">
-                {{ $t('navbar.profile') }} &gt; {{ $t('navbar.settings')
-                }}
-              </nuxt-link>
-            </strong>
-          </i18n-t>
-        </div>
-      </article>
-      <div v-else class="topic-create-form">
-        <div class="topic-form-title">
-          {{ postForm.type === 0 ? $t('page.create_topic') : $t('page.post_status') }}
-        </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <!-- Breadcrumb -->
+    <div class="mb-6 flex items-center text-sm text-gray-400">
+      <nuxt-link to="/" class="hover:text-purple-400 transition-colors">
+        Home
+      </nuxt-link>
+      <Icon name="TablerChevronRight" class="mx-2 text-xs" />
+      <nuxt-link to="/topics" class="hover:text-purple-400 transition-colors">
+        Forum
+      </nuxt-link>
+      <Icon name="TablerChevronRight" class="mx-2 text-xs" />
+      <span class="text-purple-300">Create New Topic</span>
+    </div>
 
-        <div class="field">
-          <div class="control">
-            <div
-              v-for="forum in forums"
-              :key="forum.id"
-              class="topic-tag"
-              :class="{ selected: postForm.forumId === forum.id }"
-              @click="postForm.forumId = forum.id">
-              <span>{{ forum.name }}</span>
-            </div>
-          </div>
+    <!-- Header with back button -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
+          <Icon name="Fa7SolidPen" class="text-purple-400 text-lg" />
         </div>
+        <h1
+          class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
+          Create New Topic
+        </h1>
+      </div>
+      <nuxt-link to="/topics"
+        class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50">
+        <Icon name="Fa7SolidArrowLeft" class="mr-2" />
+        <span>Back to Forum</span>
+      </nuxt-link>
+    </div>
 
-        <div v-if="postForm.type === 0" class="field">
-          <div class="control">
-            <input
-              v-model="postForm.title"
-              class="input topic-title"
-              type="text"
-              :placeholder="$t('form.placeholder.enter_post_content')" />
-          </div>
+    <!-- Tabs -->
+    <div class="mb-6">
+      <div class="flex gap-2 border-b border-gray-700/50">
+        <button :class="[
+          'px-6 py-3 font-medium transition-all duration-200',
+          activeTab === 'create'
+            ? 'text-purple-400 border-b-2 border-purple-500'
+            : 'text-gray-400 hover:text-gray-300',
+        ]" @click="activeTab = 'create'">
+          <Icon name="Fa7SolidEdit" class="mr-2" />
+          Create
+        </button>
+        <button :class="[
+          'px-6 py-3 font-medium transition-all duration-200',
+          activeTab === 'preview'
+            ? 'text-purple-400 border-b-2 border-purple-500'
+            : 'text-gray-400 hover:text-gray-300',
+        ]" @click="activeTab = 'preview'">
+          <Icon name="Fa7SolidEye" class="mr-2" />
+          Preview
+        </button>
+      </div>
+    </div>
+
+    <!-- Create Tab -->
+    <div v-show="activeTab === 'create'"
+      class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
+      <!-- Subtle gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
+
+      <div class="relative z-10">
+        <TopicForm
+          :postForm="postForm"
+          :publishing="publishing"
+          :selectedForum="selectedForum" />
+      </div>
+    </div>
+
+    <!-- Preview Tab -->
+    <div v-show="activeTab === 'preview'"
+      class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
+      <!-- Subtle gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
+
+      <div class="relative z-10">
+        <TopicPreview
+          :postForm="postForm"
+          :selectedForum="selectedForum" />
+      </div>
+    </div>
+
+    <!-- Posting Guidelines - Full Width -->
+    <div
+      class="full-width-section mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-lg border border-purple-500/30 backdrop-blur-sm">
+      <div class="flex items-start">
+        <div class="flex-shrink-0 mt-1">
+          <Icon name="Fa7SolidScroll" class="text-purple-400" />
         </div>
-
-        <div v-if="postForm.type === 0" class="field">
-          <div class="control">
-            <markdown-editor
-              v-model="postForm.content"
-              :placeholder="$t('form.placeholder.enter_post_content')" />
-          </div>
-        </div>
-
-        <div v-if="postForm.type === 0 && isEnableHideContent" class="field">
-          <div class="control">
-            <markdown-editor
-              v-model="postForm.hideContent"
-              height="200px"
-              :placeholder="$t('form.placeholder.enter_hidden_content')" />
-          </div>
-        </div>
-
-        <div v-if="postForm.type === 1" class="field">
-          <div class="control">
-            <simple-editor
-              ref="simpleEditorComponent"
-              v-model:content="postForm.content"
-              v-model:image-list="postForm.imageList" />
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="control">
-            <tag-input v-model="postForm.tags" />
-          </div>
-        </div>
-
-        <div v-if="postForm.captchaUrl" class="field is-horizontal">
-          <div class="field control has-icons-left">
-            <input
-              v-model="postForm.captchaCode"
-              class="input"
-              type="text"
-              :placeholder="$t('form.placeholder.enter_captcha')"
-              style="max-width: 150px; margin-right: 20px" />
-            <span class="icon is-small is-left">
-              <icon name="ShieldCheck" />
-            </span>
-          </div>
-          <div class="field">
-            <a @click="showCaptcha">
-              <img :src="postForm.captchaUrl" style="height: 40px" />
-            </a>
-          </div>
-        </div>
-
-        <div class="field is-grouped">
-          <div class="control">
-            <a
-              :class="{ 'is-loading': publishing }"
-              class="button is-success"
-              @click="createTopic">
-              {{ postForm.type === 1 ? $t('form.button.post_status')
-                : $t('form.button.post_topic') }}
-            </a>
-          </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-white">Posting Guidelines</h3>
+          <ul class="text-xs text-gray-300 mt-1 space-y-1">
+            <li>
+              <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
+              Do not post content that violates laws or forum rules
+            </li>
+            <li>
+              <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
+              Use proper Vietnamese with diacritics, avoid excessive abbreviations
+            </li>
+            <li>
+              <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
+              Use clear titles that accurately reflect the content
+            </li>
+            <li>
+              <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
+              Choose the correct category for your post
+            </li>
+            <li>
+              <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
+              No spam, unauthorized advertising, or sensitive content
+            </li>
+          </ul>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import TopicForm from '@/components/topics/TopicForm.vue'
+import TopicPreview from '@/components/topics/TopicPreview.vue'
+import type { Forum } from '@/types'
+import type { CreateTopicPayload } from '@/composables/api'
+
+import 'md-editor-v3/lib/style.css'
+
 const i18n = useI18n()
+
 definePageMeta({
   middleware: 'auth',
 })
 
-const userStore = useUserStore()
-const configStore = useConfigStore()
 const route = useRoute()
-const router = useRouter()
 
-const forumId = parseInt(route.query.forumId) || configStore.config.defaultForumId || 0
+const forumId = parseInt(route.query.forumId as string) || 0
 
-const postForm = ref({
-  type: Number.parseInt(route.query.type) || 0,
+const activeTab = ref('create')
+const selectedForum = ref<Forum>({
+  id: forumId,
+  name: '',
+  slug: '',
+})
+
+const postForm = ref<CreateTopicPayload>({
   forumId: forumId,
   title: '',
-  tags: [],
+  tags: [] as string[],
   content: '',
   hideContent: '',
-  imageList: [],
-
-  captchaId: '',
-  captchaUrl: '',
-  captchaCode: '',
+  imageList: [] as string[],
 })
+
 const publishing = ref(false)
-const simpleEditorComponent = ref(null)
 
-const isNeedEmailVerify = computed(() => {
-  return (
-    configStore.config.createTopicEmailVerified && !userStore.user.emailVerified
-  )
-})
-
-const isEnableHideContent = computed(() => {
-  return configStore.config.enableHideContent
-})
-
-const topicCaptchaEnabled = computed(() => {
-  return configStore.config.topicCaptcha
-})
-
-const { data: forums } = useAsyncData('forums', () =>
-  useHttpGet('/api/forums'),
-)
-
-init()
-
-watch(
-  () => route.query,
-  (newQuery, oldQuery) => {
-    // console.log(newQuery, oldQuery);
-
-    init()
+useHead({
+  title: useSiteTitle(i18n.t('page.create_topic')),
+  bodyAttrs: {
+    class: 'bg-gaming-bg',
   },
-  { deep: true },
-)
-
-onMounted(() => {
-  showCaptcha()
 })
-
-function init() {
-  postForm.value.type = Number.parseInt(route.query.type) || 0
-  useHead({
-    title: postForm.value.type === 0 ? i18n.t('page.create_topic') : i18n.t('page.post_status'),
-  })
-}
-
-async function createTopic() {
-  if (publishing.value) {
-    return
-  }
-
-  if (postForm.value.type === 1) {
-    if (simpleEditorComponent.value.loading) {
-      useMsgWarning('图片上传中,请稍后重试...')
-      return
-    }
-  }
-
-  publishing.value = true
-  try {
-    const topic = await useHttpPost('/api/topics', {
-      body: postForm.value,
-    })
-    router.push(`/topics/${topic.slug}`)
-  } catch (e) {
-    showCaptcha()
-    useMsgError(e.message || e)
-    publishing.value = false
-  }
-}
-
-async function showCaptcha() {
-  if (topicCaptchaEnabled.value) {
-    try {
-      const ret = await useHttpGet('/api/captcha/request', {
-        params: {
-          captchaId: postForm.value.captchaId || '',
-        },
-      })
-      postForm.value.captchaId = ret.captchaId
-      postForm.value.captchaUrl = ret.captchaUrl
-    } catch (e) {
-      useMsgError(e.message || e)
-    }
-  }
-}
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+/* Static gradient border - cannot be done with Tailwind */
+.gradient-border {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(145deg, rgba(45, 45, 70, 0.9), rgba(35, 35, 55, 0.95)) padding-box,
+    linear-gradient(45deg, #7c3aed, #8b5cf6, #a78bfa) border-box;
+  background-size: 300% 300%;
+}
+</style>

@@ -8,7 +8,6 @@
       </div>
 
       <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px]">
-
       </div>
     </div>
   </div>
@@ -26,14 +25,13 @@ definePageMeta({
 const i18n = useI18n()
 const route = useRoute()
 const api = useApi()
-const username = route.params.username as string
 
-const user: UserProfile = await api.getUser(username).catch(() => {
+const user: UserProfile = await api.getCurrentUser().catch(() => {
   throw createError({ statusCode: 404, statusMessage: 'User not found' })
 })
 
 useHead({
-  title: useSiteTitle(i18n.t('page.profile', { nickname: user.nickname })),
+  title: useSiteTitle(i18n.t('page.profile', { nickname: user.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

@@ -10,14 +10,14 @@
         <div class="flex items-center gap-2 flex-wrap mb-1">
           <nuxt-link :to="`/users/${reply.user.username}`"
             class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
-            {{ reply.user.nickname }}
+            {{ reply.user.username }}
           </nuxt-link>
 
           <template v-if="reply.quote">
             <span class="text-xs text-gray-500">{{ $t('feed.replied_to') }}</span>
             <nuxt-link :to="`/users/${reply.quote.user.username}`"
               class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
-              {{ reply.quote.user.nickname }}
+              {{ reply.quote.user.username }}
             </nuxt-link>
           </template>
 
@@ -67,7 +67,7 @@
             </span>
             <nuxt-link :to="`/users/${reply.user.username}`"
               class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
-              {{ reply.user.nickname }}
+              {{ reply.user.username }}
             </nuxt-link>
           </div>
           <CommentTextEditor v-model="myReply.input" :disabled="sending" :height="80" @submit="submitReply(reply)" />

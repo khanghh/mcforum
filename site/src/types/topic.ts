@@ -9,6 +9,12 @@ export enum TopicType {
   Tweet = 1,
 }
 
+export enum TopicStatus {
+  Active = 0,
+  Hidden = 1,
+  PendingReview = 2,
+}
+
 export interface Forum {
   id: number
   name: string

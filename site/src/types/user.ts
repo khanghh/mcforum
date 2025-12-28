@@ -33,7 +33,7 @@ export interface UserSettings {
 }
 
 export interface UserProfile extends UserDetail {
-  roles: string[]
+  role: string
   passwordSet: boolean
   email: string
   emailVerified: boolean

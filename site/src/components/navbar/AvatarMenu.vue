@@ -1,7 +1,7 @@
 <template>
   <div ref="dropdownRef" class="relative inline-block">
     <button class="flex items-center space-x-2 focus:outline-none" @click="toggleDropdown">
-      <Avatar :src="avatarSrc" :username="username"
+      <Avatar :src="avatarSrc" :username="user?.username"
         class="w-10 h-10 object-cover border border-purple-600 rounded-lg" />
     </button>
 
@@ -12,16 +12,16 @@
         <Avatar :src="avatarSrc" :username="username"
           class="w-10 h-10 object-cover border border-purple-600 rounded-lg" />
         <div class="min-w-0">
-          <div class="text-sm font-semibold text-gray-800 truncate">{{ userStore.user?.nickname }}</div>
-          <div v-if="userStore.user?.email" class="text-xs text-gray-500 truncate">{{ userStore.user?.email }}</div>
+          <div class="text-sm font-semibold text-gray-800 truncate">{{ user?.username }}</div>
+          <div v-if="user?.email" class="text-xs text-gray-500 truncate">{{ user?.email }}</div>
         </div>
       </div>
       <div class="border-t border-gray-100 my-1"></div>
-      <a :href="`/users/${userStore.user?.username}`"
+      <a :href="`/users/${user?.username}`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidUserLarge" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.profile') }}
       </a>
-      <a :href="`/users/${userStore.user?.username}/favorites`"
+      <a :href="`/users/${user?.username}/favorites`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidStar" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.favorites') }}
       </a>
@@ -41,6 +41,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import type { UserProfile } from '~/types'
 import { onClickOutside } from '@vueuse/core'
 import { useUserStore } from '~/stores/user'
 
@@ -49,8 +50,10 @@ const isDropdownOpen = ref(false)
 const dropdownRef = ref(null)
 const avatarSrc = computed(() => userStore.user?.avatar || '/images/default-avatar.png')
 const username = computed(() => {
-  return userStore.user?.nickname
+  return userStore.user?.username
 })
+
+const user = computed<UserProfile | null>(() => userStore.user)
 
 onClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false
@@ -59,6 +62,7 @@ onClickOutside(dropdownRef, () => {
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
+
 const logout = async () => {
   await userStore.signout()
   isDropdownOpen.value = false

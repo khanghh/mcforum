@@ -21,8 +21,10 @@
           <div class="flex-1 flex items-center justify-between gap-4">
             <div class="text-sm text-gray-100">{{ user.username || '-' }}</div>
             <div class="flex items-center gap-3 text-sm">
-              <button v-if="!user.username" @click="showUsernameDialog" class="text-indigo-400 hover:underline">{{
-                $t('form.button.set') }}</button>
+              <button v-if="!user.username" class="text-indigo-400 hover:underline" @click="showUsernameDialog">
+                {{
+                  $t('form.button.set') }}
+              </button>
             </div>
           </div>
         </div>
@@ -33,14 +35,20 @@
           <div class="flex-1 flex items-center justify-between gap-4">
             <div class="text-sm text-gray-100">
               <span>{{ user.email || '-' }}</span>
-              <span v-if="user.emailVerified" class="ml-2 text-xs text-gray-400">({{
-                $t('profile.settings.email_verified') }})</span>
+              <span v-if="user.emailVerified" class="ml-2 text-xs text-gray-400">
+                ({{
+                  $t('profile.settings.email_verified') }})
+              </span>
             </div>
             <div class="flex items-center gap-3 text-sm">
-              <button @click="showEmailDialog" class="text-indigo-400 hover:underline">{{ $t('form.button.change')
-              }}</button>
-              <button v-if="user.email && !user.emailVerified" @click="requestEmailVerify"
-                class="text-indigo-400 hover:underline">{{ $t('form.button.verify') }}</button>
+              <button class="text-indigo-400 hover:underline" @click="showEmailDialog">
+                {{ $t('form.button.change')
+                }}
+              </button>
+              <button v-if="user.email && !user.emailVerified" class="text-indigo-400 hover:underline"
+                @click="requestEmailVerify">
+                {{ $t('form.button.verify') }}
+              </button>
             </div>
           </div>
         </div>
@@ -49,13 +57,19 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 border-t border-gray-700">
           <div class="w-full sm:w-40 text-sm text-gray-300">{{ $t('form.label.password') }}</div>
           <div class="flex-1 flex items-center justify-between gap-4">
-            <div class="text-sm text-gray-100">{{ user.passwordSet ? $t('profile.settings.password_set') :
-              $t('profile.settings.password_not_set') }}</div>
+            <div class="text-sm text-gray-100">
+              {{ user.passwordSet ? $t('profile.settings.password_set')
+                : $t('profile.settings.password_not_set') }}
+            </div>
             <div class="flex items-center gap-3 text-sm">
-              <button v-if="user.passwordSet" @click="showUpdatePasswordDialog"
-                class="text-indigo-400 hover:underline">{{ $t('form.button.change') }}</button>
-              <button v-else @click="showSetPasswordDialog" class="text-indigo-400 hover:underline">{{
-                $t('form.button.set') }}</button>
+              <button v-if="user.passwordSet" class="text-indigo-400 hover:underline"
+                @click="showUpdatePasswordDialog">
+                {{ $t('form.button.change') }}
+              </button>
+              <button v-else class="text-indigo-400 hover:underline" @click="showSetPasswordDialog">
+                {{
+                  $t('form.button.set') }}
+              </button>
             </div>
           </div>
         </div>
@@ -129,9 +143,6 @@
     </my-dialog>
   </div>
 </template>
-<style scoped>
-/* Tailwind handles visual styling; no additional CSS required. */
-</style>
 
 <script setup>
 const i18n = useI18n()
@@ -166,7 +177,8 @@ async function setUsername() {
     await userRefresh()
     useMsgSuccess(i18n.t('message.set_username_success'))
     usernameDialog.value.close()
-  } catch (err) {
+  }
+  catch (err) {
     useMsgError(i18n.t('message.set_username_failure', { error: (err.message || err) }))
   }
 }
@@ -189,7 +201,8 @@ async function setEmail() {
     await userRefresh()
     useMsgSuccess(i18n.t('message.email_update_success'))
     emailDialog.value.close()
-  } catch (err) {
+  }
+  catch (err) {
     useMsgError(i18n.t('message.email_update_failure', { error: (err.message || err) }))
   }
 }
@@ -201,9 +214,11 @@ async function requestEmailVerify() {
     useMsgSuccess(
       i18n.t('message.verify_email_sent'),
     )
-  } catch (err) {
+  }
+  catch (err) {
     useMsgError(i18n.t('message.verify_email_failure', { error: (err.message || err) }))
-  } finally {
+  }
+  finally {
     loading.close()
   }
 }
@@ -225,7 +240,8 @@ async function updatePassword() {
     await userRefresh()
     useMsgSuccess(i18n.t('message.password_update_success'))
     updatePasswordDialog.value.close()
-  } catch (err) {
+  }
+  catch (err) {
     useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }))
   }
 }
@@ -247,8 +263,13 @@ async function setPassword() {
     await userRefresh()
     useMsgSuccess(i18n.t('message.password_update_success'))
     setPasswordDialog.value.close()
-  } catch (err) {
+  }
+  catch (err) {
     useMsgError(i18n.t('message.password_update_failure', { error: (err.message || err) }))
   }
 }
 </script>
+
+<style scoped>
+/* Tailwind handles visual styling; no additional CSS required. */
+</style>

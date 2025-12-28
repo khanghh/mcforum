@@ -67,8 +67,8 @@ const iconName = computed(() => {
   if (icon?.value) {
     return icon.value
   }
-  const v = variant?.value ?? 'info'
-  return v === 'warning' ? 'PhWarning' : 'PhInfo'
+  const v = variant?.value ?? 'Fa7SolidCircleInfo'
+  return v === 'warning' ? 'Fa7SolidWarning' : 'Fa7SolidCircleInfo'
 })
 
 const confirmBtnClass = computed(() => {

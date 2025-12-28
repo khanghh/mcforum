@@ -10,6 +10,7 @@ export default withNuxt().overrideRules({
   'vue/multi-word-component-names': 'off',
   'vue/html-self-closing': 'off',
   'vue/v-on-event-hyphenation': 'off',
+  'vue/attribute-hyphenation': 'off',
   'vue/singleline-html-element-content-newline': 'off',
   'vue/html-indent': ['error', 2, { alignAttributesVertically: false }],
   'vue/multiline-html-element-content-newline': ['error', {
@@ -17,4 +18,5 @@ export default withNuxt().overrideRules({
     ignores: ['pre', 'textarea'],
     allowEmptyLines: false,
   }],
+  '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
 })

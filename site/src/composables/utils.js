@@ -63,13 +63,13 @@ export function useToSignIn(redirect) {
  */
 export function useMsgSignIn() {
   const i18n = useNuxtApp().$i18n
-  useMsg({
-    type: 'error',
-    message: i18n.t('message.please_login_first'),
-    onClose() {
-      useToSignIn()
-    },
-  })
+  // useMsg({
+  //   type: 'error',
+  //   message: i18n.t('message.please_login_first'),
+  //   onClose() {
+  //     useToSignIn()
+  //   },
+  // })
 }
 
 export function useCatchError(e) {

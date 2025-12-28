@@ -133,7 +133,7 @@ function deleteTopic() {
       return api.deleteTopic(topic.value.slug)
         .then(() => {
           toast.success(i18n.t('message.delete_success'))
-          navigateTo(`/forums/${topic.value.forum.slug}`)
+          navigateTo(topic.value?.forum?.slug ? `/forums/${topic.value.forum.slug}` : '/')
         }).catch((e) => {
           const errMsg = e.data?.error.message || e.message || e
           const msg = i18n.t('message.delete_failure', { error: errMsg })

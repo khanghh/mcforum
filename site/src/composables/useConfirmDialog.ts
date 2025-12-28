@@ -7,7 +7,7 @@ type ConfirmDialogOptions = {
   cancelText?: string
   onConfirm?: () => void
   onCancel?: () => void
-  variant?: 'info' | 'warning'
+  variant?: 'info' | 'warning' | 'success'
   icon?: string
 }
 
@@ -16,7 +16,7 @@ const title = ref('')
 const message = ref('')
 const confirmText = ref('OK')
 const cancelText = ref('Cancel')
-const variant = ref<'info' | 'warning'>('info')
+const variant = ref<'info' | 'warning' | 'success'>('info')
 const icon = ref<string | null | undefined>(null)
 
 let resolver: ((value: boolean) => void) | null = null

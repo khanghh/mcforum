@@ -29,7 +29,7 @@
           <div class="flex items-center gap-2 flex-wrap">
             <h1
               class="text-2xl sm:text-3xl font-bold text-white gaming-title drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]">
-              {{ user.nickname }}
+              {{ user.username }}
             </h1>
           </div>
           <div class="flex items-center gap-2 mt-1">

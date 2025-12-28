@@ -25,8 +25,9 @@
     <div
       class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"
-        data-v-21511f91=""></div>
-      <form @submit.prevent="submitForm" class="relative z-10 space-y-8">
+        data-v-21511f91="">
+      </div>
+      <form class="relative z-10 space-y-8" @submit.prevent="submitForm">
         <!-- Avatar -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
           <label class="w-full sm:w-40 text-sm font-medium text-gray-300 flex items-center">
@@ -118,10 +119,10 @@
               <textarea
                 v-model="form.bio"
                 :maxlength="bioMax"
-                @input="handleBioInput"
                 class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:ring-2 transition-colors transition-shadow"
                 rows="4"
-                :placeholder="$t('form.placeholder.write_bio')"></textarea>
+                :placeholder="$t('form.placeholder.write_bio')"
+                @input="handleBioInput"></textarea>
               <div class="absolute right-3 top-3">
                 <Icon name="Fa7SolidAlignLeft" class="text-gray-500" />
               </div>
@@ -227,6 +228,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 const i18n = useI18n()
 const api = useApi()
@@ -272,7 +274,7 @@ watch(
     form.value.showLocation = u.settings.showLocation
     form.value.emailNotify = u.settings.emailNotify
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 async function submitForm() {
@@ -287,7 +289,8 @@ async function submitForm() {
     })
     await reload()
     toast.success(i18n.t('message.profile_update_success'))
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e?.data?.error.message || e)
     if (e?.data?.error.message) {
       toast.error(e.data.error.message)
@@ -302,7 +305,8 @@ function handleBioInput(e) {
   if (val.length > bioMax) {
     form.value.bio = val.slice(0, bioMax)
     e.target.value = form.value.bio
-  } else {
+  }
+  else {
     form.value.bio = val
   }
 }

@@ -32,7 +32,7 @@
           <div v-if="user" class="navbar-item has-dropdown is-hoverable user-menus">
             <div class="navbar-link">
               <MyAvatar :user="user" :size="24" />
-              <span :to="`/users/${user.username}`" class="user-menus-nickname ellipsis">{{ user.nickname }}</span>
+              <span :to="`/users/${user.username}`" class="user-menus-nickname ellipsis">{{ user.username }}</span>
             </div>
             <div class="navbar-dropdown">
               <nuxt-link class="navbar-item" :to="`/users/${user.username}`">

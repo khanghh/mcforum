@@ -86,7 +86,7 @@
                               v-if="message.from.id > 0"
                               :to="'/users/' + message.from.username"
                               class="gaming-title font-bold text-white hover:text-purple-400 transition-colors text-base">
-                              {{ message.from.nickname }}
+                              {{ message.from.username }}
                             </nuxt-link>
                             <span v-else class="font-bold text-white text-base">
                               {{ message.from.nickname }}
@@ -154,6 +154,15 @@
                                   </a>
                                 </template>
                               </i18n-t>
+                              <i18n-t v-else-if="message.type === 7" keypath="message.following_user_create_topic"
+                                tag="span">
+                                <template #topic>
+                                  <a :href="message.detailUrl" target="_blank"
+                                    class="text-purple-400 hover:text-purple-300 transition-colors">
+                                    {{ $t('message.topic') }}
+                                  </a>
+                                </template>
+                              </i18n-t>
                             </span>
                           </div>
                         </div>
@@ -192,16 +201,6 @@
                       <!-- Main Content -->
                       <div v-if="message.content" class="text-gray-200 text-sm leading-relaxed mb-3">
                         {{ message.content }}
-                      </div>
-
-                      <!-- Actions -->
-                      <div class="flex items-center gap-3 mt-3">
-                        <!-- Mark as read -->
-                        <button v-if="message.status === 0"
-                          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/30 hover:bg-gray-700/50 text-gray-400 hover:text-gray-300 text-xs font-medium transition-all duration-200">
-                          <Icon name="Fa7SolidCheck" class="text-[10px]" />
-                          {{ $t('message.mark_read') }}
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -246,6 +245,7 @@ const MessageType = {
   TopicDelete: 5,
   UserFollow: 6,
   CommentLike: 7,
+  FollowingUserCreateTopic: 8,
 } as const
 
 definePageMeta({
@@ -255,14 +255,16 @@ definePageMeta({
 const i18n = useI18n()
 const route = useRoute()
 const api = useApi()
+const userStore = useUserStore()
 const username = route.params.username as string
 
-const user: UserProfile = await api.getUser(username).catch(() => {
+const user: UserProfile | null = await userStore.getCurrent()
+if (user == null) {
   throw createError({ statusCode: 404, statusMessage: 'User not found' })
-})
+}
 
 // Create cursor for loading messages
-const messagesCursor = new CursorResult('/api/users/me/messages')
+const messagesCursor = api.getMessages()
 
 // Helper functions for message type styling
 const getMessageTypeIcon = (type: number): string => {
@@ -306,34 +308,21 @@ const getMessageTypeButtonClass = (type: number): string => {
 
 const getMessageTypeLabel = (type: number): string => {
   const labels: Record<number, string> = {
-    [MessageType.TopicComment]: i18n.t('message.type.comment') || 'Comment',
-    [MessageType.CommentReply]: i18n.t('message.type.reply') || 'Reply',
-    [MessageType.TopicLike]: i18n.t('message.type.like') || 'Like',
-    [MessageType.TopicFavorite]: i18n.t('message.type.favorite') || 'Favorite',
-    [MessageType.TopicRecommend]: i18n.t('message.type.recommend') || 'Recommend',
-    [MessageType.TopicDelete]: i18n.t('message.type.delete') || 'Delete',
-    [MessageType.UserFollow]: i18n.t('message.type.follow') || 'Follow',
-    [MessageType.CommentLike]: i18n.t('message.type.like') || 'Like',
+    [MessageType.TopicComment]: i18n.t('message.type.comment'),
+    [MessageType.CommentReply]: i18n.t('message.type.reply'),
+    [MessageType.TopicLike]: i18n.t('message.type.like'),
+    [MessageType.TopicFavorite]: i18n.t('message.type.favorite'),
+    [MessageType.TopicRecommend]: i18n.t('message.type.recommend'),
+    [MessageType.TopicDelete]: i18n.t('message.type.delete'),
+    [MessageType.UserFollow]: i18n.t('message.type.follow'),
+    [MessageType.CommentLike]: i18n.t('message.type.like'),
+    [MessageType.FollowingUserCreateTopic]: i18n.t('message.type.following_user_create_topic'),
   }
   return labels[type] || i18n.t('message.type.notification') || 'Notification'
 }
 
-const getMessageTypeActionLabel = (type: number): string => {
-  const labels: Record<number, string> = {
-    [MessageType.TopicComment]: i18n.t('message.action.view_comment') || 'View Comment',
-    [MessageType.CommentReply]: i18n.t('message.action.view_reply') || 'View Reply',
-    [MessageType.TopicLike]: i18n.t('message.action.view_topic') || 'View Topic',
-    [MessageType.TopicFavorite]: i18n.t('message.action.view_topic') || 'View Topic',
-    [MessageType.TopicRecommend]: i18n.t('message.action.view_topic') || 'View Topic',
-    [MessageType.TopicDelete]: i18n.t('message.action.view_details') || 'View Details',
-    [MessageType.UserFollow]: i18n.t('message.action.view_profile') || 'View Profile',
-    [MessageType.CommentLike]: i18n.t('message.action.view_comment') || 'View Comment',
-  }
-  return labels[type] || i18n.t('message.action.view_details') || 'View Details'
-}
-
 useHead({
-  title: useSiteTitle(i18n.t('page.messages', { nickname: user.nickname })),
+  title: useSiteTitle(i18n.t('page.messages', { nickname: user.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

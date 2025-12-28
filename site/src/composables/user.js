@@ -1,13 +1,5 @@
 export function userHasRole(user, role) {
-  if (!user || !user.roles || !user.roles.length) {
-    return false
-  }
-  for (let i = 0; i < user.roles.length; i++) {
-    if (user.roles[i] === role) {
-      return true
-    }
-  }
-  return false
+  return user && user.role == role
 }
 
 export function userHasAnyRole(user, ...roles) {

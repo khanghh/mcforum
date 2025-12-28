@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo chủ đề mới - MineViet Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .gaming-title {
+            font-family: 'Saira Semi Condensed', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .server-title {
+            font-family: 'Saira Semi Condensed', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Static gradient border without animation */
+        .gradient-border {
+            position: relative;
+            border: 2px solid transparent;
+            background: linear-gradient(145deg, rgba(45,45,70,0.9), rgba(35,35,55,0.95)) padding-box,
+                        linear-gradient(45deg, #7c3aed, #8b5cf6, #a78bfa) border-box;
+            background-size: 300% 300%;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4);
+        }
+        
+        /* Subtle pattern for background */
+        .bg-pattern {
+            background-color: #1a1a2e;
+            background-image: 
+                radial-gradient(at 47% 33%, hsl(240, 33%, 20%) 0, transparent 59%), 
+                radial-gradient(at 82% 65%, hsl(267, 65%, 15%) 0, transparent 55%);
+        }
+        
+        /* Forum category badges */
+        .category-badge {
+            transition: all 0.2s ease;
+        }
+        
+        .category-badge:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Tag chip styling */
+        .tag-chip {
+            transition: all 0.2s ease;
+        }
+        
+        .tag-chip:hover {
+            background: rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Formatting toolbar */
+        .format-toolbar button {
+            transition: all 0.2s ease;
+        }
+        
+        .format-toolbar button:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: scale(1.05);
+        }
+        
+        /* Character counter */
+        .char-counter {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Poll option styling */
+        .poll-option {
+            transition: all 0.2s ease;
+        }
+        
+        .poll-option:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Hidden content spoiler */
+        .spoiler-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .spoiler-content.expanded {
+            max-height: 500px;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #7c3aed, #6d28d9);
+            border-radius: 3px;
+        }
+        
+        .poll-options-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        /* Full-width adjustments */
+        .full-width-container {
+            max-width: 100%;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .full-width-container {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .full-width-container {
+                padding-left: 5rem;
+                padding-right: 5rem;
+            }
+        }
+        
+        .nav-full-width {
+            max-width: 100%;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .nav-full-width {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+        
+        .footer-full-width {
+            max-width: 100%;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .footer-full-width {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+        
+        /* Grid layout for form sections in full-width */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 1280px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Full-width form sections */
+        .full-width-section {
+            grid-column: 1 / -1;
+        }
+        
+        /* Fixed Dropdown Styling */
+        select {
+            background-color: #1a1a2e;
+            color: white;
+        }
+        
+        select option {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 10px;
+        }
+        
+        select option:hover,
+        select option:focus,
+        select option:active,
+        select option:checked {
+            background-color: #7c3aed !important;
+            color: white !important;
+        }
+        
+        /* For Firefox */
+        select:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 white;
+        }
+        
+        /* For IE */
+        select::-ms-expand {
+            display: none;
+        }
+        
+        /* Dropdown container */
+        .select-container {
+            position: relative;
+        }
+        
+        .select-container select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+        }
+        
+        .select-container::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            color: #8b5cf6;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-100 font-sans bg-pattern">
+    <!-- Navigation Bar - Full Width -->
+    <nav class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/30 sticky top-0 z-50">
+        <div class="nav-full-width mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                    <i class="fas fa-cube text-white text-xl"></i>
+                </div>
+                <a href="/">
+                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title"> MineViet Forum </div>
+                    <div class="hidden md:block text-xs text-purple-300">Minecraft Server Vietnam</div>
+                </a>
+            </div>
+            <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
+                <li><a href="https://play.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors" target="_blank">
+                    <i class="fas fa-server mr-1"></i><span class="hidden sm:inline">Máy chủ</span>
+                </a></li>
+                <li><a href="https://skin.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-palette mr-1"></i><span class="hidden sm:inline">Đổi skin</span>
+                </a></li>
+                <li><a href="https://ban.mineviet.com" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-ban mr-1"></i><span class="hidden sm:inline">Vi phạm</span>
+                </a></li>
+                <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-envelope mr-1"></i><span class="hidden sm:inline">Tin nhắn</span>
+                </a></li>
+                <li>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                            <span class="text-xs font-bold">A</span>
+                        </div>
+                        <a href="/users/admin" class="text-purple-300 hover:text-white transition-colors text-sm">admin</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content - Full Width -->
+    <main class="flex-grow py-8 relative z-10">
+        <div class="full-width-container mx-auto px-4">
+            <!-- Breadcrumb -->
+            <div class="mb-6 flex items-center text-sm text-gray-400">
+                <a href="/" class="hover:text-purple-400 transition-colors">Trang chủ</a>
+                <i class="fas fa-chevron-right mx-2 text-xs"></i>
+                <a href="/forum" class="hover:text-purple-400 transition-colors">Diễn đàn</a>
+                <i class="fas fa-chevron-right mx-2 text-xs"></i>
+                <span class="text-purple-300">Tạo chủ đề mới</span>
+            </div>
+
+            <!-- Header with back button -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
+                        <i class="fas fa-plus-circle text-purple-400 text-lg"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">Tạo chủ đề mới</h1>
+                </div>
+                <a href="/forum" class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    <span>Quay lại diễn đàn</span>
+                </a>
+            </div>
+
+            <!-- Create Topic Form Container - Full Width -->
+            <div class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
+                <!-- Subtle gradient overlay -->
+                <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
+                
+                <div class="relative z-10">
+                    <form class="space-y-8">
+                        <!-- Topic Title - Full Width -->
+                        <div class="full-width-section space-y-2">
+                            <label for="topic-title" class="text-sm font-medium text-gray-300 flex items-center">
+                                <i class="fas fa-heading mr-2"></i>Tiêu đề chủ đề
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="topic-title" autocomplete="off" 
+                                       class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors text-lg"
+                                       placeholder="Nhập tiêu đề chủ đề...">
+                                <div class="absolute right-3 top-3">
+                                    <i class="fas fa-edit text-gray-400"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400">Tiêu đề phải từ 10 đến 200 ký tự</p>
+                        </div>
+
+                        <!-- Form Grid for side-by-side sections -->
+                        <div class="form-grid gap-6">
+                            <!-- Forum Category Selection -->
+                            <div class="space-y-2">
+                                <label for="forum-category" class="text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-folder mr-2"></i>Chọn chuyên mục
+                                </label>
+                                <div class="select-container">
+                                    <select id="forum-category" 
+                                            class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors">
+                                        <option value="" disabled selected>Chọn chuyên mục...</option>
+                                        <option value="general">Thảo luận chung</option>
+                                        <option value="gameplay">Hướng dẫn & Gameplay</option>
+                                        <option value="server">Máy chủ & Cộng đồng</option>
+                                        <option value="builds">Xây dựng & Kiến trúc</option>
+                                        <option value="redstone">Redstone & Cơ học</option>
+                                        <option value="mods">Mods & Resource Packs</option>
+                                        <option value="marketplace">Marketplace & Giao dịch</option>
+                                        <option value="support">Hỗ trợ & Báo lỗi</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Quick Category Selection -->
+                                <div class="mt-3">
+                                    <p class="text-xs text-gray-400 mb-2">Chọn nhanh:</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button type="button" class="category-badge text-xs px-3 py-1 bg-purple-900/30 hover:bg-purple-900/50 rounded-full border border-purple-700/50 transition-colors" data-category="general">
+                                            <i class="fas fa-comments mr-1"></i>Thảo luận
+                                        </button>
+                                        <button type="button" class="category-badge text-xs px-3 py-1 bg-blue-900/30 hover:bg-blue-900/50 rounded-full border border-blue-700/50 transition-colors" data-category="gameplay">
+                                            <i class="fas fa-gamepad mr-1"></i>Gameplay
+                                        </button>
+                                        <button type="button" class="category-badge text-xs px-3 py-1 bg-green-900/30 hover:bg-green-900/50 rounded-full border border-green-700/50 transition-colors" data-category="builds">
+                                            <i class="fas fa-cube mr-1"></i>Xây dựng
+                                        </button>
+                                        <button type="button" class="category-badge text-xs px-3 py-1 bg-red-900/30 hover:bg-red-900/50 rounded-full border border-red-700/50 transition-colors" data-category="support">
+                                            <i class="fas fa-question-circle mr-1"></i>Hỗ trợ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tags Input -->
+                            <div class="space-y-2">
+                                <label for="topic-tags" class="text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-tags mr-2"></i>Thẻ (Tags)
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="topic-tags" autocomplete="off" 
+                                           class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors"
+                                           placeholder="Nhập các thẻ, cách nhau bằng dấu phẩy...">
+                                    <div class="absolute right-3 top-3">
+                                        <i class="fas fa-tag text-gray-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- Popular Tags -->
+                                <div class="mt-3">
+                                    <p class="text-xs text-gray-400 mb-2">Thẻ phổ biến:</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button type="button" class="tag-chip text-xs px-3 py-1 bg-gray-800/40 hover:bg-purple-600/30 rounded-full border border-gray-700/50 transition-colors" data-tag="minecraft">
+                                            minecraft
+                                        </button>
+                                        <button type="button" class="tag-chip text-xs px-3 py-1 bg-gray-800/40 hover:bg-purple-600/30 rounded-full border border-gray-700/50 transition-colors" data-tag="mineviet">
+                                            mineviet
+                                        </button>
+                                        <button type="button" class="tag-chip text-xs px-3 py-1 bg-gray-800/40 hover:bg-purple-600/30 rounded-full border border-gray-700/50 transition-colors" data-tag="help">
+                                            hỗ trợ
+                                        </button>
+                                        <button type="button" class="tag-chip text-xs px-3 py-1 bg-gray-800/40 hover:bg-purple-600/30 rounded-full border border-gray-700/50 transition-colors" data-tag="build">
+                                            xây dựng
+                                        </button>
+                                        <button type="button" class="tag-chip text-xs px-3 py-1 bg-gray-800/40 hover:bg-purple-600/30 rounded-full border border-gray-700/50 transition-colors" data-tag="redstone">
+                                            redstone
+                                        </button>
+                                        <button type="button" class="tag-chip text-xs px-3 py-1 bg-gray-800/40 hover:bg-purple-600/30 rounded-full border border-gray-700/50 transition-colors" data-tag="mod">
+                                            mod
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-400">Tối đa 5 thẻ, mỗi thẻ tối đa 20 ký tự</p>
+                            </div>
+                        </div>
+
+                        <!-- Content Editor - Full Width -->
+                        <div class="full-width-section space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-medium text-gray-300 flex items-center">
+                                    <i class="fas fa-align-left mr-2"></i>Nội dung bài viết
+                                </label>
+                                <div class="text-xs text-gray-400">
+                                    <span id="content-counter" class="char-counter">0/10000</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Formatting Toolbar -->
+                            <div class="format-toolbar flex flex-wrap gap-1 p-2 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="In đậm">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="In nghiêng">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Gạch chân">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <div class="w-px h-6 bg-gray-700 mx-1"></div>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Danh sách">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Số thứ tự">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <div class="w-px h-6 bg-gray-700 mx-1"></div>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Liên kết">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Hình ảnh">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Mã nguồn">
+                                    <i class="fas fa-code"></i>
+                                </button>
+                                <button type="button" class="w-8 h-8 rounded flex items-center justify-center hover:bg-gray-700/50" title="Trích dẫn">
+                                    <i class="fas fa-quote-right"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Textarea for content -->
+                            <div class="relative">
+                                <textarea id="topic-content" rows="10" 
+                                          class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors resize-none font-mono"
+                                          placeholder="Nhập nội dung bài viết của bạn ở đây... Bạn có thể sử dụng Markdown hoặc BBCode."></textarea>
+                            </div>
+                            
+                            <!-- Content Help -->
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs text-gray-400">
+                                <div>
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <span>Hỗ trợ Markdown & BBCode. Dùng Ctrl+B/I/U để định dạng nhanh.</span>
+                                </div>
+                                <div class="flex gap-4">
+                                    <button type="button" class="text-purple-400 hover:text-purple-300 transition-colors">
+                                        <i class="fas fa-eye mr-1"></i>Xem trước
+                                    </button>
+                                    <button type="button" class="text-purple-400 hover:text-purple-300 transition-colors">
+                                        <i class="fas fa-question-circle mr-1"></i>Trợ giúp
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second Form Grid for side-by-side sections -->
+                        <div class="form-grid gap-6">
+                            <!-- HIDDEN CONTENT SECTION -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-gray-300 flex items-center">
+                                        <i class="fas fa-eye-slash mr-2"></i>Nội dung ẩn (Spoiler)
+                                    </label>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="enable-spoiler" class="sr-only peer">
+                                        <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                        <span class="ml-2 text-xs text-gray-400">Bật nội dung ẩn</span>
+                                    </label>
+                                </div>
+                                
+                                <div id="spoiler-content" class="spoiler-content">
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label for="spoiler-title" class="text-xs font-medium text-gray-300 block mb-1">
+                                                <i class="fas fa-tag mr-1"></i>Tiêu đề nội dung ẩn
+                                            </label>
+                                            <input type="text" id="spoiler-title" 
+                                                   class="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors text-sm"
+                                                   placeholder="VD: Kết quả build, câu trả lời, giải đáp...">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="spoiler-message" class="text-xs font-medium text-gray-300 block mb-1">
+                                                <i class="fas fa-exclamation-triangle mr-1"></i>Thông báo cảnh báo
+                                            </label>
+                                            <input type="text" id="spoiler-message" 
+                                                   class="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors text-sm"
+                                                   value="Cảnh báo: Nội dung bên dưới có thể chứa thông tin nhạy cảm hoặc spoiler!">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="spoiler-content-text" class="text-xs font-medium text-gray-300 block mb-1">
+                                                <i class="fas fa-lock mr-1"></i>Nội dung ẩn
+                                            </label>
+                                            <textarea id="spoiler-content-text" rows="4" 
+                                                      class="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors resize-none text-sm"
+                                                      placeholder="Nội dung này sẽ được ẩn sau nút 'Hiển thị nội dung'..."></textarea>
+                                        </div>
+                                        
+                                        <div class="flex items-center text-xs text-gray-400">
+                                            <i class="fas fa-info-circle mr-2"></i>
+                                            <span>Nội dung này sẽ được ẩn và chỉ hiển thị khi người dùng nhấp vào nút "Hiển thị nội dung"</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- POLL/VOTING SECTION -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-gray-300 flex items-center">
+                                        <i class="fas fa-poll mr-2"></i>Tạo bình chọn
+                                    </label>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="enable-poll" class="sr-only peer">
+                                        <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                        <span class="ml-2 text-xs text-gray-400">Bật bình chọn</span>
+                                    </label>
+                                </div>
+                                
+                                <div id="poll-content" class="spoiler-content">
+                                    <div class="space-y-4">
+                                        <!-- Poll Question -->
+                                        <div>
+                                            <label for="poll-question" class="text-xs font-medium text-gray-300 block mb-1">
+                                                <i class="fas fa-question-circle mr-1"></i>Câu hỏi bình chọn
+                                            </label>
+                                            <input type="text" id="poll-question" 
+                                                   class="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors"
+                                                   placeholder="VD: Bạn thích phiên bản Minecraft nào nhất?">
+                                        </div>
+                                        
+                                        <!-- Poll Options -->
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <label class="text-xs font-medium text-gray-300">
+                                                    <i class="fas fa-list-ol mr-1"></i>Các lựa chọn (tối thiểu 2, tối đa 10)
+                                                </label>
+                                                <button type="button" id="add-poll-option" class="text-xs px-2 py-1 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 rounded transition-colors">
+                                                    <i class="fas fa-plus mr-1"></i>Thêm lựa chọn
+                                                </button>
+                                            </div>
+                                            
+                                            <div id="poll-options-container" class="poll-options-container space-y-2">
+                                                <!-- Default options -->
+                                                <div class="poll-option flex items-center gap-2 p-2 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                                                    <div class="flex-grow">
+                                                        <input type="text" 
+                                                               class="w-full px-2 py-1 bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm"
+                                                               placeholder="Lựa chọn 1" value="">
+                                                    </div>
+                                                    <button type="button" class="remove-poll-option text-red-400 hover:text-red-300 p-1" disabled>
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                
+                                                <div class="poll-option flex items-center gap-2 p-2 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                                                    <div class="flex-grow">
+                                                        <input type="text" 
+                                                               class="w-full px-2 py-1 bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm"
+                                                               placeholder="Lựa chọn 2" value="">
+                                                    </div>
+                                                    <button type="button" class="remove-poll-option text-red-400 hover:text-red-300 p-1">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Poll Settings Grid -->
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label for="poll-duration" class="text-xs font-medium text-gray-300 block mb-1">
+                                                    <i class="fas fa-clock mr-1"></i>Thời gian bình chọn (ngày)
+                                                </label>
+                                                <div class="select-container">
+                                                    <select id="poll-duration" 
+                                                            class="w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 transition-colors text-sm">
+                                                        <option value="1">1 ngày</option>
+                                                        <option value="3">3 ngày</option>
+                                                        <option value="7" selected>7 ngày</option>
+                                                        <option value="14">14 ngày</option>
+                                                        <option value="30">30 ngày</option>
+                                                        <option value="0">Không giới hạn</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                                                <div>
+                                                    <h4 class="font-medium text-white text-sm">Cho phép chọn nhiều</h4>
+                                                    <p class="text-xs text-gray-300 mt-1">Người dùng có thể chọn nhiều đáp án</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" id="poll-multiple" class="sr-only peer">
+                                                    <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Poll Privacy -->
+                                        <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                                            <div>
+                                                <h4 class="font-medium text-white text-sm">Hiển thị kết quả công khai</h4>
+                                                <p class="text-xs text-gray-300 mt-1">Mọi người có thể xem kết quả trước khi bình chọn</p>
+                                            </div>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" id="poll-public" class="sr-only peer" checked>
+                                                <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                            </label>
+                                        </div>
+                                        
+                                        <!-- Poll Change Vote -->
+                                        <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                                            <div>
+                                                <h4 class="font-medium text-white text-sm">Cho phép thay đổi bình chọn</h4>
+                                                <p class="text-xs text-gray-300 mt-1">Người dùng có thể thay đổi đáp án sau khi bình chọn</p>
+                                            </div>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" id="poll-change" class="sr-only peer" checked>
+                                                <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attachments - Full Width -->
+                        <div class="full-width-section space-y-2">
+                            <label class="text-sm font-medium text-gray-300 flex items-center">
+                                <i class="fas fa-paperclip mr-2"></i>Đính kèm tập tin
+                            </label>
+                            <div class="border-2 border-dashed border-gray-700/50 rounded-lg p-6 text-center hover:border-purple-500/40 transition-colors bg-gray-800/30">
+                                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center">
+                                    <i class="fas fa-cloud-upload-alt text-purple-400 text-xl"></i>
+                                </div>
+                                <h4 class="text-white font-medium mb-2">Kéo thả tập tin vào đây hoặc nhấn để chọn</h4>
+                                <p class="text-sm text-gray-300 mb-4">Hỗ trợ: PNG, JPG, GIF, ZIP (Tối đa 10MB mỗi file)</p>
+                                <div class="px-4 py-2 bg-gradient-to-r from-purple-600/40 to-pink-600/40 rounded-lg inline-block hover:from-purple-600/50 hover:to-pink-600/50 transition-all cursor-pointer">
+                                    <span class="text-sm text-white">Chọn tập tin</span>
+                                    <input type="file" accept="image/*,.zip,.rar,.7z" class="sr-only" id="file-upload" multiple>
+                                </div>
+                            </div>
+                            
+                            <!-- File List Preview -->
+                            <div id="file-list" class="space-y-2 hidden">
+                                <!-- Files will be added here dynamically -->
+                            </div>
+                            
+                            <p class="text-xs text-gray-400">Tối đa 5 tập tin đính kèm. Ảnh sẽ hiển thị trực tiếp trong bài viết.</p>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="full-width-section border-t border-gray-700/50"></div>
+
+                        <!-- Action Buttons - Full Width -->
+                        <div class="full-width-section flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
+                            <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                                <button type="button" 
+                                        class="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-eye mr-2"></i> Xem trước
+                                </button>
+                                <button type="button" 
+                                        class="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-save mr-2"></i> Lưu nháp
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                                <button type="button" 
+                                        class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-times mr-2"></i> Hủy bỏ
+                                </button>
+                                <button type="submit" 
+                                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3),0_0_25px_rgba(139,92,246,0.2)] gaming-title tracking-[0.5px] transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    <i class="fas fa-paper-plane mr-2"></i> Đăng chủ đề
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Posting Guidelines - Full Width -->
+            <div class="full-width-section mt-6 p-4 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 rounded-lg border border-purple-500/30 backdrop-blur-sm">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <i class="fas fa-scroll text-purple-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-white">Quy định đăng bài</h3>
+                        <ul class="text-xs text-gray-300 mt-1 space-y-1">
+                            <li><i class="fas fa-check-circle text-green-400 mr-1"></i> Không đăng nội dung vi phạm pháp luật hoặc quy định của diễn đàn</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-1"></i> Sử dụng tiếng Việt có dấu, không viết tắt quá mức</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-1"></i> Đặt tiêu đề rõ ràng, phản ánh đúng nội dung bài viết</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-1"></i> Chọn đúng chuyên mục cho bài viết của bạn</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-1"></i> Không spam, quảng cáo trái phép hoặc đăng nội dung nhạy cảm</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer - Full Width -->
+    <footer class="bg-gradient-to-b from-transparent to-purple-900/20 border-t border-purple-500/30 mt-16 backdrop-blur-sm">
+        <div class="footer-full-width mx-auto px-4 py-12">
+            <!-- Main Footer Content -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- Brand Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-gamepad text-3xl text-purple-400"></i>
+                        <div>
+                            <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title"> MineViet Forum </h3>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm"> The ultimate community for Minecraft players. Share builds, discover mods, and connect with fellow gamers. </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
+                            <i class="fab fa-twitch"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Home</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Forums</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Leaderboards</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Staff Team</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Server Status</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Wiki</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Download Packs</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Community Stats -->
+                <div>
+                    <h4 class="text-lg font-bold text-amber-300 gaming-title mb-4">COMMUNITY</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-300 mb-1">Active Players</div>
+                            <div class="text-2xl font-bold text-green-400 gaming-title">2,847</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-300 mb-1">Total Members</div>
+                            <div class="text-2xl font-bold text-purple-400 gaming-title">458K</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-800/30">
+                            <div class="text-xs text-gray-300 mb-1">Online Now</div>
+                            <div class="text-2xl font-bold text-blue-400 gaming-title">2.4K</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-purple-500/20">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-300 text-sm gaming-title"> © 2025 MineViet Network. All rights reserved. </p>
+                    <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-300">
+                        <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+                        <span class="text-gray-500">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+                        <span class="text-gray-500">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
+                        <span class="text-gray-500">•</span>
+                        <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Character counter for content
+        const contentTextarea = document.getElementById('topic-content');
+        const contentCounter = document.getElementById('content-counter');
+        
+        if (contentTextarea && contentCounter) {
+            contentTextarea.addEventListener('input', function() {
+                const count = this.value.length;
+                contentCounter.textContent = `${count}/10000`;
+                
+                // Change color when approaching limit
+                if (count > 9500) {
+                    contentCounter.classList.remove('text-gray-400');
+                    contentCounter.classList.add('text-yellow-400');
+                } else if (count > 9800) {
+                    contentCounter.classList.remove('text-yellow-400');
+                    contentCounter.classList.add('text-red-400');
+                } else {
+                    contentCounter.classList.remove('text-yellow-400', 'text-red-400');
+                    contentCounter.classList.add('text-gray-400');
+                }
+            });
+        }
+        
+        // HIDDEN CONTENT (SPOILER) FUNCTIONALITY
+        const spoilerCheckbox = document.getElementById('enable-spoiler');
+        const spoilerContent = document.getElementById('spoiler-content');
+        
+        if (spoilerCheckbox && spoilerContent) {
+            spoilerCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    spoilerContent.classList.add('expanded');
+                } else {
+                    spoilerContent.classList.remove('expanded');
+                }
+            });
+        }
+        
+        // POLL/VOTING FUNCTIONALITY
+        const pollCheckbox = document.getElementById('enable-poll');
+        const pollContent = document.getElementById('poll-content');
+        const addPollOptionBtn = document.getElementById('add-poll-option');
+        const pollOptionsContainer = document.getElementById('poll-options-container');
+        
+        // Toggle poll content
+        if (pollCheckbox && pollContent) {
+            pollCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    pollContent.classList.add('expanded');
+                } else {
+                    pollContent.classList.remove('expanded');
+                }
+            });
+        }
+        
+        // Add new poll option
+        if (addPollOptionBtn && pollOptionsContainer) {
+            addPollOptionBtn.addEventListener('click', function() {
+                const optionCount = pollOptionsContainer.children.length;
+                
+                if (optionCount >= 10) {
+                    showNotification('Tối đa 10 lựa chọn cho bình chọn!', 'error');
+                    return;
+                }
+                
+                const newOption = document.createElement('div');
+                newOption.className = 'poll-option flex items-center gap-2 p-2 bg-gray-800/30 rounded-lg border border-gray-700/50';
+                newOption.innerHTML = `
+                    <div class="flex-grow">
+                        <input type="text" 
+                               class="w-full px-2 py-1 bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm"
+                               placeholder="Lựa chọn ${optionCount + 1}" value="">
+                    </div>
+                    <button type="button" class="remove-poll-option text-red-400 hover:text-red-300 p-1">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                pollOptionsContainer.appendChild(newOption);
+                
+                // Add event listener to remove button
+                const removeBtn = newOption.querySelector('.remove-poll-option');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function() {
+                        if (pollOptionsContainer.children.length > 2) {
+                            newOption.remove();
+                            updatePollOptionNumbers();
+                        } else {
+                            showNotification('Bình chọn cần ít nhất 2 lựa chọn!', 'error');
+                        }
+                    });
+                }
+                
+                // Focus on the new input
+                const newInput = newOption.querySelector('input');
+                if (newInput) {
+                    newInput.focus();
+                }
+            });
+        }
+        
+        // Remove poll option functionality for existing options
+        document.querySelectorAll('.remove-poll-option').forEach(button => {
+            button.addEventListener('click', function() {
+                if (pollOptionsContainer.children.length > 2) {
+                    this.closest('.poll-option').remove();
+                    updatePollOptionNumbers();
+                } else {
+                    showNotification('Bình chọn cần ít nhất 2 lựa chọn!', 'error');
+                }
+            });
+        });
+        
+        // Update poll option placeholder numbers
+        function updatePollOptionNumbers() {
+            const options = pollOptionsContainer.querySelectorAll('.poll-option');
+            options.forEach((option, index) => {
+                const input = option.querySelector('input');
+                if (input) {
+                    input.placeholder = `Lựa chọn ${index + 1}`;
+                    
+                    // Enable/disable remove button based on option count
+                    const removeBtn = option.querySelector('.remove-poll-option');
+                    if (removeBtn) {
+                        removeBtn.disabled = options.length <= 2;
+                        removeBtn.style.opacity = options.length <= 2 ? '0.5' : '1';
+                        removeBtn.style.cursor = options.length <= 2 ? 'not-allowed' : 'pointer';
+                    }
+                }
+            });
+        }
+        
+        // Initialize poll option numbers
+        updatePollOptionNumbers();
+        
+        // Category selection buttons
+        const categoryButtons = document.querySelectorAll('.category-badge');
+        const categorySelect = document.getElementById('forum-category');
+        
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // Set the select value
+                categorySelect.value = category;
+                
+                // Update button styles
+                categoryButtons.forEach(btn => {
+                    btn.classList.remove('bg-purple-900/50', 'border-purple-500');
+                });
+                
+                this.classList.add('bg-purple-900/50', 'border-purple-500');
+            });
+        });
+        
+        // Tag selection buttons
+        const tagButtons = document.querySelectorAll('.tag-chip');
+        const tagsInput = document.getElementById('topic-tags');
+        
+        tagButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tag = this.getAttribute('data-tag');
+                const currentTags = tagsInput.value.split(',').map(t => t.trim()).filter(t => t);
+                
+                // Add tag if not already present
+                if (!currentTags.includes(tag)) {
+                    currentTags.push(tag);
+                    tagsInput.value = currentTags.join(', ') + (currentTags.length ? ', ' : '');
+                }
+                
+                // Visual feedback
+                this.classList.add('bg-purple-600/30', 'border-purple-500');
+                setTimeout(() => {
+                    this.classList.remove('bg-purple-600/30', 'border-purple-500');
+                }, 300);
+            });
+        });
+        
+        // Formatting toolbar functionality
+        const formatButtons = document.querySelectorAll('.format-toolbar button');
+        formatButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const type = this.querySelector('i').className.split(' ')[1];
+                
+                // Get cursor position
+                const textarea = contentTextarea;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const selectedText = textarea.value.substring(start, end);
+                
+                let wrappedText = '';
+                switch(type) {
+                    case 'fa-bold':
+                        wrappedText = `**${selectedText}**`;
+                        break;
+                    case 'fa-italic':
+                        wrappedText = `*${selectedText}*`;
+                        break;
+                    case 'fa-underline':
+                        wrappedText = `__${selectedText}__`;
+                        break;
+                    case 'fa-list-ul':
+                        wrappedText = `\n- ${selectedText}`;
+                        break;
+                    case 'fa-list-ol':
+                        wrappedText = `\n1. ${selectedText}`;
+                        break;
+                    case 'fa-link':
+                        wrappedText = `[${selectedText}](url)`;
+                        break;
+                    case 'fa-image':
+                        wrappedText = `![${selectedText}](url)`;
+                        break;
+                    case 'fa-code':
+                        wrappedText = `\`${selectedText}\``;
+                        break;
+                    case 'fa-quote-right':
+                        wrappedText = `> ${selectedText}`;
+                        break;
+                }
+                
+                // Insert wrapped text
+                textarea.value = textarea.value.substring(0, start) + wrappedText + textarea.value.substring(end);
+                
+                // Restore cursor position
+                textarea.selectionStart = textarea.selectionEnd = start + wrappedText.length;
+                textarea.focus();
+                
+                // Trigger input event for counter
+                textarea.dispatchEvent(new Event('input'));
+            });
+        });
+        
+        // File upload preview
+        const fileUpload = document.getElementById('file-upload');
+        const fileList = document.getElementById('file-list');
+        
+        if (fileUpload && fileList) {
+            fileUpload.addEventListener('change', function(event) {
+                const files = Array.from(event.target.files);
+                
+                if (files.length > 0) {
+                    fileList.classList.remove('hidden');
+                    fileList.innerHTML = '';
+                    
+                    files.forEach((file, index) => {
+                        const fileElement = document.createElement('div');
+                        fileElement.className = 'flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50';
+                        fileElement.innerHTML = `
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-lg bg-gray-700/50 flex items-center justify-center mr-3">
+                                    <i class="fas fa-file${file.type.startsWith('image/') ? '-image' : '-archive'} text-purple-400"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-white truncate max-w-xs">${file.name}</p>
+                                    <p class="text-xs text-gray-400">${(file.size / 1024).toFixed(1)} KB</p>
+                                </div>
+                            </div>
+                            <button type="button" class="text-red-400 hover:text-red-300 remove-file" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        fileList.appendChild(fileElement);
+                    });
+                    
+                    // Add remove functionality
+                    document.querySelectorAll('.remove-file').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            // In a real app, you would remove from FileList
+                            // For demo, just remove the element
+                            this.closest('div').remove();
+                            
+                            // Hide file list if empty
+                            if (fileList.children.length === 0) {
+                                fileList.classList.add('hidden');
+                            }
+                        });
+                    });
+                }
+            });
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            const textarea = contentTextarea;
+            
+            if (document.activeElement === textarea) {
+                // Ctrl+B for bold
+                if (e.ctrlKey && e.key === 'b') {
+                    e.preventDefault();
+                    document.querySelector('.format-toolbar button:nth-child(1)').click();
+                }
+                // Ctrl+I for italic
+                if (e.ctrlKey && e.key === 'i') {
+                    e.preventDefault();
+                    document.querySelector('.format-toolbar button:nth-child(2)').click();
+                }
+                // Ctrl+U for underline
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    document.querySelector('.format-toolbar button:nth-child(3)').click();
+                }
+            }
+        });
+        
+        // Form submission with validation
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Basic validation
+                const title = document.getElementById('topic-title').value.trim();
+                const category = document.getElementById('forum-category').value;
+                const content = document.getElementById('topic-content').value.trim();
+                const pollEnabled = document.getElementById('enable-poll').checked;
+                
+                if (!title || title.length < 10) {
+                    showNotification('Tiêu đề phải có ít nhất 10 ký tự!', 'error');
+                    return;
+                }
+                
+                if (!category) {
+                    showNotification('Vui lòng chọn chuyên mục!', 'error');
+                    return;
+                }
+                
+                if (!content || content.length < 50) {
+                    showNotification('Nội dung phải có ít nhất 50 ký tự!', 'error');
+                    return;
+                }
+                
+                // Poll validation if enabled
+                if (pollEnabled) {
+                    const pollQuestion = document.getElementById('poll-question').value.trim();
+                    const pollOptions = Array.from(pollOptionsContainer.querySelectorAll('input[type="text"]'))
+                        .map(input => input.value.trim())
+                        .filter(value => value);
+                    
+                    if (!pollQuestion) {
+                        showNotification('Vui lòng nhập câu hỏi bình chọn!', 'error');
+                        return;
+                    }
+                    
+                    if (pollOptions.length < 2) {
+                        showNotification('Bình chọn cần ít nhất 2 lựa chọn!', 'error');
+                        return;
+                    }
+                    
+                    // Check for empty options
+                    if (pollOptions.some(option => option === '')) {
+                        showNotification('Vui lòng nhập đầy đủ các lựa chọn bình chọn!', 'error');
+                        return;
+                    }
+                }
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang đăng...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Show success message
+                    showNotification('Đã tạo chủ đề thành công! Đang chuyển hướng...', 'success');
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // In a real app, you would redirect to the new topic
+                    // setTimeout(() => {
+                    //     window.location.href = '/forum/topic/123';
+                    // }, 1500);
+                }, 2000);
+            });
+        }
+        
+        // Cancel button
+        const cancelBtn = document.querySelector('button[type="button"]');
+        if (cancelBtn && cancelBtn.textContent.includes('Hủy bỏ')) {
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Bạn có chắc muốn hủy bỏ bài viết? Mọi thay đổi sẽ bị mất.')) {
+                    window.location.href = '/forum';
+                }
+            });
+        }
+        
+        // Preview button
+        const previewBtn = document.querySelector('button:has(i.fa-eye)');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', function() {
+                const content = document.getElementById('topic-content').value;
+                if (content.trim()) {
+                    // In a real app, this would open a preview modal
+                    showNotification('Xem trước đang được tải...', 'info');
+                } else {
+                    showNotification('Vui lòng nhập nội dung trước khi xem trước!', 'error');
+                }
+            });
+        }
+        
+        // Save draft button
+        const draftBtn = document.querySelector('button:has(i.fa-save)');
+        if (draftBtn) {
+            draftBtn.addEventListener('click', function() {
+                showNotification('Đã lưu bản nháp thành công!', 'success');
+            });
+        }
+        
+        // Notification function
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-gradient-to-r from-green-600 to-emerald-600' : type === 'error' ? 'bg-gradient-to-r from-red-600 to-pink-600' : 'bg-gradient-to-r from-blue-600 to-cyan-600'} backdrop-blur-sm`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

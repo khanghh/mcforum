@@ -11,7 +11,7 @@
       :src="avatarUrl"
       class="avatar"
       :class="[sizeClass, roundClass, borderClass]"
-      :alt="user.nickname"
+      :alt="user.username"
       @error="error">
     <span
       v-else-if="styleText"

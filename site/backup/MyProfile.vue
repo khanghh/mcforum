@@ -12,7 +12,7 @@
           {{ $t('form.label.nickname') }}
         </div>
         <div class="svalue">
-          {{ user.nickname }}
+          {{ user.username }}
         </div>
       </div>
       <div class="str">

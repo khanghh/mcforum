@@ -8,7 +8,7 @@
     ]">
     <div class="flex-1 min-w-0">
       <h3 class="text-lg font-bold mb-2 flex items-center gap-4">
-        <nuxt-link :to="`/topics/${topic.slug}`"
+        <nuxt-link :to="`/topics/${topic?.slug}`"
           class="text-white hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
           {{ topic.title }}
         </nuxt-link>
@@ -21,11 +21,11 @@
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <!-- Avatar -->
         <div v-if="author" class="flex items-center gap-2">
-          <Avatar :src="author.avatar" :username="author.nickname" :size="24"
+          <Avatar :src="author.avatar" :username="author.username" :size="24"
             class="w-6 h-6 rounded border border-purple-500/50 flex-shrink-0" />
           <nuxt-link :to="`/users/${author.username}`"
             class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors">
-            {{ author.nickname }}
+            {{ author.username }}
           </nuxt-link>
         </div>
 
@@ -52,14 +52,14 @@
         <LikeButton :liked="topic.liked" :count="topic.likeCount" :onClick="likeTopic" />
 
         <!-- Comment -->
-        <nuxt-link :to="`/topics/${topic.slug || topic.id}`"
+        <nuxt-link :to="`/topics/${topic?.slug || topic.id}`"
           class="flex items-center gap-1 hover:text-gray-400 transition-colors">
           <Icon name="TablerMessageCircle" />
           {{ topic.commentCount }}
         </nuxt-link>
 
         <!-- View -->
-        <nuxt-link :to="`/topics/${topic.slug || topic.id}`"
+        <nuxt-link :to="`/topics/${topic?.slug || topic.id}`"
           class="flex items-center gap-1 hover:text-gray-400 transition-colors">
           <Icon name="IcRoundRemoveRedEye" />
           {{ topic.viewCount }}
@@ -92,10 +92,14 @@ type Props = {
 }
 const props = defineProps<Props>()
 const topic = props.topic
+// if (!topic.slug) {
+//   console.log("bug", topic)
+// }
 
 const author = computed(() => topic.user)
 
 function slugHash(str: string): number {
+  if (!str) return 0
   let h = 0
   for (let i = 0; i < str.length; i++) {
     h = (h << 5) - h + str.charCodeAt(i)
@@ -130,7 +134,7 @@ const borderColors = [
   'border-cyan-500',
 ]
 
-const colorIndex = slugHash(topic.forum.slug) % labelColors.length || 0
+const colorIndex = slugHash(topic?.forum?.slug) % labelColors.length || 0
 
 async function likeTopic() {
   try {
@@ -139,7 +143,7 @@ async function likeTopic() {
       return
     }
 
-    const slug = topic.slug
+    const slug = topic?.slug
     if (topic.liked) {
       await api.removeTopicReaction(slug)
       topic.liked = false

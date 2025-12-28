@@ -16,7 +16,7 @@
         <AvatarEdit
           v-if="isSelf"
           :src="user.avatar"
-          :username="user.nickname"
+          :username="user.username"
           :size="128"
           :rounded="false"
           class="w-full h-full block object-cover"
@@ -25,7 +25,7 @@
         <Avatar
           v-else
           :src="user.avatar"
-          :username="user.nickname"
+          :username="user.username"
           :size="128"
           :rounded="false"
           class="w-full h-full block object-cover" />

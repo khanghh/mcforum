@@ -15,7 +15,7 @@
                 <div class="flex items-center gap-2 flex-wrap">
                   <nuxt-link :to="`/users/${comment.user.username}`"
                     class="font-bold text-purple-300 hover:text-purple-400 transition-colors">
-                    {{ comment.user.nickname }}
+                    {{ comment.user.username }}
                   </nuxt-link>
                   <span class="text-xs text-gray-500">{{ usePrettyDate(comment.createTime) }}</span>
                   <span v-if="comment.ipLocation" class="text-xs text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded">
@@ -72,7 +72,7 @@
                   </span>
                   <nuxt-link :to="`/users/${replyTo.username}`"
                     class="font-bold text-sm text-purple-300 hover:text-purple-400 transition-colors">
-                    {{ replyTo.nickname }}
+                    {{ replyTo.username }}
                   </nuxt-link>
                 </div>
                 <CommentTextEditor v-model="myReply.input" :height="100" @submit="submitReply(comment)" />

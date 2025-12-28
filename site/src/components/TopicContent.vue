@@ -7,7 +7,7 @@
         :placeholder="$t('form.placeholder.enter_post_title')" />
     </div>
     <div class="control">
-      <markdown-editor
+      <MarkdownEditor
         v-model="topic.content"
         :placeholder="$t('form.placeholder.enter_post_content')" />
     </div>
@@ -16,7 +16,13 @@
     </div>
   </div>
   <div v-else>
-    <h1 v-if="topic.title" class="topic-title" itemprop="headline">
+    <h1 class="text-3xl font-bold mb-6 text-white gaming-title" itemprop="headline">
+      <span v-if="topic.sticky" class="text-red-500 mr-2" title="Sticky Post">
+        <Icon name="TablerPin" />
+      </span>
+      <span v-if="topic.recommend" class="text-yellow-500 mr-2" title="Recommended">
+        <Icon name="TablerStar" />
+      </span>
       {{ topic.title }}
     </h1>
 

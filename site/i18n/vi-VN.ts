@@ -157,6 +157,7 @@ export default {
     liked_topic: 'đã thích {topic} của bạn',
     liked_comment: 'đã thích bình luận của bạn',
     follow_you: 'bắt đầu theo dõi bạn',
+    following_user_create_topic: 'đã đăng một {topic} mới',
     recommended_topic: 'đã đề xuất {topic} của bạn',
     deleted_topic: 'chủ đề của bạn đã bị xóa bởi quản trị viên',
     messages: 'Tin nhắn',
