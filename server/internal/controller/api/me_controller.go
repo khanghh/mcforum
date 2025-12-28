@@ -27,11 +27,6 @@ func (c *MeController) Get() *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 	profile := payload.BuildUserProfile(user)
-	profile.Settings = payload.UserSettings{
-		LockedProfile: user.LockedProfile,
-		ShowLocation:  user.ShowLocation,
-		EmailNotify:   user.EmailNotify,
-	}
 	return web.JsonData(profile)
 }
 
@@ -291,4 +286,24 @@ func (c *MeController) GetMessages() *web.JsonResult {
 	service.MessageService.MarkRead(user.ID)
 
 	return web.JsonCursorData(payload.BuildMessages(list), nextCursor, hasMore)
+}
+
+func (c *MeController) PutStatus() *web.JsonResult {
+	var msgBody struct {
+		Message string `json:"message"`
+	}
+	if err := c.Ctx.ReadJSON(&msgBody); err != nil {
+		return web.JsonError(errs.ErrBadRequest)
+	}
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+	if len(msgBody.Message) > constants.StatusMessageMaxLength {
+		return web.JsonError(errs.NewBadRequestError(locale.T("user.status_max_length_exceeded")))
+	}
+	if err := service.UserService.UpdateStatusMessage(user.ID, msgBody.Message); err != nil {
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	return web.JsonSuccess()
 }

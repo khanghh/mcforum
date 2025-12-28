@@ -287,8 +287,8 @@ func (s *userService) UpdateNickname(userId int64, nickname string) error {
 }
 
 // UpdateDescription update description
-func (s *userService) UpdateDescription(userId int64, description string) error {
-	return s.UpdateColumn(userId, "description", description)
+func (s *userService) UpdateStatusMessage(userId int64, msg string) error {
+	return s.UpdateColumn(userId, "status_message", msg)
 }
 
 // UpdateGender update gender

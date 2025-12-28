@@ -6,7 +6,7 @@ const (
 	CommentSummaryLen            = 128 // Summary length
 	UploadMaxM                   = 10
 	UploadMaxBytes         int64 = 1024 * 1024 * 1024 * UploadMaxM
-	CookieTokenKey               = "bbsgo_token"
+	CookieTokenKey               = "sid"
 	BioMaxLength                 = 200
 	NicknameMaxLength            = 50
 	StatusMessageMaxLength       = 100

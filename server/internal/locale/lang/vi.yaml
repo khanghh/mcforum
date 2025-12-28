@@ -4,15 +4,8 @@ nav.followed: Theo dõi
 
 system.user: "Hệ thống"
 
-user.not_found: "Người dùng không tồn tại"
-user.points.adjustment_must_be_positive: "Điểm phải là số dương"
-
-forum.not_found: "Forum không tồn tại"
-
-comment.not_found: "Bình luận không tồn tại"
-comment.deleted: "Bình luận đã bị xóa"
-
-points.added_for_comment: "bình luận"
+points.adjustment_must_be_positive: "Điểm phải là số dương"
+points.points_added_for_comment: "bình luận"
 
 message.title.liked_your_comment: "Đã thích bình luận của bạn"
 message.title.liked_your_topic: "Đã thích bài viết của bạn"
@@ -22,17 +15,18 @@ message.title.topic_added_to_recommended_list: "Chủ đề đã được thêm 
 message.title.topic_recommended: "Chủ đề đã được thêm vào đề xuất"
 message.title.topic_favorited: "Đã thêm chủ đề của bạn vào danh sách yêu thích"
 message.title.started_following_you: "Đã bắt đầu theo dõi bạn"
+message.title.posted_a_topic: "Đã đăng một chủ đề"
 
 topic.title_required: "Tiêu đề không thể bỏ trống"
 topic.title_max_length_exceeded: "Tiêu đề không quá 128 ký tự"
 topic.content_required: "Nội dung không thể bỏ trống"
 topic.not_editable: "Chủ đề này không thể chỉnh sửa"
 topic.mark_recommended: "Chủ đề đã được thêm vào đề xuất"
-topic.forum_not_exists: "Diễn đàn không tồn tại"
 topic.prohibited_word_in_title: "Tiêu đề bài viết chứ ký tự bị cấm"
 topic.prohibited_word_in_content: "Nội dung bài viết chứa ký tự bị cấm"
 topic.not_found: "Chủ đề không tồn tại"
-topic.invalid_forum: ""
+topic.forum_required: "Chuyên mục không thể  bỏ trống"
+topic.forum_not_exists: "Chuyên mục không tồn tại"
 
 system.ban_reason: "Lý do cấm: $0"
 system.not_found: "Không tìm thấy"
@@ -57,13 +51,14 @@ system.email_already_verified: "Bạn đã xác thực email rồi"
 system.invalid_entity: "Đối tượng không hợp lệ"
 system.comment_content_required: "Nội dung bình luận không thể bỏ trống"
 
-errors.unauthorized: "Bạn cần đăng nhập để tiếp tục"
-errors.forbidden: "Hành động bị cấm"
-errors.not_found: "Không tìm thấy"
-errors.internal_server_error: "Lỗi máy chủ nội bộ"
-errors.invalid_request: "Yêu cầu không hợp lệ"
+errors.forum_not_found: "Chuyên mục không tồn tại"
+errors.topic_not_found: "Chủ đề không tồn tại"
+errors.comment_not_found: "Bình luận không tồn tại"
+errors.comment_deleted: "Bình luận đã bị xóa"
+errors.user_not_found: "Người dùng không tồn tại"
 
 user.bio_max_length_exceeded: "Bio không được vượt quá 200 ký tự"
 user.nickname_required: "Nickname không thể bỏ trống"
 user.nickname_max_length_exceeded: "Nickname không được vượt quá 50 ký tự"
 user.location_max_length_exceeded: "Vị trí không được vượt quá 100 ký tự"
+user.status_max_length_exceeded: "Trạng thái không được vượt quá 100 ký tự"

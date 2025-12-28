@@ -25,6 +25,7 @@ type UsersController struct {
 // User details
 func (c *UsersController) GetBy(username string) *web.JsonResult {
 	user := cache.UserCache.GetByUsername(username)
+
 	if user != nil && user.IsActive {
 		return web.JsonData(payload.BuildUserDetail(user))
 	}

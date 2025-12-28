@@ -13,53 +13,53 @@ import (
 	"bbs-go/sqls"
 )
 
-// UserInfo user simple info
+// UserInfo is public user info
 type UserInfo struct {
-	Id            int64      `json:"id"`
-	Type          int        `json:"type"`
-	Username      string     `json:"username"`
-	Nickname      string     `json:"nickname"`
-	Avatar        string     `json:"avatar"`
-	SmallAvatar   string     `json:"smallAvatar"`
-	Gender        string     `json:"gender"`
-	Birthday      *time.Time `json:"birthday"`
-	TopicCount    int        `json:"topicCount"`   // topic count
-	CommentCount  int        `json:"commentCount"` // comment count
-	FansCount     int        `json:"fansCount"`    // fans count
-	FollowCount   int        `json:"followCount"`  // follow count
-	Score         int        `json:"score"`        // score
-	Bio           string     `json:"bio"`
-	StatusMessage string     `json:"statusMessage"`
-	CreateTime    int64      `json:"createTime"`
+	Id            int64  `json:"id"`                      // User ID
+	Type          int    `json:"type"`                    // User type
+	Username      string `json:"username"`                // Username
+	Nickname      string `json:"nickname"`                // Display name
+	Role          string `json:"role,omitempty"`          // User role name
+	Avatar        string `json:"avatar"`                  // Avatar URL
+	SmallAvatar   string `json:"smallAvatar"`             // Small avatar URL
+	Bio           string `json:"bio,omitempty"`           // User bio
+	StatusMessage string `json:"statusMessage,omitempty"` // Status message
+	CreateTime    int64  `json:"createTime"`              // Account creation timestamp
 
-	Forbidden   bool `json:"forbidden"`   // whether banned
-	IsFollowing bool `json:"isFollowing"` // whether following
+	Forbidden   bool `json:"forbidden,omitempty"`   // Whether the user is banned
+	IsFollowing bool `json:"isFollowing,omitempty"` // Whether the current user is following this user
+}
+
+// UserDetail is detailed user info public based on user settings
+type UserDetail struct {
+	UserInfo
+	Gender               string     `json:"gender,omitempty"`               // User gender
+	Birthday             *time.Time `json:"birthday,omitempty"`             // User birthday
+	TopicCount           int        `json:"topicCount"`                     // Number of topics created
+	CommentCount         int        `json:"commentCount"`                   // Number of comments made
+	FansCount            int        `json:"fansCount"`                      // Number of fans
+	FollowCount          int        `json:"followCount"`                    // Number of users followed
+	Score                int        `json:"score"`                          // User score
+	BackgroundImage      string     `json:"backgroundImage,omitempty"`      // Background image URL
+	SmallBackgroundImage string     `json:"smallBackgroundImage,omitempty"` // Small background image URL
+	Location             string     `json:"location,omitempty"`             // User location
+}
+
+// UserProfile is private user profile only visible to themselves
+type UserProfile struct {
+	UserDetail
+	PasswordSet   bool         `json:"passwordSet"`        // Whether password is set
+	Email         string       `json:"email"`              // User email
+	EmailVerified bool         `json:"emailVerified"`      // Whether email is verified
+	JoinTime      int64        `json:"joinTime"`           // Account join timestamp
+	IsActive      bool         `json:"isActive"`           // Whether account is active
+	Settings      UserSettings `json:"settings,omitempty"` // User settings
 }
 
 type UserSettings struct {
-	LockedProfile bool `json:"lockedProfile"` // Locked profile
-	ShowLocation  bool `json:"showLocation"`  // Show location
-	EmailNotify   bool `json:"emailNotify"`   // Email notifications
-}
-
-// UserDetail user detailed info
-type UserDetail struct {
-	UserInfo
-	BackgroundImage      string `json:"backgroundImage"`
-	SmallBackgroundImage string `json:"smallBackgroundImage"`
-	Location             string `json:"location"`
-}
-
-// UserProfile user personal info
-type UserProfile struct {
-	UserDetail
-	Role          string       `json:"role,omitempty"`
-	PasswordSet   bool         `json:"passwordSet"` // password set
-	Email         string       `json:"email"`
-	EmailVerified bool         `json:"emailVerified"`
-	JoinTime      int64        `json:"joinTime"`
-	IsActive      bool         `json:"isActive"`
-	Settings      UserSettings `json:"settings,omitempty"`
+	LockedProfile bool `json:"lockedProfile"` // Whether profile is locked
+	ShowLocation  bool `json:"showLocation"`  // Whether to show location
+	EmailNotify   bool `json:"emailNotify"`   // Whether to receive email notifications
 }
 
 func BuildUserInfoDefaultIfNull(id int64) *UserInfo {
@@ -79,18 +79,16 @@ func BuildUserInfo(user *model.User) *UserInfo {
 	if user == nil {
 		return nil
 	}
+	roleName := ""
+	if user.Role != nil {
+		roleName = user.Role.Name
+	}
 	ret := &UserInfo{
 		Id:            user.ID,
 		Type:          user.Type,
 		Username:      user.Username.String,
 		Nickname:      user.Nickname,
-		Gender:        user.Gender,
-		Birthday:      user.Birthday,
-		TopicCount:    user.TopicCount,
-		CommentCount:  user.CommentCount,
-		FansCount:     user.FansCount,
-		FollowCount:   user.FollowCount,
-		Score:         user.Score,
+		Role:          roleName,
 		Bio:           user.Bio,
 		StatusMessage: user.StatusMessage,
 		CreateTime:    user.CreateTime,
@@ -107,7 +105,6 @@ func BuildUserInfo(user *model.User) *UserInfo {
 	if !user.IsActive {
 		ret.Nickname = "Unknown"
 		ret.Bio = ""
-		ret.Score = 0
 		ret.Forbidden = true
 	}
 	return ret
@@ -119,6 +116,13 @@ func BuildUserDetail(user *model.User) *UserDetail {
 	}
 	ret := &UserDetail{
 		UserInfo:             *BuildUserInfo(user),
+		Gender:               user.Gender,
+		Birthday:             user.Birthday,
+		TopicCount:           user.TopicCount,
+		CommentCount:         user.CommentCount,
+		FansCount:            user.FansCount,
+		FollowCount:          user.FollowCount,
+		Score:                user.Score,
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
 		Location:             user.Location,
@@ -130,17 +134,18 @@ func BuildUserProfile(user *model.User) *UserProfile {
 	if user == nil {
 		return nil
 	}
-	userRole := ""
-	if user.Role != nil {
-		userRole = user.Role.Name
-	}
 	ret := &UserProfile{
 		UserDetail:    *BuildUserDetail(user),
 		Email:         user.Email.String,
 		EmailVerified: user.EmailVerified,
 		PasswordSet:   len(user.Password) > 0,
+		JoinTime:      user.CreateTime,
 		IsActive:      user.IsActive,
-		Role:          userRole,
+		Settings: UserSettings{
+			LockedProfile: user.LockedProfile,
+			ShowLocation:  user.ShowLocation,
+			EmailNotify:   user.EmailNotify,
+		},
 	}
 	return ret
 }
