@@ -33,7 +33,11 @@ type PublishTopicArgs struct {
 	IPAddress   string
 }
 
-func (s topicService) checkArgs(args PublishTopicArgs) (err error) {
+func (s *topicService) checkImageURL(url string) bool {
+	return true
+}
+
+func (s *topicService) checkArgs(args PublishTopicArgs) (err error) {
 	if strs.IsBlank(args.Title) {
 		return errs.NewBadRequestError(locale.T("topic.title_required"))
 	}

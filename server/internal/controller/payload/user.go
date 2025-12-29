@@ -124,7 +124,9 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		Score:                user.Score,
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
-		Location:             user.Location,
+	}
+	if user.ShowLocation {
+		ret.Location = user.Location
 	}
 	return ret
 }

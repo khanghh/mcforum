@@ -13,6 +13,23 @@ import (
 	"bbs-go/common/strs"
 )
 
+type TopicEditResponse struct {
+	Id            int64               `json:"id"`
+	Slug          string              `json:"slug"`
+	Type          constants.TopicType `json:"type"`
+	User          *UserInfo           `json:"user"`
+	Forum         *ForumResponse      `json:"forum"`
+	Tags          []string            `json:"tags"`
+	Title         string              `json:"title"`
+	Summary       string              `json:"summary"`
+	Content       string              `json:"content"`
+	HiddenContent string              `json:"hiddenContent"`
+	ImageList     []ImageInfo         `json:"imageList"`
+	ViewCount     int64               `json:"viewCount"`
+	CreateTime    int64               `json:"createTime"`
+	Status        int                 `json:"status"`
+}
+
 // topic list response entity
 type TopicResponse struct {
 	Id              int64               `json:"id"`
@@ -119,6 +136,37 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		} else {
 			rsp.Content = html.EscapeString(topic.Content)
 		}
+		rsp.ImageList = BuildImageList(topic.ImageList)
+	}
+
+	if topic.ForumId > 0 {
+		node := service.ForumService.Get(topic.ForumId)
+		rsp.Forum = BuildForum(node)
+	}
+
+	rsp.Tags = service.TopicService.GetTopicTags(topic.ID)
+
+	return rsp
+}
+
+func BuildTopicEdit(topic *model.Topic) *TopicEditResponse {
+	if topic == nil {
+		return nil
+	}
+
+	rsp := &TopicEditResponse{}
+
+	rsp.Id = topic.ID
+	rsp.Type = topic.Type
+	rsp.Slug = fmt.Sprintf("%s.%s", topic.Slug, base62.Encode(topic.ID))
+	rsp.Title = topic.Title
+	rsp.User = BuildUserInfoDefaultIfNull(topic.UserID)
+	rsp.CreateTime = topic.CreateTime
+	rsp.Status = topic.Status
+	// build content
+	if topic.Type == constants.TopicTypeTopic {
+		rsp.Content = topic.Content
+		rsp.HiddenContent = topic.HideContent
 		rsp.ImageList = BuildImageList(topic.ImageList)
 	}
 

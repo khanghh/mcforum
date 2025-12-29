@@ -11,6 +11,7 @@ import (
 
 	"bbs-go/common/dates"
 	"bbs-go/common/strs"
+	"bbs-go/common/urls"
 	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
 
@@ -113,7 +114,7 @@ func (s *topicService) Undelete(id int64) error {
 }
 
 // Update
-func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, content, hideContent string) error {
+func (s *topicService) Edit(topicId, forumId int64, tags []string, title, content, hideContent string, images []string) error {
 	if title == "" {
 		return errors.New(locale.T("topic.edit.title_required"))
 	}
@@ -132,9 +133,10 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, slug, 
 		if err = repository.TopicRepository.Updates(sqls.DB(), topicId, map[string]interface{}{
 			"forum_id":     forumId,
 			"title":        title,
-			"slug":         slug,
+			"slug":         urls.GenerateSlug(title),
 			"content":      content,
 			"hide_content": hideContent,
+			"images":       images,
 		}); err != nil {
 			return err
 		}
@@ -436,7 +438,7 @@ func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
 func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) error {
 	topic := s.Get(topicId)
 	if topic == nil || topic.Status != constants.StatusActive {
-		return errors.New(locale.T("topic.not_found"))
+		return errors.New(locale.T("topic._not_found"))
 	}
 	if topic.Recommended == recommended { // Recommended status not changed
 		return nil

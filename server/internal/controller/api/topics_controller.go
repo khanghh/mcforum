@@ -39,6 +39,14 @@ func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error)
 	return topic, nil
 }
 
+func (c *TopicsController) getTopicById(base62Id string) (*model.Topic, error) {
+	topicId := base62.Decode(base62Id)
+	cnd := sqls.NewCnd().
+		Eq("id", topicId).
+		NotEq("status", constants.StatusDeleted)
+	return service.TopicService.FindOne(cnd), nil
+}
+
 // POST /topics -> create topic
 func (c *TopicsController) Post() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
@@ -125,9 +133,9 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
-// GET /topics/{slug}/edit
-func (c *TopicsController) GetByEdit(slugId string) *web.JsonResult {
-	topic, err := c.getTopicBySlugId(slugId)
+// GET /topics/edit/{id}
+func (c *TopicsController) GetEditBy(base62Id string) *web.JsonResult {
+	topic, err := c.getTopicById(base62Id)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
@@ -137,44 +145,38 @@ func (c *TopicsController) GetByEdit(slugId string) *web.JsonResult {
 		return web.JsonError(errs.ErrForbidden)
 	}
 
-	if topic.Status == constants.StatusReview && !user.IsOwnerOrAdmin() {
-		return web.JsonErrorMsg(locale.T("topic.not_editable"))
-	}
-
-	// revision := params.FormValueInt64Default(c.Ctx, "revision", 0)
-
-	tags := service.TopicService.GetTopicTags(topic.ID)
-	return web.NewEmptyRspBuilder().
-		Put("id", topic.ID).
-		Put("forumId", topic.ForumId).
-		Put("title", topic.Title).
-		Put("content", topic.Content).
-		Put("tags", tags).
-		JsonResult()
+	return web.JsonData(payload.BuildTopicEdit(topic))
 }
 
-// PUT /topics/{slug} // edit topic
-func (c *TopicsController) PutBy(slugId string) *web.JsonResult {
-	topic, err := c.getTopicBySlugId(slugId)
+// PUT /topics/edit/{id} // edit topic
+func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
+	topic, err := c.getTopicById(base62Id)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if err := service.UserService.CheckPostStatus(user); err != nil {
-		return web.JsonErrorCode(iris.StatusForbidden, err)
-	}
-
-	if topic.UserID != user.ID && !user.IsOwnerOrAdmin() {
+	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserID != user.ID) {
 		return web.JsonError(errs.ErrForbidden)
 	}
 
-	topic.ForumId = params.FormValueInt64Default(c.Ctx, "forumId", topic.ForumId)
-	topic.Title = strings.TrimSpace(params.FormValueDefault(c.Ctx, "title", topic.Title))
-	topic.Content = strings.TrimSpace(params.FormValueDefault(c.Ctx, "content", topic.Content))
-	tags := params.FormValueStringArray(c.Ctx, "tags")
+	if err := service.UserService.CheckPostStatus(user); err != nil {
+		return web.JsonError(errs.ErrForbidden)
+	}
 
-	err = service.TopicService.Edit(topic.ID, topic.ForumId, tags, topic.Title, topic.Slug, topic.Content, topic.HideContent)
+	form := payload.GetCreateTopicForm(c.Ctx)
+	if err := spam.CheckTopicForm(user, form); err != nil {
+		return web.JsonError(err)
+	}
+	err = service.TopicService.Edit(
+		topic.ID,
+		form.ForumID,
+		form.Tags,
+		form.Title,
+		form.Content,
+		form.HiddenContent,
+		form.Images,
+	)
 	if err != nil {
 		return web.JsonError(err)
 	}
