@@ -50,7 +50,7 @@
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
       <div class="relative z-10">
-        <TopicForm v-model="postForm" :forums="forums" @htmlChanged="handleHtmlChange" />
+        <TopicForm v-model="postForm" :forums="forums" @onHtmlChanged="handleHtmlChange" @onSubmit="createTopic" />
       </div>
     </div>
 
@@ -112,6 +112,8 @@ import 'md-editor-v3/lib/style.css'
 
 const i18n = useI18n()
 const userStore = useUserStore()
+const dialog = useConfirmDialog()
+const api = useApi()
 
 definePageMeta({
   middleware: 'auth',
@@ -133,6 +135,20 @@ const postForm = ref<CreateTopicPayload>({
 
 function handleHtmlChange(html: string) {
   previewHTML.value = html
+}
+
+function createTopic(payload: CreateTopicPayload) {
+  return api.createTopic(payload).then((topic) => {
+    return Promise.resolve(navigateTo(`/topics/${topic.slug}`))
+  }).catch(async (error: any) => {
+    const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
+    console.error('Error creating topic:', error)
+    dialog.show({
+      title: 'Error Creating Topic',
+      message: `${errMsg}`,
+      variant: 'warning',
+    })
+  })
 }
 
 useHead({

@@ -9,10 +9,10 @@
         </div>
         <h1
           class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
-          Create New Topic
+          Edit Topic
         </h1>
       </div>
-      <nuxt-link to="/topics"
+      <nuxt-link to="/"
         class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50">
         <Icon name="Fa7SolidArrowLeft" class="mr-2" />
         <span>Back to Forum</span>
@@ -50,7 +50,7 @@
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
       <div class="relative z-10">
-        <TopicForm v-model="postForm" @onHtmlChanged="handleHtmlChange" editMode />
+        <TopicForm v-model="postForm" editMode @onHtmlChanged="handleHtmlChange" @onSubmit="saveChanges" />
       </div>
     </div>
 
@@ -113,7 +113,7 @@ import 'md-editor-v3/lib/style.css'
 
 const i18n = useI18n()
 const route = useRoute()
-const userStore = useUserStore()
+const dialog = useConfirmDialog()
 const api = useApi()
 
 definePageMeta({
@@ -149,6 +149,21 @@ const postForm = ref<CreateTopicPayload>({
 
 function handleHtmlChange(html: string) {
   previewHTML.value = html
+}
+
+function saveChanges(payload: CreateTopicPayload) {
+  return api.updateTopic(topicId, payload).then((topic) => {
+    return Promise.resolve(navigateTo(`/topics/${topic.slug}`))
+  }).catch(async (error: any) => {
+    const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
+    console.error('Error updating topic:', error)
+    dialog.show({
+      title: 'Error Updating Topic',
+      message: `${errMsg}`,
+      variant: 'warning',
+    })
+  })
+
 }
 
 useHead({

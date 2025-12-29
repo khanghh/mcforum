@@ -16,8 +16,13 @@
     </div>
 
     <!-- Notification for pending posts -->
-    <div v-if="isPending" class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
-      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.post_under_review') }}
+    <div v-if="topic.status == TopicStatus.Pending"
+      class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
+      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.topic_under_review') }}
+    </div>
+    <div v-if="topic.status == TopicStatus.Hidden"
+      class="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200">
+      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.topic_waiting_for_deletion') }}
     </div>
 
     <!-- Original Post -->
@@ -70,6 +75,12 @@
         </div>
 
         <TopicContent :topic="topic" />
+        <div v-if="topic.tags && topic.tags.length" class="flex flex-wrap gap-2 mb-6">
+          <nuxt-link v-for="tag in topic.tags" :key="tag" :to="`/tags/${tag}`"
+            class="px-3 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors">
+            #{{ tag }}
+          </nuxt-link>
+        </div>
 
         <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
           <div class="flex items-center gap-4">
@@ -119,6 +130,7 @@
 
 <script setup>
 import TopicContent from '~/components/topics/TopicContent.vue'
+import { TopicStatus } from '~/types'
 
 const i18n = useI18n()
 const route = useRoute()

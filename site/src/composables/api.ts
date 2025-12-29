@@ -290,6 +290,8 @@ export const useApi = () => {
     // topics api endpoints
     getTopic,
     createTopic,
+    getEditTopic,
+    updateTopic,
     getTopicsByTag,
     deleteTopic,
     setTopicFlags,
@@ -297,8 +299,6 @@ export const useApi = () => {
     addTopicComment,
     addTopicReaction,
     removeTopicReaction,
-    getEditTopic,
-    updateTopic,
     rejectTopic,
     approveTopic,
 

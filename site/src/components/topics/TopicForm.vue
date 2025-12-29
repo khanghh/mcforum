@@ -250,17 +250,17 @@
 
     <!-- Action Buttons - Full Width -->
     <div class="full-width-section flex flex-col sm:flex-row justify-end items-center gap-4 pt-4">
-      <nuxt-link to="/topics"
-        class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 flex items-center justify-center">
+      <nuxt-link to="/"
+        class="px-8 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium border border-gray-700 flex items-center justify-center transition-colors gaming-title">
         <Icon name="Fa7SolidTimes" class="mr-2" />
         Cancel
       </nuxt-link>
       <button type="button" :disabled="publishing"
-        @click="createTopic"
-        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3),0_0_25px_rgba(139,92,246,0.2)] gaming-title tracking-[0.5px] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+        @click="publishTopic"
+        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3),0_0_25px_rgba(139,92,246,0.2)] tracking-[0.5px] transition-all hover:scale-[1.02] gaming-title ">
         <Icon v-if="!publishing" name="Fa7SolidPaperPlane" class="mr-2" />
         <Icon v-else name="TablerLoader2" class="mr-2 animate-spin" />
-        {{ publishing ? 'Publishing...' : 'Post Topic' }}
+        {{ publishing ? ('Publishing...') : (editMode ? 'Save Changes' : 'Create Topic') }}
       </button>
     </div>
   </form>
@@ -282,12 +282,16 @@ type Forum = {
 
 const props = defineProps({
   modelValue: {
-    type: Object as () => CreateTopicPayload,
+    type: Object as PropType<CreateTopicPayload>,
     required: true,
   },
   editMode: {
     type: Boolean,
     default: false,
+  },
+  onSubmit: {
+    type: Function as PropType<(v: CreateTopicPayload) => Promise<void>>,
+    default: async () => { },
   },
 })
 
@@ -302,6 +306,7 @@ forums.value = await useApi().getForumList().catch(() => [])
 const emits = defineEmits([
   'update:modelValue',
   'onHtmlChanged',
+  'onSubmit'
 ])
 
 // Function to handle poll checkbox toggle
@@ -332,19 +337,12 @@ const pollDurationOptions = [
   { value: 0, label: 'No limit' },
 ]
 
-async function createTopic() {
-  try {
-    const topic = await api.createTopic(postForm)
-    navigateTo(`/topics/${topic.slug}`)
-  } catch (error: any) {
-    const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
-    dialog.show({
-      title: 'Error Creating Topic',
-      message: `${errMsg}`,
-      variant: 'warning',
-    })
-    console.error('Error creating topic:', error)
-  }
+function publishTopic() {
+  publishing.value = true
+  return props.onSubmit(props.modelValue).finally(() => {
+    publishing.value = false
+  })
+
 }
 
 function addPollOption() {
