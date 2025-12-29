@@ -49,7 +49,7 @@ func sendTopicLikedNotification(topicId, likeUserId int64) {
 		QuoteContent: topic.GetTitle(),
 		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.ID),
 		Type:         msg.TypeTopicLike,
-		ExtraData: &msg.TopicLikeExtraData{
+		ExtraData: &msg.TopicEventExtraData{
 			TopicId: topic.ID,
 			UserId:  likeUserId,
 		},

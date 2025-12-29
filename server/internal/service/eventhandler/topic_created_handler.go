@@ -45,8 +45,9 @@ func handleTopicCreatedEvent(i interface{}) {
 				Type:      msg.TypeFollowingUserCreateTopic,
 				Title:     "message.title.posted_a_topic",
 				DetailUrl: bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
-				ExtraData: &msg.TopicRecommendExtraData{
+				ExtraData: &msg.TopicEventExtraData{
 					TopicId: e.Topic.ID,
+					UserId:  e.Topic.UserID,
 				},
 			})
 		}

@@ -10,29 +10,21 @@ type Type int
 
 // Message type
 const (
-	TypeTopicComment             Type = 0
-	TypeCommentReply             Type = 1
-	TypeTopicLike                Type = 2
-	TypeTopicFavorite            Type = 3
-	TypeTopicRecommend           Type = 4
-	TypeTopicDelete              Type = 5
-	TypeUserFollow               Type = 6
-	TypeCommentLike              Type = 7
-	TypeFollowingUserCreateTopic Type = 8
+	TypeTopicComment             Type = 1
+	TypeCommentReply             Type = 2
+	TypeTopicLike                Type = 3
+	TypeTopicFavorite            Type = 4
+	TypeTopicRecommend           Type = 5
+	TypeTopicPinned              Type = 6
+	TypeTopicDelete              Type = 7
+	TypeUserFollow               Type = 8
+	TypeCommentLike              Type = 9
+	TypeFollowingUserCreateTopic Type = 10
 )
 
-type TopicLikeExtraData struct {
+type TopicEventExtraData struct {
 	TopicId int64 `json:"topicId,omitempty"`
 	UserId  int64 `json:"userId,omitempty"`
-}
-
-type TopicFavoriteExtraData struct {
-	TopicId int64 `json:"topicId,omitempty"`
-	UserId  int64 `json:"userId,omitempty"`
-}
-
-type TopicRecommendExtraData struct {
-	TopicId int64 `json:"topicId,omitempty"`
 }
 
 type CommentExtraData struct {

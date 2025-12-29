@@ -12,7 +12,6 @@ var (
 	m         sync.RWMutex
 	eventPool *ants.PoolWithFunc
 	handlers  map[reflect.Type][]func(i interface{})
-	// wg        sync.WaitGroup
 )
 
 func init() {
@@ -31,16 +30,12 @@ func dispatch(i interface{}) {
 	}
 	for _, handler := range handlerList {
 		handler(i)
-		// wg.Done()
 	}
 }
 
 func Send(e interface{}) {
 	if err := eventPool.Invoke(e); err != nil {
-		slog.Error(err.Error(), slog.Any("err", err))
-	} else {
-		// wg.Add(len(getHandlerList(e)))
-		// wg.Wait()
+		slog.Error("Fail to send event", "event", e, "error", err)
 	}
 }
 
@@ -62,7 +57,7 @@ func getHandlerList(i interface{}) []func(i interface{}) {
 	if ok {
 		return handlerList
 	} else {
-		slog.Error("No task handler found", slog.String("type", t.String()))
+		slog.Error("No event handler found", slog.String("type", t.String()))
 		return nil
 	}
 }

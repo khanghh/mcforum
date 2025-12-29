@@ -188,16 +188,16 @@ func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
-func (c *TopicsController) setTopicPinned(topicId int64, pinned bool) (*web.JsonResult, error) {
-	err := service.TopicService.SetTopicPinned(topicId, pinned)
+func (c *TopicsController) setTopicPinned(userID int64, topicID int64, pinned bool) (*web.JsonResult, error) {
+	err := service.TopicService.SetTopicPinned(userID, topicID, pinned)
 	if err != nil {
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
 }
 
-func (c *TopicsController) setTopicRecommended(topicId int64, recommended bool) (*web.JsonResult, error) {
-	err := service.TopicService.SetTopicRecommended(topicId, recommended)
+func (c *TopicsController) setTopicRecommended(userID int64, topicID int64, recommended bool) (*web.JsonResult, error) {
+	err := service.TopicService.SetTopicRecommended(userID, topicID, recommended)
 	if err != nil {
 		return nil, err
 	}
@@ -225,10 +225,10 @@ func (c *TopicsController) PatchBy(slugId string) (*web.JsonResult, error) {
 	}
 
 	if patch.Pinned != nil {
-		return c.setTopicPinned(topic.ID, *patch.Pinned)
+		return c.setTopicPinned(user.ID, topic.ID, *patch.Pinned)
 	}
 	if patch.Recommended != nil {
-		return c.setTopicRecommended(topic.ID, *patch.Recommended)
+		return c.setTopicRecommended(user.ID, topic.ID, *patch.Recommended)
 	}
 
 	return nil, errs.ErrBadRequest
@@ -282,7 +282,8 @@ func (c *TopicsController) PostByRestore(slugId string) *web.JsonResult {
 	if err := service.TopicService.Restore(topic.ID); err != nil {
 		return web.JsonError(errs.ErrInternalServer)
 	}
-	return web.JsonSuccess()
+	topic.Status = constants.StatusActive
+	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
 // POST /topics/{slugId}/reactions

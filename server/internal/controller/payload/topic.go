@@ -136,7 +136,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		} else {
 			rsp.Content = html.EscapeString(topic.Content)
 		}
-		rsp.ImageList = BuildImageList(topic.ImageList)
+		rsp.ImageList = BuildImageList(topic.Images)
 	}
 
 	if topic.ForumId > 0 {
@@ -167,7 +167,7 @@ func BuildTopicEdit(topic *model.Topic) *TopicEditResponse {
 	if topic.Type == constants.TopicTypeTopic {
 		rsp.Content = topic.Content
 		rsp.HiddenContent = topic.HideContent
-		rsp.ImageList = BuildImageList(topic.ImageList)
+		rsp.ImageList = BuildImageList(topic.Images)
 	}
 
 	if topic.ForumId > 0 {

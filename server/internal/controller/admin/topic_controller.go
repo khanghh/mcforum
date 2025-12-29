@@ -47,7 +47,7 @@ func (c *TopicController) PostRecommend() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	err = service.TopicService.SetTopicRecommended(id, true)
+	err = service.TopicService.SetTopicRecommended(0, id, true)
 	if err != nil {
 		return web.JsonError(err)
 	}
@@ -60,7 +60,7 @@ func (c *TopicController) DeleteRecommend() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	err = service.TopicService.SetTopicRecommended(id, false)
+	err = service.TopicService.SetTopicRecommended(0, id, false)
 	if err != nil {
 		return web.JsonError(err)
 	}

@@ -54,6 +54,11 @@ type CommentCreatedEvent struct {
 }
 
 type TopicRecommendedEvent struct {
-	Topic       *model.Topic
-	Recommended bool
+	UserID int64
+	Topic  *model.Topic
+}
+
+type TopicPinedEvent struct {
+	UserID int64
+	Topic  *model.Topic
 }

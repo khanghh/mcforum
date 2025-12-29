@@ -33,7 +33,7 @@ func sendTopicFavoriteMsg(topicId, favoriteUserId int64) {
 		Title:        locale.T("message.title.topic_favorited"),
 		QuoteContent: topic.GetTitle(),
 		Type:         msg.TypeTopicFavorite,
-		ExtraData: &msg.TopicFavoriteExtraData{
+		ExtraData: &msg.TopicEventExtraData{
 			TopicId: topicId,
 			UserId:  favoriteUserId,
 		},

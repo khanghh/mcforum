@@ -106,8 +106,8 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 	return err
 }
 
-// Undelete Restore
-func (s *topicService) Undelete(id int64) error {
+// Restore Restore
+func (s *topicService) Restore(id int64) error {
 	err := repository.TopicRepository.UpdateColumn(sqls.DB(), id, "status", constants.StatusActive)
 	if err == nil {
 		// Restore topic tags
@@ -426,49 +426,66 @@ func (s *topicService) GetPinnedTopics(forumId int64, limit int) []model.Topic {
 	}
 }
 
-func (s *topicService) SetTopicPinned(topicId int64, pinned bool) error {
+func (s *topicService) SetTopicPinned(userID int64, topicID int64, pinned bool) error {
+	topic := s.Get(topicID)
+	if topic == nil {
+		return errs.ErrTopicNotFound
+	}
+	if topic.Pinned == pinned {
+		return nil
+	}
 	if pinned {
-		return s.Updates(topicId, map[string]interface{}{
-			"pinned":      true,
+		if err := s.Updates(topicID, map[string]interface{}{
+			"pinned":      pinned,
 			"pinned_time": dates.NowTimestamp(),
+		}); err != nil {
+			return err
+		}
+		event.Send(event.TopicPinedEvent{
+			UserID: userID, // user who performed the action
+			Topic:  topic,
 		})
 	} else {
-		return s.Updates(topicId, map[string]interface{}{
-			"pinned": false,
-		})
+		if err := s.Updates(topicID, map[string]interface{}{
+			"pinned":      pinned,
+			"pinned_time": 0,
+		}); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 // Recommend
-func (s *topicService) SetTopicRecommended(topicId int64, recommended bool) error {
-	topic := s.Get(topicId)
-	if topic == nil || topic.Status != constants.StatusActive {
-		return errors.New(locale.T("topic._not_found"))
+func (s *topicService) SetTopicRecommended(userID int64, topicID int64, recommended bool) error {
+	topic := s.Get(topicID)
+	if topic == nil {
+		return errs.ErrTopicNotFound
 	}
-	if topic.Recommended == recommended { // Recommended status not changed
+	if topic.Recommended == recommended {
 		return nil
 	}
+
 	if recommended {
-		if err := s.Updates(topicId, map[string]interface{}{
+		if err := s.Updates(topicID, map[string]interface{}{
 			"recommended":      recommended,
 			"recommended_time": dates.NowTimestamp(),
 		}); err != nil {
 			return err
 		}
+		event.Send(event.TopicRecommendedEvent{
+			UserID: userID, // user who performed the action
+			Topic:  topic,
+		})
 	} else {
-		if err := s.UpdateColumn(topicId, "recommended", recommended); err != nil {
+		if err := s.Updates(topicID, map[string]interface{}{
+			"recommended":      recommended,
+			"recommended_time": 0,
+		}); err != nil {
 			return err
 		}
 	}
-
-	// Send event
-	event.Send(event.TopicRecommendedEvent{
-		Topic:       topic,
-		Recommended: recommended,
-	})
-
-	// Add index
-	search.UpdateTopicIndex(s.Get(topicId))
 
 	return nil
 }
@@ -535,7 +552,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 	}
 
 	if len(args.Images) > 0 {
-		topic.ImageList = strings.Join(args.Images, ",")
+		topic.Images = strings.Join(args.Images, ",")
 	}
 
 	if args.IsPending || s.isNeedReview(&args) {

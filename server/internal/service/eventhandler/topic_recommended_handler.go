@@ -14,20 +14,23 @@ func init() {
 }
 
 func handleTopicRecommend(i interface{}) {
-	e := i.(event.TopicRecommendedEvent)
+	e, ok := i.(event.TopicRecommendedEvent)
+	if !ok {
+		return
+	}
 
-	if !e.Recommended {
+	if e.Topic.UserID == e.UserID {
 		return
 	}
 
 	service.MessageService.SendMsg(service.SendMessageArgs{
-		FromId:       0,
+		FromId:       e.UserID,
 		ToId:         e.Topic.UserID,
 		Title:        locale.T("message.title.topic_recommended"),
 		QuoteContent: e.Topic.GetTitle(),
 		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 		Type:         msg.TypeTopicRecommend,
-		ExtraData: &msg.TopicRecommendExtraData{
+		ExtraData: &msg.TopicEventExtraData{
 			TopicId: e.Topic.ID,
 		},
 	})

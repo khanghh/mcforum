@@ -80,7 +80,6 @@ func sendReplyCommentNotification(e *event.CommentCreatedEvent) {
 			QuoteId:  e.Comment.QuoteID,
 		},
 	})
-
 }
 
 func sendQuoteCommentNofitication(e *event.CommentCreatedEvent) {
