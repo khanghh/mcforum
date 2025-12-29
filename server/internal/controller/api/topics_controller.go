@@ -6,6 +6,7 @@ import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/spam"
+	"log/slog"
 	"strings"
 
 	"bbs-go/common/base62"
@@ -56,6 +57,14 @@ func (c *TopicsController) Post() *web.JsonResult {
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
 	}
+	pendingCount, err := service.TopicService.GetPendingTopicCount(user.ID)
+	if err != nil {
+		slog.Error("check pending topic failed:", "error", err)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	if pendingCount > constants.MaxPendingReviewTopics {
+		return web.JsonErrorMsg(locale.T("topic.pending_review_exceeded"))
+	}
 
 	form := payload.GetCreateTopicForm(c.Ctx)
 	if err := spam.CheckTopicForm(user, form); err != nil {
@@ -73,7 +82,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 		HideContent: form.HiddenContent,
 		Tags:        form.Tags,
 		Images:      form.Images,
-		IsPending:   !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin),
+		IsPending:   !user.IsManagerRole(),
 		UserAgent:   utils.GetUserAgent(c.Ctx.Request()),
 		IPAddress:   utils.GetRequestIP(c.Ctx.Request()),
 	})
@@ -120,11 +129,7 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 	// 审核中文章控制展示
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if topic.Status == constants.StatusReview {
-		if user != nil {
-			if topic.UserID != user.ID && !user.IsOwnerOrAdmin() {
-				return web.JsonError(errs.ErrForbidden)
-			}
-		} else {
+		if user == nil || topic.UserID != user.ID || !user.IsManagerRole() {
 			return web.JsonError(errs.ErrForbidden)
 		}
 	}
@@ -141,7 +146,7 @@ func (c *TopicsController) GetEditBy(base62Id string) *web.JsonResult {
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserID != user.ID) {
+	if user == nil || topic.UserID != user.ID || !user.IsManagerRole() {
 		return web.JsonError(errs.ErrForbidden)
 	}
 
@@ -156,7 +161,7 @@ func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || (!user.IsOwnerOrAdmin() && topic.UserID != user.ID) {
+	if user == nil || topic.UserID != user.ID || !user.IsManagerRole() {
 		return web.JsonError(errs.ErrForbidden)
 	}
 
@@ -307,17 +312,23 @@ func (c *TopicsController) PostByComments(slugId string) (*web.JsonResult, error
 	}
 
 	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized), nil
+	}
+
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err), nil
+	}
+
+	if topic.Status != constants.StatusActive {
+		if !user.IsManagerRole() || topic.UserID != user.ID {
+			return web.JsonError(errs.ErrForbidden), nil
+		}
 	}
 
 	form := payload.GetCreateCommentForm(c.Ctx)
 	if err := spam.CheckComment(user, form); err != nil {
 		return web.JsonError(err), nil
-	}
-
-	if topic.Status != constants.StatusActive && !user.IsOwnerOrAdmin() && topic.UserID != user.ID {
-		return web.JsonError(errs.ErrForbidden), nil
 	}
 
 	comment, err := service.CommentService.CreateComment(service.CreateCommentArgs{

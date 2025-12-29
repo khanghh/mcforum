@@ -13,6 +13,7 @@ const (
 	ForumTitleMaxLength          = 50
 	TopicTitleMaxLength          = 128
 	LocationMaxLength            = 100
+	MaxPendingReviewTopics       = 3 // Maximum number of pending review topics per user
 )
 
 // System config
@@ -51,9 +52,9 @@ const (
 
 // User roles
 const (
-	RoleOwner = "owner" // Owner
-	RoleAdmin = "admin" // Admin
-	RoleUser  = "user"  // User
+	RoleOwner     = "owner"     // Owner
+	RoleAdmin     = "admin"     // Admin
+	RoleModerator = "moderator" // Moderator
 )
 
 // Action types

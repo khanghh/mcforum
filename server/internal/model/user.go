@@ -139,9 +139,9 @@ func (u *User) HasAnyRole(roleNames ...string) bool {
 	return false
 }
 
-// IsOwnerOrAdmin whether owner or admin
-func (u *User) IsOwnerOrAdmin() bool {
-	return u.HasAnyRole(constants.RoleOwner, constants.RoleAdmin)
+// IsManagerRole whether owner, admin, or moderator
+func (u *User) IsManagerRole() bool {
+	return u.HasAnyRole(constants.RoleOwner, constants.RoleAdmin, constants.RoleModerator)
 }
 
 // InObservationPeriod whether in observation period

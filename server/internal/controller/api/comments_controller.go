@@ -22,6 +22,10 @@ type CommentsController struct {
 
 func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err)
 	}
@@ -44,8 +48,10 @@ func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	if topic.Status != constants.StatusActive && !user.IsOwnerOrAdmin() && topic.UserID != user.ID {
-		return web.JsonError(errs.ErrForbidden)
+	if topic.Status != constants.StatusActive {
+		if !user.IsManagerRole() || topic.UserID != user.ID {
+			return web.JsonError(errs.ErrForbidden)
+		}
 	}
 
 	parentId := parent.ID

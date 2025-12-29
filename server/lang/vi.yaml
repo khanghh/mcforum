@@ -27,6 +27,7 @@ topic.prohibited_word_in_content: "Nội dung bài viết chứa ký tự bị c
 topic.not_found: "Chủ đề không tồn tại"
 topic.forum_required: "Chuyên mục không thể  bỏ trống"
 topic.forum_not_exists: "Chuyên mục không tồn tại"
+topic.pending_review_exceeded: "Bạn có quá nhiều chủ đề đang chờ duyệt"
 
 system.ban_reason: "Lý do cấm: $0"
 system.not_found: "Không tìm thấy"
