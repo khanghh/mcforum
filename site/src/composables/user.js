@@ -21,3 +21,7 @@ export function userIsOwner(user) {
 export function userIsAdmin(user) {
   return userHasRole(user, 'admin')
 }
+
+export function userIsManager(user) {
+  return userHasAnyRole(user, 'owner', 'admin', 'moderator')
+}

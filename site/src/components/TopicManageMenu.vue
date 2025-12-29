@@ -14,46 +14,52 @@
         class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
         <div class="py-1">
 
-          <button v-if="isOwnerOrAdmin && isPending"
+          <button v-if="isManagerRole && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; approveTopic()">
             <Icon name="Fa7SolidCheck" class="mr-2" />
             {{ $t('publish.action.approve') }}
           </button>
 
-          <button v-if="isOwnerOrAdmin && isPending"
+          <button v-if="isManagerRole && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; rejectTopic()">
             <Icon name="Fa7SolidTimes" class="mr-2" />
             {{ $t('publish.action.reject') }}
           </button>
 
-          <button v-if="isTopicOwner || isOwnerOrAdmin"
+          <button v-if="isTopicOwner || isManagerRole"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; navigateTo(`/topics/edit/${topicId}`)">
             <Icon name="Fa7SolidEdit" class="mr-2" />
             {{ $t('publish.action.edit') }}
           </button>
 
-          <button v-if="isOwnerOrAdmin && !isPending"
+          <button v-if="isManagerRole && !isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; toggleRecommended()">
             <Icon :name="recommended ? 'PhSealCheckFill' : 'PhSealCheckBold'" class="mr-2" />
             {{ recommended ? $t('publish.action.unrecommend') : $t('publish.action.recommend') }}
           </button>
 
-          <button v-if="isOwnerOrAdmin && !isPending"
+          <button v-if="isManagerRole && !isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; togglePinned()">
             <Icon :name="pinned ? 'TablerPinFilled' : 'TablerPin'" class="mr-2" />
             {{ pinned ? $t('publish.action.unpin') : $t('publish.action.pin') }}
           </button>
 
-          <button v-if="isTopicOwner || isOwnerOrAdmin"
+          <button v-if="!isHidden && (isTopicOwner || isManagerRole)"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; deleteTopic()">
             <Icon name="Fa7SolidTrashCan" class="mr-2" />
             {{ $t('publish.action.delete') }}
+          </button>
+          <button v-if="isHidden && isManagerRole"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; restoreTopic()">
+            <Icon name="Fa7SolidTrashCan" class="mr-2" />
+            {{ $t('publish.action.restore') }}
           </button>
 
         </div>
@@ -90,11 +96,12 @@ const root = ref<HTMLElement | null>(null)
 
 const userStore = useUserStore()
 
-const isOwnerOrAdmin = userIsOwner(userStore.user) || userIsAdmin(userStore.user)
+const isManagerRole = userIsManager(userStore.user)
 const isTopicOwner = computed(() => userStore.user && userStore.user.id === topic.value.user.id)
 const recommended = computed(() => topic.value.recommended)
 const pinned = computed(() => topic.value.pinned)
 const isPending = computed(() => topic.value.status === TopicStatus.PendingReview)
+const isHidden = computed(() => topic.value.status === TopicStatus.Hidden)
 
 function onClickOutside(e: any) {
   if (!root.value) return
@@ -170,6 +177,29 @@ function deleteTopic() {
         }).catch((e) => {
           const errMsg = e.data?.error.message || e.message || e
           const msg = i18n.t('message.delete_failure', { error: errMsg })
+          toast.error(msg)
+        })
+    },
+  })
+}
+
+function restoreTopic() {
+  dialog.show({
+    title: i18n.t('dialog.title.confirm_restore'),
+    message: i18n.t('dialog.message.confirm_restore_post'),
+    confirmText: i18n.t('dialog.button.confirm'),
+    cancelText: i18n.t('dialog.button.cancel'),
+    variant: 'warning',
+    icon: 'Fa7SolidTrashCan',
+    onConfirm() {
+      return api.restoreTopic(topic.value.slug)
+        .then((restoredTopic) => {
+          topic.value = restoredTopic
+          emit('update:modelValue', topic.value)
+          toast.success(i18n.t('message.restore_success'))
+        }).catch((e) => {
+          const errMsg = e.data?.error.message || e.message || e
+          const msg = i18n.t('message.restore_failure', { error: errMsg })
           toast.error(msg)
         })
     },

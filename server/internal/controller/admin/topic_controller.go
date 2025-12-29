@@ -88,7 +88,7 @@ func (c *TopicController) PostUndelete() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(err)
 	}
-	err = service.TopicService.Undelete(id)
+	err = service.TopicService.Restore(id)
 	if err != nil {
 		return web.JsonError(err)
 	}

@@ -260,6 +260,31 @@ func (c *TopicsController) DeleteBy(slugId string) (*web.JsonResult, error) {
 	return web.JsonSuccess(), nil
 }
 
+func (c *TopicsController) PostByRestore(slugId string) *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
+	if !user.IsManagerRole() {
+		return web.JsonError(errs.ErrForbidden)
+	}
+
+	topic, err := c.getTopicBySlugId(slugId)
+	if topic == nil || err != nil {
+		return web.JsonError(errs.ErrTopicNotFound)
+	}
+
+	if topic.Status != constants.StatusDeleted {
+		return web.JsonSuccess()
+	}
+
+	if err := service.TopicService.Restore(topic.ID); err != nil {
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	return web.JsonSuccess()
+}
+
 // POST /topics/{slugId}/reactions
 func (c *TopicsController) PostByReactions(slugId string) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)

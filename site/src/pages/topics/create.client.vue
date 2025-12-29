@@ -24,10 +24,10 @@
       <div class="flex gap-2 border-b border-gray-700/50">
         <button :class="[
           'px-6 py-3 font-medium transition-all duration-200',
-          activeTab === 'create'
+          activeTab === 'form'
             ? 'text-purple-400 border-b-2 border-purple-500'
             : 'text-gray-400 hover:text-gray-300',
-        ]" @click="activeTab = 'create'">
+        ]" @click="activeTab = 'form'">
           <Icon name="Fa7SolidEdit" class="mr-2" />
           Create
         </button>
@@ -44,13 +44,14 @@
     </div>
 
     <!-- Create Tab -->
-    <div v-show="activeTab === 'create'"
+    <div v-show="activeTab === 'form'"
       class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
       <!-- Subtle gradient overlay -->
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
       <div class="relative z-10">
-        <TopicForm v-model="postForm" :forums="forums" @onHtmlChanged="handleHtmlChange" @onSubmit="createTopic" />
+        <TopicForm v-model="postForm" :forums="forums" @onHtmlChanged="handleHtmlChange"
+          :submitCallback="createTopic" />
       </div>
     </div>
 
@@ -119,7 +120,7 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const activeTab = ref('create')
+const activeTab = ref('form')
 const forums = ref<Forum[]>([])
 const previewHTML = ref('')
 const author = computed<UserInfo>(() => userStore.user!!)
@@ -139,11 +140,11 @@ function handleHtmlChange(html: string) {
 
 function createTopic(payload: CreateTopicPayload) {
   return api.createTopic(payload).then((topic) => {
-    return Promise.resolve(navigateTo(`/topics/${topic.slug}`))
+    navigateTo(`/topics/${topic.slug}`)
   }).catch(async (error: any) => {
     const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
     console.error('Error creating topic:', error)
-    dialog.show({
+    return dialog.show({
       title: 'Error Creating Topic',
       message: `${errMsg}`,
       variant: 'warning',

@@ -289,8 +289,8 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  onSubmit: {
-    type: Function as PropType<(v: CreateTopicPayload) => Promise<void>>,
+  submitCallback: {
+    type: Function as PropType<(v: CreateTopicPayload) => Promise<any>>,
     default: async () => { },
   },
 })
@@ -339,10 +339,9 @@ const pollDurationOptions = [
 
 function publishTopic() {
   publishing.value = true
-  return props.onSubmit(props.modelValue).finally(() => {
+  return props.submitCallback(props.modelValue).finally(() => {
     publishing.value = false
   })
-
 }
 
 function addPollOption() {

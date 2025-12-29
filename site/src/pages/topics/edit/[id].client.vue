@@ -50,7 +50,7 @@
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
       <div class="relative z-10">
-        <TopicForm v-model="postForm" editMode @onHtmlChanged="handleHtmlChange" @onSubmit="saveChanges" />
+        <TopicForm v-model="postForm" editMode @onHtmlChanged="handleHtmlChange" :submitCallback="saveChanges" />
       </div>
     </div>
 
@@ -153,11 +153,11 @@ function handleHtmlChange(html: string) {
 
 function saveChanges(payload: CreateTopicPayload) {
   return api.updateTopic(topicId, payload).then((topic) => {
-    return Promise.resolve(navigateTo(`/topics/${topic.slug}`))
+    navigateTo(`/topics/${topic.slug}`)
   }).catch(async (error: any) => {
     const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
     console.error('Error updating topic:', error)
-    dialog.show({
+    return dialog.show({
       title: 'Error Updating Topic',
       message: `${errMsg}`,
       variant: 'warning',
@@ -167,7 +167,7 @@ function saveChanges(payload: CreateTopicPayload) {
 }
 
 useHead({
-  title: useSiteTitle(i18n.t('page.create_topic')),
+  title: useSiteTitle(i18n.t('page.edit_topic')),
 })
 </script>
 

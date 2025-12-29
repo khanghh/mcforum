@@ -188,6 +188,10 @@ export const useApi = () => {
     return useHttpDelete(`/api/topics/${topicSlug}`)
   }
 
+  const restoreTopic = (topicSlug: string): Promise<Topic> => {
+    return useHttpPost(`/api/topics/${topicSlug}/restore`)
+  }
+
   const setTopicFlags = (topicSlug: string, attrs: { recommended?: boolean, pinned?: boolean }): Promise<void> => {
     return useHttpPatch(`/api/topics/${topicSlug}`, { body: { ...attrs } })
   }
@@ -221,7 +225,7 @@ export const useApi = () => {
   }
 
   const updateTopic = (topicId: string, payload: CreateTopicPayload): Promise<Topic> => {
-    return useHttpPut(`/api/topics/${topicId}`, { body: payload })
+    return useHttpPut(`/api/topics/edit/${topicId}`, { body: payload })
   }
 
   const rejectTopic = (topicSlug: string): Promise<void> => {
@@ -294,6 +298,7 @@ export const useApi = () => {
     updateTopic,
     getTopicsByTag,
     deleteTopic,
+    restoreTopic,
     setTopicFlags,
     getTopicComments,
     addTopicComment,
