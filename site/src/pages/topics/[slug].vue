@@ -71,10 +71,11 @@
           </div>
 
           <!-- Manage Menu -->
-          <TopicManageMenu v-model="topic" class="relative z-20" />
+          <TopicManageMenu v-if="canManage" v-model="topic" class="relative z-20" />
         </div>
 
         <TopicContent :topic="topic" />
+
         <div v-if="topic.tags && topic.tags.length" class="flex flex-wrap gap-2 mb-6">
           <nuxt-link v-for="tag in topic.tags" :key="tag" :to="`/tags/${tag}`"
             class="px-3 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors">
@@ -154,6 +155,10 @@ topic.value = await api.getTopic(slug).catch((e) => {
 })
 
 const user = computed(() => userStore.user)
+const canManage = computed(() => {
+  if (!user.value) return false
+  return userIsManager(user.value) || (topic.value && topic.value.user.id === user.value.id)
+})
 
 definePageMeta({
   layout: 'default',
@@ -175,6 +180,7 @@ function calculateLevel(score) {
 }
 
 async function toggleLike() {
+  if (topic.value.status !== TopicStatus.Active) return
   try {
     if (!user.value) return
     if (topic.value.liked) {
@@ -192,6 +198,7 @@ async function toggleLike() {
 }
 
 async function toggleFavorite() {
+  if (topic.value.status !== TopicStatus.Active) return
   try {
     if (topic.value.favorited) {
       await api.setTopicFavorite(topic.value.id, false)

@@ -1,12 +1,6 @@
 <template>
   <article class="mb-6 text-gray-300">
     <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-white gaming-title" itemprop="headline">
-      <span v-if="topic.pinned" class="text-red-500 mr-2" title="Sticky Post">
-        <Icon name="TablerPin" />
-      </span>
-      <span v-if="topic.recommended" class="text-yellow-500 mr-2" title="Recommended">
-        <Icon name="TablerStar" />
-      </span>
       {{ topic.title }}
     </h1>
 
