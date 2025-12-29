@@ -1,4 +1,4 @@
-import type { UserProfile, Topic, Forum, Comment } from '@/types'
+import type { UserProfile, Topic, Forum, Comment, TopicPoll } from '@/types'
 import { useHttpDelete, useHttpGet, useHttpPost } from './http'
 
 export class CursorResult<T extends any[]> {
@@ -50,13 +50,13 @@ export class CursorResult<T extends any[]> {
   }
 }
 
-export type CreateCommentPayload = {
+export interface CreateCommentPayload {
   content: string
   imageList?: string[]
   quoteId?: number
 }
 
-export type UpdateProfilePayload = {
+export interface UpdateProfilePayload {
   nickname?: string
   bio?: string
   location?: string
@@ -65,17 +65,17 @@ export type UpdateProfilePayload = {
   emailNotify?: boolean
 }
 
-export type CreateTopicPayload = {
+export interface CreateTopicPayload {
   forumId: number
   title: string
   content: string
-  tags?: string[]
+  tags: string[]
   imageList?: string[]
-  hideContent?: string
-  poll?: TopicPoll
+  hiddenContent?: string
+  poll?: TopicPollPayload
 }
 
-export type TopicPoll = {
+export interface TopicPollPayload {
   question: string
   options: string[]
   durationHours: number
@@ -216,6 +216,14 @@ export const useApi = () => {
     return useHttpDelete(`/api/topics/${topicSlug}/reactions`)
   }
 
+  const getEditTopic = (topicId: string): Promise<Topic> => {
+    return useHttpGet(`/api/topics/edit/${topicId}`) as Promise<Topic>
+  }
+
+  const updateTopic = (topicId: string, payload: CreateTopicPayload): Promise<Topic> => {
+    return useHttpPut(`/api/topics/${topicId}`, { body: payload })
+  }
+
   const rejectTopic = (topicSlug: string): Promise<void> => {
     return useHttpPost(`/api/topics/${topicSlug}/reject`)
   }
@@ -289,6 +297,8 @@ export const useApi = () => {
     addTopicComment,
     addTopicReaction,
     removeTopicReaction,
+    getEditTopic,
+    updateTopic,
     rejectTopic,
     approveTopic,
 

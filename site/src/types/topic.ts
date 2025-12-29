@@ -34,6 +34,7 @@ export interface Topic {
   title: string
   summary: string
   content: string
+  hiddenContent?: string
   imageList: ImageInfo[]
   lastCommentTime?: number
   viewCount: number
@@ -47,4 +48,26 @@ export interface Topic {
   pinnedTime: number
   status: number
   favorited: boolean
+  poll?: TopicPoll
+}
+
+export interface TopicPollOption {
+  id: number
+  text: string
+  voteCount: number
+  votePercentage: number
+  selected: boolean
+}
+
+export interface TopicPoll {
+  id: number
+  question: string
+  options: TopicPollOption[]
+  totalVotes: number
+  durationHours: number
+  multiSelect: boolean
+  publicResults: boolean
+  allowVoteChange: boolean
+  endTime: number
+  createdTime: number
 }

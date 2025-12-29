@@ -37,7 +37,7 @@
       </div>
 
       <!-- Quick Category Selection -->
-      <div v-if="forums && forums.length" class="mt-3">
+      <div v-if="forums.length" class="mt-3">
         <p class="text-xs text-gray-300 mb-2">Quick select:</p>
         <div class="flex flex-wrap gap-2">
           <button v-for="forum in forums.slice(0, 4)" :key="forum.id" type="button" :class="[
@@ -64,15 +64,7 @@
         </div>
       </div>
 
-      <MarkdownEditor v-model="postForm.content" class="opacity-50" />
-
-      <!-- <MdEditor v-model="postForm.content" class="opacity-50" language="en-US" theme="dark"
-        @onSave="saveTopic"
-        @onUploadImg="handleUploadImage"
-        :preview="false"
-        :toolbarsExclude="['save', 'github', 'catalog', 'previewOnly', 'fullscreen', 'pageFullscreen',]"
-        :maxLength="10000"
-        placeholder="Enter your post content here..." /> -->
+      <MarkdownEditor v-model="postForm.content" @onHtmlChanged="$emit('onHtmlChanged', $event)" class="opacity-50" />
 
       <!-- Content Help -->
       <div
@@ -90,7 +82,7 @@
         <Icon name="Fa7SolidTag" class="mr-2" />
         Tags
       </label>
-      <!-- <TagInput v-model="postForm.tags" /> -->
+      <TagInput v-model="postForm.tags" />
       <p class="text-xs text-gray-400">Add relevant tags to help others find your topic</p>
     </div>
 
@@ -242,12 +234,12 @@
 
       <div v-if="enableHiddenContent" class="space-y-3">
         <div class="relative">
-          <textarea v-model="postForm.hideContent" rows="6"
+          <textarea v-model="postForm.hiddenContent" rows="6"
             class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600/50 transition-colors transition-shadow resize-none font-mono"
             placeholder="This content will be hidden behind a 'Show content' button..."></textarea>
         </div>
         <div class="flex items-center text-xs text-gray-400">
-          <Icon name="Fa7SolidInfoCircle" class="mr-2" />
+          <Icon name="Fa7SolidCircleInfo" class="mr-1" />
           <span>This content will be hidden and only shown when users click the "Show content" button</span>
         </div>
       </div>
@@ -275,8 +267,10 @@
 </template>
 
 <script setup lang="ts">
+
 // import { MdEditor } from 'md-editor-v3'
-import type { TopicPoll, CreateTopicPayload } from '@/composables/api'
+import TagInput from '@/components/topics/TagInput.vue'
+import type { TopicPollPayload, CreateTopicPayload } from '@/composables/api'
 const api = useApi()
 const dialog = useConfirmDialog()
 
@@ -286,35 +280,41 @@ type Forum = {
   slug: string
 }
 
-const props = defineProps<{
-  postForm: CreateTopicPayload
-  publishing: boolean
-  selectedForum: Forum
-}>()
+const props = defineProps({
+  modelValue: {
+    type: Object as () => CreateTopicPayload,
+    required: true,
+  },
+  editMode: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const enablePoll = ref(false)
 const enableHiddenContent = ref(false)
+const publishing = ref(false)
+const postForm = props.modelValue
+const forums = ref<Forum[]>([])
 
-const { data: forums } = useAsyncData('forums', () =>
-  useHttpGet('/api/forums'),
-)
+forums.value = await useApi().getForumList().catch(() => [])
 
-const emit = defineEmits<{
-  createTopic: []
-  saveTopic: []
-}>()
+const emits = defineEmits([
+  'update:modelValue',
+  'onHtmlChanged',
+])
 
 // Function to handle poll checkbox toggle
 function handlePollToggle(enabled: boolean) {
   if (enabled) {
-    props.postForm.poll = { ...pollOpts.value }
+    postForm.poll = { ...pollOpts.value }
   } else {
-    props.postForm.poll = undefined
+    postForm.poll = undefined
   }
 }
 
 // Poll form state
-const pollOpts = ref<TopicPoll>({
+const pollOpts = ref<TopicPollPayload>({
   question: '',
   options: ['', ''],
   durationHours: 7,
@@ -334,7 +334,7 @@ const pollDurationOptions = [
 
 async function createTopic() {
   try {
-    const topic = await api.createTopic(props.postForm)
+    const topic = await api.createTopic(postForm)
     navigateTo(`/topics/${topic.slug}`)
   } catch (error: any) {
     const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
@@ -347,17 +347,10 @@ async function createTopic() {
   }
 }
 
-function saveTopic() {
-}
-
 function addPollOption() {
   if (pollOpts.value.options.length < 10) {
     pollOpts.value.options.push('')
   }
-}
-
-function handleUploadImage(items: any[]) {
-
 }
 
 function removePollOption(index: number) {

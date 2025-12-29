@@ -66,11 +66,10 @@
           </div>
 
           <!-- Manage Menu -->
-          <TopicManageMenu v-model="topic" class="relative z-20" @onSwitchEditMode="onSwitchEditMode" />
+          <TopicManageMenu v-model="topic" class="relative z-20" />
         </div>
 
-        <TopicContent v-model="topic" :editing="topic.editing" />
-
+        <TopicContent :topic="topic" />
 
         <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
           <div class="flex items-center gap-4">
@@ -126,7 +125,6 @@ const route = useRoute()
 const toast = useToast()
 const api = useApi()
 const userStore = useUserStore()
-const dialog = useConfirmDialog()
 
 const slug = route.params.slug
 if (!slug) {
@@ -193,32 +191,6 @@ async function toggleFavorite() {
   } catch (e) {
     const errMsg = e.data?.error?.message || e.message || e
     toast.error(i18n.t('message.opration_failed', { error: errMsg }))
-  }
-}
-
-async function onSwitchEditMode(editing) {
-  if (editing) {
-    return api.getEditTopic(topic.value.slug).then((tmp) => {
-      topic.value.rawContent = tmp.content
-      topic.value.editing = true
-    })
-    // useHttpPutForm(`/api/topics/${topic.value.slug}`, {
-    //   body: {
-    //     forumId: topic.value.forumId,
-    //     title: topic.value.title,
-    //     content: topic.value.content,
-    //     tags: topic.value.tags,
-    //     imageList: [],
-    //   },
-    // }).then((tmp) => {
-    //   topic.value.content = tmp.content
-    //   topic.value.editing = false
-    //   useLinkTo(`/topics/${tmp.slug}`)
-    // }).catch((err) => {
-    //   alert(err)
-    // })
-    topic.value.editing = false
-  } else {
   }
 }
 

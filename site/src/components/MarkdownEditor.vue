@@ -10,8 +10,9 @@
       :class="class"
       :preview="false"
       :maxLength="contentLength"
-      @on-change="change"
-      @on-upload-img="uploadImg" />
+      @onHtmlChanged="handleHtmlChange"
+      @onChange="change"
+      @onUploadImg="uploadImg" />
   </client-only>
 </template>
 
@@ -42,8 +43,7 @@ const contentLength = 10000
 
 const emits = defineEmits([
   'update:modelValue',
-  'update:content',
-  'update:imageList',
+  'htmlChanged',
 ])
 
 const value = ref(props.modelValue)
@@ -52,9 +52,9 @@ const toolbars = ref([
   'bold',
   'underline',
   'italic',
-  '-',
   'title',
   'strikeThrough',
+  '-',
   'sub',
   'sup',
   'quote',
@@ -83,6 +83,10 @@ const toolbars = ref([
 
 function change(v) {
   emits('update:modelValue', v)
+}
+
+function handleHtmlChange(html) {
+  emits('htmlChanged', html)
 }
 
 async function uploadImg(files, callback) {

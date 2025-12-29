@@ -24,12 +24,12 @@
       <div class="flex gap-2 border-b border-gray-700/50">
         <button :class="[
           'px-6 py-3 font-medium transition-all duration-200',
-          activeTab === 'create'
+          activeTab === 'form'
             ? 'text-purple-400 border-b-2 border-purple-500'
             : 'text-gray-400 hover:text-gray-300',
-        ]" @click="activeTab = 'create'">
+        ]" @click="activeTab = 'form'">
           <Icon name="Fa7SolidEdit" class="mr-2" />
-          Create
+          Edit
         </button>
         <button :class="[
           'px-6 py-3 font-medium transition-all duration-200',
@@ -44,16 +44,13 @@
     </div>
 
     <!-- Create Tab -->
-    <div v-show="activeTab === 'create'"
+    <div v-show="activeTab === 'form'"
       class="gradient-border rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-sm shadow-xl shadow-purple-900/10">
       <!-- Subtle gradient overlay -->
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
       <div class="relative z-10">
-        <TopicForm
-          :postForm="postForm"
-          :publishing="publishing"
-          :selectedForum="selectedForum" />
+        <TopicForm v-model="postForm" @onHtmlChanged="handleHtmlChange" editMode />
       </div>
     </div>
 
@@ -64,9 +61,8 @@
       <div class="absolute inset-0 bg-gradient-to-br from-gray-800/20 via-gray-900/30 to-indigo-900/20"></div>
 
       <div class="relative z-10">
-        <TopicPreview
-          :postForm="postForm"
-          :selectedForum="selectedForum" />
+        <TopicPreview :payload="postForm" :author="author" :previewHTML="previewHTML"
+          @onBackToEdit="activeTab = 'form'" />
       </div>
     </div>
 
@@ -108,46 +104,55 @@
 </template>
 
 <script setup lang="ts">
+import type { Topic, Forum } from '@/types'
 import TopicForm from '@/components/topics/TopicForm.vue'
 import TopicPreview from '@/components/topics/TopicPreview.vue'
-import type { Forum } from '@/types'
-import type { CreateTopicPayload } from '@/composables/api'
+import type { CreateTopicPayload, TopicPollPayload } from '@/composables/api'
 
 import 'md-editor-v3/lib/style.css'
 
 const i18n = useI18n()
+const route = useRoute()
+const userStore = useUserStore()
+const api = useApi()
 
 definePageMeta({
   middleware: 'auth',
 })
 
-const route = useRoute()
+const topicId = route.params.id as string
 
-const forumId = parseInt(route.query.forumId as string) || 0
+const activeTab = ref('form')
+const previewHTML = ref('')
+const topic = ref<Topic>({} as Topic)
+const author = computed(() => topic.value.user)
 
-const activeTab = ref('create')
-const selectedForum = ref<Forum>({
-  id: forumId,
-  name: '',
-  slug: '',
+topic.value = await useApi().getEditTopic(topicId).catch((err) => {
+  if (err.statusCode === 404) {
+    throw createError({ statusCode: 404, statusMessage: 'Topic not found' })
+  } else throw err
 })
+
+function getTopicPollPayload() {
+  return null
+}
 
 const postForm = ref<CreateTopicPayload>({
-  forumId: forumId,
-  title: '',
-  tags: [] as string[],
-  content: '',
-  hideContent: '',
-  imageList: [] as string[],
+  forumId: topic.value.forum.id,
+  title: topic.value.title,
+  tags: topic.value.tags,
+  content: topic.value.content,
+  hiddenContent: topic.value.hiddenContent || '',
+  imageList: topic.value.imageList?.map(image => image.url) || [],
+  poll: getTopicPollPayload() || undefined,
 })
 
-const publishing = ref(false)
+function handleHtmlChange(html: string) {
+  previewHTML.value = html
+}
 
 useHead({
   title: useSiteTitle(i18n.t('page.create_topic')),
-  bodyAttrs: {
-    class: 'bg-gaming-bg',
-  },
 })
 </script>
 

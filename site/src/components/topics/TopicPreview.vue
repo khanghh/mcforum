@@ -1,78 +1,108 @@
 <template>
-  <div class="space-y-6">
-    <!-- Preview Header -->
-    <div class="border-b border-gray-700/50 pb-4">
-      <h2 class="gaming-title text-2xl font-bold text-white mb-2">
-        {{ postForm.title || 'Untitled Topic' }}
-      </h2>
-      <div class="flex items-center gap-4 text-sm text-gray-400">
-        <div class="flex items-center gap-2">
-          <Avatar :user="userStore.user" :size="32" class="rounded" />
-          <span>{{ userStore.user?.username || 'Anonymous' }}</span>
-        </div>
-        <span>•</span>
-        <span>{{ new Date().toLocaleDateString() }}</span>
-        <span v-if="selectedForum">•</span>
-        <span v-if="selectedForum" class="text-purple-400">{{ selectedForum.name }}</span>
-      </div>
-      <div v-if="postForm.tags && postForm.tags.length" class="flex flex-wrap gap-2 mt-3">
-        <span v-for="tag in postForm.tags" :key="tag"
-          class="px-3 py-1 bg-purple-900/30 text-purple-300 rounded-full text-xs border border-purple-700/50">
-          {{ tag }}
-        </span>
-      </div>
-    </div>
+  <client-only>
+    <div class="space-y-6">
+      <!-- Preview Header -->
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="relative group">
+            <Avatar :src="author.avatar || '/images/default-avatar.png'"
+              :username="author.username"
+              class="w-12 h-12 rounded border-2 border-purple-500/50 flex-shrink-0 object-cover" />
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <nuxt-link :to="`/users/${author.username}`"
+                class="font-bold text-purple-300 gaming-title text-lg hover:text-purple-400 transition-colors"
+                itemprop="author">
+                {{ author.username }}
+              </nuxt-link>
+              <span
+                class="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-bold rounded uppercase">
+                {{ author.role }}
+              </span>
+            </div>
 
-    <!-- Preview Content -->
-    <div class="prose prose-invert max-w-none">
-      <div v-if="postForm.content" class="text-gray-200" v-html="renderMarkdown(postForm.content)"></div>
-      <div v-else class="text-gray-500 italic">No content to preview</div>
-      <div class="italic">enableHideContent: {{ enabledHideContent }}</div>
-      <div class="italic">enabledPool: {{ enabledPool }}</div>
-    </div>
-
-    <!-- Preview Hidden Content -->
-    <div v-if="hiddenContent" class="mt-6">
-      <div class="p-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg">
-        <div class="flex items-center gap-2 mb-3">
-          <Icon name="Fa7SolidEyeSlash" class="text-yellow-400" />
-          <span class="font-medium text-yellow-300">Hidden Content</span>
+            <div class="text-sm text-gray-500 mt-1">
+              {{ usePrettyDate(Date.now()) }}
+            </div>
+          </div>
         </div>
+      </div>
+
+      <article>
+        <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-white gaming-title" itemprop="headline">
+          {{ payload.title }}
+        </h1>
+        <!-- Preview Content -->
         <div class="prose prose-invert max-w-none">
-          <div class="text-gray-300" v-html="renderMarkdown(postForm.hideContent)"></div>
+          <div v-if="previewHTML" class="text-gray-200" v-html="previewHTML"></div>
+          <div v-else class="text-gray-500 italic">No content to preview</div>
         </div>
+
+        <!-- Preview Hidden Content -->
+        <div v-if="hiddenContent" class="mt-6">
+          <div class="p-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg">
+            <div class="flex items-center gap-2 mb-3">
+              <Icon name="Fa7SolidEyeSlash" class="text-yellow-400" />
+              <span class="font-medium text-yellow-300">Hidden Content</span>
+            </div>
+            <div class="prose prose-invert max-w-none">
+              <div class="text-gray-300" v-html="renderMarkdown(payload.hiddenContent || '')"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="payload.tags && payload.tags.length" class="flex items-center gap-2 flex-wrap mb-3">
+          <a
+            v-for="tag in payload.tags"
+            :key="tag"
+            :href="`/tags/${tag}`"
+            target="_blank"
+            class="px-2 py-0.5 bg-white/3 text-sm text-gray-400 rounded hover:text-gray-300 border border-white/10 hover:bg-white/5 transition-colors">
+            #{{ tag }}
+          </a>
+        </div>
+      </article>
+
+      <!-- Back to Edit Button -->
+      <div class="pt-4 border-t border-gray-700/50">
+        <button
+          class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center"
+          @click="$emit('onBackToEdit')">
+          <Icon name="Fa7SolidArrowLeft" class="mr-2" />
+          Back to Edit
+        </button>
       </div>
     </div>
-
-    <!-- Back to Edit Button -->
-    <div class="pt-4 border-t border-gray-700/50">
-      <button
-        class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center"
-        @click="$emit('switchToCreate')">
-        <Icon name="Fa7SolidArrowLeft" class="mr-2" />
-        Back to Edit
-      </button>
-    </div>
-  </div>
+  </client-only>
 </template>
 
 <script setup lang="ts">
-import type { Forum } from '~/types'
-const props = defineProps<{
-  postForm: any
-  selectedForum: Forum
-}>()
+import type { UserInfo } from '~/types/user'
+const props = defineProps({
+  payload: {
+    type: Object as PropType<CreateTopicPayload>,
+    required: true,
+  },
+  author: {
+    type: Object as PropType<UserInfo>,
+    required: true,
+  },
+  previewHTML: {
+    type: String,
+    required: false,
+  },
+})
+defineEmits(['onBackToEdit'])
 
-const hiddenContent = computed(() => props.postForm.hideContent)
-
-const userStore = useUserStore()
+const hiddenContent = computed(() => props.payload.hiddenContent)
 
 const enabledHideContent = computed(() => {
-  return props.postForm.hideContent && props.postForm.hideContent.length > 0
+  return props.payload.hiddenContent && props.payload.hiddenContent.length > 0
 })
 
 const enabledPool = computed(() => {
-  return props.postForm.poll
+  return props.payload.poll
 })
 
 function renderMarkdown(content: string): string {

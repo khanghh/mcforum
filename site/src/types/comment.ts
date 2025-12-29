@@ -5,12 +5,6 @@ type CommentReplies = {
   hasMore?: boolean
 }
 
-export type CommentCreateForm = {
-  quoteId: number
-  content: string
-  images: string[]
-}
-
 export interface CommentUser {
   id: number
   username: string

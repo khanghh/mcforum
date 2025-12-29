@@ -1,9 +1,8 @@
 <template>
-  <div v-if="isTopicOwner || isOwner || isAdmin" ref="root" class="relative inline-block text-left">
+  <div ref="root" class="relative inline-block text-left">
     <button type="button"
       :class="['gap-2 px-2 py-1 rounded text-sm border border-purple-500/20 hover:bg-purple-600/20', open ? 'bg-purple-600/20' : 'text-purple-300']"
       aria-haspopup="true"
-      :aria-expanded="String(open)"
       :aria-label="$t('publish.manage')"
       @click="open = !open">
       <Icon name="Fa7SolidGear" class="mr-2" />
@@ -15,42 +14,42 @@
         class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
         <div class="py-1">
 
-          <button v-if="(isOwner || isAdmin) && isPending"
+          <button v-if="isOwnerOrAdmin && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; approveTopic()">
             <Icon name="Fa7SolidCheck" class="mr-2" />
             {{ $t('publish.action.approve') }}
           </button>
 
-          <button v-if="(isOwner || isAdmin) && isPending"
+          <button v-if="isOwnerOrAdmin && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; rejectTopic()">
             <Icon name="Fa7SolidTimes" class="mr-2" />
             {{ $t('publish.action.reject') }}
           </button>
 
-          <button v-if="isTopicOwner"
+          <button v-if="isTopicOwner || isOwnerOrAdmin"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="open = false; toggleEditing()">
-            <Icon name="Fa7SolidFileEdit" class="mr-2" />
+            @click="open = false; navigateTo(`/topics/edit/${topicId}`)">
+            <Icon name="Fa7SolidEdit" class="mr-2" />
             {{ $t('publish.action.edit') }}
           </button>
 
-          <button v-if="(isOwner || isAdmin) && !isPending"
+          <button v-if="isOwnerOrAdmin && !isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; toggleRecommended()">
             <Icon :name="recommended ? 'PhSealCheckFill' : 'PhSealCheckBold'" class="mr-2" />
             {{ recommended ? $t('publish.action.unrecommend') : $t('publish.action.recommend') }}
           </button>
 
-          <button v-if="(isOwner || isAdmin) && !isPending"
+          <button v-if="isOwnerOrAdmin && !isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; togglePinned()">
             <Icon :name="pinned ? 'TablerPinFilled' : 'TablerPin'" class="mr-2" />
             {{ pinned ? $t('publish.action.unpin') : $t('publish.action.pin') }}
           </button>
 
-          <button v-if="isTopicOwner || isOwner || isAdmin"
+          <button v-if="isTopicOwner || isOwnerOrAdmin"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; deleteTopic()">
             <Icon name="Fa7SolidTrashCan" class="mr-2" />
@@ -63,8 +62,8 @@
   </div>
 </template>
 
-<script setup>
-import { TopicStatus } from '@/types'
+<script setup lang="ts">
+import { TopicStatus, type Topic } from '@/types'
 const i18n = useI18n()
 const api = useApi()
 const dialog = useConfirmDialog()
@@ -72,30 +71,32 @@ const toast = useToast()
 
 const props = defineProps({
   modelValue: {
-    type: Object,
+    type: Object as PropType<Topic>,
     required: true,
   },
 })
 
 const topic = ref(props.modelValue)
+const topicId = computed(() => {
+  const parts = topic.value.slug.split('.')
+  return parts.length > 1 ? parts[1] : topic.value.id?.toString() || ''
+})
 
-const emit = defineEmits(['update:modelValue', 'onSwitchEditMode'])
+const emit = defineEmits(['update:modelValue'])
 
 // dropdown state
 const open = ref(false)
-const root = ref(null)
+const root = ref<HTMLElement | null>(null)
 
 const userStore = useUserStore()
-const isOwner = userIsOwner(userStore.user)
-const isAdmin = userIsAdmin(userStore.user)
-const isTopicOwner = computed(() => !!userStore.user && !!topic.value && !!topic.value.user && userStore.user.id === topic.value.user.id)
-const editing = computed(() => !!topic.value && !!topic.value.editing)
-const recommended = computed(() => !!topic.value && !!topic.value.recommended)
-const pinned = computed(() => !!topic.value && !!topic.value.pinned)
-const isPending = computed(() => !!topic.value && topic.value.status === TopicStatus.PendingReview)
-// Note: menu actions are called directly from the template now.
 
-function onClickOutside(e) {
+const isOwnerOrAdmin = userIsOwner(userStore.user) || userIsAdmin(userStore.user)
+const isTopicOwner = computed(() => userStore.user && userStore.user.id === topic.value.user.id)
+const recommended = computed(() => topic.value.recommended)
+const pinned = computed(() => topic.value.pinned)
+const isPending = computed(() => topic.value.status === TopicStatus.PendingReview)
+
+function onClickOutside(e: any) {
   if (!root.value) return
   const path = e.composedPath ? e.composedPath() : (e.path || [])
   if (path.length) {
@@ -110,31 +111,47 @@ onMounted(() => window.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
 
 function approveTopic() {
-  const action = i18n.t('publish.action.approve')
-  return api.approveTopic(topic.value.slug)
-    .then(() => {
-      topic.value.status = 'approved'
-      emit('update:modelValue', topic.value)
-      toast.success(i18n.t('message.action_success', { action }))
-    }).catch((e) => {
-      const errMsg = e.data?.error.message || e.message || e
-      const msg = i18n.t('message.action_failure', { action, error: errMsg })
-      toast.error(msg)
-    })
+  dialog.show({
+    title: i18n.t('dialog.title.confirm_approve'),
+    message: i18n.t('dialog.message.confirm_approve_post'),
+    confirmText: i18n.t('dialog.button.confirm'),
+    cancelText: i18n.t('dialog.button.cancel'),
+    variant: 'warning',
+    icon: 'Fa7SolidCheck',
+    onConfirm() {
+      return api.approveTopic(topic.value.slug)
+        .then(() => {
+          topic.value.status = TopicStatus.Active
+          emit('update:modelValue', topic.value)
+        }).catch((e) => {
+          const errMsg = e.data?.error.message || e.message || e
+          const msg = i18n.t('message.action_failure', { error: errMsg })
+          toast.error(msg)
+        })
+    },
+  })
 }
 
 function rejectTopic() {
-  const action = i18n.t('publish.action.reject')
-  return api.rejectTopic(topic.value.slug)
-    .then(() => {
-      topic.value.status = 'rejected'
-      emit('update:modelValue', topic.value)
-      toast.success(i18n.t('message.action_success', { action }))
-    }).catch((e) => {
-      const errMsg = e.data?.error.message || e.message || e
-      const msg = i18n.t('message.action_failure', { action, error: errMsg })
-      toast.error(msg)
-    })
+  dialog.show({
+    title: i18n.t('dialog.title.confirm_reject'),
+    message: i18n.t('dialog.message.confirm_reject_post'),
+    confirmText: i18n.t('dialog.button.confirm'),
+    cancelText: i18n.t('dialog.button.cancel'),
+    variant: 'warning',
+    icon: 'Fa7SolidTrashCan',
+    onConfirm() {
+      return api.deleteTopic(topic.value.slug)
+        .then(() => {
+          toast.success(i18n.t('message.delete_success'))
+          navigateTo(topic.value?.forum?.slug ? `/forums/${topic.value.forum.slug}` : '/')
+        }).catch((e) => {
+          const errMsg = e.data?.error.message || e.message || e
+          const msg = i18n.t('message.delete_failure', { error: errMsg })
+          toast.error(msg)
+        })
+    },
+  })
 }
 
 function deleteTopic() {
@@ -157,18 +174,6 @@ function deleteTopic() {
         })
     },
   })
-}
-
-function toggleEditing() {
-  if (topic.value.editing) {
-    const action = i18n.t('publish.action.edit')
-    useConfirm(i18n.t('dialog.message.confirm_action_post', { action })).then(() => {
-      emit('onSwitchEditMode')
-    })
-  }
-  else {
-    emit('onSwitchEditMode')
-  }
 }
 
 function toggleRecommended() {
