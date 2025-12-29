@@ -25,6 +25,20 @@ type TopicsController struct {
 	Ctx iris.Context
 }
 
+func canViewTopic(user *model.User, topic *model.Topic) error {
+	switch topic.Status {
+	case constants.StatusDeleted:
+		if user == nil || !user.IsManagerRole() {
+			return errs.ErrTopicNotFound
+		}
+	case constants.StatusReview:
+		if user == nil || (topic.UserID != user.ID && !user.IsManagerRole()) {
+			return errs.ErrForbidden
+		}
+	}
+	return nil
+}
+
 func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error) {
 	parts := strings.SplitN(slugId, ".", 2)
 	if len(parts) < 2 {
@@ -32,19 +46,14 @@ func (c *TopicsController) getTopicBySlugId(slugId string) (*model.Topic, error)
 	}
 	topicSlug := parts[0]
 	topicId := base62.Decode(parts[1])
-	cnd := sqls.NewCnd().
-		Eq("slug", topicSlug).
-		Eq("id", topicId).
-		NotEq("status", constants.StatusDeleted)
+	cnd := sqls.NewCnd().Eq("slug", topicSlug).Eq("id", topicId)
 	topic := service.TopicService.FindOne(cnd)
 	return topic, nil
 }
 
 func (c *TopicsController) getTopicById(base62Id string) (*model.Topic, error) {
 	topicId := base62.Decode(base62Id)
-	cnd := sqls.NewCnd().
-		Eq("id", topicId).
-		NotEq("status", constants.StatusDeleted)
+	cnd := sqls.NewCnd().Eq("id", topicId)
 	return service.TopicService.FindOne(cnd), nil
 }
 
@@ -92,21 +101,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 	return web.JsonData(payload.BuildSimpleTopic(topic))
 }
 
-// // 标签帖子列表
-//
-//	func (c *TopicController) GetTagTopics() *web.JsonResult {
-//		var (
-//			cursor     = params.FormValueInt64Default(c.Ctx, "cursor", 0)
-//			tagId, err = params.FormValueInt64(c.Ctx, "tagId")
-//			user       = service.UserTokenService.GetCurrent(c.Ctx)
-//		)
-//		if err != nil {
-//			return web.JsonError(err)
-//		}
-//		topics, cursor, hasMore := service.TopicService.GetTagTopics(tagId, cursor)
-//		return web.JsonCursorData(response.BuildSimpleTopics(topics, user), strconv.FormatInt(cursor, 10), hasMore)
-//	}
-
+// GET /topics?tag={tag}&cursor={cursor}
 func (c *TopicsController) Get(ctx iris.Context) *web.JsonResult {
 	tag := params.FormValueDefault(c.Ctx, "tag", "")
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
@@ -126,12 +121,9 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	// 审核中文章控制展示
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if topic.Status == constants.StatusReview {
-		if user == nil || topic.UserID != user.ID || !user.IsManagerRole() {
-			return web.JsonError(errs.ErrForbidden)
-		}
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err)
 	}
 
 	service.TopicService.IncrViewCount(topic.ID) // 增加浏览量
@@ -140,14 +132,18 @@ func (c *TopicsController) GetBy(slugId string) *web.JsonResult {
 
 // GET /topics/edit/{id}
 func (c *TopicsController) GetEditBy(base62Id string) *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
 	topic, err := c.getTopicById(base62Id)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || topic.UserID != user.ID || !user.IsManagerRole() {
-		return web.JsonError(errs.ErrForbidden)
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err)
 	}
 
 	return web.JsonData(payload.BuildTopicEdit(topic))
@@ -155,18 +151,21 @@ func (c *TopicsController) GetEditBy(base62Id string) *web.JsonResult {
 
 // PUT /topics/edit/{id} // edit topic
 func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+	if err := service.UserService.CheckPostStatus(user); err != nil {
+		return web.JsonError(err)
+	}
+
 	topic, err := c.getTopicById(base62Id)
 	if topic == nil || err != nil {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
 
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || topic.UserID != user.ID || !user.IsManagerRole() {
-		return web.JsonError(errs.ErrForbidden)
-	}
-
-	if err := service.UserService.CheckPostStatus(user); err != nil {
-		return web.JsonError(errs.ErrForbidden)
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err)
 	}
 
 	form := payload.GetCreateTopicForm(c.Ctx)
@@ -216,13 +215,13 @@ func (c *TopicsController) PatchBy(slugId string) (*web.JsonResult, error) {
 		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 
-	if err := c.Ctx.ReadJSON(&patch); err != nil {
-		return web.JsonError(errs.ErrBadRequest), nil
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil || !user.IsManagerRole() {
+		return web.JsonError(errs.ErrForbidden), nil
 	}
 
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil || !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
-		return web.JsonError(errs.ErrForbidden), nil
+	if err := c.Ctx.ReadJSON(&patch); err != nil {
+		return web.JsonError(errs.ErrBadRequest), nil
 	}
 
 	if patch.Pinned != nil {
@@ -238,8 +237,12 @@ func (c *TopicsController) PatchBy(slugId string) (*web.JsonResult, error) {
 // DELETE /topics/{slug}
 func (c *TopicsController) DeleteBy(slugId string) (*web.JsonResult, error) {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if err := service.UserService.CheckPostStatus(user); err != nil {
+	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
+	}
+
+	if err := service.UserService.CheckPostStatus(user); err != nil {
+		return web.JsonError(err), nil
 	}
 
 	topic, err := c.getTopicBySlugId(slugId)
@@ -247,8 +250,8 @@ func (c *TopicsController) DeleteBy(slugId string) (*web.JsonResult, error) {
 		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 
-	if topic.UserID != user.ID && !user.HasAnyRole(constants.RoleAdmin, constants.RoleOwner) {
-		return web.JsonError(errs.ErrForbidden), nil
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err), nil
 	}
 
 	if err := service.TopicService.Delete(topic.ID, user.ID, c.Ctx.Request()); err != nil {
@@ -259,14 +262,23 @@ func (c *TopicsController) DeleteBy(slugId string) (*web.JsonResult, error) {
 
 // POST /topics/{slugId}/reactions
 func (c *TopicsController) PostByReactions(slugId string) (*web.JsonResult, error) {
-	topic, err := c.getTopicBySlugId(slugId)
-	if err != nil {
-		return web.JsonError(errs.ErrTopicNotFound), nil
-	}
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
+	if err := service.UserService.CheckPostStatus(user); err != nil {
+		return web.JsonError(err), nil
+	}
+
+	topic, err := c.getTopicBySlugId(slugId)
+	if err != nil {
+		return web.JsonError(errs.ErrTopicNotFound), nil
+	}
+
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err), nil
+	}
+
 	err = service.UserLikeService.TopicLike(user.ID, topic.ID)
 	if err != nil {
 		return nil, err
@@ -276,14 +288,20 @@ func (c *TopicsController) PostByReactions(slugId string) (*web.JsonResult, erro
 
 // DELETE /topics/{slugId}/reactions
 func (c *TopicsController) DeleteByReactions(slugId string) (*web.JsonResult, error) {
-	topic, err := c.getTopicBySlugId(slugId)
-	if err != nil {
-		return web.JsonError(errs.ErrTopicNotFound), nil
-	}
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
 	}
+
+	topic, err := c.getTopicBySlugId(slugId)
+	if err != nil {
+		return web.JsonError(errs.ErrTopicNotFound), nil
+	}
+
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err), nil
+	}
+
 	err = service.UserLikeService.TopicUnLike(user.ID, topic.ID)
 	if err != nil {
 		return nil, err
@@ -298,32 +316,35 @@ func (c *TopicsController) GetByComments(slugId string) (*web.JsonResult, error)
 		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err), nil
+	}
+
 	comments, cursor, hasMore := service.CommentService.GetComments(topic.ID, cursor, 20)
-	resp := payload.BuildComments(comments, currentUser, true, false)
+	resp := payload.BuildComments(comments, user, true, false)
 	return web.JsonCursorData(resp, cursor, hasMore), nil
 }
 
 // POST /topics/{slugId}/comments
 func (c *TopicsController) PostByComments(slugId string) (*web.JsonResult, error) {
-	topic, err := c.getTopicBySlugId(slugId)
-	if err != nil {
-		return web.JsonError(errs.ErrTopicNotFound), nil
-	}
-
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized), nil
+	}
+
+	topic, err := c.getTopicBySlugId(slugId)
+	if err != nil {
+		return web.JsonError(errs.ErrTopicNotFound), nil
 	}
 
 	if err := service.UserService.CheckPostStatus(user); err != nil {
 		return web.JsonError(err), nil
 	}
 
-	if topic.Status != constants.StatusActive {
-		if !user.IsManagerRole() || topic.UserID != user.ID {
-			return web.JsonError(errs.ErrForbidden), nil
-		}
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err), nil
 	}
 
 	form := payload.GetCreateCommentForm(c.Ctx)

@@ -47,11 +47,8 @@ func (c *CommentsController) PostByReplies(commentId int64) *web.JsonResult {
 	if topic == nil {
 		return web.JsonError(errs.ErrTopicNotFound)
 	}
-
-	if topic.Status != constants.StatusActive {
-		if !user.IsManagerRole() || topic.UserID != user.ID {
-			return web.JsonError(errs.ErrForbidden)
-		}
+	if err := canViewTopic(user, topic); err != nil {
+		return web.JsonError(err)
 	}
 
 	parentId := parent.ID
