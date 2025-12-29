@@ -4,13 +4,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <img src="/images/logo.png" class="w-12 h-12" />
-        <a href="/">
+        <nuxt-link href="/">
           <div
             class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title ">
             MineViet Forum
           </div>
           <div class="hidden md:block text-xs text-purple-300">Minecraft Server Vietnam</div>
-        </a>
+        </nuxt-link>
       </div>
       <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
         <li>
@@ -36,10 +36,10 @@
           </a>
         </li>
         <li v-if="user">
-          <a href="/users/me/messages" class="text-gray-300 hover:text-purple-400 transition-colors">
+          <nuxt-link href="/users/me/messages" class="text-gray-300 hover:text-purple-400 transition-colors">
             <Icon name="TablerMail" class="mr-1" />
             <span class="hidden sm:inline">Tin nhắn</span>
-          </a>
+          </nuxt-link>
         </li>
 
         <li>
