@@ -163,7 +163,6 @@ export default {
     pinned_your_topic: 'đã ghim {topic} của bạn',
     deleted_your_topic: 'chủ đề của bạn đã bị xóa bởi quản trị viên',
     liked_your_comment: 'đã thích bình luận của bạn',
-
     follow_you: 'bắt đầu theo dõi bạn',
     following_user_create_topic: 'đã đăng một {topic} mới',
     recommended_topic: 'đã đề xuất {topic} của bạn',
@@ -200,6 +199,8 @@ export default {
     delete_failure: 'Xóa thất bại. {error}',
     restore_success: 'Khôi phục thành công',
     restore_failure: 'Khôi phục thất bại. {error}',
+    approve_topic_success: 'Phê duyệt thành công',
+    reject_topic_success: 'Từ chối thành công',
     image_size_limit_error: 'Kích thước ảnh không được vượt quá {limit}',
     image_upload_limit: 'Bạn có thể tải lên tối đa {limit} ảnh',
     topic_under_review: 'Bài viết này đang được kiểm duyệt và chờ phê duyệt',
@@ -289,6 +290,8 @@ export default {
       set_new_password: 'Thiết lập Mật khẩu',
       confirm_delete: 'Xác nhận xóa',
       confirm_restore: 'Xác nhận khôi phục',
+      confirm_approve: 'Xác nhận phê duyệt',
+      confirm_reject: 'Xác nhận từ chối',
     },
     message: {
       mute_user: 'Bạn có muốn cấm người dùng này?',
@@ -299,6 +302,8 @@ export default {
       confirm_restore_post: 'Bạn có chắc chắn muốn khôi phục bài viết này?',
       confirm_action_post: 'Bạn có chắc chắn muốn {action} bài viết này?',
       confirm_delete_comment: 'Bạn có chắc chắn muốn xóa bình luận này?',
+      confirm_approve_post: 'Bạn có chắc chắn muốn phê duyệt bài viết này?',
+      confirm_reject_post: 'Bạn có chắc chắn muốn từ chối bài viết này?',
     },
     button: {
       cancel: 'Hủy',

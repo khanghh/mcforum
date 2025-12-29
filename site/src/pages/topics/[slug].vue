@@ -16,7 +16,7 @@
     </div>
 
     <!-- Notification for pending posts -->
-    <div v-if="topic.status == TopicStatus.Pending"
+    <div v-if="topic.status == TopicStatus.PendingReview"
       class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
       <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.topic_under_review') }}
     </div>
@@ -153,7 +153,8 @@ topic.value = await api.getTopic(slug).catch((e) => {
     throw e
   }
 })
-
+console.log('status:', topic.value.status)
+console.log('is pending:', topic.value.status === TopicStatus.PendingReview)
 const user = computed(() => userStore.user)
 const canManage = computed(() => {
   if (!user.value) return false

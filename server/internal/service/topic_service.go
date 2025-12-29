@@ -602,3 +602,28 @@ func (s *topicService) GetPendingTopicCount(userId int64) (int64, error) {
 	}
 	return count, nil
 }
+
+func (s *topicService) ApproveTopic(userID, topicID int64) error {
+	err := repository.TopicRepository.UpdateColumn(sqls.DB(), topicID, "status", constants.StatusActive)
+	if err != nil {
+		return err
+	}
+	event.Send(event.TopicApprovedEvent{
+		UserID:  userID,
+		TopicID: topicID,
+	})
+	return nil
+}
+
+func (s *topicService) RejectTopic(userID, topicID int64, reason string) error {
+	err := repository.TopicRepository.UpdateColumn(sqls.DB(), topicID, "status", constants.StatusDeleted)
+	if err != nil {
+		return err
+	}
+	event.Send(event.TopicRejectedEvent{
+		UserID:  userID,
+		TopicID: topicID,
+		Reason:  reason,
+	})
+	return nil
+}

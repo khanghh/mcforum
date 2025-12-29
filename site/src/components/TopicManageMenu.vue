@@ -118,21 +118,23 @@ onMounted(() => window.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
 
 function approveTopic() {
+  const action = i18n.t('publish.action.approve')
   dialog.show({
     title: i18n.t('dialog.title.confirm_approve'),
     message: i18n.t('dialog.message.confirm_approve_post'),
     confirmText: i18n.t('dialog.button.confirm'),
     cancelText: i18n.t('dialog.button.cancel'),
-    variant: 'warning',
+    variant: 'info',
     icon: 'Fa7SolidCheck',
     onConfirm() {
       return api.approveTopic(topic.value.slug)
         .then(() => {
           topic.value.status = TopicStatus.Active
           emit('update:modelValue', topic.value)
+          toast.success(i18n.t('message.action_success', { action }))
         }).catch((e) => {
           const errMsg = e.data?.error.message || e.message || e
-          const msg = i18n.t('message.action_failure', { error: errMsg })
+          const msg = i18n.t('message.action_failure', { action, error: errMsg })
           toast.error(msg)
         })
     },
@@ -140,6 +142,7 @@ function approveTopic() {
 }
 
 function rejectTopic() {
+  const action = i18n.t('publish.action.reject')
   dialog.show({
     title: i18n.t('dialog.title.confirm_reject'),
     message: i18n.t('dialog.message.confirm_reject_post'),
@@ -150,11 +153,11 @@ function rejectTopic() {
     onConfirm() {
       return api.deleteTopic(topic.value.slug)
         .then(() => {
-          toast.success(i18n.t('message.delete_success'))
+          toast.success(i18n.t('message.action_success', { action }))
           navigateTo(topic.value?.forum?.slug ? `/forums/${topic.value.forum.slug}` : '/')
         }).catch((e) => {
           const errMsg = e.data?.error.message || e.message || e
-          const msg = i18n.t('message.delete_failure', { error: errMsg })
+          const msg = i18n.t('message.action_failure', { action, error: errMsg })
           toast.error(msg)
         })
     },

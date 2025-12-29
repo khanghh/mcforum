@@ -21,7 +21,14 @@ func notifiAdminReviewTopic(topic *model.Topic) {
 }
 
 func handleTopicCreatedEvent(i interface{}) {
-	e := i.(event.TopicCreatedEvent)
+	e, ok := i.(event.TopicCreatedEvent)
+	if !ok {
+		return
+	}
+
+	if e.Topic.Status != constants.StatusActive {
+		return
+	}
 
 	// Points
 	search.UpdateTopicIndex(e.Topic)

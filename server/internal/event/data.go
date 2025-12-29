@@ -18,6 +18,17 @@ type TopicCreatedEvent struct {
 	Topic *model.Topic
 }
 
+type TopicApprovedEvent struct {
+	UserID  int64
+	TopicID int64
+}
+
+type TopicRejectedEvent struct {
+	UserID  int64
+	TopicID int64
+	Reason  string
+}
+
 type TopicDeleteEvent struct {
 	UserId       int64 `json:"userId"`
 	TopicId      int64 `json:"topicId"`

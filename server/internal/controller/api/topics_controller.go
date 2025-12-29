@@ -188,6 +188,56 @@ func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
 	return web.JsonData(payload.BuildTopic(topic, user))
 }
 
+func (c *TopicsController) PostByApprove(slugID string) *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
+	if !user.IsManagerRole() {
+		return web.JsonError(errs.ErrForbidden)
+	}
+
+	topic, err := c.getTopicBySlugId(slugID)
+	if topic == nil || err != nil {
+		return web.JsonError(errs.ErrTopicNotFound)
+	}
+
+	if topic.Status != constants.StatusReview {
+		return web.JsonError(errs.ErrTopicNotUnderReview)
+	}
+	if err := service.TopicService.ApproveTopic(user.ID, topic.ID); err != nil {
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	return web.JsonData(payload.BuildTopic(topic, user))
+}
+
+func (c *TopicsController) PostByReject(slugID string) *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
+	if !user.IsManagerRole() {
+		return web.JsonError(errs.ErrForbidden)
+	}
+
+	topic, err := c.getTopicBySlugId(slugID)
+	if topic == nil || err != nil {
+		return web.JsonError(errs.ErrTopicNotFound)
+	}
+
+	if topic.Status != constants.StatusReview {
+		return web.JsonError(errs.ErrTopicNotUnderReview)
+	}
+
+	reason := params.FormValueDefault(c.Ctx, "reason", "")
+	if err := service.TopicService.RejectTopic(user.ID, topic.ID, reason); err != nil {
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	return web.JsonSuccess()
+}
+
 func (c *TopicsController) setTopicPinned(userID int64, topicID int64, pinned bool) (*web.JsonResult, error) {
 	err := service.TopicService.SetTopicPinned(userID, topicID, pinned)
 	if err != nil {

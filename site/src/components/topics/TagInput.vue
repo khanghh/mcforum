@@ -11,7 +11,7 @@
         class="h-8 px-3 bg-gray-700/60 text-gray-300 rounded-lg text-sm whitespace-nowrap flex items-center gap-1">
         <span class="text-sm">#{{ tag }}</span>
         <button type="button" class="text-gray-400 hover:text-red-500 w-3 h-3 flex items-center justify-center"
-          :data-name="tag" @click="clickRemoveTag">
+          @click="clickRemoveTag(tag)">
           <Icon name="Fa7SolidTimes" class="w-3 h-3"></Icon>
         </button>
       </div>
@@ -60,14 +60,12 @@ function removeTag(event) {
   }
 }
 
-function clickRemoveTag(event) {
-  const tag = event.target.dataset.name
-  if (tag) {
-    const index = tags.value.indexOf(tag)
-    if (index !== -1) {
-      tags.value.splice(index, 1)
-      emits('update:modelValue', tags.value)
-    }
+function clickRemoveTag(tag) {
+  if (!tag) return
+  const index = tags.value.indexOf(tag)
+  if (index !== -1) {
+    tags.value.splice(index, 1)
+    emits('update:modelValue', tags.value)
   }
 }
 

@@ -36,11 +36,12 @@ var (
 )
 
 var (
-	ErrForumNotFound   = ResponseError{iris.StatusNotFound, locale.T("errors.forum_not_found")}
-	ErrTopicNotFound   = ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_found")}
-	ErrCommentNotFound = ResponseError{iris.StatusNotFound, locale.T("errors.comment_not_found")}
-	ErrCommentDeleted  = ResponseError{iris.StatusNotFound, locale.T("errors.comment_deleted")}
-	ErrUserNotFound    = ResponseError{iris.StatusNotFound, locale.T("errors.user_not_found")}
+	ErrForumNotFound       = ResponseError{iris.StatusNotFound, locale.T("errors.forum_not_found")}
+	ErrTopicNotFound       = ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_found")}
+	ErrCommentNotFound     = ResponseError{iris.StatusNotFound, locale.T("errors.comment_not_found")}
+	ErrCommentDeleted      = ResponseError{iris.StatusNotFound, locale.T("errors.comment_deleted")}
+	ErrUserNotFound        = ResponseError{iris.StatusNotFound, locale.T("errors.user_not_found")}
+	ErrTopicNotUnderReview = ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_under_review")}
 )
 
 func IsDatabaseError(err error) bool {
