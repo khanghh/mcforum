@@ -21,7 +21,7 @@
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidUserLarge" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.profile') }}
       </a>
-      <a :href="`/users/${user?.username}/favorites`"
+      <a :href="`/users/me/favorites`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidStar" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.favorites') }}
       </a>

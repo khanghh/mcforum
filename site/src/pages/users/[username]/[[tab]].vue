@@ -36,7 +36,6 @@ definePageMeta({
 
 const i18n = useI18n()
 const route = useRoute()
-const router = useRouter()
 const api = useApi()
 
 const username = route.params.username as string

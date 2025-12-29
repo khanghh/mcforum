@@ -87,20 +87,3 @@ const handleError = () => {
   clearError({ redirect: '/' })
 }
 </script>
-
-<style scoped>
-/* Animated gradient border (reused from gaming themes) */
-@keyframes gradientBorder {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-</style>

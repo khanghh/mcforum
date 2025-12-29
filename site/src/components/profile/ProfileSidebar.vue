@@ -21,7 +21,7 @@
               <Icon name="TablerCalendarPlus" class="text-purple-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.join_date') }}</span>
             </div>
-            <span class="text-sm font-bold gaming-title">{{ formatDate(user.createTime) }}</span>
+            <span class="text-sm font-bold gaming-title">{{ formatDate(user.joinTime) }}</span>
           </div>
           <!-- Mock Data for design completeness -->
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
@@ -38,7 +38,8 @@
             </div>
             <span class="text-sm font-bold gaming-title truncate max-w-[150px]">{{ user.email || 'Hidden' }}</span>
           </div> -->
-          <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
+          <div v-if="user.location"
+            class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerMapPinFilled" class="text-blue-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.location') }}</span>
@@ -140,11 +141,15 @@
 </template>
 
 <script setup>
+const userStore = useUserStore()
 const props = defineProps({
   user: {
     type: Object,
     required: true,
   },
+})
+const isSelf = computed(() => {
+  return userStore.user && userStore.user.id === props.user.id
 })
 
 function formatDate(timestamp) {

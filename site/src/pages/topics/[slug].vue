@@ -24,9 +24,9 @@
     <div
       class="gaming-card rounded-xl p-6 mb-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] relative overflow-hidden">
       <!-- Animated border overlay -->
-      <div
-        class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] animate-[gradientBorder_3s_ease_infinite] opacity-10 pointer-events-none">
-      </div>
+      <!-- <div
+        class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] opacity-10 pointer-events-none">
+      </div> -->
 
       <div class="relative z-10">
         <div class="flex items-center justify-between gap-3 mb-4">
@@ -69,9 +69,7 @@
           <TopicManageMenu v-model="topic" class="relative z-20" @onSwitchEditMode="onSwitchEditMode" />
         </div>
 
-        <div class="prose prose-invert max-w-none mb-6 text-gray-300" itemprop="articleBody">
-          <TopicContent v-model="topic" :editing="topic.editing" />
-        </div>
+        <TopicContent v-model="topic" :editing="topic.editing" />
 
 
         <div class="flex items-center justify-between pt-4 border-t border-purple-500/20">
@@ -93,10 +91,10 @@
 
           <div class="flex items-center gap-2">
             <button class="text-gray-400 hover:text-purple-400 transition-colors">
-              <Icon name="TablerShare3" />
+              <Icon name="Fa7SolidShare" />
             </button>
             <button class="text-gray-400 hover:text-red-400 transition-colors">
-              <Icon name="TablerFlagFilled" />
+              <Icon name="Fa7SolidFlag" />
             </button>
           </div>
         </div>
@@ -121,11 +119,14 @@
 </template>
 
 <script setup>
+import TopicContent from '~/components/topics/TopicContent.vue'
+
 const i18n = useI18n()
 const route = useRoute()
 const toast = useToast()
 const api = useApi()
 const userStore = useUserStore()
+const dialog = useConfirmDialog()
 
 const slug = route.params.slug
 if (!slug) {
@@ -195,30 +196,29 @@ async function toggleFavorite() {
   }
 }
 
-async function onSwitchEditMode() {
-  if (topic.value.editing) {
-    useHttpPutForm(`/api/topics/${topic.value.slug}`, {
-      body: {
-        forumId: topic.value.forumId,
-        title: topic.value.title,
-        content: topic.value.content,
-        tags: topic.value.tags,
-        imageList: [],
-      },
-    }).then((tmp) => {
-      topic.value.content = tmp.content
-      topic.value.editing = false
-      useLinkTo(`/topics/${tmp.slug}`)
-    }).catch((err) => {
-      alert(err)
-    })
-  } else {
-    useHttpGet(`/api/topics/${topic.value.slug}/edit`).then((tmp) => {
-      topic.value.content = tmp.content
+async function onSwitchEditMode(editing) {
+  if (editing) {
+    return api.getEditTopic(topic.value.slug).then((tmp) => {
+      topic.value.rawContent = tmp.content
       topic.value.editing = true
-    }).catch((err) => {
-      alert(err)
     })
+    // useHttpPutForm(`/api/topics/${topic.value.slug}`, {
+    //   body: {
+    //     forumId: topic.value.forumId,
+    //     title: topic.value.title,
+    //     content: topic.value.content,
+    //     tags: topic.value.tags,
+    //     imageList: [],
+    //   },
+    // }).then((tmp) => {
+    //   topic.value.content = tmp.content
+    //   topic.value.editing = false
+    //   useLinkTo(`/topics/${tmp.slug}`)
+    // }).catch((err) => {
+    //   alert(err)
+    // })
+    topic.value.editing = false
+  } else {
   }
 }
 

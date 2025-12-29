@@ -3,9 +3,9 @@
     <!-- Frame Decorations -->
     <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
       <div v-if="roleName"
-        class="bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-0.5 border-2 border-gray-900 flex items-center gap-1">
+        :class="`bg-gradient-to-r ${roleColor} px-2 py-0.5 border-2 border-gray-900 flex items-center gap-1`">
         <Icon v-if="roleIcon" :name="roleIcon" class="text-white text-xs" />
-        <span class="text-white text-xs font-bold gaming-title">{{ roleName }}</span>
+        <span class="text-white text-xs font-bold gaming-title capitalize">{{ roleName }}</span>
       </div>
     </div>
 
@@ -46,16 +46,26 @@ const props = defineProps({
 const emit = defineEmits(['uploaded'])
 
 const roleName = computed(() => props.user.role || '')
+
 const roleIcon = computed(() => {
   switch (props.user.role) {
     case 'owner':
       return 'TablerCrown'
-    case 'admin':
-      return 'TablerShieldCheck'
-    case 'moderator':
-      return 'TablerStar'
     default:
       return null
+  }
+})
+
+const roleColor = computed(() => {
+  switch (props.user.role) {
+    case 'owner':
+      return 'from-amber-500 to-orange-500'
+    case 'admin':
+      return 'from-red-500 to-pink-500'
+    case 'moderator':
+      return 'from-blue-500 to-cyan-500'
+    default:
+      return ''
   }
 })
 </script>

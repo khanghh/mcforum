@@ -1,3 +1,4 @@
+import { type UserInfo } from './user'
 
 export interface ImageInfo {
   url: string
@@ -27,7 +28,7 @@ export interface Topic {
   id: number
   slug: string
   type: TopicType
-  user: any
+  user: UserInfo
   forum: Forum
   tags: string[]
   title: string
