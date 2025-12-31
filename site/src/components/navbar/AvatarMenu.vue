@@ -17,18 +17,18 @@
         </div>
       </div>
       <div class="border-t border-gray-100 my-1"></div>
-      <a :href="`/users/${user?.username}`"
+      <nuxt-link :to="`/users/${user?.username}`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidUserLarge" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.profile') }}
-      </a>
-      <a :href="`/users/me/favorites`"
+      </nuxt-link>
+      <nuxt-link :to="`/users/me/favorites`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidStar" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.favorites') }}
-      </a>
-      <a href="/users/me/profile"
+      </nuxt-link>
+      <nuxt-link :to="`/users/me/profile`"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors">
         <Icon name="Fa7SolidGear" class="mr-2 w-4 text-gray-500" /> {{ $t('navbar.account_settings') }}
-      </a>
+      </nuxt-link>
       <div class="border-t border-gray-100 my-1"></div>
       <button
         class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 transition-colors"

@@ -11,8 +11,14 @@ export enum MessageType {
   FollowingUserCreateTopic = 10,
 }
 
+export enum MessageStatus {
+  StatusUnread = 0,
+  StatusHaveRead = 1,
+}
+
 export interface Message {
   messageId: number
+  type: MessageType,
   from: {
     id: number
     username: string
@@ -25,5 +31,5 @@ export interface Message {
   quoteContent?: string
   detailUrl?: string
   createTime: number
-  status?: number
+  status: MessageStatus
 }

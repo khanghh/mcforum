@@ -87,9 +87,8 @@ func (s *messageService) GetUnReadCount(userId int64) (count int64) {
 }
 
 // MarkRead Mark all messages as read
-func (s *messageService) MarkRead(userId int64) {
-	sqls.DB().Exec("update t_message set status = ? where user_id = ? and status = ?", msg.StatusHaveRead,
-		userId, msg.StatusUnread)
+func (s *messageService) MarkRead(userId int64) error {
+	return repository.MessageRepository.UpdateByUserID(sqls.DB(), userId, "status", msg.StatusHaveRead)
 }
 
 // SendMsg Send a message

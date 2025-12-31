@@ -1,9 +1,11 @@
 <template>
   <div class="w-full">
     <div v-if="empty" class="text-center py-8">
-      <div class="text-gray-500 text-sm font-medium py-4">
-        {{ $t('message.no_data_available') }}
-      </div>
+      <slot name="empty" :items="pageItems">
+        <div class="text-gray-500 text-sm font-medium py-4">
+          {{ $t('message.no_data_available') }}
+        </div>
+      </slot>
     </div>
     <template v-else>
       <slot name="default" :items="pageItems" />

@@ -83,6 +83,11 @@ func (r *messageRepository) UpdateColumn(db *gorm.DB, id int64, name string, val
 	return
 }
 
+func (r *messageRepository) UpdateByUserID(db *gorm.DB, userID int64, name string, value interface{}) (err error) {
+	err = db.Model(&model.Message{}).Where("user_id = ?", userID).UpdateColumn(name, value).Error
+	return
+}
+
 func (r *messageRepository) Delete(db *gorm.DB, id int64) {
 	db.Delete(&model.Message{}, "id = ?", id)
 }

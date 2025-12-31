@@ -97,7 +97,6 @@ import type { Comment, CommentUser } from '@/types'
 const userStore = useUserStore()
 const api = useApi()
 const dialog = useConfirmDialog()
-const { t } = useI18n()
 
 const props = defineProps({
   topicSlug: {

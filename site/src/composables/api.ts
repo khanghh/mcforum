@@ -1,4 +1,4 @@
-import type { UserProfile, Topic, Forum, Comment, TopicPoll } from '@/types'
+import type { UserProfile, Topic, Forum, Comment, Message } from '@/types'
 import { useHttpDelete, useHttpGet, useHttpPost } from './http'
 
 export class CursorResult<T extends any[]> {
@@ -124,8 +124,12 @@ export const useApi = () => {
     return useHttpDelete(`/api/users/me/favorites/${topicId}`)
   }
 
-  const getMessages = (): CursorResult<Comment[]> => {
-    return new CursorResult<Comment[]>('/api/users/me/messages')
+  const getMessages = (): CursorResult<Message[]> => {
+    return new CursorResult<Message[]>('/api/users/me/messages')
+  }
+
+  const getRecentMessages = (): Promise<{ count: number, messages: Message[] }> => {
+    return useHttpGet('/api/users/me/messages/recent') as Promise<{ count: number, messages: Message[] }>
   }
 
   const setStatusMessage = (message: string): Promise<void> => {
@@ -276,6 +280,7 @@ export const useApi = () => {
     getMyTopics,
     setTopicFavorite,
     getMessages,
+    getRecentMessages,
     setStatusMessage,
 
     // other user api endpoints

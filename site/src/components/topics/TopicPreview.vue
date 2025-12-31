@@ -16,7 +16,7 @@
                 itemprop="author">
                 {{ author.username }}
               </nuxt-link>
-              <span
+              <span v-if="author.role"
                 class="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-bold rounded uppercase">
                 {{ author.role }}
               </span>

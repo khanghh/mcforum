@@ -12,7 +12,6 @@ import (
 
 	"bbs-go/common/dates"
 	"bbs-go/common/strs"
-	"bbs-go/pkg/web"
 	"bbs-go/sqls"
 
 	"github.com/kataras/iris/v12"
@@ -53,10 +52,10 @@ func (s *userTokenService) GetCurrent(ctx iris.Context) *model.User {
 	return user
 }
 
-func (s *userTokenService) CheckLogin(ctx iris.Context) (*model.User, *web.CodeError) {
+func (s *userTokenService) CheckLogin(ctx iris.Context) (*model.User, error) {
 	user := s.GetCurrent(ctx)
 	if user == nil {
-		return nil, errs.NotLogin
+		return nil, errs.ErrUnauthorized
 	}
 	return user, nil
 }

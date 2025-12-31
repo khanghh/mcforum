@@ -172,7 +172,7 @@ func (c *MeController) GetFollowingBy(userId int64) *web.JsonResult {
 }
 
 // Get last 3 unread messages
-func (c *MeController) GetMsgrecent() *web.JsonResult {
+func (c *MeController) GetMessages_Recent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	var count int64 = 0
 	var messages []model.Message

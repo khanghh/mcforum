@@ -64,7 +64,8 @@
         </div>
       </div>
 
-      <MarkdownEditor v-model="postForm.content" @onHtmlChanged="$emit('onHtmlChanged', $event)" class="opacity-50" />
+      <MarkdownEditor v-model="postForm.content" @onHtmlChanged="$emit('onHtmlChanged', $event)"
+        class="md-editor-dark-custom" />
 
       <!-- Content Help -->
       <div

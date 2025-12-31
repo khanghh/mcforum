@@ -64,6 +64,9 @@ export default defineNuxtConfig({
       '/api/**': {
         proxy: `http://172.17.0.1:3001/api/**`,
       },
+      '/upload/**': {
+        proxy: `http://172.17.0.1:3001/upload/**`,
+      },
       '/admin/**': {
         proxy: `${import.meta.env.SERVER_URL}/admin/**`,
       },

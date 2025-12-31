@@ -17,6 +17,12 @@ func kebabCasePathWordFunc(path string, w string, index int) string {
 	if index == 0 {
 		return path + strings.ToLower(w)
 	}
+	if strings.HasSuffix(path, "_") {
+		return path[:len(path)-1] + "/" + strings.ToLower(w)
+	}
+	if strings.Contains(path, "_") {
+		path = strings.ReplaceAll(path, "_", "/")
+	}
 
 	return path + "-" + strings.ToLower(w)
 }
