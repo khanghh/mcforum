@@ -4,8 +4,9 @@ import (
 	"bbs-go/internal/cache"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
-	"bbs-go/pkg/bbsurls"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"bbs-go/common/dates"
@@ -74,6 +75,12 @@ func BuildUserInfoDefaultIfNull(id int64) *UserInfo {
 	return BuildUserInfo(user)
 }
 
+func getThumbImagePath(filePath string) string {
+	ext := filepath.Ext(filePath)
+	base := strings.TrimSuffix(filePath, ext)
+	return base + "_thumb" + ext
+}
+
 func BuildUserInfo(user *model.User) *UserInfo {
 	if user == nil {
 		return nil
@@ -87,6 +94,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		Type:          user.Type,
 		Username:      user.Username.String,
 		Nickname:      user.Nickname,
+		Avatar:        user.Avatar,
 		Role:          roleName,
 		Bio:           user.Bio,
 		StatusMessage: user.StatusMessage,
@@ -94,12 +102,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		IsForbidden:   user.IsForbidden(),
 	}
 	if strs.IsNotBlank(user.Avatar) {
-		ret.Avatar = user.Avatar
-		ret.SmallAvatar = HandleOssImageStyleAvatar(user.Avatar)
-	} else {
-		avatar := bbsurls.AbsUrl("/images/avatars/steve.png")
-		ret.Avatar = avatar
-		ret.SmallAvatar = avatar
+		ret.SmallAvatar = getThumbImagePath(user.Avatar)
 	}
 	if !user.IsActive {
 		ret.Nickname = "Unknown"

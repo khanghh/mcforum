@@ -98,11 +98,19 @@ func (c *MeController) DeleteFavoritesBy(topicId int64) (*web.JsonResult, error)
 	return web.JsonSuccess(), nil
 }
 
-// Set background image
-func (c *MeController) PostSetCoverPhoto() *web.JsonResult {
+// Set avatar image
+func (c *MeController) PutAvatar() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
-		return web.JsonError(errs.NotLogin)
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+	return web.JsonSuccess()
+}
+
+func (c *MeController) PutCover() *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
 	}
 	backgroundImage := params.FormValue(c.Ctx, "backgroundImage")
 	if strs.IsBlank(backgroundImage) {

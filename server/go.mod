@@ -11,7 +11,6 @@ require (
 	github.com/dchest/captcha v1.0.0
 	github.com/emirpasic/gods v1.18.1
 	github.com/go-playground/validator/v10 v10.22.1
-	github.com/go-resty/resty/v2 v2.15.0
 	github.com/goburrow/cache v0.1.4
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/ikeikeikeike/go-sitemap-generator/v2 v2.0.2
@@ -69,7 +68,6 @@ require (
 	github.com/blevesearch/zapx/v14 v14.3.10 // indirect
 	github.com/blevesearch/zapx/v15 v15.3.13 // indirect
 	github.com/blevesearch/zapx/v16 v16.1.5 // indirect
-	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect

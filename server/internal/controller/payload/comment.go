@@ -5,7 +5,6 @@ import (
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
-	"bbs-go/pkg/bbsurls"
 	"bbs-go/pkg/markdown"
 	"bbs-go/sqls"
 	"html"
@@ -86,17 +85,15 @@ func buildCommentUserInfo(userId int64) *CommentUserInfo {
 		user.Nickname = "deleted_user"
 		user.CreateTime = dates.NowTimestamp()
 	}
-	var userAvatar string
+	var smallAvatar string
 	if strs.IsNotBlank(user.Avatar) {
-		userAvatar = user.Avatar
-	} else {
-		userAvatar = bbsurls.AbsUrl("/images/avatars/steve.png")
+		smallAvatar = getThumbImagePath(user.Avatar)
 	}
 	return &CommentUserInfo{
 		Id:          user.ID,
 		Username:    user.Username.String,
-		Avatar:      userAvatar,
-		SmallAvatar: HandleOssImageStyleAvatar(userAvatar),
+		Avatar:      user.Avatar,
+		SmallAvatar: smallAvatar,
 		Nickname:    user.Nickname,
 	}
 }

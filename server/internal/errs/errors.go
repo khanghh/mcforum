@@ -13,16 +13,19 @@ type ResponseError struct {
 	message string
 }
 
-func (e ResponseError) Code() int {
-	return e.code
-}
-
 func (e ResponseError) Error() string {
 	return e.message
 }
 
+func NewResponseError(code int, message string) error {
+	return &ResponseError{
+		code:    code,
+		message: message,
+	}
+}
+
 func NewBadRequestError(msg string) error {
-	return ResponseError{
+	return &ResponseError{
 		code:    iris.StatusBadRequest,
 		message: msg,
 	}
