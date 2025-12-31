@@ -6,10 +6,10 @@ AllowedOrigins:
 
 # 日志配置
 Logger:
-  Filename: /data/logs/bbs-go.log   # 日志文件的位置
-  MaxSize: 100                      # 文件最大尺寸（以MB为单位）
-  MaxAge: 10                        # 保留旧文件的最大天数
-  MaxBackups: 10                    # 保留的最大旧文件数量
+  Filename: /data/logs/bbs-go.log # 日志文件的位置
+  MaxSize: 100 # 文件最大尺寸（以MB为单位）
+  MaxAge: 10 # 保留旧文件的最大天数
+  MaxBackups: 10 # 保留的最大旧文件数量
 
 # 数据库连接
 DB:

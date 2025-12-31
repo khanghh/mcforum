@@ -4,8 +4,8 @@ const (
 	DefaultTokenExpireDays       = 7   // Default validity period for user login token
 	SummaryLen                   = 256 // Summary length
 	CommentSummaryLen            = 128 // Summary length
-	UploadMaxM                   = 10
-	UploadMaxBytes         int64 = 1024 * 1024 * 1024 * UploadMaxM
+	UploadMaxMB                  = 10
+	UploadMaxBytes         int64 = UploadMaxMB * 1024 * 1024 * 1024 // 10 MB
 	CookieTokenKey               = "sid"
 	BioMaxLength                 = 200
 	NicknameMaxLength            = 50

@@ -1,16 +1,20 @@
 package service
 
-import "io"
+import (
+	"bbs-go/internal/model"
+	"bbs-go/internal/repository"
+	"bbs-go/sqls"
+)
 
 var UploadService = newUploadService()
+
+type uploadService struct {
+}
 
 func newUploadService() *uploadService {
 	return &uploadService{}
 }
 
-type uploadService struct {
-}
-
-func (s *uploadService) saveStream(r io.Reader) error {
-	return nil
+func (s *uploadService) RecordUpload(upload *model.Upload) error {
+	return repository.UploadRepository.Create(sqls.DB(), upload)
 }

@@ -41,8 +41,6 @@ func NewServer() {
 		}
 	})
 
-	// app.HandleDir("/admin", "./admin")
-
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
 	apiRoute.HandleError(middleware.ErrorHandler)

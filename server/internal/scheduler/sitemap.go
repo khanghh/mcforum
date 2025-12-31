@@ -2,7 +2,7 @@ package scheduler
 
 import (
 	"bbs-go/internal/model/constants"
-	"bbs-go/internal/uploader"
+	"bbs-go/internal/upload"
 	"bbs-go/pkg/bbsurls"
 	"bytes"
 	"compress/gzip"
@@ -47,11 +47,7 @@ func GenerateSiteMap() {
 
 	sm := stm.NewSitemap(0)
 	sm.SetDefaultHost(config.Instance().BaseUrl) // website host
-	if uploader.IsEnabledOss() {
-		sm.SetSitemapsHost(config.Instance().Uploader.AliyunOss.Host) // upload to Aliyun so host set to Aliyun
-	} else {
-		sm.SetPublicPath(config.Instance().Uploader.Local.Host)
-	}
+	sm.SetPublicPath(config.Instance().Uploader.Local.BaseURL)
 	sm.SetSitemapsPath("sitemap") // sitemap storage directory
 	sm.SetVerbose(false)
 	sm.SetPretty(false)
@@ -146,7 +142,7 @@ func (adp *myAdapter) Write(loc *stm.Location, data []byte) {
 
 // OSS write
 func (adp *myAdapter) ossWrite(fileKey string, out []byte) {
-	if _url, err := uploader.PutObject(fileKey, out, ""); err != nil {
+	if _url, err := upload.PutObject(fileKey, out, ""); err != nil {
 		slog.Error("Upload sitemap error:", slog.Any("err", err))
 	} else {
 		slog.Info("Upload sitemap:", slog.String("url", _url))

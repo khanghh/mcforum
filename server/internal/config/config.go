@@ -67,24 +67,15 @@ type Config struct {
 	// Database configuration
 	DB sqls.DbConfig
 
-	// Aliyun OSS configuration
 	Uploader struct {
-		Enable    string
-		AliyunOss struct {
-			Host          string
-			Bucket        string
-			Endpoint      string
-			AccessId      string
-			AccessSecret  string
-			StyleSplitter string
-			StyleAvatar   string
-			StylePreview  string
-			StyleSmall    string
-			StyleDetail   string
+		Enable string
+		Local  struct {
+			BaseURL string
+			RootDir string
 		}
-		Local struct {
-			Host string
-			Path string
+		SUpload struct {
+			UploadURL string
+			Secret    string
 		}
 	}
 

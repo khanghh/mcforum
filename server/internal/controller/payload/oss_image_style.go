@@ -1,54 +1,37 @@
 package payload
 
 import (
-	"bbs-go/internal/config"
-	"bbs-go/internal/uploader"
-	"strings"
-
-	"bbs-go/common/strs"
+	"bbs-go/internal/upload"
 )
 
 func HandleOssImageStyleAvatar(url string) string {
-	if !uploader.IsEnabledOss() {
+	if !upload.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StyleAvatar)
+	return HandleOssImageStyle(url, "")
 }
 
 func HandleOssImageStyleDetail(url string) string {
-	if !uploader.IsEnabledOss() {
+	if !upload.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StyleDetail)
+	return HandleOssImageStyle(url, "")
 }
 
 func HandleOssImageStyleSmall(url string) string {
-	if !uploader.IsEnabledOss() {
+	if !upload.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StyleSmall)
+	return HandleOssImageStyle(url, "")
 }
 
 func HandleOssImageStylePreview(url string) string {
-	if !uploader.IsEnabledOss() {
+	if !upload.IsEnabledOss() {
 		return url
 	}
-	return HandleOssImageStyle(url, config.Instance().Uploader.AliyunOss.StylePreview)
+	return HandleOssImageStyle(url, "")
 }
 
 func HandleOssImageStyle(url, style string) string {
-	if strs.IsBlank(style) || strs.IsBlank(url) {
-		return url
-	}
-	if !uploader.IsOssImageUrl(url) {
-		return url
-	}
-	if strings.HasSuffix(strings.ToLower(url), ".gif") {
-		return url
-	}
-	sep := config.Instance().Uploader.AliyunOss.StyleSplitter
-	if strs.IsBlank(sep) {
-		return url
-	}
-	return strings.Join([]string{url, style}, sep)
+	return url
 }

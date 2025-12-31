@@ -29,19 +29,27 @@ func NewBadRequestError(msg string) error {
 }
 
 var (
-	ErrForbidden      = ResponseError{iris.StatusForbidden, "Forbidden"}
-	ErrUnauthorized   = ResponseError{iris.StatusUnauthorized, "Unauthorized"}
-	ErrBadRequest     = ResponseError{iris.StatusBadRequest, "Bad Request"}
-	ErrInternalServer = ResponseError{iris.StatusInternalServerError, "Internal Server Error"}
+	ErrForbidden          = &ResponseError{iris.StatusForbidden, "Forbidden"}
+	ErrUnauthorized       = &ResponseError{iris.StatusUnauthorized, "Unauthorized"}
+	ErrBadRequest         = &ResponseError{iris.StatusBadRequest, "Bad Request"}
+	ErrInternalServer     = &ResponseError{iris.StatusInternalServerError, "Internal Server Error"}
+	ErrBadGateway         = &ResponseError{iris.StatusBadGateway, "Bad Gateway"}
+	ErrServiceUnavailable = &ResponseError{iris.StatusServiceUnavailable, "Service Unavailable"}
 )
 
 var (
-	ErrForumNotFound       = ResponseError{iris.StatusNotFound, locale.T("errors.forum_not_found")}
-	ErrTopicNotFound       = ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_found")}
-	ErrCommentNotFound     = ResponseError{iris.StatusNotFound, locale.T("errors.comment_not_found")}
-	ErrCommentDeleted      = ResponseError{iris.StatusNotFound, locale.T("errors.comment_deleted")}
-	ErrUserNotFound        = ResponseError{iris.StatusNotFound, locale.T("errors.user_not_found")}
-	ErrTopicNotUnderReview = ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_under_review")}
+	ErrForumNotFound       = &ResponseError{iris.StatusNotFound, locale.T("errors.forum_not_found")}
+	ErrTopicNotFound       = &ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_found")}
+	ErrCommentNotFound     = &ResponseError{iris.StatusNotFound, locale.T("errors.comment_not_found")}
+	ErrCommentDeleted      = &ResponseError{iris.StatusNotFound, locale.T("errors.comment_deleted")}
+	ErrUserNotFound        = &ResponseError{iris.StatusNotFound, locale.T("errors.user_not_found")}
+	ErrTopicNotUnderReview = &ResponseError{iris.StatusNotFound, locale.T("errors.topic_not_under_review")}
+)
+
+var (
+	ErrUploadIncomplete    = &ResponseError{iris.StatusBadRequest, locale.T("upload.upload_incomplete")}
+	ErrUnsupportedFileType = &ResponseError{iris.StatusUnsupportedMediaType, locale.T("upload.unsupported_file_type")}
+	ErrFileTooLarge        = &ResponseError{iris.StatusRequestEntityTooLarge, locale.T("upload.file_too_large")}
 )
 
 func IsDatabaseError(err error) bool {
