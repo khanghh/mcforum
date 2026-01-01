@@ -19,7 +19,7 @@ import ProfileSidebar from '~/components/profile/ProfileSidebar.vue'
 import type { UserProfile } from '@/types/user'
 
 definePageMeta({
-  layout: 'profile',
+  layout: 'default',
 })
 
 const i18n = useI18n()

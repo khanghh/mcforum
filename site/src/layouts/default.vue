@@ -1,15 +1,11 @@
-<script setup>
-import GamingNavbar from '~/components/GamingNavbar.vue'
-import GamingFooter from '~/components/GamingFooter.vue'
-</script>
-
 <template>
   <ConfirmDialog />
   <Toast />
-  <div class="text-gray-100 flex flex-col min-h-screen font-sans">
+
+  <div class="min-h-screen flex flex-col text-gray-100 font-sans">
     <GamingNavbar />
 
-    <main class="flex-grow">
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full">
       <slot />
     </main>
 
@@ -17,16 +13,10 @@ import GamingFooter from '~/components/GamingFooter.vue'
   </div>
 </template>
 
-<script>
+
+<script setup>
+import GamingNavbar from '~/components/GamingNavbar.vue'
+import GamingFooter from '~/components/GamingFooter.vue'
 import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import Toast from '~/components/ui/Toast.vue'
 </script>
-
-<style scoped>
-.bg-pattern {
-  background-color: #1a1a2e;
-  background-image:
-    radial-gradient(at 47% 33%, hsl(240, 33%, 20%) 0, transparent 59%),
-    radial-gradient(at 82% 65%, hsl(267, 65%, 15%) 0, transparent 55%);
-}
-</style>

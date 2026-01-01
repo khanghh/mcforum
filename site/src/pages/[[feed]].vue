@@ -67,19 +67,19 @@ const feedInfo = computed<FeedInfo>(() => {
   switch (feedType) {
     case FeedType.Recommended:
       return {
-        title: t('feed.recommended.title'),
-        description: t('feed.recommended.description'),
+        title: t('feed.recommended'),
+        description: t('feed.recommended_desc'),
       }
     case FeedType.Followed:
       return {
-        title: t('feed.followed.title'),
-        description: t('feed.followed.description'),
+        title: t('feed.followed'),
+        description: t('feed.followed_desc'),
       }
     case FeedType.WhatsNew:
     default:
       return {
-        title: t('feed.whats_new.title'),
-        description: t('feed.whats_new.description'),
+        title: t('feed.whats_new'),
+        description: t('feed.whats_new_desc'),
       }
   }
 })

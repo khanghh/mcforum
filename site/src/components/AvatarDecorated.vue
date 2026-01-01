@@ -13,37 +13,23 @@
     <div
       class="animated-border avatar-frame w-24 h-24 sm:w-32 sm:h-32 rounded-xl relative z-10 shadow-2xl flex items-center justify-center">
       <div class="avatar-inner w-full h-full bg-white rounded-lg overflow-hidden flex items-center justify-center">
-        <AvatarEdit
-          v-if="isSelf"
-          :src="user.avatar"
-          :username="user.username"
-          :size="128"
-          :rounded="false"
-          class="w-full h-full block object-cover"
-          @uploaded="emit('uploaded', $event)" />
-
-        <Avatar
-          v-else
-          :src="user.avatar"
-          :username="user.username"
-          :size="128"
-          :rounded="false"
-          class="w-full h-full block object-cover" />
+        <slot name="default">
+          <img src="/images/avatars/steve.png" class="w-full h-full object-cover" />
+        </slot>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import Avatar from './Avatar.vue'
-import AvatarEdit from './AvatarEdit.vue'
+// Avatar removed: consumers should provide avatar via default slot
 
 const props = defineProps({
   user: { type: Object, required: true },
   isSelf: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['uploaded'])
+// no uploads here; AvatarEdit removed
 
 const roleName = computed(() => props.user.role || '')
 

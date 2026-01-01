@@ -7,9 +7,9 @@
         : 'shadow-[0_0_0_1px_rgb(139,92,246,0.2)]'
     ]">
     <div class="flex-1 min-w-0">
-      <h3 class="text-lg font-bold mb-2 flex items-center gap-4">
+      <h2 class="font-bold mb-2 flex items-center gap-4">
         <nuxt-link :to="`/topics/${topic?.slug}`"
-          class="text-white hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
+          class="text-white text-lg md:text-xl hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
           {{ topic.title }}
         </nuxt-link>
         <div v-if="showPinned && topic.pinned"
@@ -17,32 +17,29 @@
           <Icon name="TablerPinnedFilled" class="w-3.5 h-3.5" />
           <span class="tracking-wide">{{ $t('feed.pinned') }}</span>
         </div>
-      </h3>
+      </h2>
       <div class="flex items-center gap-2 mb-2 flex-wrap">
-        <!-- Avatar -->
-        <div v-if="author" class="flex items-center gap-2">
-          <Avatar :src="author.avatar" :username="author.username" :size="24"
-            class="w-6 h-6 rounded border border-purple-500/50 flex-shrink-0" />
-          <nuxt-link :to="`/users/${author.username}`"
-            class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors">
-            {{ author.username }}
-          </nuxt-link>
+        <!-- Avatar + user/info -->
+        <div v-if="author" class="flex items-center gap-3">
+          <Avatar :src="author.avatar" :username="author.username" size="40"
+            class="rounded border border-purple-500/50 flex-shrink-0" />
+          <div class="flex flex-col min-w-0">
+            <nuxt-link :to="`/users/${author.username}`"
+              class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors truncate">
+              {{ author.username }}
+            </nuxt-link>
+            <span class="text-xs text-gray-500 mt-0.5">{{ usePrettyDate(topic.createTime) }}</span>
+          </div>
         </div>
-
-        <!-- Time -->
-        <span class="text-xs text-gray-500">{{ usePrettyDate(topic.createTime) }}</span>
       </div>
 
       <p class="text-gray-300 text-sm mb-3 line-clamp-2">
         {{ topic.summary || topic.content }}
       </p>
 
-      <div v-if="topic.tags && topic.tags.length" class="flex items-center gap-2 flex-wrap mb-3">
-        <nuxt-link
-          v-for="tag in topic.tags"
-          :key="tag"
-          :to="`/tags/${tag}`"
-          class="px-2 py-0.5 bg-white/3 text-sm text-gray-400 rounded hover:text-gray-300 border border-white/10 hover:bg-white/5 transition-colors">
+      <div v-if="topic.tags && topic.tags.length" class="flex flex-wrap gap-2 mb-3">
+        <nuxt-link v-for="tag in topic.tags" :key="tag" :to="`/tags/${tag}`"
+          class="px-3 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors">
           #{{ tag }}
         </nuxt-link>
       </div>

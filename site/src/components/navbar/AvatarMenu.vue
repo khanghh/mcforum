@@ -52,7 +52,7 @@ const userStore = useUserStore()
 const isDropdownOpen = ref(false)
 const dropdownRef = ref(null)
 
-const avatarSrc = computed(() => userStore.user?.avatar || '/images/default-avatar.png')
+const avatarSrc = computed(() => userStore.user?.avatar)
 
 onClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false

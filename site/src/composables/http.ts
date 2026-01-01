@@ -75,16 +75,6 @@ export function useHttpDelete(url: string, options: any = {}): Promise<any> {
   })
 }
 
-export function useHttpPutForm(url: string, options: any = {}): Promise<any> {
-  return useHttp(url, {
-    ...options,
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  })
-}
-
 // POST请求(application/x-www-form-urlencoded)
 export function useHttpPostForm(url: string, options: any = {}): Promise<any> {
   return useHttp(url, {
@@ -93,13 +83,5 @@ export function useHttpPostForm(url: string, options: any = {}): Promise<any> {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-  })
-}
-
-// POST请求(multipart/form-data)
-export function useHttpPostMultipart(url: string, formData: FormData): Promise<any> {
-  return useHttp(url, {
-    method: 'POST',
-    body: formData,
   })
 }

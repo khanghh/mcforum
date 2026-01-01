@@ -19,22 +19,18 @@
         <span class="font-bold text-purple-400 gaming-title">1.20.4</span>
       </div>
     </div>
-    <button
+    <a href="https://play.mineviet.com"
       class="w-full mt-4 px-4 py-3
              bg-gradient-to-r from-green-600 to-emerald-600
              text-white rounded-lg font-bold gaming-title
              hover:scale-105 transition-transform
-             flex items-center justify-center"
-      @click="showDialog">
+             flex items-center justify-center">
       <Icon name="TablerPlayerPlayFilled" class="mr-2" /> JOIN SERVER
-    </button>
+    </a>
   </div>
 </template>
 
 <script setup lang="ts">
 const dialog = useConfirmDialog()
 const toast = useToast()
-function showDialog() {
-  toast.success('Feature coming soon!')
-}
 </script>

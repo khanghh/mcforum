@@ -13,7 +13,6 @@ import { useApi } from '@/composables/api'
 
 const api = useApi()
 const userStore = useUserStore()
-const i18n = useI18n()
 
 interface Props {
   user: UserProfile
@@ -23,7 +22,7 @@ const props = defineProps<Props>()
 const loggedInUser = computed(() => userStore.user)
 const isSelf = loggedInUser.value?.username === props.user.username
 
-const fetchUserTopics = () : CursorResult<Topic[]> => {
+const fetchUserTopics = (): CursorResult<Topic[]> => {
   if (isSelf) {
     return api.getMyTopics()
   }

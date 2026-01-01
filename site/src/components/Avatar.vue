@@ -61,7 +61,7 @@ onMounted(() => {
 })
 
 const classes = computed(() => {
-  const cls = ['object-cover', 'select-none', 'bg-gray-200']
+  const cls = ['aspect-square', 'object-cover', 'select-none', 'bg-gray-200']
   if (props.rounded) cls.push('rounded-full')
   if (props.class) return cls.concat(props.class)
   return cls

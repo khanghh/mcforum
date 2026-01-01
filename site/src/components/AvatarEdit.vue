@@ -1,10 +1,10 @@
 <template>
   <label
-    class="relative inline-block group cursor-pointer"
+    :class="['relative inline-block group cursor-pointer', props.class]"
     :style="{ width: size + 'px', height: size + 'px' }">
     <Avatar
       :username="username"
-      :src="previewSrc || src"
+      :src="previewSrc || props.modelValue"
       :size="size"
       :rounded="rounded"
       class="w-full h-full" />
@@ -27,13 +27,15 @@
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import Avatar from './Avatar.vue'
+const api = useApi()
+const dialog = useConfirmDialog()
 
 const props = defineProps({
-  username: {
+  modelValue: {
     type: String,
-    default: '',
+    required: true,
   },
-  src: {
+  username: {
     type: String,
     default: '',
   },
@@ -45,20 +47,35 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  class: {
+    type: [Array, String],
+    default: '',
+  },
 })
 
-const emit = defineEmits(['uploaded'])
+const emit = defineEmits([
+  'update:modelValue'
+])
 
 const previewSrc = ref('')
 let objectUrl = null
 
-function onFileChange(e) {
+async function onFileChange(e) {
   const file = e.target.files && e.target.files[0]
   if (!file) return
   if (objectUrl) URL.revokeObjectURL(objectUrl)
   objectUrl = URL.createObjectURL(file)
-  previewSrc.value = objectUrl
-  emit('uploaded', file)
+  await api.uploadAvatar(file).then((res) => {
+    emit('update:modelValue', res.avatar)
+    previewSrc.value = objectUrl
+  }).catch((err) => {
+    const errMsg = err?.data?.error?.message || err.message || 'Unknown error'
+    dialog.show({
+      title: $t('dialog.title.error_occurred'),
+      message: errMsg,
+      variant: 'warning',
+    })
+  })
   e.target.value = ''
 }
 

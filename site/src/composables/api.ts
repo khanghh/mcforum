@@ -136,6 +136,18 @@ export const useApi = () => {
     return useHttpPut("/api/users/me/status", { body: { message } })
   }
 
+  const uploadAvatar = (file: File): Promise<void> => {
+    const form = new FormData()
+    form.append('file', file, file.name)
+    return useHttpPut("/api/users/me/avatar", { body: form })
+  }
+
+  const uploadCover = (file: File): Promise<void> => {
+    const form = new FormData()
+    form.append('file', file, file.name)
+    return useHttpPut("/api/users/me/cover", { body: form })
+  }
+
   // other user api endpoints
 
   const getUser = (username: string): Promise<UserProfile> => {
@@ -282,6 +294,8 @@ export const useApi = () => {
     getMessages,
     getRecentMessages,
     setStatusMessage,
+    uploadAvatar,
+    uploadCover,
 
     // other user api endpoints
     getUser,

@@ -4,12 +4,12 @@
     <div
       class="h-48 sm:h-64 bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 rounded-2xl overflow-hidden relative group">
       <img
-        :src="user.backgroundImage || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80'"
-        class="w-full h-full object-cover opacity-40" alt="Gaming Cover">
+        :src="coverImageSrc || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80'"
+        class="w-full h-full object-cover opacity-80">
       <!-- Animated overlay -->
-      <div class="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-purple-900/60 via-transparent to-transparent"></div>
       <!-- Upload button (visible on hover for profile owner) -->
-      <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="handleCoverSelect" />
+      <input ref="coverInput" type="file" accept="image/*" class="sr-only" @change="onCoverFileChange" />
       <button v-if="isSelf" @click="handleCoverClick" type="button"
         class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium text-white px-3 py-1 rounded-md bg-black/40 backdrop-blur-sm">
         <Icon name="TablerCloudUpload" class="mr-1" />
@@ -19,10 +19,15 @@
 
     <div class="px-6 -mt-12 sm:-mt-16 relative z-10 flex items-end justify-between gap-4">
       <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 w-full">
-        <div class="relative flex-shrink-0">
-          <div class="relative p-1 mx-auto sm:mx-0">
-            <AvatarDecorated :user="user" :is-self="isSelf" @uploaded="onUploaded" />
-          </div>
+        <div class="relative flex-shrink-0 p-1 mx-auto sm:mx-0">
+          <AvatarDecorated :user="user" :is-self="isSelf">
+            <AvatarEdit v-if="isSelf" v-model="user.avatar" :username="user.username"
+              class="w-full h-full object-cover"
+              size="120" />
+            <Avatar v-else :src="user.avatar" :username="user.username"
+              class="w-full h-full object-cover"
+              size="120" />
+          </AvatarDecorated>
         </div>
         <div class="pb-2 w-full sm:w-auto text-center sm:text-left">
           <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
@@ -101,6 +106,7 @@ import { useMsgSuccess, useMsgError } from '@/composables/useMsg'
 import { nextTick, watch } from 'vue'
 
 const userStore = useUserStore()
+const dialog = useConfirmDialog()
 const api = useApi()
 
 const props = defineProps({
@@ -117,7 +123,7 @@ const statusInput = ref()
 const measureSpan = ref()
 const currentUser = computed(() => userStore.user)
 const isSelf = computed(() => currentUser?.value && currentUser?.value?.id === props.user.id)
-
+const coverImageSrc = ref(props.user.backgroundImage)
 
 if (!isSelf.value) {
   isFollowing.value = await api.isFollowing(props.user.id).catch(() => false)
@@ -196,53 +202,30 @@ async function saveStatus() {
   }
 }
 
-async function onUploaded(file) {
-  try {
-    const formData = new FormData()
-    formData.append('image', file, file.name)
-    const ret = await useHttpPostMultipart('/api/upload', formData)
-
-    await useHttpPostForm('/api/users/update/avatar', {
-      body: { avatar: ret.url },
-    })
-
-    await userStore.getCurrent()
-  }
-  catch (e) {
-    console.error(e)
-  }
-}
-
 // Cover upload handlers
 const coverInput = ref(null)
 const handleCoverClick = () => {
   if (coverInput?.value) coverInput.value.click()
 }
 
-async function handleCoverSelect(e) {
-  const file = e.target?.files?.[0]
+let objectUrl = null
+async function onCoverFileChange(e) {
+  const file = e.target.files && e.target.files[0]
   if (!file) return
-  await onCoverUploaded(file)
-  e.target.value = ''
-}
-
-async function onCoverUploaded(file) {
-  try {
-    const formData = new FormData()
-    formData.append('image', file, file.name)
-    const ret = await useHttpPostMultipart('/api/upload', formData)
-
-    await useHttpPostForm('/api/users/update/background', {
-      body: { backgroundImage: ret.url },
+  if (objectUrl) URL.revokeObjectURL(objectUrl)
+  objectUrl = URL.createObjectURL(file)
+  await api.uploadCover(file).then((res) => {
+    props.user.backgroundImage = res.coverImage
+    coverImageSrc.value = objectUrl
+  }).catch((err) => {
+    const errMsg = err?.data?.error?.message || err.message || 'Unknown error'
+    dialog.show({
+      title: $t('dialog.title.error_occurred'),
+      message: errMsg,
+      variant: 'warning',
     })
-
-    await userStore.getCurrent()
-    useMsgSuccess('Cover updated')
-  }
-  catch (e) {
-    console.error(e)
-    useMsgError('Cover update failed')
-  }
+  })
+  e.target.value = ''
 }
 </script>
 
