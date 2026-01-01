@@ -1,6 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6" itemscope itemtype="http://schema.org/BlogPosting">
-
+  <div itemscope itemtype="http://schema.org/BlogPosting">
     <!-- Breadcrumb -->
     <div class="mb-6">
       <nav class="flex text-sm text-gray-400">

@@ -13,28 +13,14 @@
         </nuxt-link>
       </div>
       <ul class="flex items-center space-x-4 sm:space-x-6 text-gray-300 font-medium">
-        <li>
-          <a href="https://play.mineviet.com"
+        <li v-for="(nav, idx) in siteNavs" :key="idx">
+          <a :href="nav.url"
             class="text-gray-300 hover:text-purple-400 transition-colors"
-            target="_blank">
-            <Icon name="TablerServer" class="mr-1" size="25" />
-            <span class="hidden sm:inline">Máy chủ</span>
+            :target="nav.url && nav.url.startsWith('http') ? '_blank' : null">
+            <span class="hidden sm:inline">{{ nav.title }}</span>
           </a>
         </li>
-        <li>
-          <a href="https://skin.mineviet.com"
-            class="text-gray-300 hover:text-purple-400 transition-colors">
-            <Icon name="TablerPaletteFilled" class="mr-1" size="25" />
-            <span class="hidden sm:inline">Đổi skin</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://ban.mineviet.com"
-            class="text-gray-300 hover:text-purple-400 transition-colors">
-            <Icon name="TablerBan" class="mr-1" size="25" />
-            <span class="hidden sm:inline">Vi phạm</span>
-          </a>
-        </li>
+
         <li v-if="user" class="flex-shrink-0">
           <nuxt-link href="/users/me/messages"
             class="text-gray-300 hover:text-purple-400 transition-colors flex items-center">
@@ -45,7 +31,6 @@
                 {{ notifCount }}
               </span>
             </span>
-            <span class="hidden sm:inline">{{ $t('message.notifications') }}</span>
           </nuxt-link>
         </li>
 
@@ -62,15 +47,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useUserStore } from '~/stores/user'
+import { useConfigStore } from '~/stores/config'
 import AvatarMenu from '~/components/navbar/AvatarMenu.vue'
 const api = useApi()
 
+const configStore = useConfigStore()
 const userStore = useUserStore()
 const user = userStore.user
 
 const notifCount = ref(0)
+const siteNavs = computed(() => configStore.config?.siteNavs || [])
 
 const resp = await api.getRecentMessages().catch(() => null)
 notifCount.value = resp?.count || 0

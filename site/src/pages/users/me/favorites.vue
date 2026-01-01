@@ -1,14 +1,12 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <ProfileHeader :user="user" />
+  <ProfileHeader :user="user" />
 
-    <div class="flex flex-col lg:flex-row gap-6 mt-6">
-      <div class="w-full lg:w-80 lg:flex-shrink-0">
-        <ProfileSidebar :user="user" />
-      </div>
+  <div class="flex flex-col lg:flex-row gap-6 mt-6">
+    <div class="w-full lg:w-80 lg:flex-shrink-0">
+      <ProfileSidebar :user="user" />
+    </div>
 
-      <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px]">
-      </div>
+    <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px]">
     </div>
   </div>
 </template>

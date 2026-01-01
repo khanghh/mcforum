@@ -12,52 +12,52 @@ import (
 //
 // SysConfigResponse config response struct
 type SysConfigResponse struct {
-	SiteTitle                  string              `json:"siteTitle"`
-	SiteDescription            string              `json:"siteDescription"`
-	SiteKeywords               []string            `json:"siteKeywords"`
-	SiteNavs                   []model.ActionLink  `json:"siteNavs"`
-	SiteNotification           string              `json:"siteNotification"`
-	MenuItems                  []model.MenuItem    `json:"menuItems"`
-	RecommendTags              []string            `json:"recommendTags"`
-	UrlRedirect                bool                `json:"urlRedirect"`
-	ScoreConfig                model.ScoreConfig   `json:"scoreConfig"`
-	DefaultForumId             int64               `json:"defaultNodeId"`
-	ArticlePending             bool                `json:"articlePending"`
-	TopicCaptcha               bool                `json:"topicCaptcha"`
-	UserObserveSeconds         int                 `json:"userObserveSeconds"`
-	TokenExpireDays            int                 `json:"tokenExpireDays"`
-	LoginMethod                model.LoginMethod   `json:"loginMethod"`
-	CreateTopicEmailVerified   bool                `json:"createTopicEmailVerified"`
-	CreateArticleEmailVerified bool                `json:"createArticleEmailVerified"`
-	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified"`
-	EnableHideContent          bool                `json:"enableHideContent"`
-	Modules                    model.ModulesConfig `json:"modules"`
-	EmailWhitelist             []string            `json:"emailWhitelist"` // Email whitelist
+	SiteTitle                  string              `json:"siteTitle,omitempty"`
+	SiteDescription            string              `json:"siteDescription,omitempty"`
+	SiteKeywords               []string            `json:"siteKeywords,omitempty"`
+	SiteNavs                   []model.ActionLink  `json:"siteNavs,omitempty"`
+	SiteNotification           string              `json:"siteNotification,omitempty"`
+	MenuItems                  []model.MenuItem    `json:"menuItems,omitempty"`
+	RecommendTags              []string            `json:"recommendTags,omitempty"`
+	UrlRedirect                bool                `json:"urlRedirect,omitempty"`
+	ScoreConfig                model.ScoreConfig   `json:"scoreConfig,omitempty"`
+	DefaultForumId             int64               `json:"defaultNodeId,omitempty"`
+	ArticlePending             bool                `json:"articlePending,omitempty"`
+	TopicCaptcha               bool                `json:"topicCaptcha,omitempty"`
+	UserObserveSeconds         int                 `json:"userObserveSeconds,omitempty"`
+	TokenExpireDays            int                 `json:"tokenExpireDays,omitempty"`
+	LoginMethod                model.LoginMethod   `json:"loginMethod,omitempty"`
+	CreateTopicEmailVerified   bool                `json:"createTopicEmailVerified,omitempty"`
+	CreateArticleEmailVerified bool                `json:"createArticleEmailVerified,omitempty"`
+	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified,omitempty"`
+	EnableHideContent          bool                `json:"enableHideContent,omitempty"`
+	Modules                    model.ModulesConfig `json:"modules,omitempty"`
+	EmailWhitelist             []string            `json:"emailWhitelist,omitempty"` // Email whitelist
 }
 
 func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 	var (
-		siteTitle                  = service.SysConfigService.GetSiteTitle()
-		siteDescription            = service.SysConfigService.GetSiteDescription()
-		siteKeywords               = service.SysConfigService.GetSiteKeywords()
-		siteNotification           = service.SysConfigService.GetSiteNofitication()
-		menuItems                  = service.SysConfigService.GetMenuItems()
-		recommendTags              = service.SysConfigService.GetRecommendTags()
-		urlRedirect                = service.SysConfigService.IsEnabledUrlRedirectPage()
-		pointsConfig               = service.SysConfigService.GetPointConfig()
-		defaultForumIdStr          = service.SysConfigService.GetDefaultForumId()
-		topicCaptcha               = service.SysConfigService.IsEnabledTopicCaptcha()
-		userObserveSecondsStr      = cache.SysConfigCache.GetValue(constants.SysConfigUserObserveSeconds)
-		siteNavs                   = service.SysConfigService.GetSiteNavs()
-		loginMethod                = service.SysConfigService.GetLoginMethod()
-		createTopicEmailVerified   = service.SysConfigService.IsCreateTopicEmailVerified()
-		createArticleEmailVerified = service.SysConfigService.IsCreateArticleEmailVerified()
-		createCommentEmailVerified = service.SysConfigService.IsCreateCommentEmailVerified()
-		enableHideContent          = service.SysConfigService.IsEnableHideContent()
-		articlePending             = service.SysConfigService.IsArticlePending()
-		tokenExpireDays            = service.SysConfigService.GetTokenExpireDays()
-		modules                    = service.SysConfigService.GetModules()
-		emailWhiteList             = service.SysConfigService.GetEmailWhitelist()
+		siteTitle        = service.SysConfigService.GetSiteTitle()
+		siteDescription  = service.SysConfigService.GetSiteDescription()
+		siteKeywords     = service.SysConfigService.GetSiteKeywords()
+		siteNotification = service.SysConfigService.GetSiteNofitication()
+		menuItems        = service.SysConfigService.GetMenuItems()
+		// recommendTags              = service.SysConfigService.GetRecommendTags()
+		urlRedirect  = service.SysConfigService.IsEnabledUrlRedirectPage()
+		pointsConfig = service.SysConfigService.GetPointConfig()
+		// defaultForumIdStr          = service.SysConfigService.GetDefaultForumId()
+		// topicCaptcha               = service.SysConfigService.IsEnabledTopicCaptcha()
+		userObserveSecondsStr = cache.SysConfigCache.GetValue(constants.SysConfigUserObserveSeconds)
+		siteNavs              = service.SysConfigService.GetSiteNavs()
+		// loginMethod                = service.SysConfigService.GetLoginMethod()
+		// createTopicEmailVerified   = service.SysConfigService.IsCreateTopicEmailVerified()
+		// createArticleEmailVerified = service.SysConfigService.IsCreateArticleEmailVerified()
+		// createCommentEmailVerified = service.SysConfigService.IsCreateCommentEmailVerified()
+		// enableHideContent          = service.SysConfigService.IsEnableHideContent()
+		// articlePending             = service.SysConfigService.IsArticlePending()
+		tokenExpireDays = service.SysConfigService.GetTokenExpireDays()
+		modules         = service.SysConfigService.GetModules()
+		// emailWhiteList             = service.SysConfigService.GetEmailWhitelist()
 	)
 
 	var (
@@ -65,26 +65,16 @@ func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 	)
 
 	return &SysConfigResponse{
-		SiteTitle:                  siteTitle,
-		SiteDescription:            siteDescription,
-		SiteKeywords:               siteKeywords,
-		SiteNavs:                   siteNavs,
-		SiteNotification:           siteNotification,
-		MenuItems:                  menuItems,
-		RecommendTags:              recommendTags,
-		UrlRedirect:                urlRedirect,
-		ScoreConfig:                pointsConfig,
-		DefaultForumId:             defaultForumIdStr,
-		ArticlePending:             articlePending,
-		TopicCaptcha:               topicCaptcha,
-		UserObserveSeconds:         userObserveSeconds,
-		TokenExpireDays:            tokenExpireDays,
-		LoginMethod:                loginMethod,
-		CreateTopicEmailVerified:   createTopicEmailVerified,
-		CreateArticleEmailVerified: createArticleEmailVerified,
-		CreateCommentEmailVerified: createCommentEmailVerified,
-		EnableHideContent:          enableHideContent,
-		Modules:                    modules,
-		EmailWhitelist:             emailWhiteList,
+		SiteTitle:          siteTitle,
+		SiteDescription:    siteDescription,
+		SiteKeywords:       siteKeywords,
+		SiteNavs:           siteNavs,
+		SiteNotification:   siteNotification,
+		MenuItems:          menuItems,
+		UrlRedirect:        urlRedirect,
+		ScoreConfig:        pointsConfig,
+		UserObserveSeconds: userObserveSeconds,
+		TokenExpireDays:    tokenExpireDays,
+		Modules:            modules,
 	}
 }
