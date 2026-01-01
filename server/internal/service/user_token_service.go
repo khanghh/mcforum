@@ -45,7 +45,7 @@ func (s *userTokenService) GetCurrent(ctx iris.Context) *model.User {
 	if userToken.ExpiredAt <= dates.NowTimestamp() {
 		return nil
 	}
-	user := cache.UserCache.Get(userToken.UserId)
+	user := cache.UserCache.Get(userToken.UserID)
 	if user == nil || !user.IsActive {
 		return nil
 	}
@@ -98,7 +98,7 @@ func (s *userTokenService) Generate(userId int64) (string, error) {
 	expiredAt := time.Now().Add(time.Hour * 24 * time.Duration(tokenExpireDays))
 	userToken := &model.UserToken{
 		Token:      token,
-		UserId:     userId,
+		UserID:     userId,
 		ExpiredAt:  dates.Timestamp(expiredAt),
 		Status:     constants.StatusActive,
 		CreateTime: dates.NowTimestamp(),

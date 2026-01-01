@@ -10,7 +10,7 @@ import (
 type UserToken struct {
 	Model
 	Token      string `gorm:"size:32;unique;not null" json:"token" form:"token"`
-	UserId     int64  `gorm:"not null;index:idx_user_token_user_id;" json:"userId" form:"userId"`
+	UserID     int64  `gorm:"not null;index:idx_user_token_user_id;" json:"userId" form:"userId"`
 	ExpiredAt  int64  `gorm:"not null" json:"expiredAt" form:"expiredAt"`
 	Status     int    `gorm:"type:int(11);not null;index:idx_user_token_status" json:"status" form:"status"`
 	CreateTime int64  `gorm:"not null" json:"createTime" form:"createTime"`
@@ -19,8 +19,8 @@ type UserToken struct {
 // User like
 type UserLike struct {
 	Model
-	UserId     int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;" json:"userId" form:"userId"`                                            // User
-	EntityId   int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"topicId" form:"topicId"`               // Entity ID
+	UserID     int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;" json:"userId" form:"userId"`                                            // User
+	EntityID   int64  `gorm:"not null;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"topicId" form:"topicId"`               // Entity ID
 	EntityType string `gorm:"not null;size:32;uniqueIndex:idx_user_like_unique;index:idx_user_like_entity;" json:"entityType" form:"entityType"` // Entity type
 	Status     int    `gorm:"type:int(11);not null" json:"status" form:"status"`                                                                 // Status: 0: unread, 1: read
 	CreateTime int64  `json:"createTime" form:"createTime"`                                                                                      // Create time
@@ -29,9 +29,9 @@ type UserLike struct {
 // User score log
 type UserScoreLog struct {
 	Model
-	UserId      int64  `gorm:"not null;index:idx_user_score_log_user_id" json:"userId" form:"userId"`   // User ID
+	UserID      int64  `gorm:"not null;index:idx_user_score_log_user_id" json:"userId" form:"userId"`   // User ID
 	SourceType  string `gorm:"not null;index:idx_user_score_score" json:"sourceType" form:"sourceType"` // Score source type
-	SourceId    string `gorm:"not null;index:idx_user_score_score" json:"sourceId" form:"sourceId"`     // Score source ID
+	SourceID    string `gorm:"not null;index:idx_user_score_score" json:"sourceId" form:"sourceId"`     // Score source ID
 	Description string `json:"description" form:"description"`                                          // Description
 	Type        int    `gorm:"type:int(11)" json:"type" form:"type"`                                    // Type (increase, decrease)
 	Score       int    `gorm:"type:int(11)" json:"score" form:"score"`                                  // Score
@@ -41,7 +41,7 @@ type UserScoreLog struct {
 // Check in
 type CheckIn struct {
 	Model
-	UserId          int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"userId" form:"userId"`         // User ID
+	UserID          int64 `gorm:"not null;uniqueIndex:idx_user_id" json:"userId" form:"userId"`         // User ID
 	LatestDayName   int   `gorm:"type:int(11);not null;index:idx_latest" json:"dayName" form:"dayName"` // Latest check-in day
 	ConsecutiveDays int   `gorm:"type:int(11);not null;" json:"consecutiveDays" form:"consecutiveDays"` // Consecutive check-in days
 	CreateTime      int64 `json:"createTime" form:"createTime"`                                         // Create time

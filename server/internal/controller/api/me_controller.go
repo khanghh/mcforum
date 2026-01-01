@@ -6,7 +6,6 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
-	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/msg"
@@ -140,6 +139,19 @@ func (c *MeController) PutAvatar() *web.JsonResult {
 	})
 }
 
+func (c *MeController) DeleteAvatar() *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+	if err := service.UserService.UpdateAvatar(user.ID, ""); err != nil {
+		slog.Error("Delete user avatar failed", "error", err)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	cache.UserCache.Invalidate(user.ID)
+	return web.JsonSuccess()
+}
+
 func (c *MeController) PutCover() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
@@ -231,14 +243,13 @@ func (c *MeController) GetMessages_Recent() *web.JsonResult {
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
-	var count int64 = 0
-	var messages []model.Message
-	if user != nil {
-		count = service.MessageService.GetUnReadCount(user.ID)
-		messages = service.MessageService.Find(sqls.NewCnd().Eq("user_id", user.ID).
-			Eq("status", msg.StatusUnread).Limit(3).Desc("id"))
-	}
-	return web.NewEmptyRspBuilder().Put("count", count).Put("messages", payload.BuildMessages(messages)).JsonResult()
+	count := service.MessageService.GetUnReadCount(user.ID)
+	messages := service.MessageService.Find(sqls.NewCnd().Eq("user_id", user.ID).
+		Eq("status", msg.StatusUnread).Limit(3).Desc("id"))
+	return web.NewEmptyRspBuilder().
+		Put("count", count).
+		Put("messages", payload.BuildMessages(messages)).
+		JsonResult()
 }
 
 // User messages

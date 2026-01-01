@@ -96,7 +96,7 @@ func (s *checkInService) CheckIn(userId int64) error {
 	if checkIn == nil {
 		err = s.Create(&model.CheckIn{
 			Model:           model.Model{},
-			UserId:          userId,
+			UserID:          userId,
 			LatestDayName:   dayName,
 			ConsecutiveDays: consecutiveDays,
 			CreateTime:      dates.NowTimestamp(),

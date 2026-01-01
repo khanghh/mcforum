@@ -52,7 +52,7 @@ func (c *CheckinController) GetRank() *web.JsonResult {
 	var itemList []map[string]interface{}
 	for _, checkIn := range list {
 		itemList = append(itemList, web.NewRspBuilder(checkIn).
-			Put("user", payload.BuildUserInfoDefaultIfNull(checkIn.UserId)).
+			Put("user", payload.BuildUserInfoDefaultIfNull(checkIn.UserID)).
 			Build())
 	}
 	return web.JsonData(itemList)

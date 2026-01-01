@@ -30,7 +30,7 @@ func (c *UserScoreLogController) GetList() *web.JsonResult {
 
 	var results []map[string]interface{}
 	for _, userScoreLog := range list {
-		user := payload.BuildUserInfoDefaultIfNull(userScoreLog.UserId)
+		user := payload.BuildUserInfoDefaultIfNull(userScoreLog.UserID)
 		item := web.NewRspBuilder(userScoreLog).Put("user", user).Build()
 		results = append(results, item)
 	}

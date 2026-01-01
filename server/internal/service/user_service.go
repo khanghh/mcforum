@@ -604,9 +604,9 @@ func (s *userService) addScore(userId int64, score int, sourceType, sourceId, de
 		scoreType = constants.ScoreTypeDecr
 	}
 	err := UserScoreLogService.Create(&model.UserScoreLog{
-		UserId:      userId,
+		UserID:      userId,
 		SourceType:  sourceType,
-		SourceId:    sourceId,
+		SourceID:    sourceId,
 		Description: description,
 		Type:        scoreType,
 		Score:       score,
