@@ -4,19 +4,19 @@
     <div class="space-y-2 text-sm">
       <div class="flex justify-between">
         <span class="text-gray-400">Threads</span>
-        <span class="font-bold text-purple-300">{{ prettyNumber(stats.threads) }}</span>
+        <span class="font-bold text-purple-300">{{ usePrettyNumber(stats.threads) }}</span>
       </div>
       <div class="flex justify-between">
         <span class="text-gray-400">Posts</span>
-        <span class="font-bold text-pink-300">{{ prettyNumber(stats.posts) }}</span>
+        <span class="font-bold text-pink-300">{{ usePrettyNumber(stats.posts) }}</span>
       </div>
       <div class="flex justify-between">
         <span class="text-gray-400">Members</span>
-        <span class="font-bold text-blue-300">{{ prettyNumber(stats.members) }}</span>
+        <span class="font-bold text-blue-300">{{ usePrettyNumber(stats.members) }}</span>
       </div>
       <div class="flex justify-between">
         <span class="text-gray-400">Online</span>
-        <span class="font-bold text-green-300">{{ prettyNumber(stats.online) }}</span>
+        <span class="font-bold text-green-300">{{ usePrettyNumber(stats.online) }}</span>
       </div>
     </div>
   </div>
@@ -29,15 +29,5 @@ const stats = ref({
   members: 0,
   online: 0,
 })
-
-const prettyNumber = (num: number): string => {
-  if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1) + 'M'
-  } else if (num >= 1_000) {
-    return (num / 1_000).toFixed(1) + 'K'
-  } else {
-    return num.toString()
-  }
-}
 
 </script>

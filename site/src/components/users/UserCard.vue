@@ -1,6 +1,6 @@
 <template>
   <div class="gaming-card p-4 rounded-lg flex items-center gap-4">
-    <Avatar :src="user.avatar" :username="user.username" :size="48" class="w-12 h-12 object-cover" />
+    <Avatar :src="user.avatar" :username="user.username" :size="48" class="w-12 h-12 rounded object-cover" />
     <div class="flex-1">
       <div class="flex items-center gap-2">
         <nuxt-link :to="`/users/${user.username}`"
@@ -40,12 +40,12 @@ const props = defineProps<Props>()
 const user = props.user
 
 const isFollowing = ref(user.isFollowing || false)
+const { user: currentUser } = storeToRefs(userStore)
 
 const showFollowButton = computed(() => {
-  return userStore.isLogin && userStore.user?.username !== user.username
+  return userStore.isLogin && currentUser.value?.username !== user.username
 })
 const level = computed(() => Math.floor(Math.sqrt(((user as any)?.score) || 0)) + 1)
-
 
 async function toggleFollow() {
   if (isFollowing.value) {

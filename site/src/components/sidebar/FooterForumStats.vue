@@ -5,19 +5,19 @@
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">
           <span class="text-gray-400">{{ $t('stats.total_topics') }}</span>
-          <span class="font-bold text-gray-300">{{ prettyNumber(stats.topics) }}</span>
+          <span class="font-bold text-gray-300">{{ usePrettyNumber(stats.topics) }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-400">{{ $t('stats.total_posts') }}</span>
-          <span class="font-bold text-gray-300">{{ prettyNumber(stats.posts) }}</span>
+          <span class="font-bold text-gray-300">{{ usePrettyNumber(stats.posts) }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-400">{{ $t('stats.total_members') }}</span>
-          <span class="font-bold text-gray-300">{{ prettyNumber(stats.members) }}</span>
+          <span class="font-bold text-gray-300">{{ usePrettyNumber(stats.members) }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-400">{{ $t('stats.total_visits') }}</span>
-          <span class="font-bold text-gray-300">{{ prettyNumber(stats.visits) }}</span>
+          <span class="font-bold text-gray-300">{{ usePrettyNumber(stats.visits) }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-400">{{ $t('stats.newest_member') }}</span>
@@ -49,15 +49,5 @@ const { data: stats, refresh } = await useAsyncData(
     watch: [() => route.fullPath],
   }
 )
-
-const prettyNumber = (num: number): string => {
-  if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1) + 'M'
-  } else if (num >= 1_000) {
-    return (num / 1_000).toFixed(1) + 'K'
-  } else {
-    return num.toString()
-  }
-}
 
 </script>

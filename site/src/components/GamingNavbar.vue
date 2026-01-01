@@ -47,21 +47,37 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
 import { useUserStore } from '~/stores/user'
 import { useConfigStore } from '~/stores/config'
 import AvatarMenu from '~/components/navbar/AvatarMenu.vue'
-const api = useApi()
 
+const api = useApi()
+const route = useRoute()
 const configStore = useConfigStore()
 const userStore = useUserStore()
-const user = userStore.user
 
-const notifCount = ref(0)
+const { user } = storeToRefs(userStore)
+
 const siteNavs = computed(() => configStore.config?.siteNavs || [])
 
-const resp = await api.getRecentMessages().catch(() => null)
-notifCount.value = resp?.count || 0
+const { data: recentMsgResp } = await useAsyncData(
+  'recent-messages',
+  () => api.getRecentMessages().catch(() => null),
+  {
+    default: () => ({
+      topics: 0,
+      posts: 0,
+      members: 0,
+      visits: 0,
+      newestMember: '',
+    }),
+    watch: [() => route.fullPath],
+  }
+)
+
+const notifCount = computed(() => {
+  return recentMsgResp.value?.count || 0
+})
 
 // Mock notification count for UI preview
 </script>

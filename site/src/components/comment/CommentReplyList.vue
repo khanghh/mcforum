@@ -87,6 +87,7 @@
 <script setup>
 const i18n = useI18n()
 const api = useApi()
+const userStore = useUserStore()
 
 const props = defineProps({
   commentId: {
@@ -109,10 +110,7 @@ const emit = defineEmits(['update:modelValue', 'reply'])
 const myReply = reactive(props.modelValue)
 const replies = ref(props.data)
 
-const user = computed(() => {
-  const userStore = useUserStore()
-  return userStore.user
-})
+const { user } = storeToRefs(userStore)
 
 async function loadMore() {
   const ret = await useHttpGet(`/api/comments/${props.commentId}/replies`, {

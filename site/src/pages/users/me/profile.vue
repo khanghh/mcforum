@@ -34,8 +34,18 @@
             <Icon name="Fa7SolidImage" class="mr-2" />
             {{ $t('form.label.avatar') }}
           </label>
-          <div class="flex-1">
-            <avatar-edit :value="user.avatar" />
+          <div>
+            <AvatarDecorated :user="user">
+              <AvatarEdit v-model="user.avatar" :username="user.username" class="w-full h-full object-cover"
+                size="120" />
+            </AvatarDecorated>
+            <div class="mt-2">
+              <button type="button" class="text-sm text-red-400 hover:text-red-300 flex items-center gap-1"
+                @click="removeAvatar">
+                <Icon name="Fa7SolidTrashCan" />
+                {{ $t('profile.remove_avatar') }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -214,14 +224,25 @@
           <button
             type="button"
             class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 gaming-title"
-            @click="handleCancel">
+            @click="navigateTo(`/users/${user.value.username}`)">
             {{ $t('form.button.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] gaming-title tracking-[0.5px] transition-transform hover:scale-[1.02] active:scale-[0.98]">
-            <Icon name="Fa7SolidSave" class="mr-2" />
-            {{ $t('form.button.save_changes') }}
+            :disabled="saving"
+            class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] gaming-title tracking-[0.5px] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
+            <span v-if="saving" class="flex items-center">
+              <svg class="animate-spin mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              {{ i18n.t('form.saving') }}
+            </span>
+            <span v-else class="flex items-center">
+              <Icon name="Fa7SolidSave" class="mr-2" />
+              {{ $t('form.button.save_changes') }}
+            </span>
           </button>
         </div>
       </form>
@@ -230,17 +251,20 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
+
 const i18n = useI18n()
 const api = useApi()
 const toast = useToast()
+const dialog = useConfirmDialog()
+const userStore = useUserStore()
 
 definePageMeta({
   middleware: ['auth'],
   layout: 'default',
 })
 
-const userStore = useUserStore()
-const user = computed(() => userStore.user)
+const { user } = storeToRefs(userStore)
 
 const form = ref({
   nickname: user.value.nickname,
@@ -258,8 +282,10 @@ const bioCounterClass = computed(() => {
   if (bioCount.value > bioMax - 50) return 'text-yellow-400'
   return 'text-gray-400'
 })
+const saving = ref(false)
 
 async function submitForm() {
+  saving.value = true
   try {
     await api.updateProfile({
       nickname: form.value.nickname,
@@ -280,6 +306,9 @@ async function submitForm() {
     }
     toast.error(i18n.t('message.profile_update_failure'))
   }
+  finally {
+    saving.value = false
+  }
 }
 
 function handleBioInput(e) {
@@ -297,7 +326,8 @@ async function reload() {
   if (typeof userStore.getCurrent === 'function') {
     await userStore.getCurrent().catch(() => undefined)
   }
-  const u = userStore.user
+  const u = user.value
+  console.log('Reloaded user:', u)
   if (!u) return
   form.value.nickname = u.nickname
   form.value.bio = u.bio
@@ -307,8 +337,26 @@ async function reload() {
   form.value.emailNotify = u.settings.emailNotify
 }
 
-function handleCancel() {
-  navigateTo(`/users/${user.value.username}`)
+async function removeAvatar() {
+  await dialog.show({
+    title: i18n.t('dialog.title.confirm_delete'),
+    message: i18n.t('dialog.message.confirm_remove_avatar'),
+    confirmText: i18n.t('dialog.button.confirm'),
+    cancelText: i18n.t('dialog.button.cancel'),
+    icon: 'Fa7SolidTrashCan',
+    variant: 'warning',
+    onConfirm: async () => {
+      try {
+        await api.removeAvatar()
+        await reload()
+
+      }
+      catch (e) {
+        const errMsg = e?.data?.error?.message || e.message || 'Unknown error'
+        toast.error(i18n.t('message.action_failure', { erroro: errMsg }))
+      }
+    },
+  })
 }
 
 useHead({

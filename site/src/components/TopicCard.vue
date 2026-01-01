@@ -75,13 +75,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { Topic } from '@/types'
 
 const i18n = useI18n()
 const userStore = useUserStore()
-const user = userStore.user
 const api = useApi()
+
+const { user } = storeToRefs(userStore)
 
 type Props = {
   topic: Topic
@@ -132,7 +134,7 @@ const colorIndex = slugHash(topic?.forum?.slug) % labelColors.length || 0
 
 async function likeTopic() {
   try {
-    if (!user || !user.id) {
+    if (!user.value || !user.value.id) {
       useCatchError(new Error(i18n.t('auth.login_required')))
       return
     }

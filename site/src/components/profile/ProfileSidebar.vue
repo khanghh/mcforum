@@ -21,7 +21,7 @@
               <Icon name="TablerCalendarPlus" class="text-purple-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.join_date') }}</span>
             </div>
-            <span class="text-sm font-bold gaming-title">{{ formatDate(user.joinTime) }}</span>
+            <span class="text-sm font-bold gaming-title">{{ usePrettyDate(user.joinTime) }}</span>
           </div>
           <!-- Mock Data for design completeness -->
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
@@ -57,21 +57,22 @@
           class="mt-3 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="text-2xl font-bold text-purple-300 gaming-title">{{ calculateLevel(user.score) }}</span>
+              <span class="text-2xl font-bold text-purple-300 gaming-title">{{ getCurrentLevel(user.score) }}</span>
               <Icon name="TablerArrowRight" class="text-purple-400 text-xs" />
-              <span class="text-xl font-bold text-gray-400 gaming-title">{{ calculateLevel(user.score) + 1 }}</span>
+              <span class="text-xl font-bold text-gray-400 gaming-title">{{ getCurrentLevel(user.score) + 1 }}</span>
             </div>
-            <span class="text-xs font-bold text-purple-300">{{ calculateProgress(user.score) }}% to next level</span>
+            <span class="text-xs font-bold text-purple-300">{{ getLevelProgress(user.score) }}% to next level</span>
           </div>
           <div class="relative w-full h-3 bg-gray-700/50 rounded-full overflow-hidden">
             <div
               class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-full"
-              :style="{ width: calculateProgress(user.score) + '%' }">
+              :style="{ width: getLevelProgress(user.score) + '%' }">
             </div>
           </div>
           <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
-            <span>{{ (user.score - totalExp(calculateLevel(user.score) - 1)) }} / {{
-              totalExp(calculateLevel(user.score)) - totalExp(calculateLevel(user.score) - 1) }} XP</span>
+            <span>
+              {{ currentExpInLevel }} / {{ expNeededForNextLevel }} XP
+            </span>
             <span class="flex items-center gap-1">
               <Icon name="RiFireLine" class="text-orange-400" />
               5 day streak
@@ -141,59 +142,28 @@
 </template>
 
 <script setup>
-const userStore = useUserStore()
+import { getCurrentLevel, getLevelProgress, getTotalExpForLevel } from '@/composables/exp'
+
 const props = defineProps({
   user: {
     type: Object,
     required: true,
   },
 })
-const isSelf = computed(() => {
-  return userStore.user && userStore.user.id === props.user.id
+
+const currentExpInLevel = computed(() => {
+  const score = props.user?.score || 0
+  const currentLevel = getCurrentLevel(score)
+  const prevTotal = getTotalExpForLevel(currentLevel - 1)
+  return Math.max(0, score - prevTotal)
 })
 
-function formatDate(timestamp) {
-  if (!timestamp) return 'Unknown'
-  return new Date(timestamp).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
-}
-
-function calculateLevel(score) {
-  let level = 0;
-  while (totalExp(level + 1) <= (score || 0)) {
-    level++;
-  }
-  return level + 1;
-}
-
-function calculateProgress(score) {
-  const currentLevel = calculateLevel(score);
-  const currentLevelExp = totalExp(currentLevel - 1);
-  const nextLevelExp = totalExp(currentLevel);
-  const expInCurrentLevel = score - currentLevelExp;
-  const expNeededForNextLevel = nextLevelExp - currentLevelExp;
-
-  return Math.min(100, Math.round((expInCurrentLevel / expNeededForNextLevel) * 100));
-}
-
-function expToNext(level) {
-  const base = 10;
-  const growth = 5;
-
-  let exp = base + level * growth;
-
-  if (level > 500) {
-    exp = exp * Math.pow(1.01, level - 500);
-  }
-
-  return Math.floor(exp); // round down to integer
-}
-
-function totalExp(level) {
-  let total = 0;
-  for (let i = 1; i <= level; i++) {
-    total += expToNext(i);
-  }
-  return total;
-}
+const expNeededForNextLevel = computed(() => {
+  const score = props.user?.score || 0
+  const currentLevel = getCurrentLevel(score)
+  const nextTotal = getTotalExpForLevel(currentLevel)
+  const prevTotal = getTotalExpForLevel(currentLevel - 1)
+  return Math.max(1, nextTotal - prevTotal)
+})
 
 </script>

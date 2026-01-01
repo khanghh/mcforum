@@ -19,8 +19,8 @@ interface Props {
 }
 const props = defineProps<Props>()
 
-const loggedInUser = userStore.user
-const isSelf = loggedInUser?.username === props.user.username
+const { user: loggedInUser } = storeToRefs(userStore)
+const isSelf = loggedInUser.value?.username === props.user.username
 
 const getUserFollowing = async () => {
   if (isSelf) {

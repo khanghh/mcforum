@@ -95,9 +95,10 @@ const open = ref(false)
 const root = ref<HTMLElement | null>(null)
 
 const userStore = useUserStore()
+const { user } = storeToRefs(userStore)
 
-const isManagerRole = userIsManager(userStore.user)
-const isTopicOwner = computed(() => userStore.user && userStore.user.id === topic.value.user.id)
+const isManagerRole = userIsManager(user.value)
+const isTopicOwner = computed(() => user.value && user.value.id === topic.value.user.id)
 const recommended = computed(() => topic.value.recommended)
 const pinned = computed(() => topic.value.pinned)
 const isPending = computed(() => topic.value.status === TopicStatus.PendingReview)

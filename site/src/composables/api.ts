@@ -142,6 +142,10 @@ export const useApi = () => {
     return useHttpPut("/api/users/me/avatar", { body: form })
   }
 
+  const removeAvatar = (): Promise<void> => {
+    return useHttpDelete("/api/users/me/avatar")
+  }
+
   const uploadCover = (file: File): Promise<void> => {
     const form = new FormData()
     form.append('file', file, file.name)
@@ -302,6 +306,7 @@ export const useApi = () => {
     getRecentMessages,
     setStatusMessage,
     uploadAvatar,
+    removeAvatar,
     uploadCover,
 
     // other user api endpoints

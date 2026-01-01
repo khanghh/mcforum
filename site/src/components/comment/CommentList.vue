@@ -91,12 +91,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, type Ref } from 'vue'
 import type { Comment, CommentUser } from '@/types'
 
 const userStore = useUserStore()
 const api = useApi()
 const dialog = useConfirmDialog()
+
+const { user } = storeToRefs(userStore)
 
 const props = defineProps({
   topicSlug: {
@@ -118,11 +119,11 @@ const replyTo = ref<CommentUser | null>(null)
 const commentsCursor = api.getTopicComments(props.topicSlug)
 
 const isLogin = computed(() => {
-  return !!userStore.user
+  return !!user.value && !!user.value.id
 })
 
 const isCommentOwner = (comment: Comment) => {
-  return userStore.user && userStore.user.id === comment.user.id
+  return user.value && user.value.id === comment.user.id
 }
 
 const loadMoreComment = ref<any>(null)

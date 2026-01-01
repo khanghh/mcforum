@@ -52,7 +52,8 @@ const userStore = useUserStore()
 const isDropdownOpen = ref(false)
 const dropdownRef = ref(null)
 
-const avatarSrc = computed(() => userStore.user?.avatar)
+const { user } = storeToRefs(userStore)
+const avatarSrc = computed(() => user.value?.avatar)
 
 onClickOutside(dropdownRef, () => {
   isDropdownOpen.value = false

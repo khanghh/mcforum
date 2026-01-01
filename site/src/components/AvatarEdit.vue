@@ -4,7 +4,7 @@
     :style="{ width: size + 'px', height: size + 'px' }">
     <Avatar
       :username="username"
-      :src="previewSrc || props.modelValue"
+      :src="props.modelValue"
       :size="size"
       :rounded="rounded"
       class="w-full h-full" />
@@ -16,10 +16,16 @@
       <span class="ml-2 text-sm">{{ $t('profile.actions.change_avatar') }}</span>
     </div>
 
+    <div v-if="uploading"
+      class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
+      <Icon name="Fa7SolidCircleNotch" class="animate-spin opacity-75" size="60" />
+    </div>
+
     <input
       type="file"
       accept="image/*"
       class="sr-only"
+      :disabled="uploading"
       @change="onFileChange" />
   </label>
 </template>
@@ -57,26 +63,31 @@ const emit = defineEmits([
   'update:modelValue'
 ])
 
-const previewSrc = ref('')
 let objectUrl = null
+const uploading = ref(false)
 
 async function onFileChange(e) {
   const file = e.target.files && e.target.files[0]
   if (!file) return
   if (objectUrl) URL.revokeObjectURL(objectUrl)
   objectUrl = URL.createObjectURL(file)
-  await api.uploadAvatar(file).then((res) => {
+  uploading.value = true
+  try {
+    const res = await api.uploadAvatar(file)
     emit('update:modelValue', res.avatar)
-    previewSrc.value = objectUrl
-  }).catch((err) => {
+  }
+  catch (err) {
     const errMsg = err?.data?.error?.message || err.message || 'Unknown error'
     dialog.show({
       title: $t('dialog.title.error_occurred'),
       message: errMsg,
       variant: 'warning',
     })
-  })
-  e.target.value = ''
+  }
+  finally {
+    uploading.value = false
+    e.target.value = ''
+  }
 }
 
 onUnmounted(() => {

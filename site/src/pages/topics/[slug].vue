@@ -53,7 +53,7 @@
                 </span>
                 <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded">
                   LVL
-                  {{ calculateLevel(topic.user.score) }}
+                  {{ getCurrentLevel(topic.user.score) }}
                 </span>
               </div>
 
@@ -174,10 +174,6 @@ useHead({
 const isPending = computed(() => {
   return topic.value?.status === 2
 })
-
-function calculateLevel(score) {
-  return Math.floor(Math.sqrt(score || 0)) + 1
-}
 
 async function toggleLike() {
   if (topic.value.status !== TopicStatus.Active) return

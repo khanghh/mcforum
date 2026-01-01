@@ -17,7 +17,7 @@
     </template>
 
     <!-- Comments List -->
-    <CommentList ref="list" :topicSlug="topicSlug" @reply="reply" />
+    <CommentList ref="list" :topicSlug="topicSlug" />
   </div>
 </template>
 
@@ -36,31 +36,21 @@ const props = defineProps({
 const emits = defineEmits(['created'])
 const userStore = useUserStore()
 const configStore = useConfigStore()
-const user = computed(() => {
-  return userStore.user
-})
+const { user } = storeToRefs(userStore)
 
 const isLogin = computed(() => {
-  return !!userStore.user
+  return !!user.value && !!user.value.id
 })
 
 const config = computed(() => {
   return configStore.config
 })
 
-const input = ref(null)
 const list = ref(null)
-
-// 是否需要先邮箱认证
-const isNeedEmailVerify = computed(() => {
-  return config.value.createCommentEmailVerified && user.value && !user.value.emailVerified
-})
 
 function commentCreated(data) {
   list.value.append(data)
   emits('created', data)
 }
-function reply(quote) {
-  // this.$refs.input.reply(quote)
-}
+
 </script>

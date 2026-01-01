@@ -1,5 +1,5 @@
 <template>
-  <div class="relative p-1">
+  <div class="relative items-center p-1">
     <!-- Frame Decorations -->
     <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
       <div v-if="roleName"
@@ -26,10 +26,7 @@
 
 const props = defineProps({
   user: { type: Object, required: true },
-  isSelf: { type: Boolean, default: false },
 })
-
-// no uploads here; AvatarEdit removed
 
 const roleName = computed(() => props.user.role || '')
 
@@ -54,6 +51,8 @@ const roleColor = computed(() => {
       return ''
   }
 })
+
+
 </script>
 
 <style scoped>
