@@ -2,7 +2,7 @@
   <div ref="dropdownRef" class="relative inline-block">
     <button class="flex items-center space-x-2 focus:outline-none" @click="toggleDropdown">
       <Avatar :src="avatarSrc" :username="user?.username"
-        class="w-10 h-10 object-cover border border-purple-600 rounded-lg" />
+        class="w-10 h-10 rounded border border-purple-300" />
     </button>
 
     <!-- Dropdown Menu (light style) -->

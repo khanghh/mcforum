@@ -38,7 +38,7 @@
             <div class="relative group">
               <Avatar :src="topic.user.avatar"
                 :username="topic.user.username"
-                class="w-12 h-12 rounded border-2 border-purple-500/50 flex-shrink-0 object-cover" />
+                class="w-12 h-12 rounded border-2 border-purple-300 flex-shrink-0 object-cover" />
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">

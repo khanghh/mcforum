@@ -45,7 +45,7 @@ const { user: currentUser } = storeToRefs(userStore)
 const showFollowButton = computed(() => {
   return userStore.isLogin && currentUser.value?.username !== user.username
 })
-const level = computed(() => Math.floor(Math.sqrt(((user as any)?.score) || 0)) + 1)
+const level = computed(() => getCurrentLevel(user.score || 0))
 
 async function toggleFollow() {
   if (isFollowing.value) {

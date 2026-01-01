@@ -102,8 +102,8 @@
 
 <script setup>
 import AvatarDecorated from '../AvatarDecorated.vue'
-import { useMsgSuccess, useMsgError } from '@/composables/useMsg'
-import { nextTick, watch } from 'vue'
+import { useMsgError } from '@/composables/useMsg'
+import { nextTick, ref } from 'vue'
 
 const userStore = useUserStore()
 const dialog = useConfirmDialog()
@@ -121,9 +121,24 @@ const isEditing = ref(false)
 const editingStatus = ref('')
 const statusInput = ref()
 const measureSpan = ref()
-const currentUser = computed(() => userStore.user)
+const { user: currentUser } = storeToRefs(userStore)
 const isSelf = computed(() => currentUser?.value && currentUser?.value?.id === props.user.id)
 const coverImageSrc = ref(props.user.backgroundImage)
+const avatar = computed({
+  get: () => props.user.avatar ?? '',
+  set: v => {
+    if (!props.user) return
+    props.user.avatar = v
+  },
+})
+
+function onAvatarUpdate(val) {
+  avatar.value = val
+  props.user.avatar = val
+  if (currentUser?.value && currentUser.value.id === props.user.id) {
+    userStore.user.avatar = val
+  }
+}
 
 if (!isSelf.value) {
   isFollowing.value = await api.isFollowing(props.user.id).catch(() => false)

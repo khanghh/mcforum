@@ -6,7 +6,7 @@
       :src="user.avatar"
       :username="user.username"
       :size="size"
-      class="border border-purple-500/50 rounded"
+      class="border border-purple-300 rounded"
       :class="index > 0 ? '-ml-5' : ''" />
   </div>
 </template>

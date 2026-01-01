@@ -22,7 +22,7 @@
         <!-- Avatar + user/info -->
         <div v-if="author" class="flex items-center gap-3">
           <Avatar :src="author.avatar" :username="author.username" size="40"
-            class="rounded border border-purple-500/50 flex-shrink-0" />
+            class="rounded border border-purple-300 flex-shrink-0" />
           <div class="flex flex-col min-w-0">
             <nuxt-link :to="`/users/${author.username}`"
               class="font-bold text-gray-300 gaming-title text-md hover:text-purple-400 transition-colors truncate">

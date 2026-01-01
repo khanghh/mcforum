@@ -2,7 +2,8 @@
   <div class="mt-4 pl-4 border-l-4 border-purple-500/20 space-y-4">
     <div v-for="reply in replies.items" :key="reply.id" class="flex items-start gap-4">
       <div class="relative group">
-        <my-avatar :user="reply.user" :size="24" class="rounded-lg border-2 border-purple-500/30" />
+        <Avatar :src="reply.user.avatar" :username="reply.user.username" :size="48"
+          class="rounded border-2 border-purple-300" />
       </div>
 
       <div class="flex-1 min-w-0">

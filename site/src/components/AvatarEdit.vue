@@ -4,7 +4,7 @@
     :style="{ width: size + 'px', height: size + 'px' }">
     <Avatar
       :username="username"
-      :src="props.modelValue"
+      :src="previewSrc || props.modelValue"
       :size="size"
       :rounded="rounded"
       class="w-full h-full" />
@@ -63,8 +63,9 @@ const emit = defineEmits([
   'update:modelValue'
 ])
 
-let objectUrl = null
 const uploading = ref(false)
+const previewSrc = ref('')
+let objectUrl = null
 
 async function onFileChange(e) {
   const file = e.target.files && e.target.files[0]
@@ -75,6 +76,7 @@ async function onFileChange(e) {
   try {
     const res = await api.uploadAvatar(file)
     emit('update:modelValue', res.avatar)
+    previewSrc.value = res.avatar
   }
   catch (err) {
     const errMsg = err?.data?.error?.message || err.message || 'Unknown error'

@@ -6,7 +6,8 @@
           class="border-b border-purple-500/20 pb-6 last:border-0 last:pb-0 mt-6 group">
           <div class="flex items-start gap-4">
             <div class="relative group">
-              <Avatar :user="comment.user" :size="48" class="rounded border-2 border-purple-500/30" />
+              <Avatar :src="comment.user.avatar" :username="comment.user.username" :size="48"
+                class="rounded border-2 border-purple-300" />
             </div>
 
             <div class="flex-1 min-w-0">

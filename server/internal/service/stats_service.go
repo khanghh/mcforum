@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bbs-go/internal/cache"
 	"bbs-go/internal/model"
 	"bbs-go/sqls"
 	"time"
@@ -64,10 +63,6 @@ func (c *statsService) GetForumStats() (model.ForumStats, error) {
 	c.visitCounter++
 	c.statsCache.TotalVisits++
 	return c.statsCache, nil
-}
-
-func (c *statsService) GetTopContributors() []model.User {
-	return cache.UserCache.GetScoreRank()
 }
 
 func newStatsService() *statsService {
