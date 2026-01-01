@@ -103,7 +103,3 @@
     </div>
   </footer>
 </template>
-
-<script setup lang="ts">
-import FooterForumStats from '~/components/sidebar/FooterForumStats.vue'
-</script>

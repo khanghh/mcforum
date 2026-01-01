@@ -25,7 +25,7 @@
             class="rounded border border-purple-500/50 flex-shrink-0" />
           <div class="flex flex-col min-w-0">
             <nuxt-link :to="`/users/${author.username}`"
-              class="font-bold text-purple-300 gaming-title text-md hover:text-purple-200 transition-colors truncate">
+              class="font-bold text-gray-300 gaming-title text-md hover:text-purple-400 transition-colors truncate">
               {{ author.username }}
             </nuxt-link>
             <span class="text-xs text-gray-500 mt-0.5">{{ usePrettyDate(topic.createTime) }}</span>
