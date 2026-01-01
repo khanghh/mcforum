@@ -30,9 +30,12 @@ func (c *UploadController) Post() (*web.JsonResult, error) {
 		return nil, errs.ErrInternalServer
 	}
 
-	body := c.Ctx.Request().Body
-	mimeType := c.Ctx.GetHeader("Content-Type")
-	result, err := service.UploadService.Upload(user, body, mimeType)
+	file, header, err := c.Ctx.FormFile("avatar")
+	if err != nil {
+		return nil, errs.ErrBadRequest
+	}
+
+	result, err := service.UploadService.UploadStream(user, file, header.Filename)
 	if err != nil {
 		if errResp, ok := err.(*errs.ResponseError); ok {
 			return nil, errResp
@@ -42,10 +45,11 @@ func (c *UploadController) Post() (*web.JsonResult, error) {
 	}
 
 	resp := payload.UploadResponse{
-		URL:      result.URL,
-		Size:     result.Size,
-		MimeType: result.MimeType,
-		FileName: result.FileName,
+		URL:       result.URL,
+		Size:      result.Size,
+		MimeType:  result.MimeType,
+		FileName:  result.FileName,
+		CreatedAt: result.CreatedAt,
 	}
 	return web.JsonData(resp), nil
 }

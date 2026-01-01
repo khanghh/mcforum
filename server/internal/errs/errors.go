@@ -53,6 +53,8 @@ var (
 	ErrUploadIncomplete    = &ResponseError{iris.StatusBadRequest, locale.T("upload.upload_incomplete")}
 	ErrUnsupportedFileType = &ResponseError{iris.StatusUnsupportedMediaType, locale.T("upload.unsupported_file_type")}
 	ErrFileTooLarge        = &ResponseError{iris.StatusRequestEntityTooLarge, locale.T("upload.file_too_large")}
+	ErrAvatarTooLarge      = &ResponseError{iris.StatusRequestEntityTooLarge, locale.T("upload.avatar_too_large")}
+	ErrAvatarSizeTooSmall  = &ResponseError{iris.StatusRequestEntityTooLarge, locale.T("upload.avatar_size_too_small")}
 )
 
 func IsDatabaseError(err error) bool {

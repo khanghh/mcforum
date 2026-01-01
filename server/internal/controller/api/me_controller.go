@@ -2,6 +2,7 @@ package api
 
 import (
 	"bbs-go/common/strs"
+	"bbs-go/internal/cache"
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
@@ -12,6 +13,7 @@ import (
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
+	"io"
 	"log/slog"
 
 	"github.com/kataras/iris/v12"
@@ -67,6 +69,7 @@ func (c *MeController) Patch() *web.JsonResult {
 		return web.JsonError(errs.ErrInternalServer)
 	}
 
+	cache.UserCache.Invalidate(user.ID)
 	return web.JsonSuccess()
 }
 
@@ -104,7 +107,37 @@ func (c *MeController) PutAvatar() *web.JsonResult {
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
-	return web.JsonSuccess()
+
+	file, _, err := c.Ctx.FormFile("file")
+	if err != nil {
+		return web.JsonError(errs.ErrBadRequest)
+	}
+	defer file.Close()
+
+	lr := io.LimitReader(file, constants.MaxAvatarSizeBytes+1)
+	data, err := io.ReadAll(lr)
+	if err != nil {
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	if len(data) > constants.MaxAvatarSizeBytes {
+		return web.JsonError(errs.ErrAvatarTooLarge)
+	}
+
+	ret, err := service.UploadService.UploadAvatar(user, data)
+	if err != nil {
+		slog.Error("Upload avatar failed", "error", err)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+
+	if err := service.UserService.UpdateAvatar(user.ID, ret.URL); err != nil {
+		slog.Error("Change user avatar failed", "error", err)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+
+	cache.UserCache.Invalidate(user.ID)
+	return web.JsonData(map[string]string{
+		"avatar": ret.URL,
+	})
 }
 
 func (c *MeController) PutCover() *web.JsonResult {
@@ -112,14 +145,27 @@ func (c *MeController) PutCover() *web.JsonResult {
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
-	backgroundImage := params.FormValue(c.Ctx, "backgroundImage")
-	if strs.IsBlank(backgroundImage) {
-		return web.JsonErrorMsg("Please upload image")
+
+	file, header, err := c.Ctx.FormFile("file")
+	if err != nil {
+		return web.JsonError(errs.ErrBadRequest)
 	}
-	if err := service.UserService.UpdateBackgroundImage(user.ID, backgroundImage); err != nil {
-		return web.JsonError(err)
+
+	ret, err := service.UploadService.UploadStream(user, file, header.Filename)
+	if err != nil {
+		slog.Error("Upload cover photo failed", "error", err)
+		return web.JsonError(errs.ErrInternalServer)
 	}
-	return web.JsonSuccess()
+
+	if err := service.UserService.UpdateCoverPhoto(user.ID, ret.URL); err != nil {
+		slog.Error("Change user cover photo failed", "error", err)
+		return web.JsonError(errs.ErrInternalServer)
+	}
+
+	cache.UserCache.Invalidate(user.ID)
+	return web.JsonData(map[string]string{
+		"coverImage": ret.URL,
+	})
 }
 
 func (c *MeController) GetTopics() *web.JsonResult {
@@ -241,5 +287,6 @@ func (c *MeController) PutStatus() *web.JsonResult {
 	if err := service.UserService.UpdateStatusMessage(user.ID, msgBody.Message); err != nil {
 		return web.JsonError(errs.ErrInternalServer)
 	}
+	cache.UserCache.Invalidate(user.ID)
 	return web.JsonSuccess()
 }

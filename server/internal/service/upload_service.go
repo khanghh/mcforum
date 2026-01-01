@@ -8,15 +8,17 @@ import (
 	"bbs-go/sqls"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"log/slog"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"time"
 
+	"github.com/disintegration/imaging"
 	"github.com/golang-jwt/jwt/v4"
 )
-
-const ()
 
 var UploadService = newUploadService()
 
@@ -39,10 +41,12 @@ type ErrorResponse struct {
 }
 
 type UploadResponse struct {
-	URL      string `json:"url"`
-	Size     int64  `json:"size"`
-	MimeType string `json:"mime_type"`
-	FileName string `json:"file_name"`
+	URL       string `json:"url"`
+	FileName  string `json:"fileName"`
+	ThumbName string `json:"thumbName"`
+	Size      int64  `json:"size"`
+	MimeType  string `json:"mimeType"`
+	CreatedAt int64  `json:"createdAt"`
 }
 
 func (s *uploadService) getUploadToken(user *model.User) string {
@@ -69,28 +73,45 @@ func (s *uploadService) getUploadToken(user *model.User) string {
 	return signedToken
 }
 
-func (s *uploadService) Upload(user *model.User, stream io.Reader, mimeType string) (*model.Upload, error) {
+func (s *uploadService) UploadStream(user *model.User, stream io.Reader, fileName string) (*model.Upload, error) {
 	uploadURL := config.Instance().Uploader.SUpload.UploadURL
 	if uploadURL == "" {
+		slog.Error("Upload URL is not configured")
 		return nil, errs.ErrInternalServer
 	}
 	uploadToken := s.getUploadToken(user)
+	// build a streaming multipart request with field "file"
+	pr, pw := io.Pipe()
+	mw := multipart.NewWriter(pw)
+	contentType := mw.FormDataContentType()
+
+	// writer goroutine: write the multipart content and stream the file
+	go func() {
+		defer pw.Close()
+		defer mw.Close()
+		part, err := mw.CreateFormFile("file", fileName)
+		if err != nil {
+			pw.CloseWithError(err)
+			return
+		}
+		if _, err := io.Copy(part, stream); err != nil {
+			pw.CloseWithError(err)
+			return
+		}
+	}()
 
 	proxiedReq, err := http.NewRequest(
 		http.MethodPost,
 		uploadURL,
-		stream,
+		pr,
 	)
 	if err != nil {
 		return nil, errs.ErrInternalServer
 	}
 
-	if proxiedReq.Header.Get("Content-Type") == "" {
-		proxiedReq.Header.Set("Content-Type", mimeType)
-	}
-
 	proxiedReq.Header.Del("Host")
 	proxiedReq.Header.Set("Authorization", "Bearer "+uploadToken)
+	proxiedReq.Header.Set("Content-Type", contentType)
 
 	transport := &http.Transport{
 		DialContext: (&net.Dialer{
@@ -127,10 +148,10 @@ func (s *uploadService) Upload(user *model.User, stream io.Reader, mimeType stri
 	if resp.StatusCode == http.StatusCreated {
 		record := &model.Upload{
 			UserID:    user.ID,
+			FileName:  repsBody.Data.FileName,
 			URL:       repsBody.Data.URL,
 			Size:      repsBody.Data.Size,
 			MimeType:  repsBody.Data.MimeType,
-			FileName:  repsBody.Data.FileName,
 			CreatedAt: time.Now().UnixMilli(),
 		}
 		s.RecordUpload(record)
@@ -141,6 +162,29 @@ func (s *uploadService) Upload(user *model.User, stream io.Reader, mimeType stri
 		return nil, errs.NewResponseError(repsBody.Error.Code, repsBody.Error.Message)
 	}
 	return nil, errs.ErrBadGateway
+}
+
+func (s *uploadService) UploadAvatar(user *model.User, data []byte) (*model.Upload, error) {
+	reader := bytes.NewReader(data)
+	img, err := imaging.Decode(reader)
+	if err != nil {
+		return nil, errs.ErrUnsupportedFileType
+	}
+
+	img = imaging.Thumbnail(img, 150, 150, imaging.Lanczos)
+
+	var buf bytes.Buffer
+	if err := imaging.Encode(&buf, img, imaging.JPEG); err != nil {
+		return nil, errs.ErrInternalServer
+	}
+
+	filename := fmt.Sprintf("%d.jpg", time.Now().UnixMilli())
+	uploadInfo, err := s.UploadStream(user, bytes.NewReader(buf.Bytes()), filename)
+	if err != nil {
+		slog.Error("Upload avatar failed", slog.Any("err", err))
+		return nil, err
+	}
+	return uploadInfo, nil
 }
 
 func (s *uploadService) RecordUpload(upload *model.Upload) error {

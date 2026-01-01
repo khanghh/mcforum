@@ -316,9 +316,12 @@ func (s *userService) UpdateBirthday(userId int64, birthdayStr string) error {
 	}
 }
 
-// UpdateBackgroundImage update background image
-func (s *userService) UpdateBackgroundImage(userId int64, backgroundImage string) error {
-	return s.UpdateColumn(userId, "background_image", backgroundImage)
+// UpdateCoverPhoto update background image
+func (s *userService) UpdateCoverPhoto(userId int64, coverImageURL string) error {
+	if err := s.UpdateColumn(userId, "background_image", coverImageURL); err != nil {
+		return err
+	}
+	return nil
 }
 
 // SetUsername set username

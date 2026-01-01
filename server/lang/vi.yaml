@@ -32,6 +32,7 @@ topic.pending_review_exceeded: "Bạn có quá nhiều chủ đề đang chờ d
 upload.upload_incomplete: "Tải lên không hoàn tất"
 upload.unsupported_file_type: "Loại tệp không được hỗ trợ"
 upload.file_too_large: "File upload quá lớn (tối đa 10 MB)"
+upload.avatar_too_large: "Ảnh đại diện quá lớn (tối đa 1MB)"
 
 system.ban_reason: "Lý do cấm: $0"
 system.not_found: "Không tìm thấy"
