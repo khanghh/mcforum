@@ -51,16 +51,8 @@ export const useUserStore = defineStore('user', {
       return { user, token, redirect }
     },
     async signout() {
-      await useHttpGet('/api/login/signout')
       this.user = null
-    },
-    async signup(form: SignupForm) {
-      const { user, token, redirect } = (await useHttpPostForm(
-        '/api/login/signup',
-        { body: form },
-      )) as LoginResponse
-      this.user = user
-      return { user, token, redirect }
-    },
+      await useHttpGet('/api/login/signout')
+    }
   },
 })

@@ -65,6 +65,10 @@ func (s *userService) FindPageByCnd(cnd *sqls.Cnd) (list []model.User, paging *s
 	return repository.UserRepository.FindPageByCnd(sqls.DB(), cnd)
 }
 
+func (s *userService) Count(cnd *sqls.Cnd) int64 {
+	return repository.UserRepository.Count(sqls.DB(), cnd)
+}
+
 func (s *userService) Create(t *model.User) error {
 	err := repository.UserRepository.Create(sqls.DB(), t)
 	if err == nil {

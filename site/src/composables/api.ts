@@ -187,6 +187,14 @@ export const useApi = () => {
     return new CursorResult<Topic[]>(`/api/forums/${forumSlug}`)
   }
 
+  const getForumStats = (): Promise<any> => {
+    return useHttpGet('/api/forums/stats')
+  }
+
+  const getTopContributors = (): Promise<any> => {
+    return useHttpGet('/api/forums/top-contributors')
+  }
+
   // topics api endpoints
   const getTopic = (topicSlug: string): Promise<Topic> => {
     return useHttpGet(`/api/topics/${topicSlug}`) as Promise<Topic>
@@ -282,7 +290,6 @@ export const useApi = () => {
   }
 
   return {
-
     // me api endpoints
     getCurrentUser,
     updateProfile,
@@ -309,6 +316,8 @@ export const useApi = () => {
     getTopicFeeds,
     getForumList,
     getForumTopics,
+    getForumStats,
+    getTopContributors,
 
     // topics api endpoints
     getTopic,
@@ -332,5 +341,6 @@ export const useApi = () => {
     addCommentReaction,
     removeCommentReaction,
     deleteComment,
+
   }
 }

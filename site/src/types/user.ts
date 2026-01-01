@@ -8,6 +8,7 @@ export interface UserInfo {
   avatar: string
   smallAvatar: string
   bio: string
+  score: number
   statusMessage: string
   joinTime: number
   isForbidden: boolean
@@ -21,7 +22,6 @@ export interface UserDetail extends UserInfo {
   commentCount: number
   followersCount: number
   followingCount: number
-  score: number
   backgroundImage: string
   smallBackgroundImage: string
   location?: string

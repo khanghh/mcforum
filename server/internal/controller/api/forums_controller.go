@@ -2,6 +2,7 @@ package api
 
 import (
 	"bbs-go/common/arrays"
+	"bbs-go/internal/cache"
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 
@@ -65,4 +66,29 @@ func (c *ForumsController) GetByInfo(slug string) *web.JsonResult {
 		return web.JsonError(errs.ErrForumNotFound)
 	}
 	return web.JsonData(payload.BuildForum(forum))
+}
+
+func (c *ForumsController) GetStats() *web.JsonResult {
+	stats, err := service.StatsService.GetForumStats()
+	if err != nil {
+		return web.JsonError(errs.ErrInternalServer)
+	}
+	resp := payload.ForumStatsResponse{
+		TotalTopics:  stats.TotalTopics,
+		TotalPosts:   stats.TotalComments,
+		TotalMembers: stats.TotalMembers,
+		TotalVisits:  stats.TotalVisits,
+		NewestMember: stats.NewestMember,
+	}
+	return web.JsonData(resp)
+}
+
+func (c *ForumsController) GetTopContributors() *web.JsonResult {
+	users := cache.UserCache.GetScoreRank()
+	respData := make([]payload.UserInfo, 0, len(users))
+	for _, user := range users {
+		item := payload.BuildUserInfo(&user)
+		respData = append(respData, *item)
+	}
+	return web.JsonData(respData)
 }

@@ -6,9 +6,6 @@ import (
 	"bbs-go/internal/middleware"
 	"log/slog"
 	"os"
-	"strings"
-
-	"bbs-go/pkg/web"
 
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
@@ -32,14 +29,6 @@ func NewServer() {
 		AllowedMethods:   []string{iris.MethodOptions, iris.MethodHead, iris.MethodGet, iris.MethodPost, iris.MethodPut, iris.MethodPatch, iris.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 	}))
-
-	app.OnAnyErrorCode(func(ctx iris.Context) {
-		path := ctx.Path()
-		if strings.Contains(path, "/api/admin/") {
-			err := ctx.JSON(web.JsonErrorCodeMsg(ctx.GetStatusCode(), "Http error"))
-			slog.Error(err.Error(), slog.Any("err", err))
-		}
-	})
 
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)

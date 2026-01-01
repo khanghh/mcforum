@@ -6,7 +6,7 @@ var Models = []interface{}{
 	&User{}, &UserToken{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{}, &Forum{},
 	&Topic{}, &TopicTag{}, &UserLike{}, &Message{}, &SysConfig{}, &Link{},
 	&UserScoreLog{}, &OperateLog{}, &EmailCode{}, &CheckIn{}, &UserFollow{}, &UserFeed{}, &UserReport{},
-	&ForbiddenWord{}, &Upload{},
+	&ForbiddenWord{}, &Upload{}, &ForumStats{},
 }
 
 type Model struct {

@@ -24,6 +24,7 @@ type UserInfo struct {
 	Avatar        string `json:"avatar"`                  // Avatar URL
 	SmallAvatar   string `json:"smallAvatar"`             // Small avatar URL
 	Bio           string `json:"bio,omitempty"`           // User bio
+	Score         int    `json:"score"`                   // User score
 	StatusMessage string `json:"statusMessage,omitempty"` // Status message
 	JoinTime      int64  `json:"joinTime"`                // Account creation timestamp
 
@@ -40,7 +41,6 @@ type UserDetail struct {
 	CommentCount         int        `json:"commentCount"`                   // Number of comments made
 	FollowersCount       int        `json:"followersCount"`                 // Number of fans
 	FollowingCount       int        `json:"followingCount"`                 // Number of users followed
-	Score                int        `json:"score"`                          // User score
 	BackgroundImage      string     `json:"backgroundImage,omitempty"`      // Background image URL
 	SmallBackgroundImage string     `json:"smallBackgroundImage,omitempty"` // Small background image URL
 	Location             string     `json:"location,omitempty"`             // User location
@@ -97,6 +97,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		Avatar:        user.Avatar,
 		Role:          roleName,
 		Bio:           user.Bio,
+		Score:         user.Score,
 		StatusMessage: user.StatusMessage,
 		JoinTime:      user.CreateTime,
 		IsForbidden:   user.IsForbidden(),
@@ -124,7 +125,6 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		CommentCount:         user.CommentCount,
 		FollowersCount:       user.FollowersCount,
 		FollowingCount:       user.FollowingCount,
-		Score:                user.Score,
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
 	}

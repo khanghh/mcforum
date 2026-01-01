@@ -213,6 +213,8 @@ func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
 		} else {
 			followedSet = service.UserFollowService.GetMutualFollowers(current.ID, userIds...)
 		}
+	} else {
+		followedSet = hashset.New()
 	}
 
 	var itemList []*payload.UserInfo

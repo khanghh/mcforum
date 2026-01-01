@@ -41,11 +41,27 @@
         <div>
           <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
           <ul class="space-y-2 text-sm">
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Forums</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Leaderboards</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Server Status</a></li>
+            <li>
+              <a href="https://mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a>
+            </li>
+            <li>
+              <a href="https://skin.mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">
+                Đổi skin
+              </a>
+            </li>
+            <li>
+              <a href="/staffs" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a>
+            </li>
+            <li>
+              <a href="https://play.mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">
+                Server Status
+              </a>
+            </li>
+            <li>
+              <a href="https://ban.mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">
+                Danh sách vi phạm
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -63,31 +79,7 @@
 
         <!-- Forum Stats (moved from sidebar) -->
         <div>
-          <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">FORUM STATS</h4>
-          <div class="gaming-card rounded-xl p-4 gaming-title">
-            <div class="space-y-2 text-sm">
-              <div class="flex justify-between">
-                <span class="text-gray-400">Total Threads</span>
-                <span class="font-bold text-gray-300">84</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Total Posts</span>
-                <span class="font-bold text-gray-300">1232</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Members</span>
-                <span class="font-bold text-gray-300">458</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Total Visits</span>
-                <span class="font-bold text-gray-300">2.4K</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Newest Member</span>
-                <a href="#" class="font-bold text-blue-300 hover:text-purple-400 transition-colors">admin</a>
-              </div>
-            </div>
-          </div>
+          <FooterForumStats />
         </div>
       </div>
 
@@ -111,3 +103,7 @@
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+import FooterForumStats from '~/components/sidebar/FooterForumStats.vue'
+</script>

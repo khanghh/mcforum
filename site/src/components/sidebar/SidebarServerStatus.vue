@@ -1,7 +1,7 @@
 <template>
   <div class="gaming-card rounded-xl p-4">
     <h3 class="text-lg font-bold text-green-400 mb-4 flex items-center gaming-title">
-      <Icon name="TablerServer" class="mr-2" /> SERVER STATUS
+      <Icon name="TablerServer" class="mr-2" /> {{ $t('widgets.server_status') }}
     </h3>
     <div class="space-y-3">
       <div class="flex justify-between items-center p-2 rounded bg-green-500/10">
@@ -25,7 +25,7 @@
              text-white rounded-lg font-bold gaming-title
              hover:scale-105 transition-transform
              flex items-center justify-center">
-      <Icon name="TablerPlayerPlayFilled" class="mr-2" /> JOIN SERVER
+      <Icon name="TablerPlayerPlayFilled" class="mr-2" /> {{ $t('widgets.server_status.join_server') }}
     </a>
   </div>
 </template>

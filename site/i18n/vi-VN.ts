@@ -286,4 +286,13 @@ export default {
   'profile.settings.password_not_set': 'Chưa thiết lập',
   'footer.about': 'Giới thiệu',
   'footer.links': 'Liên kết',
+  'stats.total_topics': 'Số lượng chủ đề',
+  'stats.total_posts': 'Số lượng bình luận',
+  'stats.total_members': 'Số lượng thành viên',
+  'stats.total_visits': 'Lượt truy cập',
+  'stats.newest_member': 'Thành viên mới nhất',
+  'widgets.categories': 'CHUYÊN MỤC',
+  'widgets.server_status': 'TRẠNG THÁI MÁY CHỦ',
+  'widgets.server_status.join_server': 'CHƠI NGAY',
+  'widgets.top_contributors': 'ĐÓNG GÓP NHIỀU NHẤT',
 }

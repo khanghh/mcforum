@@ -465,7 +465,6 @@ func TestInitializeDatabase(t *testing.T) {
 	// TestCreateSysConfigs(t)
 	// TestCreateMenu(t)
 	// TestCreateRoleMenu(t)
-
 }
 
 func TestAddUser(t *testing.T) {

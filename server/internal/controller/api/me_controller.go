@@ -169,22 +169,22 @@ func (c *MeController) PutCover() *web.JsonResult {
 }
 
 func (c *MeController) GetTopics() *web.JsonResult {
-	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	topics, cursor, hasMore := service.TopicService.GetUserTopics(user.ID, cursor)
 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
 
 func (c *MeController) GetFollowers() *web.JsonResult {
-	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	if currentUser == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
+
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 
 	followerIds, cursor, hasMore := service.UserFollowService.GetFollowers(currentUser.ID, cursor, 10)
 	followedSet := service.UserFollowService.GetMutualFollowers(currentUser.ID, followerIds...)
@@ -199,12 +199,12 @@ func (c *MeController) GetFollowers() *web.JsonResult {
 }
 
 func (c *MeController) GetFollowing() *web.JsonResult {
-	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
-
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	if currentUser == nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
+
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 
 	followingIds, cursor, hasMore := service.UserFollowService.GetFollowing(currentUser.ID, cursor, 10)
 	itemList := make([]payload.UserInfo, 0, len(followingIds))
@@ -228,6 +228,9 @@ func (c *MeController) GetFollowingBy(userId int64) *web.JsonResult {
 // Get last 3 unread messages
 func (c *MeController) GetMessages_Recent() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
 	var count int64 = 0
 	var messages []model.Message
 	if user != nil {
@@ -242,7 +245,7 @@ func (c *MeController) GetMessages_Recent() *web.JsonResult {
 func (c *MeController) GetMessages() *web.JsonResult {
 	user, err := service.UserTokenService.CheckLogin(c.Ctx)
 	if err != nil {
-		return web.JsonError(errs.NotLogin)
+		return web.JsonError(errs.ErrUnauthorized)
 	}
 	var (
 		limit     = 20
@@ -271,15 +274,15 @@ func (c *MeController) GetMessages() *web.JsonResult {
 }
 
 func (c *MeController) PutStatus() *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
 	var msgBody struct {
 		Message string `json:"message"`
 	}
 	if err := c.Ctx.ReadJSON(&msgBody); err != nil {
 		return web.JsonError(errs.ErrBadRequest)
-	}
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.ErrUnauthorized)
 	}
 	if len(msgBody.Message) > constants.StatusMessageMaxLength {
 		return web.JsonError(errs.NewBadRequestError(locale.T("user.status_max_length_exceeded")))
