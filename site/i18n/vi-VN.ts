@@ -129,6 +129,8 @@ export default {
   'message.liked_your_comment': 'đã thích bình luận của bạn',
   'message.follow_you': 'bắt đầu theo dõi bạn',
   'message.following_user_create_topic': 'đã đăng một {topic} mới',
+  'message.approved_your_topic': 'đã phê duyệt {topic} của bạn',
+  'message.rejected_your_topic': 'đã từ chối {topic} của bạn',
   'message.recommended_topic': 'đã đề xuất {topic} của bạn',
   'message.your_updates': 'Hiển thị các cập nhật liên quan đến bạn',
   'message.opration_failed': 'Thao tác thất bại: {error}',

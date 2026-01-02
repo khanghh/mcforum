@@ -15,11 +15,11 @@ func handleTopicDeleteEvent(i interface{}) {
 	e := i.(event.TopicDeleteEvent)
 
 	// handle user feed
-	service.UserFeedService.DeleteByDataId(e.TopicId, constants.EntityTopic)
+	service.UserFeedService.DeleteByDataId(e.TopicID, constants.EntityTopic)
 
 	// operation log
-	service.OperateLogService.AddOperateLog(e.DeleteUserId, constants.OpTypeDelete, constants.EntityTopic,
-		e.TopicId, "", nil)
+	service.OperateLogService.AddOperateLog(e.DeleteUserID, constants.OpTypeDelete, constants.EntityTopic,
+		e.TopicID, "", nil)
 }
 
 // sendTopicDeleteMsg topic deleted message

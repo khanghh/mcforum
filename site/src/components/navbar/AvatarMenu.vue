@@ -10,7 +10,7 @@
       class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-sm py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-gray-200">
       <div class="px-4 py-2 flex items-center gap-3">
         <Avatar :src="avatarSrc" :username="user?.username"
-          class="w-10 h-10 object-cover border border-purple-600 rounded-lg" />
+          class="w-10 h-10 object-cover rounded" />
         <div class="min-w-0">
           <div class="text-sm font-semibold text-gray-800 truncate">{{ user?.username }}</div>
           <div v-if="user?.email" class="text-xs text-gray-500 truncate">{{ user?.email }}</div>
@@ -46,7 +46,6 @@ import { onClickOutside } from '@vueuse/core'
 import { useUserStore } from '~/stores/user'
 
 const props = defineProps<{ user: UserProfile }>()
-
 
 const userStore = useUserStore()
 const isDropdownOpen = ref(false)

@@ -13,6 +13,12 @@
       <div v-if="open"
         class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
         <div class="py-1">
+          <button v-if="isTopicOwner || isManagerRole"
+            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
+            @click="open = false; navigateTo(`/topics/edit/${topicId}`)">
+            <Icon name="Fa7SolidEdit" class="mr-2" />
+            {{ $t('publish.action.edit') }}
+          </button>
 
           <button v-if="isManagerRole && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
@@ -26,13 +32,6 @@
             @click="open = false; rejectTopic()">
             <Icon name="Fa7SolidTimes" class="mr-2" />
             {{ $t('publish.action.reject') }}
-          </button>
-
-          <button v-if="isTopicOwner || isManagerRole"
-            class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
-            @click="open = false; navigateTo(`/topics/edit/${topicId}`)">
-            <Icon name="Fa7SolidEdit" class="mr-2" />
-            {{ $t('publish.action.edit') }}
           </button>
 
           <button v-if="isManagerRole && !isPending"
@@ -58,10 +57,9 @@
           <button v-if="isHidden && isManagerRole"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; restoreTopic()">
-            <Icon name="Fa7SolidTrashCan" class="mr-2" />
+            <Icon name="Fa7SolidArrowLeftRotate" class="mr-2" />
             {{ $t('publish.action.restore') }}
           </button>
-
         </div>
       </div>
     </transition>
@@ -70,6 +68,7 @@
 
 <script setup lang="ts">
 import { TopicStatus, type Topic } from '@/types'
+
 const i18n = useI18n()
 const api = useApi()
 const dialog = useConfirmDialog()
@@ -109,8 +108,7 @@ function onClickOutside(e: any) {
   const path = e.composedPath ? e.composedPath() : (e.path || [])
   if (path.length) {
     if (!path.includes(root.value)) open.value = false
-  }
-  else {
+  } else {
     if (!root.value.contains(e.target)) open.value = false
   }
 }
@@ -152,7 +150,7 @@ function rejectTopic() {
     variant: 'warning',
     icon: 'Fa7SolidTrashCan',
     onConfirm() {
-      return api.deleteTopic(topic.value.slug)
+      return api.rejectTopic(topic.value.slug)
         .then(() => {
           toast.success(i18n.t('message.action_success', { action }))
           navigateTo(topic.value?.forum?.slug ? `/forums/${topic.value.forum.slug}` : '/')

@@ -34,9 +34,8 @@ import type { CursorResult } from '@/composables/api'
 import type { Topic } from '~/types'
 
 const route = useRoute()
-const { t } = useI18n()
+const i18n = useI18n()
 const api = useApi()
-
 
 definePageMeta({
   layout: 'default',
@@ -57,23 +56,22 @@ const feedInfo = computed<FeedInfo>(() => {
   switch (feedType) {
     case FeedType.Recommended:
       return {
-        title: t('feed.recommended'),
-        description: t('feed.recommended_desc'),
+        title: i18n.t('feed.recommended'),
+        description: i18n.t('feed.recommended_desc'),
       }
     case FeedType.Followed:
       return {
-        title: t('feed.followed'),
-        description: t('feed.followed_desc'),
+        title: i18n.t('feed.followed'),
+        description: i18n.t('feed.followed_desc'),
       }
     case FeedType.WhatsNew:
     default:
       return {
-        title: t('feed.whats_new'),
-        description: t('feed.whats_new_desc'),
+        title: i18n.t('feed.whats_new'),
+        description: i18n.t('feed.whats_new_desc'),
       }
   }
 })
-
 
 const feedCursor: CursorResult<Topic[]> = api.getTopicFeeds(feedType)
 

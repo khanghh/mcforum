@@ -141,8 +141,8 @@ func (s *userLikeService) TopicLike(userId int64, topicId int64) error {
 	// send event for new like only
 	if likeCreated {
 		event.Send(event.UserLikeEvent{
-			UserId:     userId,
-			EntityId:   topicId,
+			UserID:     userId,
+			EntityID:   topicId,
 			EntityType: constants.EntityTopic,
 		})
 	}
@@ -204,8 +204,8 @@ func (s *userLikeService) CommentLike(userId int64, commentId int64) error {
 	// send event for new like only
 	if likeCreated {
 		event.Send(event.UserLikeEvent{
-			UserId:     userId,
-			EntityId:   commentId,
+			UserID:     userId,
+			EntityID:   commentId,
 			EntityType: constants.EntityComment,
 		})
 	}
@@ -237,8 +237,8 @@ func (s *userLikeService) CommentUnLike(userId int64, commentId int64) error {
 
 	// send event
 	event.Send(event.UserUnLikeEvent{
-		UserId:     userId,
-		EntityId:   commentId,
+		UserID:     userId,
+		EntityID:   commentId,
 		EntityType: constants.EntityComment,
 	})
 

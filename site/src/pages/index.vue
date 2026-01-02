@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const i18n = useI18n()
 
 const api = useApi()
 
@@ -38,7 +38,7 @@ definePageMeta({
 const newTopicsCursor = api.getTopicFeeds(FeedType.WhatsNew)
 
 useHead({
-  title: useSiteTitle(t('feed.whats_new')),
+  title: useSiteTitle(i18n.t('feed.whats_new')),
   bodyAttrs: {
     class: 'bg-[#0f0f23]',
   },

@@ -20,6 +20,8 @@ const (
 	TypeUserFollow               Type = 8
 	TypeCommentLike              Type = 9
 	TypeFollowingUserCreateTopic Type = 10
+	TypeTopicApproved            Type = 11
+	TypeTopicRejected            Type = 12
 )
 
 type TopicEventExtraData struct {

@@ -21,7 +21,7 @@ export class CursorResult<T extends any[]> {
       reqParams.cursor = cursor
     }
 
-    const res = await useHttpGet(this.url, { params: reqParams, })
+    const res = await useHttpGet(this.url, { params: reqParams })
 
     const payload = res.data ? res.data : res
     const items: T = payload.items
@@ -142,23 +142,23 @@ export const useApi = () => {
   }
 
   const setStatusMessage = (message: string): Promise<void> => {
-    return useHttpPut("/api/users/me/status", { body: { message } })
+    return useHttpPut('/api/users/me/status', { body: { message } })
   }
 
   const uploadAvatar = (file: File): Promise<void> => {
     const form = new FormData()
     form.append('file', file, file.name)
-    return useHttpPut("/api/users/me/avatar", { body: form })
+    return useHttpPut('/api/users/me/avatar', { body: form })
   }
 
   const removeAvatar = (): Promise<void> => {
-    return useHttpDelete("/api/users/me/avatar")
+    return useHttpDelete('/api/users/me/avatar')
   }
 
   const uploadCover = (file: File): Promise<void> => {
     const form = new FormData()
     form.append('file', file, file.name)
-    return useHttpPut("/api/users/me/cover", { body: form })
+    return useHttpPut('/api/users/me/cover', { body: form })
   }
 
   // other user api endpoints

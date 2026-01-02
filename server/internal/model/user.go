@@ -78,7 +78,7 @@ type User struct {
 	Username        sql.NullString `gorm:"size:32;unique;" json:"username" form:"username"`                                // Username
 	Email           sql.NullString `gorm:"size:128;unique;" json:"email" form:"email"`                                     // Email
 	EmailVerified   bool           `gorm:"not null;default:false" json:"emailVerified" form:"emailVerified"`               // Email verified
-	Nickname        string         `gorm:"size:16;" json:"nickname" form:"nickname"`                                       // Nickname
+	Nickname        string         `gorm:"size:32;" json:"nickname" form:"nickname"`                                       // Nickname
 	Avatar          string         `gorm:"type:text" json:"avatar" form:"avatar"`                                          // Avatar
 	Gender          string         `gorm:"size:16;default:''" json:"gender" form:"gender"`                                 // Gender
 	Birthday        *time.Time     `json:"birthday" form:"birthday"`                                                       // Birthday

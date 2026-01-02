@@ -117,8 +117,8 @@ func (s *favoriteService) addFavorite(userId int64, entityType string, entityId 
 
 	// send event
 	event.Send(event.UserFavoriteEvent{
-		UserId:     userId,
-		EntityId:   entityId,
+		UserID:     userId,
+		EntityID:   entityId,
 		EntityType: entityType,
 	})
 	return nil

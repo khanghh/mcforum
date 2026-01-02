@@ -41,7 +41,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      loginUrl: "https://auth.mineviet.com/login?service=test"
+      loginUrl: 'https://auth.mineviet.com/login?service=test',
       // BASE_URL: 'http://localhost:3001',
     },
   },

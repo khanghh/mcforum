@@ -20,9 +20,9 @@ func handleUserLike(i interface{}) {
 	e := i.(event.UserLikeEvent)
 
 	if e.EntityType == constants.EntityTopic {
-		sendTopicLikedNotification(e.EntityId, e.UserId)
+		sendTopicLikedNotification(e.EntityID, e.UserID)
 	} else if e.EntityType == constants.EntityComment {
-		sendCommentLikedNotification(e.EntityId, e.UserId)
+		sendCommentLikedNotification(e.EntityID, e.UserID)
 	}
 }
 

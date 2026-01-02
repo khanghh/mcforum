@@ -146,11 +146,8 @@ if (!slug) {
 const topic = ref(null)
 
 topic.value = await api.getTopic(slug).catch((e) => {
-  if (e.statusCode === 404) {
-    throw createError({ statusCode: 404, statusMessage: 'Topic not found' })
-  } else {
-    throw e
-  }
+  const errMsg = e.data?.error?.message || e.message || e
+  throw createError({ statusCode: 404, statusMessage: errMsg })
 })
 const user = computed(() => userStore.user)
 const canManage = computed(() => {

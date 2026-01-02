@@ -9,6 +9,8 @@ export enum MessageType {
   UserFollow = 8,
   CommentLike = 9,
   FollowingUserCreateTopic = 10,
+  TopicApproved = 11,
+  TopicRejected = 12,
 }
 
 export enum MessageStatus {

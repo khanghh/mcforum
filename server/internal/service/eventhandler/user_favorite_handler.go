@@ -15,7 +15,7 @@ func init() {
 
 func handleUserFavorite(i interface{}) {
 	e := i.(event.UserFavoriteEvent)
-	sendTopicFavoriteMsg(e.EntityId, e.UserId)
+	sendTopicFavoriteMsg(e.EntityID, e.UserID)
 }
 
 // sendTopicFavoriteMsg topic favorited

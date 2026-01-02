@@ -1,17 +1,19 @@
 <template>
   <div
     :class="['gaming-card rounded-2xl p-6 relative overflow-hidden', message.status === MessageStatus.StatusUnread ? 'ring-2 ring-purple-500/30' : '']">
-    <!--bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] border border-[rgba(139,92,246,0.2)] rounded-2xl-->
+    <!-- bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] border border-[rgba(139,92,246,0.2)] rounded-2xl -->
     <div class="relative flex gap-4">
       <!-- Type Icon Badge -->
       <div class="flex-shrink-0 relative">
         <div class="relative">
-          <Avatar :user="message.from" :size="56"
-            class="rounded ring-1 ring-offset-1 ring-offset-gray-800 ring-purple-500/50" />
+          <!-- <Avatar :src="comment.user.avatar" :username="comment.user.username" :size="48"
+                class="rounded border-2 border-purple-300" /> -->
+          <Avatar :src="message.from.avatar" :username="message.from.username" :size="56"
+            class="rounded border-2 border-purple-300" />
 
           <!-- Type badge overlay -->
           <div
-            class="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg flex items-center justify-center shadow-lg bg-gradient-to-br from-purple-500 to-pink-600">
+            class="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg flex items-center justify-center shadow-lg bg-gradient-to-br from-purple-500 to-pink-600">
             <Icon :name="getMessageTypeIcon(message.type)" class="text-white text-xs" />
           </div>
         </div>
@@ -121,6 +123,24 @@
                     </nuxt-link>
                   </template>
                 </i18n-t>
+                <i18n-t v-else-if="message.type === MessageType.TopicApproved" keypath="message.approved_your_topic"
+                  tag="span">
+                  <template #topic>
+                    <nuxt-link :to="message.detailUrl"
+                      class="text-purple-400 hover:text-purple-300 transition-colors">
+                      {{ $t('message.topic') }}
+                    </nuxt-link>
+                  </template>
+                </i18n-t>
+                <i18n-t v-else-if="message.type === MessageType.TopicRejected" keypath="message.rejected_your_topic"
+                  tag="span">
+                  <template #topic>
+                    <nuxt-link :to="message.detailUrl"
+                      class="text-purple-400 hover:text-purple-300 transition-colors">
+                      {{ $t('message.topic') }}
+                    </nuxt-link>
+                  </template>
+                </i18n-t>
               </span>
             </div>
           </div>
@@ -165,6 +185,7 @@
 
 <script setup lang="ts">
 import { type Message, MessageType, MessageStatus } from '@/types'
+
 defineProps({
   message: {
     type: Object as () => Message,
@@ -184,6 +205,8 @@ const getMessageTypeIcon = (type: number): string => {
     [MessageType.UserFollow]: 'Fa7SolidUserPlus',
     [MessageType.CommentLike]: 'MaterialSymbolsThumbUp',
     [MessageType.FollowingUserCreateTopic]: 'Fa7SolidPenNib',
+    [MessageType.TopicApproved]: 'Fa7SolidCheck',
+    [MessageType.TopicRejected]: 'Fa7SolidTimesCircle',
   }
   return icons[type] || 'Fa7SolidBell'
 }

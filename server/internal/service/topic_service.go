@@ -98,9 +98,9 @@ func (s *topicService) Delete(topicId, deleteUserId int64, r *http.Request) erro
 		TopicTagService.DeleteByTopicId(topicId)
 		// send event
 		event.Send(event.TopicDeleteEvent{
-			UserId:       topic.UserID,
-			TopicId:      topic.ID,
-			DeleteUserId: deleteUserId,
+			UserID:       topic.UserID,
+			TopicID:      topic.ID,
+			DeleteUserID: deleteUserId,
 		})
 	}
 	return err

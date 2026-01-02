@@ -14,5 +14,5 @@ func handleUnFollowEvent(i interface{}) {
 	e := i.(event.UnfollowEvent)
 
 	// Clean up the user's feed
-	service.UserFeedService.DeleteByUser(e.UserId, e.OtherId)
+	service.UserFeedService.DeleteByUser(e.UserID, e.OtherID)
 }

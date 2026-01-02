@@ -119,8 +119,8 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 
 	// send mq message
 	event.Send(event.FollowEvent{
-		UserId:  userId,
-		OtherId: otherId,
+		UserID:  userId,
+		OtherID: otherId,
 	})
 	return nil
 }
@@ -162,8 +162,8 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 
 	// send mq message
 	event.Send(event.UnfollowEvent{
-		UserId:  userId,
-		OtherId: otherId,
+		UserID:  userId,
+		OtherID: otherId,
 	})
 	return nil
 }
