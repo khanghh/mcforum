@@ -4,7 +4,7 @@
     :style="{ width: size + 'px', height: size + 'px' }">
     <Avatar
       :username="username"
-      :src="previewSrc || props.modelValue"
+      :src="props.modelValue || previewSrc"
       :size="size"
       :rounded="rounded"
       class="w-full h-full" />
@@ -33,6 +33,7 @@
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import Avatar from './Avatar.vue'
+
 const api = useApi()
 const dialog = useConfirmDialog()
 
@@ -40,6 +41,10 @@ const props = defineProps({
   modelValue: {
     type: String,
     required: true,
+  },
+  autoApply: {
+    type: Boolean,
+    default: false,
   },
   username: {
     type: String,
@@ -60,7 +65,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'update:modelValue'
+  'update:modelValue',
 ])
 
 const uploading = ref(false)
@@ -74,19 +79,17 @@ async function onFileChange(e) {
   objectUrl = URL.createObjectURL(file)
   uploading.value = true
   try {
-    const res = await api.uploadAvatar(file)
+    const res = await api.uploadAvatar(file, props.autoApply)
     emit('update:modelValue', res.avatar)
     previewSrc.value = res.avatar
-  }
-  catch (err) {
+  } catch (err) {
     const errMsg = err?.data?.error?.message || err.message || 'Unknown error'
     dialog.show({
       title: $t('dialog.title.error_occurred'),
       message: errMsg,
       variant: 'warning',
     })
-  }
-  finally {
+  } finally {
     uploading.value = false
     e.target.value = ''
   }

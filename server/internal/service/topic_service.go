@@ -313,7 +313,9 @@ func (s *topicService) GetTopicInIds(topicIds []int64) map[int64]model.Topic {
 
 // Increment view count
 func (s *topicService) IncrViewCount(topicId int64) {
-	sqls.DB().Exec("update t_topic set view_count = view_count + 1 where id = ?", topicId)
+	repository.TopicRepository.Updates(sqls.DB(), topicId, map[string]interface{}{
+		"view_count": gorm.Expr("view_count + 1"),
+	})
 }
 
 // When a topic is commented, update last reply time and increment reply count

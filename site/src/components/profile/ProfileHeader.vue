@@ -10,8 +10,9 @@
       <div class="absolute inset-0 bg-gradient-to-t from-purple-900/60 via-transparent to-transparent"></div>
       <!-- Upload button (visible on hover for profile owner) -->
       <input ref="coverInput" type="file" accept="image/*" class="sr-only" @change="onCoverFileChange" />
-      <button v-if="isSelf" @click="handleCoverClick" type="button"
-        class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium text-white px-3 py-1 rounded-md bg-black/40 backdrop-blur-sm">
+      <button v-if="isSelf" type="button"
+        class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium text-white px-3 py-1 rounded-md bg-black/40 backdrop-blur-sm"
+        @click="handleCoverClick">
         <Icon name="TablerCloudUpload" class="mr-1" />
         {{ $t('profile.actions.change_cover') }}
       </button>
@@ -21,7 +22,7 @@
       <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 w-full">
         <div class="relative flex-shrink-0 p-1 mx-auto sm:mx-0">
           <AvatarDecorated :user="user" :is-self="isSelf">
-            <AvatarEdit v-if="isSelf" v-model="user.avatar" :username="user.username"
+            <AvatarEdit v-if="isSelf" v-model="avatar" :username="user.username" autoApply
               class="w-full h-full object-cover"
               size="120" />
             <Avatar v-else :src="user.avatar" :username="user.username"
@@ -40,7 +41,6 @@
             <div
               class="gaming-card min-w-0 w-full sm:w-auto px-3 py-1 rounded-lg backdrop-blur-sm flex flex-wrap items-center group relative md:inline-flex md:flex-nowrap break-all"
               :class="{ invisible: !user.statusMessage && !isSelf }">
-
               <span v-if="!isEditing"
                 :class="['text-sm text-purple-200 font-medium pr-4 min-w-0 w-full md:w-auto break-words break-all whitespace-normal md:line-clamp-1', user.statusMessage ? '' : 'italic']">
                 <Icon name="Fa7SolidQuoteLeft" class="text-purple-400 text-sm mr-1" />
@@ -49,23 +49,23 @@
 
               <div v-if="isEditing" class="relative inline-block">
                 <input ref="statusInput" v-model="editingStatus"
-                  @input="updateWidth"
-                  @keyup.enter="saveStatus"
-                  @keyup.escape="cancelStatusMsgEditing"
                   class="bg-transparent text-sm text-purple-200 font-medium outline-none min-w-0"
-                  placeholder="Say something..." maxlength="80" />
+                  placeholder="Say something..."
+                  maxlength="80"
+                  @input="updateWidth"
+                  @keyup.enter="saveStatus" @keyup.escape="cancelStatusMsgEditing" />
                 <span ref="measureSpan" aria-hidden="true"
                   style="position:absolute; visibility:hidden; white-space:pre; font-size:0.875rem; font-weight:500;">
                 </span>
               </div>
 
               <div v-if="isSelf" class="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button v-if="isEditing" @click="saveStatus" type="button"
-                  class="text-purple-300 hover:text-purple-100">
+                <button v-if="isEditing" type="button" class="text-purple-300 hover:text-purple-100"
+                  @click="saveStatus">
                   <Icon name="Fa7SolidCheck" class="text-xs" />
                 </button>
-                <button v-else @click="startStatusMsgEditing" type="button"
-                  class="text-purple-300 hover:text-purple-100">
+                <button v-else type="button" class="text-purple-300 hover:text-purple-100"
+                  @click="startStatusMsgEditing">
                   <Icon name="Fa7SolidPencil" class="text-xs" />
                 </button>
               </div>
@@ -77,7 +77,7 @@
         <button v-if="!isSelf"
           :class="isFollowing
             ? 'px-4 py-2 border-2 border-purple-500/50 text-purple-300 rounded-lg font-bold flex items-center gaming-title text-sm hover:bg-purple-500/10 transition-colors'
-            : 'px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center neon-border gaming-title text-sm hover:scale-105 transition-transform'"
+            : 'px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] gaming-title text-sm hover:scale-105 transition-transform'"
           :aria-label="isFollowing ? 'Unfollow user' : 'Follow user'"
           @click="isFollowing ? handleUnfollow() : handleFollow()">
           <Icon :name="isFollowing ? 'Fa7SolidUserMinus' : 'Fa7SolidUserPlus'" class="mr-2" />
@@ -108,6 +108,8 @@ import { nextTick, ref } from 'vue'
 const userStore = useUserStore()
 const dialog = useConfirmDialog()
 const api = useApi()
+const { t } = useI18n()
+const emit = defineEmits(['update:user'])
 
 const props = defineProps({
   user: {
@@ -116,40 +118,35 @@ const props = defineProps({
   },
 })
 
-const isFollowing = ref(false)
 const isEditing = ref(false)
 const editingStatus = ref('')
 const statusInput = ref()
 const measureSpan = ref()
 const { user: currentUser } = storeToRefs(userStore)
 const isSelf = computed(() => currentUser?.value && currentUser?.value?.id === props.user.id)
+const isFollowing = ref(false)
 const coverImageSrc = ref(props.user.backgroundImage)
+const updateUser = (patch) => {
+  emit('update:user', { ...props.user, ...patch })
+}
+
 const avatar = computed({
-  get: () => props.user.avatar ?? '',
-  set: v => {
-    if (!props.user) return
-    props.user.avatar = v
-  },
+  get: () => props.user.avatar,
+  set: v => updateUser({ avatar: v }),
 })
 
-function onAvatarUpdate(val) {
-  avatar.value = val
-  props.user.avatar = val
-  if (currentUser?.value && currentUser.value.id === props.user.id) {
-    userStore.user.avatar = val
-  }
-}
+watch(() => props.user.backgroundImage, (val) => {
+  coverImageSrc.value = val
+})
 
-if (!isSelf.value) {
-  isFollowing.value = await api.isFollowing(props.user.id).catch(() => false)
-}
+isFollowing.value = !!props.user.isFollowing
 
 const handleFollow = async () => {
   try {
     await api.followUser(props.user.username)
     isFollowing.value = true
-  }
-  catch (e) {
+    updateUser({ isFollowing: true })
+  } catch (e) {
     console.error(e)
   }
 }
@@ -158,8 +155,8 @@ const handleUnfollow = async () => {
   try {
     await api.unfollowUser(props.user.username)
     isFollowing.value = false
-  }
-  catch (e) {
+    updateUser({ isFollowing: false })
+  } catch (e) {
     console.error(e)
   }
 }
@@ -208,7 +205,7 @@ async function saveStatus() {
   }
   try {
     await api.setStatusMessage(editingStatus.value)
-    props.user.statusMessage = editingStatus.value
+    updateUser({ statusMessage: editingStatus.value })
     isEditing.value = false
   } catch (e) {
     const errMsg = e?.response?.data?.error?.message || e.message || 'Unknown error'
@@ -230,12 +227,12 @@ async function onCoverFileChange(e) {
   if (objectUrl) URL.revokeObjectURL(objectUrl)
   objectUrl = URL.createObjectURL(file)
   await api.uploadCover(file).then((res) => {
-    props.user.backgroundImage = res.coverImage
+    updateUser({ backgroundImage: res.coverImage })
     coverImageSrc.value = objectUrl
   }).catch((err) => {
     const errMsg = err?.data?.error?.message || err.message || 'Unknown error'
     dialog.show({
-      title: $t('dialog.title.error_occurred'),
+      title: t('dialog.title.error_occurred'),
       message: errMsg,
       variant: 'warning',
     })
@@ -243,9 +240,3 @@ async function onCoverFileChange(e) {
   e.target.value = ''
 }
 </script>
-
-<style scoped>
-.neon-border {
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
-}
-</style>

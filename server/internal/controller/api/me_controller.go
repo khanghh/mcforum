@@ -107,6 +107,7 @@ func (c *MeController) PutAvatar() *web.JsonResult {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
 
+	applyNow := c.Ctx.URLParamBoolDefault("apply", false)
 	file, _, err := c.Ctx.FormFile("file")
 	if err != nil {
 		return web.JsonError(errs.ErrBadRequest)
@@ -128,9 +129,11 @@ func (c *MeController) PutAvatar() *web.JsonResult {
 		return web.JsonError(errs.ErrInternalServer)
 	}
 
-	if err := service.UserService.UpdateAvatar(user.ID, ret.URL); err != nil {
-		slog.Error("Change user avatar failed", "error", err)
-		return web.JsonError(errs.ErrInternalServer)
+	if applyNow {
+		if err := service.UserService.UpdateAvatar(user.ID, ret.URL); err != nil {
+			slog.Error("Change user avatar failed", "error", err)
+			return web.JsonError(errs.ErrInternalServer)
+		}
 	}
 
 	cache.UserCache.Invalidate(user.ID)

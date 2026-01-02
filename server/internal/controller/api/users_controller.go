@@ -25,11 +25,18 @@ type UsersController struct {
 // User details
 func (c *UsersController) GetBy(username string) *web.JsonResult {
 	user := cache.UserCache.GetByUsername(username)
-
-	if user != nil && user.IsActive {
-		return web.JsonData(payload.BuildUserDetail(user))
+	if user == nil || !user.IsActive {
+		return web.JsonError(errs.ErrUserNotFound)
 	}
-	return web.JsonError(errs.ErrUserNotFound)
+
+	isFollowing := false
+	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+	if currentUser != nil {
+		isFollowing = service.UserFollowService.IsFollowing(currentUser.ID, user.ID)
+	}
+	userDetail := payload.BuildUserDetail(user)
+	userDetail.IsFollowing = isFollowing
+	return web.JsonData(userDetail)
 }
 
 // User favorites
@@ -227,14 +234,14 @@ func (c *UsersController) GetByFollowing(username string) *web.JsonResult {
 }
 
 func (c *UsersController) PostByFollow(username string) *web.JsonResult {
+	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
+	if currentUser == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+
 	user := cache.UserCache.GetByUsername(username)
 	if user == nil {
 		return web.JsonError(errs.ErrUserNotFound)
-	}
-
-	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.ErrUnauthorized)
 	}
 
 	err := service.UserFollowService.Follow(currentUser.ID, user.ID)
@@ -245,14 +252,14 @@ func (c *UsersController) PostByFollow(username string) *web.JsonResult {
 }
 
 func (c *UsersController) DeleteByFollow(username string) *web.JsonResult {
-	user := cache.UserCache.GetByUsername(username)
-	if user == nil {
-		return web.JsonError(errs.ErrUserNotFound)
-	}
-
 	currentUser := service.UserTokenService.GetCurrent(c.Ctx)
 	if currentUser == nil {
 		return web.JsonError(errs.ErrUnauthorized)
+	}
+
+	user := cache.UserCache.GetByUsername(username)
+	if user == nil {
+		return web.JsonError(errs.ErrUserNotFound)
 	}
 
 	err := service.UserFollowService.UnFollow(currentUser.ID, user.ID)
