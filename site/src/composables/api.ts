@@ -145,10 +145,10 @@ export const useApi = () => {
     return useHttpPut('/api/users/me/status', { body: { message } })
   }
 
-  const uploadAvatar = (file: File): Promise<void> => {
+  const uploadAvatar = (file: File, apply: boolean = false): Promise<void> => {
     const form = new FormData()
     form.append('file', file, file.name)
-    return useHttpPut('/api/users/me/avatar', { body: form })
+    return useHttpPut('/api/users/me/avatar', { body: form, params: { apply } })
   }
 
   const removeAvatar = (): Promise<void> => {

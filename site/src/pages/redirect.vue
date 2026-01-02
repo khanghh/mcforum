@@ -29,8 +29,10 @@ if (!temp.startsWith('http://') && !temp.startsWith('https://')) {
   throw createError({
     statusCode: 500,
     message: i18n.t('message.internal_server_error'),
+    fatal: true,
   })
 }
+
 onMounted(() => {
   setTimeout(() => {
     window.location.href = url

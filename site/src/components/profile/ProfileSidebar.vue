@@ -86,18 +86,7 @@
           <Icon name="TablerDeviceGamepad2" class=" mr-2" /> Main Games
         </h3>
         <div class="flex flex-wrap gap-2 mt-3">
-          <span
-            class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-            <Icon name="MdiCrosshairsGps" class="mr-1.5" /> SkyBlock
-          </span>
-          <span
-            class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
-            <Icon name="Fa7SolidChess" class="mr-1.5" /> Survival
-          </span>
-          <span
-            class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">
-            <Icon name="TablerBombFilled" class="mr-1.5" /> Bedwars
-          </span>
+          <span class="text-gray-500 text-sm italic">No game info provided</span>
         </div>
       </div>
 
@@ -106,35 +95,15 @@
           <Icon name="MaterialSymbolsTrophy" class="mr-2" /> Achievements
         </h3>
         <div class="mt-3 grid grid-cols-3 gap-2">
-          <!-- Static Achievements List -->
-          <div class="flex flex-col items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-            <div
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-              <Icon name="TablerCrown" class="text-white text-sm" />
-            </div>
-            <div class="text-center">
-              <p class="text-[10px] font-bold text-amber-300 gaming-title">CHAMPION</p>
-            </div>
-          </div>
-          <div
-            class="flex flex-col items-center gap-2 p-3 rounded-lg bg-purple-500/10 border border-purple-500/30">
-            <div
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-              <Icon name="TablerStar" class="text-white text-sm" />
-            </div>
-            <div class="text-center">
-              <p class="text-[10px] font-bold text-purple-300 gaming-title">LEGEND</p>
-            </div>
-          </div>
-          <div class="flex flex-col items-center gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
-            <div
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
-              <Icon name="RiFireLine" class="text-white text-sm" />
-            </div>
-            <div class="text-center">
-              <p class="text-[10px] font-bold text-blue-300 gaming-title">STREAK</p>
-            </div>
-          </div>
+          <span v-if="achievements.length === 0"
+            class="col-span-3 text-gray-500 text-sm italic whitespace-nowrap">
+            No achievements
+          </span>
+
+          <AchievementCard
+            v-for="name in achievements"
+            :key="name"
+            :name="name" />
         </div>
       </div>
     </div>
@@ -143,6 +112,7 @@
 
 <script setup>
 import { getCurrentLevel, getLevelProgress, getTotalExpForLevel } from '@/composables/exp'
+import AchievementCard from './AchievementCard.vue'
 
 const props = defineProps({
   user: {
@@ -158,6 +128,8 @@ const currentExpInLevel = computed(() => {
   return Math.max(0, score - prevTotal)
 })
 
+const achievements = []
+
 const expNeededForNextLevel = computed(() => {
   const score = props.user?.score || 0
   const currentLevel = getCurrentLevel(score)
@@ -169,5 +141,4 @@ const expNeededForNextLevel = computed(() => {
 const daysStreak = computed(() => {
   return 0
 })
-
 </script>

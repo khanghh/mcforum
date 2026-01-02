@@ -126,7 +126,7 @@ const author = computed(() => topic.value.user)
 
 topic.value = await useApi().getEditTopic(topicId).catch((err) => {
   if (err.statusCode === 404) {
-    throw createError({ statusCode: 404, statusMessage: 'Topic not found' })
+    throw createError({ statusCode: 404, statusMessage: 'Topic not found', fatal: true })
   } else throw err
 })
 

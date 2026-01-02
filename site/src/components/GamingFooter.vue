@@ -15,7 +15,8 @@
             </div>
           </div>
           <p class="text-gray-400 text-sm">
-            The ultimate community for Minecraft players. Share builds, discover mods, and connect with fellow gamers.
+            Chào mừng đến <strong>MineViet</strong> – cộng đồng Minecraft Việt Nam nơi sáng tạo không giới hạn.
+            Xây dựng, phiêu lưu và chiến đấu cùng bạn bè!
           </p>
           <div class="flex space-x-3">
             <a href="#"

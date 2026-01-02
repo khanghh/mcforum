@@ -51,8 +51,6 @@ const roleColor = computed(() => {
       return ''
   }
 })
-
-
 </script>
 
 <style scoped>

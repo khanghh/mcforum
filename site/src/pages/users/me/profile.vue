@@ -36,7 +36,7 @@
           </label>
           <div>
             <AvatarDecorated :user="user">
-              <AvatarEdit v-model="user.avatar" :username="user.username" class="w-full h-full object-cover"
+              <AvatarEdit v-model="avatarUrl" :username="user.username" class="w-full h-full object-cover"
                 size="120" />
             </AvatarDecorated>
             <div class="mt-2">
@@ -237,7 +237,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
               </svg>
-              {{ i18n.t('form.saving') }}
+              {{ $t('form.button.save_changes') }}
             </span>
             <span v-else class="flex items-center">
               <Icon name="Fa7SolidSave" class="mr-2" />
@@ -265,10 +265,12 @@ definePageMeta({
 })
 
 const { user } = storeToRefs(userStore)
+const avatarUrl = ref(user.value.avatar)
 
 const form = ref({
   nickname: user.value.nickname,
   bio: user.value.bio,
+  avatar: avatarUrl.value,
   location: user.value.location,
   lockedProfile: user.value.settings.lockedProfile,
   showLocation: user.value.settings.showLocation,
@@ -290,6 +292,7 @@ async function submitForm() {
     await api.updateProfile({
       nickname: form.value.nickname,
       bio: form.value.bio,
+      avatar: avatarUrl.value,
       location: form.value.location,
       lockedProfile: form.value.lockedProfile,
       showLocation: form.value.showLocation,
@@ -297,16 +300,14 @@ async function submitForm() {
     })
     await reload()
     toast.success(i18n.t('message.profile_update_success'))
-  }
-  catch (e) {
+  } catch (e) {
     console.error(e?.data?.error.message || e)
     if (e?.data?.error.message) {
       toast.error(e.data.error.message)
       return
     }
     toast.error(i18n.t('message.profile_update_failure'))
-  }
-  finally {
+  } finally {
     saving.value = false
   }
 }
@@ -316,8 +317,7 @@ function handleBioInput(e) {
   if (val.length > bioMax) {
     form.value.bio = val.slice(0, bioMax)
     e.target.value = form.value.bio
-  }
-  else {
+  } else {
     form.value.bio = val
   }
 }
@@ -329,6 +329,7 @@ async function reload() {
   const u = user.value
   console.log('Reloaded user:', u)
   if (!u) return
+  avatarUrl.value = u.avatar
   form.value.nickname = u.nickname
   form.value.bio = u.bio
   form.value.location = u.location
@@ -349,9 +350,7 @@ async function removeAvatar() {
       try {
         await api.removeAvatar()
         await reload()
-
-      }
-      catch (e) {
+      } catch (e) {
         const errMsg = e?.data?.error?.message || e.message || 'Unknown error'
         toast.error(i18n.t('message.action_failure', { erroro: errMsg }))
       }
@@ -362,7 +361,6 @@ async function removeAvatar() {
 useHead({
   title: useSiteTitle(i18n.t('page.edit_profile')),
 })
-
 </script>
 
 <style scoped>

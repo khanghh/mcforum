@@ -1,4 +1,5 @@
 <template>
+  <NuxtLoadingIndicator color="#27ae60" :height="6" />
   <div
     class="min-h-screen bg-gray-900 text-gray-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col"
     style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);">
@@ -77,10 +78,6 @@ defineProps({
     type: Object,
     default: null,
   },
-})
-
-definePageMeta({
-  layout: false,
 })
 
 const handleError = () => {

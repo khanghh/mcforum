@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ProfileHeader :user="user" />
+    <ProfileHeader v-model:user="user" />
     <div class="flex flex-col lg:flex-row gap-6 mt-6">
       <div class="w-full lg:w-80 lg:flex-shrink-0">
         <ProfileSidebar :user="user" />
@@ -78,16 +78,17 @@ const route = useRoute()
 const api = useApi()
 const userStore = useUserStore()
 
-const user: UserProfile | null = await userStore.getCurrent()
-if (user == null) {
-  throw createError({ statusCode: 404, statusMessage: 'User not found' })
+const userData: UserProfile | null = await userStore.getCurrent()
+if (userData == null) {
+  throw createError({ statusCode: 404, statusMessage: 'User not found', fatal: true })
 }
+const user = ref(userData)
 
 // Create cursor for loading messages
 const messagesCursor = api.getMessages()
 
 useHead({
-  title: useSiteTitle(i18n.t('page.messages', { nickname: user.username })),
+  title: useSiteTitle(i18n.t('page.messages', { nickname: user.value.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

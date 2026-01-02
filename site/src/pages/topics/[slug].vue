@@ -1,5 +1,5 @@
 <template>
-  <div itemscope itemtype="http://schema.org/BlogPosting">
+  <div v-if="topic" itemscope itemtype="http://schema.org/BlogPosting">
     <!-- Breadcrumb -->
     <div class="mb-6">
       <nav class="flex text-sm text-gray-400">
@@ -140,34 +140,25 @@ const userStore = useUserStore()
 
 const slug = route.params.slug
 if (!slug) {
-  throw createError({ statusCode: 404, statusMessage: 'Topic not found' })
+  throw createError({ statusCode: 404, statusMessage: 'Topic not found', fatal: true })
 }
 
-const topic = ref(null)
+const { data: topic } = await useAsyncData(`topic:${slug}`, () => api.getTopic(slug))
+if (!topic.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Topic not found', fatal: true })
+}
 
-topic.value = await api.getTopic(slug).catch((e) => {
-  const errMsg = e.data?.error?.message || e.message || e
-  throw createError({ statusCode: 404, statusMessage: errMsg })
-})
 const user = computed(() => userStore.user)
 const canManage = computed(() => {
   if (!user.value) return false
   return userIsManager(user.value) || (topic.value && topic.value.user.id === user.value.id)
 })
 
-definePageMeta({
-  layout: 'default',
-})
-
 useHead({
-  title: topic.value ? useTopicSiteTitle(topic.value) : i18n.t('page.not_found'),
+  title: useTopicSiteTitle(topic.value),
   bodyAttrs: {
     class: 'bg-[#0f0f23]',
   },
-})
-
-const isPending = computed(() => {
-  return topic.value?.status === 2
 })
 
 async function toggleLike() {

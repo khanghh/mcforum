@@ -202,6 +202,7 @@ export default {
   'form.button.post_article': 'Đăng bài viết',
   'form.button.submmit_changes': 'Gửi thay đổi',
   'form.button.save_changes': 'Lưu thay đổi',
+  'form.button.saving': 'Đang lưu',
   'form.label.username': 'Username',
   'form.label.nickname': 'Biệt danh',
   'form.label.email': 'Email',

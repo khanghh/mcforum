@@ -34,7 +34,6 @@ const props = defineProps({
   },
 })
 
-
 // internal defaults
 const fallback = '/images/avatars/steve.png'
 const altText = computed(() => (props.username ? `${props.username}` : 'avatar'))
