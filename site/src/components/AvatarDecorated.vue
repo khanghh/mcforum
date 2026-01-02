@@ -44,9 +44,9 @@ const roleColor = computed(() => {
     case 'owner':
       return 'from-amber-500 to-orange-500'
     case 'admin':
-      return 'from-red-500 to-pink-500'
+      return 'from-red-600 to-pink-500'
     case 'moderator':
-      return 'from-blue-500 to-cyan-500'
+      return 'from-purple-600 to-blue-500/40'
     default:
       return ''
   }

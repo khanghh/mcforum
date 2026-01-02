@@ -14,7 +14,7 @@
           <!-- Type badge overlay -->
           <div
             class="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg flex items-center justify-center shadow-lg bg-gradient-to-br from-purple-500 to-pink-600">
-            <Icon :name="getMessageTypeIcon(message.type)" class="text-white text-xs" />
+            <Icon :name="getMessageTypeIcon(message.type)" class="text-white text-xs" size="16" />
           </div>
         </div>
       </div>
@@ -204,7 +204,7 @@ const getMessageTypeIcon = (type: number): string => {
     [MessageType.TopicDelete]: 'Fa7SolidTrashCan',
     [MessageType.UserFollow]: 'Fa7SolidUserPlus',
     [MessageType.CommentLike]: 'MaterialSymbolsThumbUp',
-    [MessageType.FollowingUserCreateTopic]: 'Fa7SolidPenNib',
+    [MessageType.FollowingUserCreateTopic]: 'Fa7SolidNewspaper',
     [MessageType.TopicApproved]: 'Fa7SolidCheck',
     [MessageType.TopicRejected]: 'Fa7SolidTimesCircle',
   }

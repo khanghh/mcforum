@@ -1,4 +1,4 @@
-import { type UserInfo } from './user'
+import type { UserInfo } from './user'
 
 export interface ImageInfo {
   url: string
@@ -49,6 +49,7 @@ export interface Topic {
   status: number
   favorited: boolean
   poll?: TopicPoll
+  ipLocation?: string
 }
 
 export interface TopicPollOption {

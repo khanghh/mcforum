@@ -131,29 +131,25 @@ async function like(comment) {
       comment.liked = false
       comment.likeCount = comment.likeCount > 0 ? comment.likeCount - 1 : 0
       useMsgSuccess(i18n.t('message.unliked_success'))
-    }
-    else {
+    } else {
       await api.addCommentReaction(comment.id, 'like')
       comment.liked = true
       comment.likeCount = comment.likeCount + 1
       useMsgSuccess(i18n.t('message.liked_success'))
     }
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
   }
 }
 
 function switchShowReply(comment) {
   if (!user.value) {
-    useMsgSignIn()
     return
   }
 
   if (myReply.commentId === comment.id) {
     hideReply(comment)
-  }
-  else {
+  } else {
     myReply.commentId = comment.id
   }
 }
@@ -183,11 +179,9 @@ async function submitReply(parent) {
     hideReply()
     emit('reply', ret)
     useMsgSuccess(i18n.t('message.comment_success'))
-  }
-  catch (e) {
+  } catch (e) {
     useCatchError(e)
-  }
-  finally {
+  } finally {
     sending.value = false
   }
 }

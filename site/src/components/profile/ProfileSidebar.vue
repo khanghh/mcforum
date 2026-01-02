@@ -114,6 +114,8 @@
 import { getCurrentLevel, getLevelProgress, getTotalExpForLevel } from '@/composables/exp'
 import AchievementCard from './AchievementCard.vue'
 
+const i18n = useI18n()
+
 const props = defineProps({
   user: {
     type: Object,
@@ -144,6 +146,6 @@ const daysStreak = computed(() => {
 
 function prettyPlayTime(seconds) {
   const hours = seconds / 3600
-  return `${hours.toFixed(2)}h`
+  return `${hours.toFixed(2)} ${i18n.t('common.hours')}`
 }
 </script>

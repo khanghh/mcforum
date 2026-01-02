@@ -1,5 +1,5 @@
 <template>
-  <div v-if="topic" itemscope itemtype="http://schema.org/BlogPosting">
+  <div itemscope itemtype="http://schema.org/BlogPosting">
     <!-- Breadcrumb -->
     <div class="mb-6">
       <nav class="flex text-sm text-gray-400">
@@ -143,10 +143,11 @@ if (!slug) {
   throw createError({ statusCode: 404, statusMessage: 'Topic not found', fatal: true })
 }
 
-const { data: topic } = await useAsyncData(`topic:${slug}`, () => api.getTopic(slug))
-if (!topic.value) {
+const { data } = await useAsyncData(`topic`, () => api.getTopic(slug))
+if (!data.value) {
   throw createError({ statusCode: 404, statusMessage: 'Topic not found', fatal: true })
 }
+const topic = ref(data.value)
 
 const user = computed(() => userStore.user)
 const canManage = computed(() => {
@@ -155,7 +156,7 @@ const canManage = computed(() => {
 })
 
 useHead({
-  title: useTopicSiteTitle(topic.value),
+  title: topic.value ? useTopicSiteTitle(topic.value) : i18n.t('page.not_found'),
   bodyAttrs: {
     class: 'bg-[#0f0f23]',
   },

@@ -1,5 +1,7 @@
 // Flattened vi-VN messages (generated)
 export default {
+  'common.hours': 'giờ',
+  'common.days': 'ngày',
   'feed.whats_new': 'Mới nhất',
   'feed.whats_new_desc': 'Khám phá các chủ đề mới nhất trong cộng đồng, cập nhật nhanh những tin tức, thảo luận và nội dung vừa được tạo.',
   'feed.recommended': 'Đề xuất',

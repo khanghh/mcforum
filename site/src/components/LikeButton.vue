@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-
 type Props = {
   liked: boolean
   count: number
@@ -20,8 +19,6 @@ type Props = {
 }
 
 const props = defineProps<Props>()
-
-import { ref } from 'vue'
 
 const floatNumbers = ref<HTMLElement | null>(null)
 
@@ -61,5 +58,4 @@ function createFloatingNumber() {
     if (floatNumber.parentNode === container) container.removeChild(floatNumber)
   }, 800)
 }
-
 </script>

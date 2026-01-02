@@ -1,5 +1,5 @@
 <template>
-  <div class="relative inline-block" ref="wrapper">
+  <div ref="wrapper" class="relative inline-block">
     <button
       class="flex items-center gap-1 transition-colors duration-200 relative z-10"
       :class="favorited ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'"
@@ -9,11 +9,11 @@
     </button>
 
     <div ref="particles" class="absolute inset-0 pointer-events-none overflow-visible"></div>
-
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 
 type Props = {
   favorited: boolean
@@ -21,8 +21,6 @@ type Props = {
 }
 
 const props = defineProps<Props>()
-
-import { ref } from 'vue'
 
 const particles = ref<HTMLElement | null>(null)
 
@@ -77,5 +75,4 @@ function spawnParticles(count = 10) {
     }, 750)
   }
 }
-
 </script>

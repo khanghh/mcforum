@@ -61,27 +61,6 @@ export function useLinkTo(path) {
   router.push(path)
 }
 
-export function useToSignIn(redirect) {
-  if (!redirect && import.meta.client) {
-    redirect = window.location.pathname
-  }
-  useLinkTo('/signin?redirect=' + encodeURIComponent(redirect))
-}
-
-/**
- * 弹出错误消息，然后执行登录
- */
-export function useMsgSignIn() {
-  const i18n = useNuxtApp().$i18n
-  // useMsg({
-  //   type: 'error',
-  //   message: i18n.t('message.please_login_first'),
-  //   onClose() {
-  //     useToSignIn()
-  //   },
-  // })
-}
-
 export function useCatchError(e) {
   if (e.errorCode === 1) {
     useMsgSignIn()
