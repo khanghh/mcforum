@@ -17,48 +17,48 @@
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; navigateTo(`/topics/edit/${topicId}`)">
             <Icon name="Fa7SolidEdit" class="mr-2" />
-            {{ $t('publish.action.edit') }}
+            {{ $t('actions.edit') }}
           </button>
 
           <button v-if="isManagerRole && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; approveTopic()">
             <Icon name="Fa7SolidCheck" class="mr-2" />
-            {{ $t('publish.action.approve') }}
+            {{ $t('actions.approve') }}
           </button>
 
           <button v-if="isManagerRole && isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; rejectTopic()">
             <Icon name="Fa7SolidTimes" class="mr-2" />
-            {{ $t('publish.action.reject') }}
+            {{ $t('actions.reject') }}
           </button>
 
           <button v-if="isManagerRole && !isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; toggleRecommended()">
             <Icon :name="recommended ? 'PhSealCheckFill' : 'PhSealCheckBold'" class="mr-2" />
-            {{ recommended ? $t('publish.action.unrecommend') : $t('publish.action.recommend') }}
+            {{ recommended ? $t('actions.unrecommend') : $t('actions.recommend') }}
           </button>
 
           <button v-if="isManagerRole && !isPending"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; togglePinned()">
             <Icon :name="pinned ? 'TablerPinFilled' : 'TablerPin'" class="mr-2" />
-            {{ pinned ? $t('publish.action.unpin') : $t('publish.action.pin') }}
+            {{ pinned ? $t('actions.unpin') : $t('actions.pin') }}
           </button>
 
           <button v-if="!isHidden && (isTopicOwner || isManagerRole)"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; deleteTopic()">
             <Icon name="Fa7SolidTrashCan" class="mr-2" />
-            {{ $t('publish.action.delete') }}
+            {{ $t('actions.delete') }}
           </button>
           <button v-if="isHidden && isManagerRole"
             class="w-full text-left text-sm text-gray-700 px-3 py-2 hover:bg-gray-100 flex items-center"
             @click="open = false; restoreTopic()">
             <Icon name="Fa7SolidArrowLeftRotate" class="mr-2" />
-            {{ $t('publish.action.restore') }}
+            {{ $t('actions.restore') }}
           </button>
         </div>
       </div>
@@ -117,7 +117,7 @@ onMounted(() => window.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => window.removeEventListener('click', onClickOutside))
 
 function approveTopic() {
-  const action = i18n.t('publish.action.approve')
+  const action = i18n.t('actions.approve')
   dialog.show({
     title: i18n.t('dialog.title.confirm_approve'),
     message: i18n.t('dialog.message.confirm_approve_post'),
@@ -141,7 +141,7 @@ function approveTopic() {
 }
 
 function rejectTopic() {
-  const action = i18n.t('publish.action.reject')
+  const action = i18n.t('actions.reject')
   dialog.show({
     title: i18n.t('dialog.title.confirm_reject'),
     message: i18n.t('dialog.message.confirm_reject_post'),
@@ -209,7 +209,7 @@ function restoreTopic() {
 }
 
 function toggleRecommended() {
-  const action = topic.value.recommended ? i18n.t('publish.action.unrecommend') : i18n.t('publish.action.recommend')
+  const action = topic.value.recommended ? i18n.t('actions.unrecommend') : i18n.t('actions.recommend')
   return api.setTopicFlags(topic.value.slug, { recommended: !topic.value.recommended })
     .then(() => {
       topic.value.recommended = !topic.value.recommended
@@ -223,7 +223,7 @@ function toggleRecommended() {
 }
 
 function togglePinned() {
-  const action = topic.value.pinned ? i18n.t('publish.action.unpin') : i18n.t('publish.action.pin')
+  const action = topic.value.pinned ? i18n.t('actions.unpin') : i18n.t('actions.pin')
   return api.setTopicFlags(topic.value.slug, { pinned: !topic.value.pinned })
     .then(() => {
       topic.value.pinned = !topic.value.pinned

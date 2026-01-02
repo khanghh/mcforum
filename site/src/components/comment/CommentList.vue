@@ -59,7 +59,7 @@
                   @click="switchShowReply(comment)">
                   <Icon name="TablerMessageCircle" class="w-4 h-4" />
                   <span>
-                    {{ myReply.commentId === comment.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}
+                    {{ myReply.commentId === comment.id ? $t('actions.hide_reply') : $t('actions.reply') }}
                   </span>
                 </button>
               </div>

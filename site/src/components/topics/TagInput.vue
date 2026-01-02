@@ -20,7 +20,7 @@
     <input
       ref="tagInput"
       v-model="inputTag"
-      :placeholder="$t('publish.add_some_tags')"
+      :placeholder="$t('form.placeholder.add_some_tags')"
       class="flex-1 bg-transparent border-none p-0 m-0 focus:outline-none text-sm placeholder-gray-400"
       type="text"
       @keydown.delete="removeTag"

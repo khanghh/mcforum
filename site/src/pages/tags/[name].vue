@@ -13,7 +13,7 @@
             #{{ tagTitle }}
           </h1>
           <p class="text-gray-300 mb-4">
-            {{ i18n.t('message.tag_description') }}
+            {{ i18n.t('feed.tag_desc') }}
           </p>
         </div>
       </div>

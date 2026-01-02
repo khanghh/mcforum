@@ -19,11 +19,11 @@
             <button
               class="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold text-sm hover:bg-purple-700 transition-colors"
               @click="navigateTo('/topics/create')">
-              <Icon name="TablerPlus" class="mr-2" /> {{ $t('forum.actions.create_topic') }}
+              <Icon name="TablerPlus" class="mr-2" /> {{ $t('actions.create_topic') }}
             </button>
             <button
               class="flex items-center px-4 py-2 border border-purple-500/50 text-purple-300 rounded-lg font-semibold text-sm hover:bg-purple-500/20 transition-colors">
-              <Icon name="Fa7SolidFilter" class="mr-2" /> {{ $t('forum.actions.filter_topics') }}
+              <Icon name="Fa7SolidFilter" class="mr-2" /> {{ $t('actions.filter_topics') }}
             </button>
           </div>
         </div>

@@ -14,7 +14,7 @@
         class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium text-white px-3 py-1 rounded-md bg-black/40 backdrop-blur-sm"
         @click="handleCoverClick">
         <Icon name="TablerCloudUpload" class="mr-1" />
-        {{ $t('profile.actions.change_cover') }}
+        {{ $t('actions.change_cover') }}
       </button>
     </div>
 

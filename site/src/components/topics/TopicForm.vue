@@ -14,7 +14,7 @@
           <Icon name="Fa7SolidEdit" class="text-gray-400" />
         </div>
       </div>
-      <p class="text-xs text-gray-300">{{ $t('publish.title_must_be_10_to_200_chars') }}</p>
+      <p class="text-xs text-gray-300">{{ $t('form.help.title_must_be_10_to_200_chars') }}</p>
     </div>
 
     <!-- Forum Category Selection - Full Width -->

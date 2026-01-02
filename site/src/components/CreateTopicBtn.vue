@@ -1,7 +1,7 @@
 <template>
   <el-button type="primary" class="publish-btn" size="large" @click="createTopic">
     <icon name="SquarePen" />&nbsp;
-    {{ $t('navbar.create_topic') }}
+    {{ $t('actions.create_topic') }}
   </el-button>
 </template>
 

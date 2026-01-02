@@ -5,7 +5,7 @@
       :class="favorited ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'"
       @click="handleClick">
       <Icon :name="favorited ? 'TablerStarFilled' : 'TablerStar'" />
-      <span>{{ $t('feed.actions.favorite') }}</span>
+      <span>{{ $t('actions.favorite') }}</span>
     </button>
 
     <div ref="particles" class="absolute inset-0 pointer-events-none overflow-visible"></div>

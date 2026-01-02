@@ -19,10 +19,10 @@
               <div>
                 <h2
                   class="gaming-title text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                  Favorite Topics
+                  {{ $t('page.favorites') }}
                 </h2>
                 <p class="text-sm text-gray-400 mt-1">
-                  Your collection of saved topics
+                  {{ $t('page.favorites_desc') }}
                 </p>
               </div>
             </div>
@@ -116,7 +116,7 @@ const { user } = storeToRefs(userStore)
 const favoritesCursor = api.getMyFavorites()
 
 useHead({
-  title: useSiteTitle(i18n.t('page.profile', { nickname: user.value?.username })),
+  title: useSiteTitle(i18n.t('page.favorites', { nickname: user.value?.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

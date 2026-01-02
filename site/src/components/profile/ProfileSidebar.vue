@@ -19,7 +19,7 @@
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerCalendarPlus" class="text-purple-400 text-sm" />
-              <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.join_date') }}</span>
+              <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.member_since') }}</span>
             </div>
             <span class="text-sm font-bold gaming-title">{{ usePrettyDate(user.joinTime) }}</span>
           </div>

@@ -18,10 +18,10 @@
               <div>
                 <h2
                   class="gaming-title text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                  {{ $t('message.notifications') }}
+                  {{ $t('page.messages') }}
                 </h2>
                 <p class="text-sm text-gray-400 mt-1">
-                  {{ $t('message.your_updates') }}
+                  {{ $t('page.messages_desc') }}
                 </p>
               </div>
             </div>

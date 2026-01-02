@@ -13,7 +13,7 @@
       class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
       aria-hidden="true">
       <Icon name="TablerCloudUpload" />
-      <span class="ml-2 text-sm">{{ $t('profile.actions.change_avatar') }}</span>
+      <span class="ml-2 text-sm">{{ $t('actions.change_avatar') }}</span>
     </div>
 
     <div v-if="uploading"

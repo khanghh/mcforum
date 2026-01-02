@@ -17,11 +17,11 @@
     <!-- Notification for pending posts -->
     <div v-if="topic.status == TopicStatus.PendingReview"
       class="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500/50 text-yellow-200">
-      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.topic_under_review') }}
+      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('publish.topic_under_review') }}
     </div>
     <div v-if="topic.status == TopicStatus.Hidden"
       class="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200">
-      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('message.topic_waiting_for_deletion') }}
+      <Icon name="TablerAlertTriangle" class="mr-2" /> {{ $t('publish.topic_waiting_for_deletion') }}
     </div>
 
     <!-- Original Post -->
@@ -116,7 +116,7 @@
       class="gaming-card rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
       <h2 class="text-2xl font-bold mb-6 flex items-center text-white">
         <Icon name="Fa7SolidComments" class="mr-3 text-blue-400" />
-        Comments ({{ topic.commentCount }})
+        {{ $t('feed.comments') }}
       </h2>
 
       <!-- Wrapped Comment Component -->

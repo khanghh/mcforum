@@ -60,7 +60,7 @@
               class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white transition-all duration-200 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:from-purple-500 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 focus:ring-offset-[#1a1b26] shadow-lg shadow-purple-900/50"
               @click="navigateTo('/')">
               <Icon name="Fa7SolidArrowLeft" class="mr-1 group-hover:-translate-x-1 transition-transform" />
-              {{ $t('button.back_to_home') }}
+              {{ $t('actions.back_to_home') }}
             </button>
           </div>
         </div>

@@ -55,7 +55,7 @@
             :class="myReply.commentId === reply.id ? 'text-purple-400' : 'hover:text-purple-400'"
             @click="switchShowReply(reply)">
             <Icon name="TablerMessageCircle" class="w-4 h-4" />
-            <span>{{ myReply.commentId === reply.id ? $t('feed.actions.hide_reply') : $t('feed.actions.reply') }}</span>
+            <span>{{ myReply.commentId === reply.id ? $t('actions.hide_reply') : $t('actions.reply') }}</span>
           </button>
         </div>
 
@@ -79,7 +79,7 @@
     <div v-if="replies.hasMore" class="pt-2">
       <button class="text-xs font-bold text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
         @click="loadMore">
-        <Icon name="TablerChevronDown" /> {{ $t('feed.actions.view_more_replies') }}
+        <Icon name="TablerChevronDown" /> {{ $t('actions.view_more_replies') }}
       </button>
     </div>
   </div>
