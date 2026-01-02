@@ -137,11 +137,16 @@ func (s *uploadService) UploadStream(user *model.User, stream io.Reader, fileNam
 	var buf bytes.Buffer
 	tee := io.TeeReader(resp.Body, &buf)
 
+	data, err := io.ReadAll(tee)
+	if err != nil {
+		return nil, errs.ErrInternalServer
+	}
+	fmt.Println("body", string(data))
 	var repsBody struct {
 		Data  UploadResponse `json:"data"`
 		Error ErrorResponse  `json:"error"`
 	}
-	if err := json.NewDecoder(tee).Decode(&repsBody); err != nil {
+	if err := json.Unmarshal(data, &repsBody); err != nil {
 		return nil, errs.ErrInternalServer
 	}
 

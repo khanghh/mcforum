@@ -1,27 +1,27 @@
 <template>
-  <form class="space-y-8">
+  <form class="space-y-6 w-full">
     <!-- Topic Title - Full Width -->
     <div class=" full-width-section space-y-2">
       <label for="topic-title" class="text-sm font-medium text-gray-200 flex items-center">
         <Icon name="Fa7SolidHeading" class="mr-2" />
-        Topic Title
+        {{ $t('form.label.topic_title') }}
       </label>
       <div class="relative">
         <input id="topic-title" v-model="postForm.title" type="text" autocomplete="off"
           class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600/50 transition-colors transition-shadow"
-          placeholder="Enter topic title..." />
+          :placeholder="$t('form.placeholder.enter_topic_title')" />
         <div class="absolute right-3 top-3">
           <Icon name="Fa7SolidEdit" class="text-gray-400" />
         </div>
       </div>
-      <p class="text-xs text-gray-300">Title must be between 10 and 200 characters</p>
+      <p class="text-xs text-gray-300">{{ $t('publish.title_must_be_10_to_200_chars') }}</p>
     </div>
 
     <!-- Forum Category Selection - Full Width -->
     <div class="full-width-section space-y-2">
       <label for="forum-category" class="text-sm font-medium text-gray-200 flex items-center">
         <Icon name="Fa7SolidFolder" class="mr-2" />
-        Select Category
+        {{ $t('form.label.select_category') }}
       </label>
       <div class="relative">
         <select id="forum-category" v-model="postForm.forumId"
@@ -38,7 +38,7 @@
 
       <!-- Quick Category Selection -->
       <div v-if="forums.length" class="mt-3">
-        <p class="text-xs text-gray-300 mb-2">Quick select:</p>
+        <p class="text-xs text-gray-300 mb-2">{{ $t('form.label.quick_select_category') }}</p>
         <div class="flex flex-wrap gap-2">
           <button v-for="forum in forums.slice(0, 4)" :key="forum.id" type="button" :class="[
             'text-xs px-3 py-1 rounded-full border transition-all duration-200 ease-in-out',
@@ -57,7 +57,7 @@
       <div class="flex justify-between items-center">
         <label class="text-sm font-medium text-gray-200 flex items-center">
           <Icon name="Fa7SolidAlignLeft" class="mr-2" />
-          Content
+          {{ $t('form.label.topic_content') }}
         </label>
         <div class="text-xs text-gray-300">
           <span class="tabular-nums">{{ postForm.content.length }}/10000</span>
@@ -72,7 +72,7 @@
         class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs text-gray-400">
         <div>
           <Icon name="Fa7SolidCircleInfo" class="mr-1" />
-          <span>Supports Markdown & BBCode. Use Ctrl+B/I/U for quick formatting.</span>
+          <span>{{ $t('form.label.topic_content_help') }}</span>
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@
         Tags
       </label>
       <TagInput v-model="postForm.tags" />
-      <p class="text-xs text-gray-400">Add relevant tags to help others find your topic</p>
+      <p class="text-xs text-gray-400">{{ $t('form.label.add_relevant_tags') }}</p>
     </div>
 
     <!-- Poll/Voting Section -->
@@ -99,7 +99,7 @@
           </div>
         </label>
         <label class="text-sm font-medium text-gray-300 flex items-center">
-          Create Poll
+          {{ $t('form.label.create_poll') }}
         </label>
       </div>
 
@@ -108,11 +108,11 @@
         <div>
           <label for="poll-question" class="text-xs font-medium text-gray-300 block mb-1">
             <Icon name="Fa7SolidCircleQuestion" class="mr-1" />
-            Poll Question
+            {{ $t('form.label.poll_question') }}
           </label>
           <input id="poll-question" v-model="pollOpts.question" type="text"
             class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600/50 transition-colors transition-shadow"
-            placeholder="e.g., What's your favorite Minecraft version?" />
+            :placeholder="$t('form.placeholder.enter_poll_question')" />
         </div>
 
         <!-- Poll Options -->
@@ -120,13 +120,13 @@
           <div class="flex justify-between items-center mb-2">
             <label class="text-xs font-medium text-gray-300">
               <Icon name="Fa7SolidListOl" class="mr-1" />
-              Options (min 2, max 10)
+              {{ $t('form.label.poll_options') }}
             </label>
             <button type="button"
               class="text-xs px-2 py-1 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 rounded transition-colors"
               @click="addPollOption">
               <Icon name="Fa7SolidPlus" />
-              Add option
+              {{ $t('form.label.add_poll_option') }}
             </button>
           </div>
 
@@ -136,7 +136,7 @@
               <div class="flex-grow">
                 <input v-model="pollOpts.options[index]" type="text"
                   class="w-full px-2 py-1 bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm"
-                  :placeholder="`Option ${Number(index) + 1}`" />
+                  :placeholder="`${$t('form.placeholder.enter_poll_option')} ${Number(index) + 1}`" />
               </div>
               <button type="button" :disabled="pollOpts.options.length <= 2"
                 class="text-red-400 hover:text-red-300 p-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
@@ -154,7 +154,7 @@
           <div class="sm:col-span-2">
             <label for="poll-duration" class="text-xs font-medium text-gray-300 block mb-1">
               <Icon name="Fa7SolidClock" class="mr-1" />
-              Poll Duration (days)
+              {{ $t('form.label.poll_duration') }}
             </label>
             <div class="relative">
               <select id="poll-duration" v-model="pollOpts.durationHours"
@@ -174,8 +174,8 @@
         <div
           class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
           <div>
-            <h4 class="font-medium text-white text-sm">Multiple choice</h4>
-            <p class="text-xs text-gray-300 mt-1">Allow multiple answers</p>
+            <h4 class="font-medium text-white text-sm">{{ $t('form.label.multiple_choices') }}</h4>
+            <p class="text-xs text-gray-300 mt-1">{{ $t('form.label.multiple_choices_desc') }}</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input v-model="pollOpts.multiSelect" type="checkbox" class="sr-only peer" />
@@ -189,8 +189,8 @@
         <div
           class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
           <div>
-            <h4 class="font-medium text-white text-sm">Public results</h4>
-            <p class="text-xs text-gray-300 mt-1">Show results before voting</p>
+            <h4 class="font-medium text-white text-sm">{{ $t('form.label.public_results') }}</h4>
+            <p class="text-xs text-gray-300 mt-1">{{ $t('form.label.public_results_desc') }}</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input v-model="pollOpts.publicResults" type="checkbox" class="sr-only peer" checked />
@@ -204,8 +204,8 @@
         <div
           class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
           <div>
-            <h4 class="font-medium text-white text-sm">Allow vote changes</h4>
-            <p class="text-xs text-gray-300 mt-1">Users can change their vote</p>
+            <h4 class="font-medium text-white text-sm">{{ $t('form.label.allow_vote_changes') }}</h4>
+            <p class="text-xs text-gray-300 mt-1">{{ $t('form.label.allow_vote_changes_desc') }}</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input v-model="pollOpts.allowVoteChange" type="checkbox" class="sr-only peer" checked />
@@ -229,7 +229,7 @@
           </div>
         </label>
         <span class="text-sm font-medium text-gray-300 flex items-center">
-          Hidden Content (Spoiler)
+          {{ $t('form.label.enable_hidden_content') }}
         </span>
       </div>
 
@@ -237,11 +237,11 @@
         <div class="relative">
           <textarea v-model="postForm.hiddenContent" rows="6"
             class="w-full px-4 py-3 bg-gray-800/70 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600/50 transition-colors transition-shadow resize-none font-mono"
-            placeholder="This content will be hidden behind a 'Show content' button..."></textarea>
+            :placeholder="$t('form.placeholder.enter_hidden_content')"></textarea>
         </div>
         <div class="flex items-center text-xs text-gray-400">
           <Icon name="Fa7SolidCircleInfo" class="mr-1" />
-          <span>This content will be hidden and only shown when users click the "Show content" button</span>
+          <span>{{ $t('form.label.hidden_content_desc') }}</span>
         </div>
       </div>
     </div>
@@ -254,14 +254,15 @@
       <nuxt-link to="/"
         class="px-8 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium border border-gray-700 flex items-center justify-center transition-colors gaming-title">
         <Icon name="Fa7SolidTimes" class="mr-2" />
-        Cancel
+        {{ $t('form.button.cancel') }}
       </nuxt-link>
       <button type="button" :disabled="publishing"
         @click="publishTopic"
         class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.3),0_0_25px_rgba(139,92,246,0.2)] tracking-[0.5px] transition-all hover:scale-[1.02] gaming-title ">
         <Icon v-if="!publishing" name="Fa7SolidPaperPlane" class="mr-2" />
         <Icon v-else name="TablerLoader2" class="mr-2 animate-spin" />
-        {{ publishing ? ('Publishing...') : (editMode ? 'Save Changes' : 'Create Topic') }}
+        {{ publishing ? ('Publishing...') : (editMode ? $t('form.button.save_changes') : $t('form.button.create_topic'))
+        }}
       </button>
     </div>
   </form>

@@ -1,6 +1,7 @@
 <template>
   <client-only>
     <MdEditor
+      ref="editorRef"
       v-model="value"
       language="en-US"
       theme="dark"
@@ -19,6 +20,8 @@
 <script setup>
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
+const dialog = useConfirmDialog()
+const api = useApi()
 
 const props = defineProps({
   modelValue: {
@@ -39,6 +42,7 @@ const props = defineProps({
   },
 })
 
+const editorRef = ref(null)
 const contentLength = 10000
 
 const emits = defineEmits([
@@ -82,29 +86,45 @@ const toolbars = ref([
 ])
 
 function change(v) {
-  emits('update:modelValue', v)
+  emits('update:modelValue', v);
 }
 
 function handleHtmlChange(html) {
-  emits('htmlChanged', html)
+  emits('htmlChanged', html);
 }
 
 async function uploadImg(files, callback) {
-  const res = await Promise.all(
-    files.map((file) => {
-      return new Promise((rev, rej) => {
-        const formData = new FormData()
-        formData.append('image', file, file.name)
-        useHttp('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-          .then(res => rev(res))
-          .catch(error => rej(error))
+  const results = await Promise.allSettled(
+    files.map(file => api.uploadImage(file))
+  );
+
+  const images = [];
+  let hasError = false;
+
+  for (const r of results) {
+    if (r.status === 'fulfilled') {
+      images.push({
+        url: r.value.url,
+        alt: r.value.fileName,
+        title: r.value.fileName,
       })
-    }),
-  )
-  callback(res.map(item => item.url))
+    } else {
+      hasError = true
+      const errMsg = r.reason?.data?.error?.message || r.reason?.message || 'Unknown error'
+      dialog.show({
+        title: $t('dialog.title.error_occurred'),
+        message: errMsg,
+        icon: 'Fa7SolidTimesCircle',
+        type: 'warning',
+      })
+    }
+  }
+
+  if (images.length > 0) {
+    callback(images);
+  }
+
+  return { success: images, hasError }
 }
 </script>
 

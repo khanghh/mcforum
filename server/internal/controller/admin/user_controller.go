@@ -134,8 +134,8 @@ func (c *UserController) buildUserItem(user *model.User, buildRoleIds bool) map[
 		Put("email", user.Email.String).
 		Put("score", user.Score).
 		Put("forbidden", user.IsForbidden())
-	if buildRoleIds {
-		b.Put("roleIds", []int64{user.RoleID})
+	if buildRoleIds && user.RoleID.Valid {
+		b.Put("roleIds", []int64{int64(user.RoleID.Int64)})
 	}
 	return b.Build()
 }

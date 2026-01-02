@@ -47,6 +47,13 @@ func (r *userRepository) Find(db *gorm.DB, cnd *sqls.Cnd) (list []model.User) {
 	return
 }
 
+func (r *userRepository) FirstOrCreate(db *gorm.DB, user *model.User, cdn *sqls.Cnd) error {
+	return cdn.Build(db).Model(&model.User{}).
+		Preload("Role").
+		FirstOrCreate(user).
+		Error
+}
+
 func (r *userRepository) FindOne(db *gorm.DB, cnd *sqls.Cnd) *model.User {
 	ret := &model.User{}
 	if err := cnd.FindOne(db.Model(&model.User{}).Preload("Role"), &ret); err != nil {

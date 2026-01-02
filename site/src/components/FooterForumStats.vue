@@ -35,7 +35,7 @@
 const route = useRoute()
 const api = useApi()
 
-const { data: stats, refresh } = await useAsyncData(
+const { data: stats } = await useAsyncData(
   'forum-stats',
   () => api.getForumStats(),
   {
@@ -46,7 +46,6 @@ const { data: stats, refresh } = await useAsyncData(
       visits: 0,
       newestMember: '',
     }),
-    watch: [() => route.fullPath],
   }
 )
 

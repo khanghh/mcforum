@@ -55,6 +55,12 @@ type Config struct {
 	AllowedOrigins []string // CORS whitelist
 	Language       string
 	TablePrefix    string
+	Auth           struct {
+		ValidateURL  string
+		ServiceURL   string
+		ClientID     string
+		ClientSecret string
+	}
 
 	// Log configuration
 	Logger struct {

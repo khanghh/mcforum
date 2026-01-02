@@ -30,7 +30,7 @@ func (c *UploadController) Post() (*web.JsonResult, error) {
 		return nil, errs.ErrInternalServer
 	}
 
-	file, header, err := c.Ctx.FormFile("avatar")
+	file, header, err := c.Ctx.FormFile("file")
 	if err != nil {
 		return nil, errs.ErrBadRequest
 	}

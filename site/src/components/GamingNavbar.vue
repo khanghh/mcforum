@@ -36,7 +36,7 @@
 
         <li class="flex-shrink-0">
           <AvatarMenu v-if="user" class="flex-shrink-0" :user="user" />
-          <a v-else href="/signin"
+          <a v-else :href="loginUrl || '#'"
             class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
             {{ $t('page.signin') }}
           </a>
@@ -55,8 +55,10 @@ const api = useApi()
 const route = useRoute()
 const configStore = useConfigStore()
 const userStore = useUserStore()
+const runtimeConfig = useRuntimeConfig()
 
 const { user } = storeToRefs(userStore)
+const { loginUrl } = runtimeConfig.public
 
 const siteNavs = computed(() => configStore.config?.siteNavs || [])
 

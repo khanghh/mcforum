@@ -152,8 +152,6 @@ topic.value = await api.getTopic(slug).catch((e) => {
     throw e
   }
 })
-console.log('status:', topic.value.status)
-console.log('is pending:', topic.value.status === TopicStatus.PendingReview)
 const user = computed(() => userStore.user)
 const canManage = computed(() => {
   if (!user.value) return false
@@ -177,19 +175,15 @@ const isPending = computed(() => {
 
 async function toggleLike() {
   if (topic.value.status !== TopicStatus.Active) return
-  try {
-    if (!user.value) return
-    if (topic.value.liked) {
-      await api.removeTopicReaction(slug)
-      topic.value.liked = false
-      topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
-    } else {
-      await api.addTopicReaction(slug, 'like')
-      topic.value.liked = true
-      topic.value.likeCount++
-    }
-  } catch (e) {
-    throw e
+  if (!user.value) return
+  if (topic.value.liked) {
+    await api.removeTopicReaction(slug)
+    topic.value.liked = false
+    topic.value.likeCount = topic.value.likeCount > 0 ? topic.value.likeCount - 1 : 0
+  } else {
+    await api.addTopicReaction(slug, 'like')
+    topic.value.liked = true
+    topic.value.likeCount++
   }
 }
 

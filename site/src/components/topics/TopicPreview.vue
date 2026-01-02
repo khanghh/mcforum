@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <div class="space-y-6">
+    <div class="space-y-6 w-full">
       <!-- Preview Header -->
       <div class="flex items-center justify-between gap-3 mb-4">
         <div class="flex items-center gap-3">
@@ -52,15 +52,12 @@
           </div>
         </div>
 
-        <div v-if="payload.tags && payload.tags.length" class="flex items-center gap-2 flex-wrap mb-3">
-          <a
-            v-for="tag in payload.tags"
-            :key="tag"
-            :href="`/tags/${tag}`"
-            target="_blank"
-            class="px-2 py-0.5 bg-white/3 text-sm text-gray-400 rounded hover:text-gray-300 border border-white/10 hover:bg-white/5 transition-colors">
+
+        <div v-if="payload.tags" class="flex flex-wrap gap-2 mb-6">
+          <nuxt-link v-for="tag in payload.tags" :key="tag" :to="`/tags/${tag}`"
+            class="px-3 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-full border border-purple-500/20 hover:bg-purple-500/20 transition-colors">
             #{{ tag }}
-          </a>
+          </nuxt-link>
         </div>
       </article>
 

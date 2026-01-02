@@ -36,6 +36,14 @@ var roles = []map[string]any{
 		"remark": "",
 		"status": constants.StatusActive,
 	},
+	{
+		"id":     3,
+		"type":   constants.RoleTypeSystem,
+		"name":   "Admin",
+		"code":   constants.RoleModerator,
+		"remark": "",
+		"status": constants.StatusActive,
+	},
 }
 
 var adminUser = model.User{
@@ -45,7 +53,7 @@ var adminUser = model.User{
 	EmailVerified: true,
 	Nickname:      "admin",
 	Password:      passwd.EncodePassword("123456"),
-	RoleID:        1,
+	RoleID:        sqls.SqlNullInt64(1),
 	IsActive:      true,
 }
 
@@ -475,7 +483,7 @@ func TestAddUser(t *testing.T) {
 		Nickname:      "",
 		Password:      passwd.EncodePassword("123456"),
 		IsActive:      true,
-		RoleID:        1,
+		RoleID:        sqls.SqlNullInt64(2),
 		CreateTime:    dates.NowTimestamp(),
 	}
 	err := repository.UserRepository.Create(db, &user)

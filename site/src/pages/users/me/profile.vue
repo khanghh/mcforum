@@ -224,7 +224,7 @@
           <button
             type="button"
             class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors border border-gray-700 gaming-title"
-            @click="navigateTo(`/users/${user.value.username}`)">
+            @click="navigateTo(`/users/${user.username}`)">
             {{ $t('form.button.cancel') }}
           </button>
           <button

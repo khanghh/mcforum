@@ -84,6 +84,15 @@ export interface TopicPollPayload {
   allowVoteChange: boolean
 }
 
+export interface UploadResult {
+  url: string
+  fileName: string
+  thumbName?: string
+  size: number
+  mimeType: string
+  createdAt: number
+}
+
 export enum FeedType {
   WhatsNew = 'whats-new',
   Followed = 'followed',
@@ -264,6 +273,12 @@ export const useApi = () => {
     return useHttpPost(`/api/topics/${topicSlug}/approve`)
   }
 
+  const uploadImage = (file: File): Promise<UploadResult> => {
+    const formData = new FormData()
+    formData.append('file', file, file.name)
+    return useHttpPost('/api/upload', { body: formData }) as Promise<UploadResult>
+  }
+
   // comment api endpoints
   const getCommentReplies = (commentId: number): CursorResult<Comment[]> => {
     return new CursorResult<Comment[]>(`/api/comments/${commentId}/replies`)
@@ -343,6 +358,7 @@ export const useApi = () => {
     removeTopicReaction,
     rejectTopic,
     approveTopic,
+    uploadImage,
 
     // comment api endpoints
     getCommentReplies,

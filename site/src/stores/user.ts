@@ -9,25 +9,6 @@ export interface LoginResponse {
   redirect: string
 }
 
-export interface SigninForm {
-  captchaId?: string
-  captchaCode?: string
-  username: string
-  password: string
-  redirect?: string
-}
-
-export interface SignupForm {
-  captchaId?: string
-  captchaCode?: string
-  email: string
-  username: string
-  password: string
-  rePassword: string
-  nickname: string
-  redirect?: string
-}
-
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null as UserProfile | null,
@@ -42,17 +23,17 @@ export const useUserStore = defineStore('user', {
       this.user = await api.getCurrentUser().catch((err) => null)
       return this.user
     },
-    async signin(body: SigninForm) {
-      const { user, token, redirect } = (await useHttpPostForm(
-        '/api/login/signin',
-        { body },
-      )) as LoginResponse
+    async signin(ticket: string, state?: string): Promise<LoginResponse> {
+      const { user, token, redirect } = await useHttpPostForm(
+        '/api/auth/login',
+        { body: { ticket, state } },
+      ) as LoginResponse
       this.user = user
       return { user, token, redirect }
     },
     async signout() {
       this.user = null
-      await useHttpGet('/api/login/signout')
+      await useHttpGet('/api/auth/logout')
     }
   },
 })

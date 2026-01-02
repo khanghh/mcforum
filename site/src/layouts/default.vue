@@ -5,7 +5,7 @@
   <div class="min-h-screen flex flex-col text-gray-100 font-sans">
     <GamingNavbar />
 
-    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full">
+    <main class="flex-1 flex flex-col mx-auto w-full max-w-7xl px-4 sm:px-6 py-6 py-6">
       <slot />
     </main>
 

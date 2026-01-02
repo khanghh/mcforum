@@ -267,6 +267,30 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 	return user, nil
 }
 
+func (s *userService) OAuthLogin(provider string, userID int64, username string, fullname string, email string, picture string) (*model.User, error) {
+	user := &model.User{
+		Model:         model.Model{ID: userID},
+		Username:      sqls.SqlNullString(username),
+		Avatar:        picture,
+		Email:         sqls.SqlNullString(email),
+		EmailVerified: true,
+		Nickname:      fullname,
+		IsActive:      true,
+		CreateTime:    dates.NowTimestamp(),
+		UpdateTime:    dates.NowTimestamp(),
+	}
+
+	cnd := sqls.NewCnd().
+		Eq("id", userID).
+		Eq("username", username).
+		Eq("email", email)
+	err := repository.UserRepository.FirstOrCreate(sqls.DB(), user, cnd)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // isEmailExists whether email exists
 func (s *userService) isEmailExists(email string) bool {
 	if len(email) == 0 { // if email is empty, consider it non-existent

@@ -51,6 +51,7 @@ func NewServer() {
 		// apiRoute.Party("/captcha").Handle(new(api.CaptchaController))
 		// apiRoute.Party("/search").Handle(new(api.SearchController))
 		apiRoute.Party("/mc-status").Handle(new(api.MCStatusController))
+		apiRoute.Party("/auth").Handle(new(api.AuthController))
 		// apiRoute.Party("/fans").Handle(new(api.FansController))
 		// apiRoute.Party("/user-report").Handle(new(api.UserReportController))
 	})
