@@ -46,7 +46,7 @@
 
       <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
         <!-- Like -->
-        <LikeButton :liked="topic.liked" :count="topic.likeCount" :onClick="likeTopic" />
+        <LikeButton :liked="topic.liked" :count="topic.likeCount" :onClick="likeTopic" :disabled="!user" />
 
         <!-- Comment -->
         <nuxt-link :to="`/topics/${topic?.slug || topic.id}`"
@@ -135,7 +135,6 @@ const colorIndex = slugHash(topic?.forum?.slug) % labelColors.length || 0
 async function likeTopic() {
   try {
     if (!user.value || !user.value.id) {
-      useCatchError(new Error(i18n.t('auth.login_required')))
       return
     }
 

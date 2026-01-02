@@ -40,6 +40,7 @@ const (
 	SysConfigModules                    = "modules"                    // Modules
 	SysConfigEmailWhitelist             = "emailWhitelist"             // Email whitelist
 	SysConfigMenuItems                  = "menuItems"                  // Menu config
+	SysConfigMCServerIP                 = "mcServerIP"                 // Minecraft Server IP
 )
 
 // EntityType

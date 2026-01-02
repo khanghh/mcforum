@@ -293,6 +293,10 @@ export const useApi = () => {
     return useHttpDelete(`/api/comments/${commentId}`)
   }
 
+  const getMCStatus = (): Promise<any> => {
+    return useHttpGet('/api/mc-status')
+  }
+
   return {
     // me api endpoints
     getCurrentUser,
@@ -347,5 +351,6 @@ export const useApi = () => {
     removeCommentReaction,
     deleteComment,
 
+    getMCStatus,
   }
 }

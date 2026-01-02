@@ -240,6 +240,7 @@ export default {
   'dialog.title.confirm_restore': 'Xác nhận khôi phục',
   'dialog.title.confirm_approve': 'Xác nhận phê duyệt',
   'dialog.title.confirm_reject': 'Xác nhận từ chối',
+  'dialog.title.login_required': 'Bạn cần đăng nhập để tiếp tục',
   'dialog.message.mute_user': 'Bạn có muốn cấm người dùng này?',
   'dialog.message.mute_user_permanent': 'Bạn có muốn cấm người dùng này vĩnh viễn?',
   'dialog.message.sign_out_alert': 'Bạn có chắc chắn muốn đăng xuất?',

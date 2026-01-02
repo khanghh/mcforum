@@ -73,9 +73,9 @@
             <span>
               {{ currentExpInLevel }} / {{ expNeededForNextLevel }} XP
             </span>
-            <span class="flex items-center gap-1">
+            <span v-if="daysStreak > 0" class="flex items-center gap-1">
               <Icon name="RiFireLine" class="text-orange-400" />
-              5 day streak
+              {{ daysStreak }} day streak
             </span>
           </div>
         </div>
@@ -164,6 +164,10 @@ const expNeededForNextLevel = computed(() => {
   const nextTotal = getTotalExpForLevel(currentLevel)
   const prevTotal = getTotalExpForLevel(currentLevel - 1)
   return Math.max(1, nextTotal - prevTotal)
+})
+
+const daysStreak = computed(() => {
+  return 0
 })
 
 </script>

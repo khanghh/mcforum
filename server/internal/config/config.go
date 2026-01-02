@@ -79,21 +79,6 @@ type Config struct {
 		}
 	}
 
-	// Baidu SEO configuration
-	// Doc: https://ziyuan.baidu.com/college/courseinfo?id=267&page=2#h2_article_title14
-	BaiduSEO struct {
-		Site  string
-		Token string
-	}
-
-	// Shenma (Sm) SEO configuration
-	// Doc: https://zhanzhang.sm.cn/open/mip
-	SmSEO struct {
-		Site     string
-		UserName string
-		Token    string
-	}
-
 	// smtp
 	Smtp struct {
 		Host     string
