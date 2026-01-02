@@ -108,6 +108,7 @@ export default {
   'page.errors.internal_server_error': 'Đã xảy ra lỗi. Nếu bạn cho rằng đây là lỗi hệ thống, vui lòng báo cho quản trị viên.',
   'page.errors.no_permission': 'Bạn không có quyền truy cập trang này',
   'page.errors.page_not_found': 'Trang bạn yêu cầu không tồn tại hoặc đã bị xóa',
+  'page.errors.unauthorized': 'Bạn cần đăng nhập để tiếp tục. Vui lòng đăng nhập vào tài khoản của bạn.',
   'links.back_to_profile': 'Quay lại hồ sơ',
   'links.return_home': 'Quay lại trang chủ',
   'links.login': 'Đăng nhập',

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <ProfileHeader v-model:user="user" />
     <div class="flex flex-col lg:flex-row gap-6 mt-6">
       <div class="w-full lg:w-80 lg:flex-shrink-0">
@@ -67,28 +67,23 @@ import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProfileSidebar from '~/components/profile/ProfileSidebar.vue'
 import LoadMoreAsync from '~/components/LoadMoreAsync.vue'
 import MessageCard from '~/components/notifications/MessageCard.vue'
-import { type UserProfile, MessageType } from '@/types'
 
 definePageMeta({
+  middleware: ['auth'],
   layout: 'default',
 })
 
 const i18n = useI18n()
-const route = useRoute()
 const api = useApi()
 const userStore = useUserStore()
 
-const userData: UserProfile | null = await userStore.getCurrent()
-if (userData == null) {
-  throw createError({ statusCode: 404, statusMessage: 'User not found', fatal: true })
-}
-const user = ref(userData)
+const { user } = storeToRefs(userStore)
 
 // Create cursor for loading messages
 const messagesCursor = api.getMessages()
 
 useHead({
-  title: useSiteTitle(i18n.t('page.messages', { nickname: user.value.username })),
+  title: useSiteTitle(i18n.t('page.messages', { nickname: user.value?.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

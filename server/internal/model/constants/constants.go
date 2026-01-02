@@ -123,9 +123,8 @@ const (
 )
 
 const (
-	FollowStatusNONE   = 0
+	FollowStatusNone   = 0
 	FollowStatusFollow = 1
-	FollowStatusBoth   = 2
 )
 
 const (

@@ -29,7 +29,7 @@
               <Icon name="TablerClockHour4" class="text-blue-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.play_time') }}</span>
             </div>
-            <span class="text-sm font-bold gaming-title">2,847 hrs</span>
+            <span class="text-sm font-bold gaming-title">{{ prettyPlayTime(600000) }}</span>
           </div>
           <!-- <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
@@ -141,4 +141,9 @@ const expNeededForNextLevel = computed(() => {
 const daysStreak = computed(() => {
   return 0
 })
+
+function prettyPlayTime(seconds) {
+  const hours = seconds / 3600
+  return `${hours.toFixed(2)}h`
+}
 </script>

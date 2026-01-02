@@ -6,6 +6,7 @@ import (
 	"bbs-go/internal/controller/payload"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/locale"
+	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/msg"
@@ -98,6 +99,35 @@ func (c *MeController) DeleteFavoritesBy(topicId int64) (*web.JsonResult, error)
 		return nil, err
 	}
 	return web.JsonSuccess(), nil
+}
+
+// User favorites
+func (c *MeController) GetFavorites() *web.JsonResult {
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
+
+	// User must be logged in
+	if user == nil {
+		return web.JsonError(errs.NotLogin)
+	}
+
+	// Query list
+	limit := 20
+	var favorites []model.Favorite
+	if cursor > 0 {
+		favorites = service.FavoriteService.Find(sqls.NewCnd().Where("user_id = ? and id < ?",
+			user.ID, cursor).Desc("id").Limit(20))
+	} else {
+		favorites = service.FavoriteService.Find(sqls.NewCnd().Where("user_id = ?", user.ID).Desc("id").Limit(limit))
+	}
+
+	hasMore := false
+	if len(favorites) > 0 {
+		cursor = favorites[len(favorites)-1].ID
+		hasMore = len(favorites) >= limit
+	}
+
+	return web.JsonCursorData(payload.BuildFavorites(favorites), cursor, hasMore)
 }
 
 // Set avatar image

@@ -57,6 +57,10 @@ var (
 	ErrAvatarSizeTooSmall  = &ResponseError{iris.StatusRequestEntityTooLarge, locale.T("upload.avatar_size_too_small")}
 )
 
+var (
+	ErrAlreadyFollowing = &ResponseError{iris.StatusBadRequest, locale.T("follow.already_following")}
+)
+
 func IsDatabaseError(err error) bool {
 	if err == nil {
 		return false

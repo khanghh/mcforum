@@ -2,10 +2,12 @@ package service
 
 import (
 	"bbs-go/internal/cache"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/event"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/repository"
+	"errors"
 
 	"bbs-go/common/dates"
 	"bbs-go/pkg/web/params"
@@ -79,17 +81,23 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 		return nil
 	}
 
-	if s.IsFollowing(userId, otherId) {
-		return nil
-	}
-
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		// If the other also follows me, update status to mutual follow
-		otherFollowed := tx.Exec("update t_user_follow set status = ? where user_id = ? and other_id = ?",
-			constants.FollowStatusBoth, otherId, userId).RowsAffected > 0
-		status := constants.FollowStatusFollow
-		if otherFollowed {
-			status = constants.FollowStatusBoth
+		followed := tx.Model(&model.UserFollow{}).
+			Where("user_id = ? and other_id = ? and status = ?", userId, otherId, constants.FollowStatusNone).
+			Update("status", constants.FollowStatusFollow).RowsAffected > 0
+		if !followed {
+			err := repository.UserFollowRepository.Create(tx, &model.UserFollow{
+				UserID:     userId,
+				OtherID:    otherId,
+				Status:     constants.FollowStatusFollow,
+				CreateTime: dates.NowTimestamp(),
+			})
+			if err != nil {
+				if errors.Is(err, gorm.ErrDuplicatedKey) {
+					return errs.ErrAlreadyFollowing
+				}
+				return err
+			}
 		}
 
 		if err := repository.UserRepository.Updates(tx, userId, map[string]interface{}{
@@ -105,13 +113,7 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 			return err
 		}
 		cache.UserCache.Invalidate(otherId)
-
-		return repository.UserFollowRepository.Create(tx, &model.UserFollow{
-			UserID:     userId,
-			OtherID:    otherId,
-			Status:     status,
-			CreateTime: dates.NowTimestamp(),
-		})
+		return nil
 	})
 	if err != nil {
 		return err
@@ -130,14 +132,13 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 		// Following oneself: no-op.
 		return nil
 	}
-	if !s.IsFollowing(userId, otherId) {
-		return nil
-	}
+
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
-		success := tx.Where("user_id = ? and other_id = ?", userId, otherId).Delete(model.UserFollow{}).RowsAffected > 0
-		if success {
-			tx.Exec("update t_user_follow set status = ? where user_id = ? and other_id = ?",
-				constants.FollowStatusFollow, otherId, userId)
+		ret := tx.Model(model.UserFollow{}).
+			Where("user_id = ? and other_id = ? and status = ?", userId, otherId, constants.FollowStatusFollow).
+			Update("status", constants.FollowStatusNone)
+		if ret.Error != nil || ret.RowsAffected < 1 {
+			return ret.Error
 		}
 
 		if err := tx.Model(&model.User{}).Where("id = ? and following_count > 0", userId).Updates(map[string]interface{}{
@@ -170,7 +171,7 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 
 // GetFollowers Followers list
 func (s *userFollowService) GetFollowers(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("other_id", userId)
+	cnd := sqls.NewCnd().Eq("other_id", userId).Eq("status", constants.FollowStatusFollow)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
@@ -191,7 +192,7 @@ func (s *userFollowService) GetFollowers(userId int64, cursor int64, limit int) 
 
 // GetFollowing Following list
 func (s *userFollowService) GetFollowing(userId int64, cursor int64, limit int) (itemList []int64, nextCursor int64, hasMore bool) {
-	cnd := sqls.NewCnd().Eq("user_id", userId)
+	cnd := sqls.NewCnd().Eq("user_id", userId).Eq("status", constants.FollowStatusFollow)
 	if cursor > 0 {
 		cnd.Lt("id", cursor)
 	}
@@ -251,7 +252,10 @@ func (s *userFollowService) IsFollowing(userId, otherId int64) bool {
 // GetMutualFollowers returns the subset of given follower IDs that the user is already following back.
 func (s *userFollowService) GetMutualFollowers(userId int64, followerIds ...int64) *hashset.Set {
 	set := hashset.New()
-	list := s.Find(sqls.NewCnd().Eq("user_id", userId).In("other_id", followerIds))
+	list := s.Find(sqls.NewCnd().
+		Eq("user_id", userId).
+		Eq("status", constants.FollowStatusFollow).
+		In("other_id", followerIds))
 	for _, follow := range list {
 		set.Add(follow.OtherID)
 	}

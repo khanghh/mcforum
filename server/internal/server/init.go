@@ -30,6 +30,7 @@ func Init() {
 func initDB() {
 	conf := config.Instance().DB
 	db, err := gorm.Open(mysql.Open(conf.Url), &gorm.Config{
+		TranslateError: true,
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix: config.Instance().TablePrefix,
 		},

@@ -126,6 +126,10 @@ export const useApi = () => {
     return new CursorResult<Topic[]>('/api/users/me/topics')
   }
 
+  const getMyFavorites = (): CursorResult<Topic[]> => {
+    return new CursorResult<Topic[]>('/api/users/me/favorites')
+  }
+
   const setTopicFavorite = (topicId: number, favorited: boolean): Promise<boolean> => {
     if (favorited) {
       return useHttpPut(`/api/users/me/favorites/${topicId}`)
@@ -320,6 +324,7 @@ export const useApi = () => {
     getMyFollowers,
     getMyFollowing,
     getMyTopics,
+    getMyFavorites,
     setTopicFavorite,
     getMessages,
     getRecentMessages,

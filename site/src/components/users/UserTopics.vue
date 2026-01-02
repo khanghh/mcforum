@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { UserProfile, Topic } from '@/types'
 import { useApi } from '@/composables/api'
 
@@ -19,7 +18,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const loggedInUser = computed(() => userStore.user)
+const { user: loggedInUser } = storeToRefs(userStore)
 const isSelf = loggedInUser.value?.username === props.user.username
 
 const fetchUserTopics = (): CursorResult<Topic[]> => {
@@ -30,5 +29,4 @@ const fetchUserTopics = (): CursorResult<Topic[]> => {
 }
 
 const topicsCursor = fetchUserTopics()
-
 </script>

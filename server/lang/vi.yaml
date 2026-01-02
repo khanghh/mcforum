@@ -65,6 +65,8 @@ errors.comment_not_found: "Bình luận không tồn tại"
 errors.comment_deleted: "Bình luận đã bị xóa"
 errors.user_not_found: "Người dùng không tồn tại"
 
+follow.already_following: "Bạn đã theo dõi người dùng này rồi"
+
 user.bio_max_length_exceeded: "Bio không được vượt quá 200 ký tự"
 user.nickname_required: "Nickname không thể bỏ trống"
 user.nickname_max_length_exceeded: "Nickname không được vượt quá 50 ký tự"

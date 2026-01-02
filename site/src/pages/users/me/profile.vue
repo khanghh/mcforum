@@ -253,16 +253,16 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 
+definePageMeta({
+  middleware: ['auth'],
+  layout: 'default',
+})
+
 const i18n = useI18n()
 const api = useApi()
 const toast = useToast()
 const dialog = useConfirmDialog()
 const userStore = useUserStore()
-
-definePageMeta({
-  middleware: ['auth'],
-  layout: 'default',
-})
 
 const { user } = storeToRefs(userStore)
 const avatarUrl = ref(user.value.avatar)

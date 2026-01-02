@@ -36,7 +36,8 @@
 
             <div class="text-xl text-purple-200 font-medium mb-6">
               <template v-if="error">
-                <span v-if="error.statusCode === 404">PAGE NOT FOUND</span>
+                <span v-if="error.statusCode === 401">UNAUTHORIZED</span>
+                <span v-else-if="error.statusCode === 404">PAGE NOT FOUND</span>
                 <span v-else-if="error.statusCode === 403">ACCESS DENIED</span>
                 <span v-else>INTERNAL SERVER ERROR</span>
               </template>
@@ -46,7 +47,10 @@
             </div>
 
             <p class="text-gray-400 mb-8 leading-relaxed">
-              <span v-if="error && error.statusCode === 404">
+              <span v-if="error && error.statusCode === 401">
+                {{ $t('page.errors.unauthorized') }}
+              </span>
+              <span v-else-if="error && error.statusCode === 404">
                 {{ $t('page.errors.page_not_found') }}
               </span>
               <span v-else-if="error && error.statusCode === 403">

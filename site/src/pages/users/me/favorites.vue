@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
     <ProfileHeader v-model:user="user" />
 
     <div class="flex flex-col lg:flex-row gap-6 mt-6">
@@ -7,7 +7,12 @@
         <ProfileSidebar :user="user" />
       </div>
 
-      <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px]">
+      <div class="flex-1 min-w-0 gaming-card rounded-2xl overflow-hidden min-h-[500px] p-6">
+        <div class="space-y-4">
+          <LoadMoreAsync v-slot="{ items }" :cursor="favoritesCursor">
+            <GamingTopicList :topics="items" :show-pinned="false" />
+          </LoadMoreAsync>
+        </div>
       </div>
     </div>
   </div>
@@ -16,23 +21,22 @@
 <script setup lang="ts">
 import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProfileSidebar from '~/components/profile/ProfileSidebar.vue'
-import type { UserProfile } from '@/types/user'
 
 definePageMeta({
+  middleware: ['auth'],
   layout: 'default',
 })
 
 const i18n = useI18n()
-const route = useRoute()
 const api = useApi()
+const userStore = useUserStore()
 
-const userData: UserProfile = await api.getCurrentUser().catch(() => {
-  throw createError({ statusCode: 404, statusMessage: 'User not found', fatal: true })
-})
-const user = ref(userData)
+const { user } = storeToRefs(userStore)
+
+const favoritesCursor = api.getMyFavorites()
 
 useHead({
-  title: useSiteTitle(i18n.t('page.profile', { nickname: user.value.username })),
+  title: useSiteTitle(i18n.t('page.profile', { nickname: user.value?.username })),
   bodyAttrs: {
     class: 'bg-gaming-bg',
   },

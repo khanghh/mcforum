@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { UserProfile } from '@/types'
 import { useApi } from '@/composables/api'
+
 const api = useApi()
 
 export interface LoginResponse {
@@ -20,7 +21,7 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async getCurrent(): Promise<UserProfile | null> {
-      this.user = await api.getCurrentUser().catch((err) => null)
+      this.user = await api.getCurrentUser().catch(err => null)
       return this.user
     },
     async signin(ticket: string, state?: string): Promise<LoginResponse> {
@@ -34,6 +35,6 @@ export const useUserStore = defineStore('user', {
     async signout() {
       this.user = null
       await useHttpGet('/api/auth/logout')
-    }
+    },
   },
 })
