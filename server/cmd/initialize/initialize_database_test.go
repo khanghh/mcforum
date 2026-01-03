@@ -247,7 +247,7 @@ var sysConfigs = []model.SysConfig{
 		Description: "Defines which site modules are active.",
 	},
 	{
-		Key:         constants.SysConfigEnableHideContent,
+		Key:         constants.SysConfigEnableHiddenContent,
 		Value:       "true",
 		Name:        "Allow Hidden Content",
 		Description: "Users can attach hidden content to posts.",

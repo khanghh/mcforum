@@ -49,7 +49,7 @@ export interface SysConfig {
   createTopicEmailVerified: boolean
   createArticleEmailVerified: boolean
   createCommentEmailVerified: boolean
-  enableHideContent: boolean
+  enableHiddenContent: boolean
   menuItems: MenuItem[]
   modules: ModulesConfig
   emailWhitelist: string[]

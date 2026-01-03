@@ -14,6 +14,9 @@ import (
 	"mime/multipart"
 	"net"
 	"net/http"
+	"net/url"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -74,11 +77,12 @@ func (s *uploadService) getUploadToken(user *model.User) string {
 }
 
 func (s *uploadService) UploadStream(user *model.User, stream io.Reader, fileName string) (*model.Upload, error) {
-	uploadURL := config.Instance().Uploader.SUpload.UploadURL
-	if uploadURL == "" {
+	baseURL := config.Instance().Uploader.SUpload.BaseURL
+	if baseURL == "" {
 		slog.Error("Upload URL is not configured")
 		return nil, errs.ErrInternalServer
 	}
+	uploadURL, _ := url.JoinPath(baseURL, "upload")
 	uploadToken := s.getUploadToken(user)
 	// build a streaming multipart request with field "file"
 	pr, pw := io.Pipe()
@@ -194,4 +198,22 @@ func (s *uploadService) UploadAvatar(user *model.User, data []byte) (*model.Uplo
 
 func (s *uploadService) RecordUpload(upload *model.Upload) error {
 	return repository.UploadRepository.Create(sqls.DB(), upload)
+}
+
+func (s *uploadService) ExtractImageURLs(content string) []string {
+	re := regexp.MustCompile(`!\[.*?\]\(\s*([^\s\)]+)`)
+	matches := re.FindAllStringSubmatch(content, -1)
+	baseURL := config.Instance().Uploader.SUpload.BaseURL
+	if baseURL == "" {
+		return []string{}
+	}
+
+	imageURLs := []string{}
+	for _, m := range matches {
+		url := m[1]
+		if strings.HasPrefix(url, baseURL) {
+			imageURLs = append(imageURLs, url)
+		}
+	}
+	return imageURLs
 }

@@ -7,10 +7,12 @@ import (
 	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/search"
+	"encoding/json"
 	"errors"
 	"log/slog"
 	"math"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"bbs-go/common/dates"
@@ -118,8 +120,27 @@ func (s *topicService) Restore(id int64) error {
 	return err
 }
 
+func (s *topicService) extractImageURLs(content string) []model.ImageDTO {
+	re := regexp.MustCompile(`!\[.*?\]\(\s*([^\s\)]+)`)
+	matches := re.FindAllStringSubmatch(content, -1)
+	imageURLs := []string{}
+	for _, m := range matches {
+		imageURLs = append(imageURLs, m[1])
+	}
+	var records []model.Upload
+	ret := sqls.DB().Model(&model.Upload{}).Where("url IN ?", imageURLs).Find(&records)
+	if ret.Error != nil {
+		return []model.ImageDTO{}
+	}
+	images := make([]model.ImageDTO, 0, len(records))
+	for _, item := range records {
+		images = append(images, model.ImageDTO{URL: item.URL})
+	}
+	return images
+}
+
 // Update
-func (s *topicService) Edit(topicId, forumId int64, tags []string, title, content, hideContent string, images []string) error {
+func (s *topicService) Edit(topicId, forumId int64, tags []string, title, content, hiddenContent string) error {
 	if title == "" {
 		return errors.New(locale.T("topic.edit.title_required"))
 	}
@@ -133,15 +154,18 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, conten
 		return errors.New(locale.T("forum.not_found"))
 	}
 
+	images := s.extractImageURLs(content)
+	imagesJSON, _ := json.Marshal(images)
+
 	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
 		var err error
 		if err = repository.TopicRepository.Updates(sqls.DB(), topicId, map[string]interface{}{
-			"forum_id":     forumId,
-			"title":        title,
-			"slug":         urls.GenerateSlug(title),
-			"content":      content,
-			"hide_content": hideContent,
-			"images":       images,
+			"forum_id":       forumId,
+			"title":          title,
+			"slug":           urls.GenerateSlug(title),
+			"content":        content,
+			"hidden_content": hiddenContent,
+			"images":         imagesJSON,
 		}); err != nil {
 			return err
 		}
@@ -493,16 +517,15 @@ func (s *topicService) SetTopicRecommended(userID int64, topicID int64, recommen
 }
 
 type PublishTopicArgs struct {
-	UserID      int64
-	Title       string
-	ForumID     int64
-	Content     string
-	HideContent string
-	Tags        []string
-	Images      []string
-	IsPending   bool
-	UserAgent   string
-	IPAddress   string
+	UserID        int64
+	Title         string
+	ForumID       int64
+	Content       string
+	HiddenContent string
+	Tags          []string
+	IsPending     bool
+	UserAgent     string
+	IPAddress     string
 }
 
 func (s *topicService) checkArgs(args PublishTopicArgs) (err error) {
@@ -536,6 +559,12 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		return nil, err
 	}
 
+	imageURLs := UploadService.ExtractImageURLs(args.Content)
+	images := make([]model.ImageDTO, 0, len(imageURLs))
+	for _, imgURL := range imageURLs {
+		images = append(images, model.ImageDTO{URL: imgURL})
+	}
+
 	now := dates.NowTimestamp()
 	topic := &model.Topic{
 		Type:            constants.TopicTypeTopic,
@@ -544,23 +573,14 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		Title:           args.Title,
 		Slug:            urls.GenerateSlug(args.Title),
 		Content:         args.Content,
-		HideContent:     args.HideContent,
+		Images:          images,
+		HiddenContent:   args.HiddenContent,
 		Status:          constants.StatusActive,
 		UserAgent:       args.UserAgent,
 		IP:              args.IPAddress,
 		IPLocation:      iplocator.IpLocation(args.IPAddress),
 		LastCommentTime: now,
 		CreateTime:      now,
-	}
-
-	if len(args.Images) > 0 {
-		images := make([]model.ImageDTO, 0, len(args.Images))
-		for _, imgUrl := range args.Images {
-			images = append(images, model.ImageDTO{
-				Url: imgUrl,
-			})
-		}
-		topic.Images = images
 	}
 
 	if args.IsPending || s.isNeedReview(&args) {

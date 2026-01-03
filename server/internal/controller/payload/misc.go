@@ -71,8 +71,6 @@ func handleHtmlContent(htmlContent string) string {
 		}
 
 		// process image style
-		src = HandleOssImageStyleDetail(src)
-
 		// // process lazyload
 		// selection.SetAttr("data-src", src)
 		// selection.RemoveAttr("src")

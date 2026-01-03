@@ -115,7 +115,7 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 		images := make([]model.ImageDTO, 0, len(args.Images))
 		for _, imgUrl := range args.Images {
 			images = append(images, model.ImageDTO{
-				Url: imgUrl,
+				URL: imgUrl,
 			})
 		}
 		comment.Images = images
@@ -220,6 +220,6 @@ func (s *commentService) Scan(callback func(comments []model.Comment)) {
 	}
 }
 
-func (s *commentService) IsCommented(userId int64, entityType string, entityId int64) bool {
-	return s.FindOne(sqls.NewCnd().Where("user_id = ? and entity_id = ? and entity_type = ? and status = ?", userId, entityId, entityType, constants.StatusActive)) != nil
+func (s *commentService) IsCommented(userID int64, topicID int64) bool {
+	return s.FindOne(sqls.NewCnd().Where("user_id = ? and topic_id = ? and status = ?", userID, topicID, constants.StatusActive)) != nil
 }

@@ -35,7 +35,8 @@ export interface Topic {
   summary: string
   content: string
   hiddenContent?: string
-  imageList: ImageInfo[]
+  hasHiddenContent?: boolean
+  images: ImageInfo[]
   lastCommentTime?: number
   viewCount: number
   commentCount: number

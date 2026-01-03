@@ -32,36 +32,53 @@ type TopicEditResponse struct {
 
 // topic list response entity
 type TopicResponse struct {
-	Id              int64               `json:"id"`
-	Slug            string              `json:"slug"`
-	Type            constants.TopicType `json:"type"`
-	User            *UserInfo           `json:"user"`
-	Forum           *ForumResponse      `json:"forum"`
-	Tags            []string            `json:"tags"`
-	Title           string              `json:"title"`
-	Summary         string              `json:"summary"`
-	Content         string              `json:"content"`
-	Images          []ImageInfo         `json:"images"`
-	LastCommentTime int64               `json:"lastCommentTime"`
-	ViewCount       int64               `json:"viewCount"`
-	CommentCount    int64               `json:"commentCount"`
-	LikeCount       int64               `json:"likeCount"`
-	Liked           bool                `json:"liked"`
-	CreateTime      int64               `json:"createTime"`
-	Recommended     bool                `json:"recommended"`
-	RecommendedTime int64               `json:"recommendedTime"`
-	Pinned          bool                `json:"pinned"`
-	PinnedTime      int64               `json:"pinnedTime"`
-	Status          int                 `json:"status"`
-	Favorited       bool                `json:"favorited"`
-	IpLocation      string              `json:"ipLocation"`
+	Id               int64               `json:"id"`
+	Slug             string              `json:"slug"`
+	Type             constants.TopicType `json:"type"`
+	User             *UserInfo           `json:"user"`
+	Forum            *ForumResponse      `json:"forum"`
+	Tags             []string            `json:"tags"`
+	Title            string              `json:"title"`
+	Summary          string              `json:"summary"`
+	Content          string              `json:"content"`
+	Images           []ImageInfo         `json:"images"`
+	LastCommentTime  int64               `json:"lastCommentTime"`
+	ViewCount        int64               `json:"viewCount"`
+	CommentCount     int64               `json:"commentCount"`
+	LikeCount        int64               `json:"likeCount"`
+	Liked            bool                `json:"liked"`
+	CreateTime       int64               `json:"createTime"`
+	Recommended      bool                `json:"recommended"`
+	RecommendedTime  int64               `json:"recommendedTime"`
+	HiddenContent    string              `json:"hiddenContent"`
+	HasHiddenContent bool                `json:"hasHiddenContent"`
+	Pinned           bool                `json:"pinned"`
+	PinnedTime       int64               `json:"pinnedTime"`
+	Status           int                 `json:"status"`
+	Favorited        bool                `json:"favorited"`
+	IpLocation       string              `json:"ipLocation"`
 }
 
 func BuildTopic(topic *model.Topic, currentUser *model.User) *TopicResponse {
 	resp := _buildTopic(topic, true)
+
+	if topic.HiddenContent != "" {
+		resp.HasHiddenContent = true
+	}
+
 	if currentUser != nil {
 		resp.Liked = service.UserLikeService.IsLiked(currentUser.ID, constants.EntityTopic, topic.ID)
 		resp.Favorited = service.FavoriteService.IsFavorited(currentUser.ID, constants.EntityTopic, topic.ID)
+		if topic.HiddenContent != "" {
+			if currentUser.IsManagerRole() || currentUser.ID == topic.UserID {
+				resp.HiddenContent = topic.HiddenContent
+			} else {
+				isCommented := service.CommentService.IsCommented(currentUser.ID, topic.ID)
+				if isCommented {
+					resp.HiddenContent = topic.HiddenContent
+				}
+			}
+		}
 	}
 	return resp
 }
@@ -136,9 +153,9 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		} else {
 			rsp.Content = html.EscapeString(topic.Content)
 		}
-		rsp.Images = BuildImageList(topic.Images)
 	}
 
+	rsp.Images = BuildImageList(topic.Images)
 	if topic.ForumId > 0 {
 		node := service.ForumService.Get(topic.ForumId)
 		rsp.Forum = BuildForum(node)
@@ -166,7 +183,7 @@ func BuildTopicEdit(topic *model.Topic) *TopicEditResponse {
 	// build content
 	if topic.Type == constants.TopicTypeTopic {
 		rsp.Content = topic.Content
-		rsp.HiddenContent = topic.HideContent
+		rsp.HiddenContent = topic.HiddenContent
 		rsp.Images = BuildImageList(topic.Images)
 	}
 

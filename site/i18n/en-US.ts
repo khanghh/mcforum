@@ -47,6 +47,7 @@ export default {
     recommended_tags: 'Recommended tags',
     hidden_content_unlocked: 'Unlocked content',
     hidden_content_locked: 'This content is hidden. Please reply to unlock.',
+    hidden_content_login_required: 'This content is hidden. Please login to view.',
   },
   navbar: {
     profile: 'Profile',

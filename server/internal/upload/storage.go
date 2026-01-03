@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"bbs-go/internal/config"
 	"io"
 )
 
@@ -70,12 +71,7 @@ func getStorage() uploadStorage {
 	return local
 }
 
-// IsEnabledOss whether to enable Aliyun OSS
-func IsEnabledOss() bool {
-	return false
-}
-
-// IsOssImageUrl whether the image is stored in Aliyun OSS
-func IsOssImageUrl(url string) bool {
-	return false
+// IsSUploadEnabeld whether to enable Aliyun OSS
+func IsSUploadEnabeld() bool {
+	return config.Instance().Uploader.Enable == "supload"
 }

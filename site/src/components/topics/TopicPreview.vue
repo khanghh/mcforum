@@ -94,7 +94,7 @@ defineEmits(['onBackToEdit'])
 
 const hiddenContent = computed(() => props.payload.hiddenContent)
 
-const enabledHideContent = computed(() => {
+const enabledHiddenContent = computed(() => {
   return props.payload.hiddenContent && props.payload.hiddenContent.length > 0
 })
 

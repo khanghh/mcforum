@@ -273,8 +273,6 @@
 // import { MdEditor } from 'md-editor-v3'
 import TagInput from '@/components/topics/TagInput.vue'
 import type { TopicPollPayload, CreateTopicPayload } from '@/composables/api'
-const api = useApi()
-const dialog = useConfirmDialog()
 
 type Forum = {
   id: number
@@ -298,7 +296,7 @@ const props = defineProps({
 })
 
 const enablePoll = ref(false)
-const enableHiddenContent = ref(false)
+const enableHiddenContent = ref(!!props.modelValue.hiddenContent)
 const publishing = ref(false)
 const postForm = props.modelValue
 const forums = ref<Forum[]>([])
@@ -310,6 +308,13 @@ const emits = defineEmits([
   'onHtmlChanged',
   'onSubmit'
 ])
+
+// Watch for hidden content toggle changes
+watch(enableHiddenContent, (newValue) => {
+  if (!newValue) {
+    postForm.hiddenContent = ''
+  }
+})
 
 // Function to handle poll checkbox toggle
 function handlePollToggle(enabled: boolean) {

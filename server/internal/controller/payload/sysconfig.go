@@ -30,7 +30,7 @@ type SysConfigResponse struct {
 	CreateTopicEmailVerified   bool                `json:"createTopicEmailVerified,omitempty"`
 	CreateArticleEmailVerified bool                `json:"createArticleEmailVerified,omitempty"`
 	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified,omitempty"`
-	EnableHideContent          bool                `json:"enableHideContent,omitempty"`
+	EnableHiddenContent        bool                `json:"enableHiddenContent,omitempty"`
 	Modules                    model.ModulesConfig `json:"modules,omitempty"`
 	EmailWhitelist             []string            `json:"emailWhitelist,omitempty"` // Email whitelist
 }

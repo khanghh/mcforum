@@ -126,7 +126,7 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		FollowersCount:       user.FollowersCount,
 		FollowingCount:       user.FollowingCount,
 		BackgroundImage:      user.BackgroundImage,
-		SmallBackgroundImage: HandleOssImageStyleSmall(user.BackgroundImage),
+		SmallBackgroundImage: GetSmallCoverURL(user.BackgroundImage),
 	}
 	if user.ShowLocation {
 		ret.Location = user.Location

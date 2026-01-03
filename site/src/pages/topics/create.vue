@@ -132,7 +132,7 @@ const postForm = ref<CreateTopicPayload>({
   tags: [] as string[],
   content: '',
   hiddenContent: '',
-  imageList: [] as string[],
+  images: [] as string[],
 })
 
 function handleHtmlChange(html: string) {

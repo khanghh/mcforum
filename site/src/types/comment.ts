@@ -19,7 +19,7 @@ export interface Comment {
   quoteId: string
   contentType: string
   content: string
-  imageList: null
+  images: null
   likeCount: number
   commentCount: number
   liked: boolean

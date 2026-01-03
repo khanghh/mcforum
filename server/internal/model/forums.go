@@ -93,7 +93,7 @@ type Topic struct {
 	Title             string              `gorm:"size:256" json:"title" form:"title"`                                                      // Title
 	Content           string              `gorm:"type:longtext" json:"content" form:"content"`                                             // Content
 	Images            []ImageDTO          `gorm:"serializer:json" json:"images" form:"images"`                                             // Image list
-	HideContent       string              `gorm:"type:longtext" json:"hideContent" form:"hideContent"`                                     // Hidden content (visible after reply)
+	HiddenContent     string              `gorm:"type:longtext" json:"hiddenContent" form:"hiddenContent"`                                 // Hidden content (visible after reply)
 	Recommended       bool                `gorm:"not null" json:"recommended" form:"recommended"`                                          // Recommended
 	RecommendedTime   int64               `gorm:"not null;index:idx_topic_recommended_time" json:"recommendedTime" form:"recommendedTime"` // Recommended time
 	Pinned            bool                `gorm:"not null" json:"pinned" form:"pinned"`                                                    // Pinned

@@ -143,7 +143,7 @@ const postForm = ref<CreateTopicPayload>({
   tags: topic.value.tags,
   content: topic.value.content,
   hiddenContent: topic.value.hiddenContent || '',
-  imageList: topic.value.imageList?.map(image => image.url) || [],
+  images: topic.value.images?.map(image => image.url) || [],
   poll: getTopicPollPayload() || undefined,
 })
 

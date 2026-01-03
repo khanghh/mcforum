@@ -18,8 +18,8 @@ func BuildImageList(images []model.ImageDTO) (imageList []ImageInfo) {
 	if len(images) > 0 {
 		for _, image := range images {
 			imageList = append(imageList, ImageInfo{
-				Url:     HandleOssImageStyleDetail(image.Url),
-				Preview: HandleOssImageStylePreview(image.Url),
+				Url:     image.URL,
+				Preview: GetPreviewURL(image.URL),
 			})
 		}
 	}
@@ -36,8 +36,8 @@ func BuildImage(imageStr string) *ImageInfo {
 		return nil
 	} else {
 		return &ImageInfo{
-			Url:     HandleOssImageStyleDetail(img.Url),
-			Preview: HandleOssImageStylePreview(img.Url),
+			Url:     img.URL,
+			Preview: GetPreviewURL(img.URL),
 		}
 	}
 }

@@ -15,18 +15,18 @@ import (
 )
 
 type CreateTopicForm struct {
-	Type        constants.TopicType `json:"type"`
-	CaptchaId   string              `json:"captchaId"`
-	CaptchaCode string              `json:"captchaCode"`
-	ForumId     int64               `json:"forumId"`
-	Title       string              `json:"title"`
-	Content     string              `json:"content"`
-	HideContent string              `json:"hideContent"`
-	Tags        []string            `json:"tags"`
-	Images      []ImageDTO          `json:"images"`
-	UserAgent   string              `json:"userAgent"`
-	Ip          string              `json:"ip"`
-	Slug        string
+	Type          constants.TopicType `json:"type"`
+	CaptchaId     string              `json:"captchaId"`
+	CaptchaCode   string              `json:"captchaCode"`
+	ForumId       int64               `json:"forumId"`
+	Title         string              `json:"title"`
+	Content       string              `json:"content"`
+	HiddenContent string              `json:"hiddenContent"`
+	Tags          []string            `json:"tags"`
+	Images        []ImageDTO          `json:"images"`
+	UserAgent     string              `json:"userAgent"`
+	Ip            string              `json:"ip"`
+	Slug          string
 }
 
 type CreateArticleForm struct {
@@ -51,7 +51,7 @@ type CreateCommentForm struct {
 }
 
 type ImageDTO struct {
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
@@ -64,17 +64,17 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 		}
 	} else {
 		form = &CreateTopicForm{
-			Type:        constants.TopicType(params.FormValueIntDefault(ctx, "type", int(constants.TopicTypeTopic))),
-			CaptchaId:   params.FormValue(ctx, "captchaId"),
-			CaptchaCode: params.FormValue(ctx, "captchaCode"),
-			ForumId:     params.FormValueInt64Default(ctx, "nodeId", 0),
-			Title:       strings.TrimSpace(params.FormValue(ctx, "title")),
-			Content:     strings.TrimSpace(params.FormValue(ctx, "content")),
-			HideContent: strings.TrimSpace(params.FormValue(ctx, "hideContent")),
-			Tags:        params.FormValueStringArray(ctx, "tags"),
-			Images:      GetImageList(ctx, "images"),
-			UserAgent:   utils.GetUserAgent(ctx.Request()),
-			Ip:          utils.GetRequestIP(ctx.Request()),
+			Type:          constants.TopicType(params.FormValueIntDefault(ctx, "type", int(constants.TopicTypeTopic))),
+			CaptchaId:     params.FormValue(ctx, "captchaId"),
+			CaptchaCode:   params.FormValue(ctx, "captchaCode"),
+			ForumId:       params.FormValueInt64Default(ctx, "nodeId", 0),
+			Title:         strings.TrimSpace(params.FormValue(ctx, "title")),
+			Content:       strings.TrimSpace(params.FormValue(ctx, "content")),
+			HiddenContent: strings.TrimSpace(params.FormValue(ctx, "hiddenContent")),
+			Tags:          params.FormValueStringArray(ctx, "tags"),
+			Images:        GetImageList(ctx, "images"),
+			UserAgent:     utils.GetUserAgent(ctx.Request()),
+			Ip:            utils.GetRequestIP(ctx.Request()),
 		}
 	}
 	return *form
@@ -118,7 +118,7 @@ func GetImageList(ctx iris.Context, paramName string) []ImageDTO {
 			for _, item := range ret.Array() {
 				url := item.Get("url").String()
 				imageList = append(imageList, ImageDTO{
-					Url: url,
+					URL: url,
 				})
 			}
 		}

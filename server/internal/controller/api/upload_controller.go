@@ -6,6 +6,7 @@ import (
 	"bbs-go/internal/errs"
 	"bbs-go/pkg/web"
 	"log/slog"
+	"net/url"
 
 	"github.com/kataras/iris/v12"
 
@@ -25,7 +26,13 @@ func (c *UploadController) Post() (*web.JsonResult, error) {
 		return nil, err
 	}
 
-	uploadURL := config.Instance().Uploader.SUpload.UploadURL
+	baseURL := config.Instance().Uploader.SUpload.BaseURL
+	if baseURL == "" {
+		slog.Error("SUpload base URL is not configured")
+		return nil, errs.ErrInternalServer
+	}
+
+	uploadURL, _ := url.JoinPath(baseURL, "upload")
 	if uploadURL == "" {
 		return nil, errs.ErrInternalServer
 	}

@@ -80,8 +80,8 @@ type Config struct {
 			RootDir string
 		}
 		SUpload struct {
-			UploadURL string
-			Secret    string
+			BaseURL string
+			Secret  string
 		}
 	}
 

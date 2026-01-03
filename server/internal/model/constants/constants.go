@@ -33,7 +33,7 @@ const (
 	SysConfigUserObserveSeconds         = "userObserveSeconds"         // New user observation period
 	SysConfigTokenExpireDays            = "tokenExpireDays"            // Login token valid days
 	SysConfigLoginMethod                = "loginMethod"                // Login method
-	SysConfigEnableHideContent          = "enableHideContent"          // Enable hide content feature
+	SysConfigEnableHiddenContent        = "enableHiddenContent"        // Enable hidden content feature
 	SysConfigCreateTopicEmailVerified   = "createTopicEmailVerified"   // Create topic requires email verification
 	SysConfigCreateArticleEmailVerified = "createArticleEmailVerified" // Create article requires email verification
 	SysConfigCreateCommentEmailVerified = "createCommentEmailVerified" // Create comment requires email verification

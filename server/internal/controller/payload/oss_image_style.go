@@ -2,36 +2,35 @@ package payload
 
 import (
 	"bbs-go/internal/upload"
+	"fmt"
+	"net/url"
+	"path"
 )
 
-func HandleOssImageStyleAvatar(url string) string {
-	if !upload.IsEnabledOss() {
-		return url
-	}
-	return HandleOssImageStyle(url, "")
+func GetAvatarURL(url string) string {
+	return getThumbnailURL(url, 100, 100)
 }
 
-func HandleOssImageStyleDetail(url string) string {
-	if !upload.IsEnabledOss() {
-		return url
-	}
-	return HandleOssImageStyle(url, "")
+func GetSmallCoverURL(url string) string {
+	return getThumbnailURL(url, 400, 300)
 }
 
-func HandleOssImageStyleSmall(url string) string {
-	if !upload.IsEnabledOss() {
-		return url
-	}
-	return HandleOssImageStyle(url, "")
+func GetPreviewURL(url string) string {
+	return getThumbnailURL(url, 200, 200)
 }
 
-func HandleOssImageStylePreview(url string) string {
-	if !upload.IsEnabledOss() {
-		return url
+func getThumbnailURL(rawURL string, width, height int) string {
+	if !upload.IsSUploadEnabeld() {
+		return rawURL
 	}
-	return HandleOssImageStyle(url, "")
-}
 
-func HandleOssImageStyle(url, style string) string {
-	return url
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return rawURL
+	}
+
+	filename := path.Base(u.Path)
+	thumbSize := fmt.Sprintf("%dx%d", width, height)
+	u.Path = path.Join(path.Dir(u.Path), thumbSize, filename)
+	return u.String()
 }

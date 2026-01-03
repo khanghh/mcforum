@@ -208,8 +208,8 @@ func (s *sysConfigService) IsCreateCommentEmailVerified() bool {
 	return strs.EqualsIgnoreCase(value, "true") || strs.EqualsIgnoreCase(value, "1")
 }
 
-func (s *sysConfigService) IsEnableHideContent() bool {
-	value := cache.SysConfigCache.GetValue(constants.SysConfigEnableHideContent)
+func (s *sysConfigService) IsEnableHiddenContent() bool {
+	value := cache.SysConfigCache.GetValue(constants.SysConfigEnableHiddenContent)
 	return strs.EqualsIgnoreCase(value, "true") || strs.EqualsIgnoreCase(value, "1")
 }
 

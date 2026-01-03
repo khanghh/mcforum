@@ -84,16 +84,15 @@ func (c *TopicsController) Post() *web.JsonResult {
 	}
 
 	topic, err := service.TopicService.Publish(service.PublishTopicArgs{
-		UserID:      user.ID,
-		Title:       form.Title,
-		ForumID:     form.ForumID,
-		Content:     form.Content,
-		HideContent: form.HiddenContent,
-		Tags:        form.Tags,
-		Images:      form.Images,
-		IsPending:   !user.IsManagerRole(),
-		UserAgent:   utils.GetUserAgent(c.Ctx.Request()),
-		IPAddress:   utils.GetRequestIP(c.Ctx.Request()),
+		UserID:        user.ID,
+		Title:         form.Title,
+		ForumID:       form.ForumID,
+		Content:       form.Content,
+		HiddenContent: form.HiddenContent,
+		Tags:          form.Tags,
+		IsPending:     !user.IsManagerRole(),
+		UserAgent:     utils.GetUserAgent(c.Ctx.Request()),
+		IPAddress:     utils.GetRequestIP(c.Ctx.Request()),
 	})
 	if err != nil {
 		return web.JsonError(err)
@@ -179,7 +178,6 @@ func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
 		form.Title,
 		form.Content,
 		form.HiddenContent,
-		form.Images,
 	)
 	if err != nil {
 		return web.JsonError(err)

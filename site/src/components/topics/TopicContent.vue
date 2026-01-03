@@ -5,21 +5,17 @@
     </h1>
 
     <div class="prose prose-invert max-w-none " v-html="topic.content"></div>
-    <ul v-if="topic.imageList && topic.imageList.length" class="topic-image-list">
-      <li v-for="(image, index) in topic.imageList" :key="index">
-        <div class="image-item">
-          <!-- <el-image
-            :src="image.preview"
-            :preview-src-list="imageUrls"
-            :initial-index="index" /> -->
-        </div>
-      </li>
-    </ul>
+
+    <HiddenContent :topic="topic" />
+
+    <ImageList :images="topic.images" />
   </article>
 </template>
 
 <script setup lang="ts">
 import { type Topic } from '~/types/topic'
+import ImageList from '~/components/topics/ImageList.vue'
+import HiddenContent from '~/components/topics/HiddenContent.vue'
 
 const props = defineProps({
   topic: {
@@ -27,5 +23,4 @@ const props = defineProps({
     required: true,
   },
 })
-
 </script>

@@ -70,7 +70,7 @@ export interface CreateTopicPayload {
   title: string
   content: string
   tags: string[]
-  imageList?: string[]
+  images?: string[]
   hiddenContent?: string
   poll?: TopicPollPayload
 }
