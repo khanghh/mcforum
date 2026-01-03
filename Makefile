@@ -13,14 +13,24 @@ bbs-go:
 	go build $(LDFLAGS) -o $(BUILD_DIR)/$@ $(CURDIR)
 	@echo "Done building."
 
-build-docker:
-	@echo "Building Docker image: bbs-go:latest" 
+build-docker-server:
+	@echo "Building Docker image: bbsgo-server:latest" 
 	docker build --rm --progress=plain \
 		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		--build-arg GIT_DATE=$(GIT_DATE) \
 		--build-arg GIT_TAG=$(GIT_TAG) \
-		-t registry.mineviet.com/bbs-go:latest \
-		-f Dockerfile .
+		-t registry.mineviet.com/bbsgo-server:latest \
+		-f ./docker/server.Dockerfile .
+	@echo "Done building."
+
+build-docker-site:
+	@echo "Building Docker image: bbsgo-site:latest" 
+	docker build --rm --progress=plain \
+		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
+		--build-arg GIT_DATE=$(GIT_DATE) \
+		--build-arg GIT_TAG=$(GIT_TAG) \
+		-t registry.mineviet.com/bbsgo-site:latest \
+		-f ./docker/site.Dockerfile .
 	@echo "Done building."
 
 clean:

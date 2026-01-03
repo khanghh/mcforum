@@ -29,6 +29,20 @@ func NewServer() {
 		AllowedMethods:   []string{iris.MethodOptions, iris.MethodHead, iris.MethodGet, iris.MethodPost, iris.MethodPut, iris.MethodPatch, iris.MethodDelete},
 		AllowedHeaders:   []string{"*"},
 	}))
+	app.Get("/api", func(ctx iris.Context) {
+		realIP := ctx.GetHeader("X-Real-IP")
+		if realIP == "" {
+			realIP = ctx.GetHeader("X-Forwarded-For")
+		}
+		if realIP == "" {
+			realIP = ctx.RemoteAddr()
+		}
+
+		ctx.JSON(iris.Map{
+			"status": "ok",
+			"ip":     realIP,
+		})
+	})
 
 	// api
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)

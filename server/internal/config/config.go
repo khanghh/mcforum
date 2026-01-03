@@ -25,12 +25,10 @@ func init() {
 		env = "dev"
 	}
 
-	slog.Info("Load config", slog.String("ENV", env))
-
-	viper.SetConfigName("bbs-go." + env)
+	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/.bbs-go")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("/")
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("BBSGO")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))

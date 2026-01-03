@@ -40,9 +40,6 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-    app: {
-      backendUrl: process.env.BACKEND_URL || 'http://localhost:3001/api/',
-    },
     public: {
       loginUrl: 'https://auth.mineviet.com/login?service=test',
       // BASE_URL: 'http://localhost:3001',
