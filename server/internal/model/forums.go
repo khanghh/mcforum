@@ -46,20 +46,20 @@ type ArticleTag struct {
 // Comment
 type Comment struct {
 	Model
-	UserID       int64  `gorm:"index:idx_comment_user_id;not null" json:"userId" form:"userId"`       // User ID
-	TopicID      int64  `gorm:"index:idx_comment_topic_id;not null" json:"topicId" form:"topicId"`    // Topic ID
-	ParentID     int64  `gorm:"index:idx_comment_parent_id;not null" json:"parentId" form:"parentId"` // Parent ID
-	QuoteID      int64  `gorm:"not null" json:"quoteId" form:"quoteId"`                               // Quoted comment ID
-	Content      string `gorm:"type:text;not null" json:"content" form:"content"`                     // Content
-	ImageList    string `gorm:"type:longtext" json:"imageList" form:"imageList"`                      // Image list
-	ContentType  string `gorm:"type:varchar(32);not null" json:"contentType" form:"contentType"`      // Content type: markdown, html
-	LikeCount    int64  `gorm:"not null;default:0" json:"likeCount" form:"likeCount"`                 // Like count
-	CommentCount int64  `gorm:"not null;default:0" json:"commentCount" form:"commentCount"`           // Comment count
-	UserAgent    string `gorm:"size:1024" json:"userAgent" form:"userAgent"`                          // UserAgent
-	IP           string `gorm:"size:128" json:"ip" form:"ip"`                                         // IP
-	IPLocation   string `gorm:"size:64" json:"ipLocation" form:"ipLocation"`                          // IP location
-	Status       int    `gorm:"type:int(11);index:idx_comment_status" json:"status" form:"status"`    // Status: 0: pending review, 1: approved, 2: rejected, 3: published
-	CreateTime   int64  `json:"createTime" form:"createTime"`                                         // Create time
+	UserID       int64      `gorm:"index:idx_comment_user_id;not null" json:"userId" form:"userId"`       // User ID
+	TopicID      int64      `gorm:"index:idx_comment_topic_id;not null" json:"topicId" form:"topicId"`    // Topic ID
+	ParentID     int64      `gorm:"index:idx_comment_parent_id;not null" json:"parentId" form:"parentId"` // Parent ID
+	QuoteID      int64      `gorm:"not null" json:"quoteId" form:"quoteId"`                               // Quoted comment ID
+	Content      string     `gorm:"type:text;not null" json:"content" form:"content"`                     // Content
+	Images       []ImageDTO `gorm:"serializer:json" json:"images" form:"images"`                          // Image list
+	ContentType  string     `gorm:"type:varchar(32);not null" json:"contentType" form:"contentType"`      // Content type: markdown, html
+	LikeCount    int64      `gorm:"not null;default:0" json:"likeCount" form:"likeCount"`                 // Like count
+	CommentCount int64      `gorm:"not null;default:0" json:"commentCount" form:"commentCount"`           // Comment count
+	UserAgent    string     `gorm:"size:1024" json:"userAgent" form:"userAgent"`                          // UserAgent
+	IP           string     `gorm:"size:128" json:"ip" form:"ip"`                                         // IP
+	IPLocation   string     `gorm:"size:64" json:"ipLocation" form:"ipLocation"`                          // IP location
+	Status       int        `gorm:"type:int(11);index:idx_comment_status" json:"status" form:"status"`    // Status: 0: pending review, 1: approved, 2: rejected, 3: published
+	CreateTime   int64      `json:"createTime" form:"createTime"`                                         // Create time
 }
 
 // Favorite
@@ -92,7 +92,7 @@ type Topic struct {
 	UserID            int64               `gorm:"not null;index:idx_topic_user_id;" json:"userId" form:"userId"`                           // User ID
 	Title             string              `gorm:"size:256" json:"title" form:"title"`                                                      // Title
 	Content           string              `gorm:"type:longtext" json:"content" form:"content"`                                             // Content
-	Images            string              `gorm:"type:longtext" json:"images" form:"images"`                                               // Image list
+	Images            []ImageDTO          `gorm:"serializer:json" json:"images" form:"images"`                                             // Image list
 	HideContent       string              `gorm:"type:longtext" json:"hideContent" form:"hideContent"`                                     // Hidden content (visible after reply)
 	Recommended       bool                `gorm:"not null" json:"recommended" form:"recommended"`                                          // Recommended
 	RecommendedTime   int64               `gorm:"not null;index:idx_topic_recommended_time" json:"recommendedTime" form:"recommendedTime"` // Recommended time

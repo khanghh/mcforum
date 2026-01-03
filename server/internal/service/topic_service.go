@@ -554,7 +554,13 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 	}
 
 	if len(args.Images) > 0 {
-		topic.Images = strings.Join(args.Images, ",")
+		images := make([]model.ImageDTO, 0, len(args.Images))
+		for _, imgUrl := range args.Images {
+			images = append(images, model.ImageDTO{
+				Url: imgUrl,
+			})
+		}
+		topic.Images = images
 	}
 
 	if args.IsPending || s.isNeedReview(&args) {

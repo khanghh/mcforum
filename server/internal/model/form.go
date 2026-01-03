@@ -23,7 +23,7 @@ type CreateTopicForm struct {
 	Content     string              `json:"content"`
 	HideContent string              `json:"hideContent"`
 	Tags        []string            `json:"tags"`
-	ImageList   []ImageDTO          `json:"imageList"`
+	Images      []ImageDTO          `json:"images"`
 	UserAgent   string              `json:"userAgent"`
 	Ip          string              `json:"ip"`
 	Slug        string
@@ -44,7 +44,7 @@ type CreateCommentForm struct {
 	EntityType string     `form:"entityType"`
 	EntityId   int64      `form:"entityId"`
 	Content    string     `form:"content"`
-	ImageList  []ImageDTO `form:"imageList"`
+	Images     []ImageDTO `form:"images"`
 	QuoteId    int64      `form:"quoteId"`
 	UserAgent  string     `form:"userAgent"`
 	Ip         string     `form:"ip"`
@@ -72,7 +72,7 @@ func GetCreateTopicForm(ctx iris.Context) CreateTopicForm {
 			Content:     strings.TrimSpace(params.FormValue(ctx, "content")),
 			HideContent: strings.TrimSpace(params.FormValue(ctx, "hideContent")),
 			Tags:        params.FormValueStringArray(ctx, "tags"),
-			ImageList:   GetImageList(ctx, "imageList"),
+			Images:      GetImageList(ctx, "images"),
 			UserAgent:   utils.GetUserAgent(ctx.Request()),
 			Ip:          utils.GetRequestIP(ctx.Request()),
 		}
@@ -84,7 +84,7 @@ func GetCreateCommentForm(ctx iris.Context) CreateCommentForm {
 	form := CreateCommentForm{
 		QuoteId:   params.FormValueInt64Default(ctx, "quoteId", 0),
 		Content:   strings.TrimSpace(params.FormValue(ctx, "content")),
-		ImageList: GetImageList(ctx, "imageList"),
+		Images:    GetImageList(ctx, "images"),
 		UserAgent: utils.GetUserAgent(ctx.Request()),
 		Ip:        utils.GetRequestIP(ctx.Request()),
 	}

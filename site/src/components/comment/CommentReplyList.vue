@@ -31,8 +31,8 @@
         </div>
 
         <!-- Images -->
-        <div v-if="reply.imageList && reply.imageList.length" class="flex flex-wrap gap-2 mb-2">
-          <img v-for="(image, imageIndex) in reply.imageList" :key="imageIndex" :src="image.url"
+        <div v-if="reply.images && reply.images.length" class="flex flex-wrap gap-2 mb-2">
+          <img v-for="(image, imageIndex) in reply.images" :key="imageIndex" :src="image.url"
             class="w-16 h-16 object-cover rounded border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer">
         </div>
 
@@ -157,7 +157,7 @@ function switchShowReply(comment) {
 function hideReply() {
   myReply.commentId = 0
   myReply.input.content = ''
-  myReply.input.imageList = []
+  myReply.input.images = []
 }
 
 async function submitReply(parent) {
@@ -173,7 +173,7 @@ async function submitReply(parent) {
   try {
     const ret = await api.addCommentReply(myReply.commentId, {
       content: myReply.input.content || '',
-      imageList: myReply.input.imageList,
+      images: myReply.input.images,
       quoteId: myReply.commentId,
     })
     hideReply()

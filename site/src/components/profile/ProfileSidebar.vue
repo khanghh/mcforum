@@ -23,21 +23,13 @@
             </div>
             <span class="text-sm font-bold gaming-title">{{ usePrettyDate(user.joinTime) }}</span>
           </div>
-          <!-- Mock Data for design completeness -->
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">
               <Icon name="TablerClockHour4" class="text-blue-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.play_time') }}</span>
             </div>
-            <span class="text-sm font-bold gaming-title">{{ prettyPlayTime(600000) }}</span>
+            <span class="text-sm font-bold gaming-title">{{ `${user.playTime || 0} ${i18n.t('common.hours')}` }}</span>
           </div>
-          <!-- <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
-            <div class="flex items-center gap-2">
-              <Icon name="TablerMail" class="text-blue-400 text-sm" />
-              <span class="text-sm font-bold text-gray-400">Email</span>
-            </div>
-            <span class="text-sm font-bold gaming-title truncate max-w-[150px]">{{ user.email || 'Hidden' }}</span>
-          </div> -->
           <div v-if="user.location"
             class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
             <div class="flex items-center gap-2">

@@ -52,7 +52,7 @@ export class CursorResult<T extends any[]> {
 
 export interface CreateCommentPayload {
   content: string
-  imageList?: string[]
+  images?: string[]
   quoteId?: number
 }
 
@@ -242,10 +242,9 @@ export const useApi = () => {
   }
 
   const addTopicComment = (topicSlug: string, payload: CreateCommentPayload): Promise<void> => {
-    const imageList = payload.imageList ? payload.imageList : []
     const body = {
       content: payload.content,
-      imageList: imageList.length > 0 ? JSON.stringify(imageList) : undefined,
+      images: payload.images || [],
       quoteId: payload.quoteId,
     }
     return useHttpPost(`/api/topics/${topicSlug}/comments`, { body })
@@ -277,10 +276,13 @@ export const useApi = () => {
     return useHttpPost(`/api/topics/${topicSlug}/approve`)
   }
 
-  const uploadImage = (file: File): Promise<UploadResult> => {
+  const uploadImage = (file: File, onUploadProgress: (progressEvent: ProgressEvent) => void): Promise<UploadResult> => {
     const formData = new FormData()
     formData.append('file', file, file.name)
-    return useHttpPost('/api/upload', { body: formData }) as Promise<UploadResult>
+    return useHttpPostUpload('/api/upload', {
+      body: formData,
+      onUploadProgress,
+    }) as Promise<UploadResult>
   }
 
   // comment api endpoints
@@ -289,10 +291,9 @@ export const useApi = () => {
   }
 
   const addCommentReply = (commentId: number, payload: CreateCommentPayload): Promise<Comment> => {
-    const imageList = payload.imageList ? payload.imageList : []
     const body = {
       content: payload.content,
-      imageList: imageList.length > 0 ? JSON.stringify(imageList) : undefined,
+      images: payload.images || [],
       quoteId: payload.quoteId,
     }
     return useHttpPost(`/api/comments/${commentId}/replies`, { body })

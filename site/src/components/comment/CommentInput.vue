@@ -22,15 +22,15 @@ const props = defineProps({
 
 const emits = defineEmits(['created'])
 const value = ref({
-  content: '', // 内容
-  imageList: [],
+  content: '',
+  images: [],
 })
-const sending = ref(false) // 发送中
-const commentEditor = ref(null) // 编辑器组件
+const sending = ref(false)
+const commentEditor = ref(null)
 
 function clearTextEditor() {
   value.value.content = ''
-  value.value.imageList = []
+  value.value.images = []
   commentEditor.value.clear()
 }
 
@@ -49,7 +49,7 @@ async function submitComment() {
   try {
     const data = await api.addTopicComment(props.topicSlug, {
       content: value.value.content,
-      imageList: value.value.imageList,
+      images: value.value.images,
     })
     emits('created', data)
     clearTextEditor()

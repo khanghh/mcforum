@@ -152,8 +152,8 @@ function handleHtmlChange(html: string) {
 }
 
 function saveChanges(payload: CreateTopicPayload) {
-  return api.updateTopic(topicId, payload).then((topic) => {
-    navigateTo(`/topics/${topic.slug}`)
+  return api.updateTopic(topicId, payload).then(async (topic) => {
+    return await navigateTo(`/topics/${topic.slug}`)
   }).catch(async (error: any) => {
     const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
     console.error('Error updating topic:', error)

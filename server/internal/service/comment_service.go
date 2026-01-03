@@ -112,7 +112,13 @@ func (s *commentService) CreateComment(args CreateCommentArgs) (*model.Comment, 
 	}
 
 	if len(args.Images) > 0 {
-		comment.ImageList = strings.Join(args.Images, ",")
+		images := make([]model.ImageDTO, 0, len(args.Images))
+		for _, imgUrl := range args.Images {
+			images = append(images, model.ImageDTO{
+				Url: imgUrl,
+			})
+		}
+		comment.Images = images
 	}
 
 	topic := TopicService.Get(args.TopicId)

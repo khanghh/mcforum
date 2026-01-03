@@ -14,20 +14,13 @@ type ImageInfo struct {
 	Preview string `json:"preview"`
 }
 
-func BuildImageList(imageListStr string) (imageList []ImageInfo) {
-	if strs.IsNotBlank(imageListStr) {
-		var images []model.ImageDTO
-		if err := jsons.Parse(imageListStr, &images); err == nil {
-			if len(images) > 0 {
-				for _, image := range images {
-					imageList = append(imageList, ImageInfo{
-						Url:     HandleOssImageStyleDetail(image.Url),
-						Preview: HandleOssImageStylePreview(image.Url),
-					})
-				}
-			}
-		} else {
-			slog.Error(err.Error(), slog.Any("err", err))
+func BuildImageList(images []model.ImageDTO) (imageList []ImageInfo) {
+	if len(images) > 0 {
+		for _, image := range images {
+			imageList = append(imageList, ImageInfo{
+				Url:     HandleOssImageStyleDetail(image.Url),
+				Preview: HandleOssImageStylePreview(image.Url),
+			})
 		}
 	}
 	return

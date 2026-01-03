@@ -32,7 +32,7 @@ type CommentResponse struct {
 	QuoteId      int64             `json:"quoteId,omitempty"`
 	ContentType  string            `json:"contentType"`
 	Content      string            `json:"content"`
-	ImageList    []ImageInfo       `json:"imageList"`
+	Images       []ImageInfo       `json:"images"`
 	LikeCount    int64             `json:"likeCount"`
 	CommentCount int64             `json:"commentCount"`
 	Liked        bool              `json:"liked"`
@@ -128,7 +128,7 @@ func doBuildComment(comment *model.Comment, currentUser *model.User, isBuildRepl
 		} else {
 			ret.Content = html.EscapeString(comment.Content)
 		}
-		ret.ImageList = BuildImageList(comment.ImageList)
+		ret.Images = BuildImageList(comment.Images)
 	} else {
 		ret.Content = "Content deleted"
 	}

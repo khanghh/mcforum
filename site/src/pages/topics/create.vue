@@ -140,8 +140,8 @@ function handleHtmlChange(html: string) {
 }
 
 function createTopic(payload: CreateTopicPayload) {
-  return api.createTopic(payload).then((topic) => {
-    navigateTo(`/topics/${topic.slug}`)
+  return api.createTopic(payload).then(async (topic) => {
+    return await navigateTo(`/topics/${topic.slug}`)
   }).catch(async (error: any) => {
     const errMsg = error?.data?.error?.message || error.message || 'Unknown error'
     console.error('Error creating topic:', error)

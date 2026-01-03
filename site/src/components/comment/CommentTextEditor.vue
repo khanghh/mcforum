@@ -3,7 +3,7 @@
     :class="[{ 'opacity-60 pointer-events-none': disabled }, 'group relative w-full overflow-hidden rounded-xl bg-gray-800/40 backdrop-blur-sm border border-purple-500/20 transition-all duration-300 hover:border-purple-500/40 focus-within:border-purple-500/60 focus-within:bg-gray-800/60 focus-within:shadow-[0_0_15px_rgba(168,85,247,0.1)]']">
     <!-- Textarea -->
     <textarea
-      ref="textarea"
+      ref="textareaRef"
       v-model="post.content"
       :placeholder="$t('form.placeholder.enter_post_content')"
       :style="{ 'min-height': `${height}px`, 'height': `${height}px` }"
@@ -19,10 +19,11 @@
     <div v-show="showImageUpload" class="px-4 pb-4">
       <div class="p-4 rounded-lg bg-gray-900/40 border border-dashed border-gray-700/50">
         <ImageUpload
-          ref="imageUploader"
-          v-model="post.imageList"
-          v-model:on-upload="imageUploading"
-          @input="onInput" />
+          :limit="1"
+          ref="imageUploaderRef"
+          :model-value="post.images"
+          @update:model-value="handleImageUpdate"
+          @uploading="(val) => imageUploading = val" />
       </div>
     </div>
 
@@ -67,7 +68,7 @@ const props = defineProps({
     type: Object,
     default: () => ({
       content: '',
-      imageList: [],
+      images: [],
     }),
   },
   disabled: {
@@ -83,6 +84,11 @@ const showImageUpload = ref(false)
 const imageUploading = ref(false)
 const imageUploaderRef = ref(null)
 const textareaRef = ref(null)
+
+function handleImageUpdate(images) {
+  post.value.images = images
+  onInput()
+}
 
 function doSubmit() {
   if (imageUploading.value) return
@@ -140,7 +146,7 @@ const switchImageUpload = () => {
 
 const clear = () => {
   post.value.content = ''
-  post.value.imageList = []
+  post.value.images = []
   showImageUpload.value = false
   imageUploaderRef.value?.clear()
   onInput()

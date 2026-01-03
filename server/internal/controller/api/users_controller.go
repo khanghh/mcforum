@@ -5,7 +5,6 @@ import (
 	"bbs-go/internal/errs"
 	"bbs-go/internal/model/constants"
 
-	"bbs-go/common/strs"
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
 	"bbs-go/sqls"
@@ -66,23 +65,13 @@ func (c *UsersController) GetScore_logs() *web.JsonResult {
 	return web.JsonCursorData(list, nextCursor, hasMore)
 }
 
-// Score ranking
-func (c *UsersController) GetScoreRank() *web.JsonResult {
-	users := cache.UserCache.GetScoreRank()
-	var results []*payload.UserInfo
-	for _, user := range users {
-		results = append(results, payload.BuildUserInfo(&user))
-	}
-	return web.JsonData(results)
-}
-
 // Ban
 func (c *UsersController) PostForbidden() *web.JsonResult {
 	user := service.UserTokenService.GetCurrent(c.Ctx)
 	if user == nil {
 		return web.JsonError(errs.NotLogin)
 	}
-	if !user.HasAnyRole(constants.RoleOwner, constants.RoleAdmin) {
+	if !user.IsManagerRole() {
 		return web.JsonErrorMsg("No permission")
 	}
 	var (
@@ -107,32 +96,32 @@ func (c *UsersController) PostForbidden() *web.JsonResult {
 }
 
 // Request email verification mail
-func (c *UsersController) PostSend_verify_email() *web.JsonResult {
-	user := service.UserTokenService.GetCurrent(c.Ctx)
-	if user == nil {
-		return web.JsonError(errs.NotLogin)
-	}
-	if err := service.UserService.SendEmailVerifyEmail(user.ID); err != nil {
-		return web.JsonError(err)
-	}
-	return web.JsonSuccess()
-}
+// func (c *UsersController) PostSend_verify_email() *web.JsonResult {
+// 	user := service.UserTokenService.GetCurrent(c.Ctx)
+// 	if user == nil {
+// 		return web.JsonError(errs.NotLogin)
+// 	}
+// 	if err := service.UserService.SendEmailVerifyEmail(user.ID); err != nil {
+// 		return web.JsonError(err)
+// 	}
+// 	return web.JsonSuccess()
+// }
 
 // Get email verification code
-func (c *UsersController) PostVerify_email() *web.JsonResult {
-	token := params.FormValue(c.Ctx, "token")
-	if strs.IsBlank(token) {
-		return web.JsonErrorMsg("Illegal request")
-	}
-	var (
-		email string
-		err   error
-	)
-	if email, err = service.UserService.VerifyEmail(token); err != nil {
-		return web.JsonError(err)
-	}
-	return web.NewEmptyRspBuilder().Put("email", email).JsonResult()
-}
+// func (c *UsersController) PostVerify_email() *web.JsonResult {
+// 	token := params.FormValue(c.Ctx, "token")
+// 	if strs.IsBlank(token) {
+// 		return web.JsonErrorMsg("Illegal request")
+// 	}
+// 	var (
+// 		email string
+// 		err   error
+// 	)
+// 	if email, err = service.UserService.VerifyEmail(token); err != nil {
+// 		return web.JsonError(err)
+// 	}
+// 	return web.NewEmptyRspBuilder().Put("email", email).JsonResult()
+// }
 
 func (c *UsersController) GetByTopics(username string) *web.JsonResult {
 	user := cache.UserCache.GetByUsername(username)

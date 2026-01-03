@@ -2,12 +2,10 @@ package admin
 
 import (
 	"bbs-go/internal/controller/payload"
-	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/pkg/markdown"
 	"strconv"
 
-	"bbs-go/common/jsons"
 	"bbs-go/common/strs"
 	"bbs-go/pkg/web"
 	"bbs-go/pkg/web/params"
@@ -72,11 +70,7 @@ func (c *CommentController) GetList() *web.JsonResult {
 		}
 
 		// images
-		if strs.IsNotBlank(comment.ImageList) {
-			var imageList []model.ImageDTO
-			_ = jsons.Parse(comment.ImageList, &imageList)
-			builder.Put("imageList", imageList)
-		}
+		builder.Put("images", comment.Images)
 
 		results = append(results, builder.Build())
 	}

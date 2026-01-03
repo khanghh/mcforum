@@ -24,7 +24,7 @@ type TopicEditResponse struct {
 	Summary       string              `json:"summary"`
 	Content       string              `json:"content"`
 	HiddenContent string              `json:"hiddenContent"`
-	ImageList     []ImageInfo         `json:"imageList"`
+	Images        []ImageInfo         `json:"images"`
 	ViewCount     int64               `json:"viewCount"`
 	CreateTime    int64               `json:"createTime"`
 	Status        int                 `json:"status"`
@@ -41,7 +41,7 @@ type TopicResponse struct {
 	Title           string              `json:"title"`
 	Summary         string              `json:"summary"`
 	Content         string              `json:"content"`
-	ImageList       []ImageInfo         `json:"imageList"`
+	Images          []ImageInfo         `json:"images"`
 	LastCommentTime int64               `json:"lastCommentTime"`
 	ViewCount       int64               `json:"viewCount"`
 	CommentCount    int64               `json:"commentCount"`
@@ -136,7 +136,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 		} else {
 			rsp.Content = html.EscapeString(topic.Content)
 		}
-		rsp.ImageList = BuildImageList(topic.Images)
+		rsp.Images = BuildImageList(topic.Images)
 	}
 
 	if topic.ForumId > 0 {
@@ -167,7 +167,7 @@ func BuildTopicEdit(topic *model.Topic) *TopicEditResponse {
 	if topic.Type == constants.TopicTypeTopic {
 		rsp.Content = topic.Content
 		rsp.HiddenContent = topic.HideContent
-		rsp.ImageList = BuildImageList(topic.Images)
+		rsp.Images = BuildImageList(topic.Images)
 	}
 
 	if topic.ForumId > 0 {

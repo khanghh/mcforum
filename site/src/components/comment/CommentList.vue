@@ -40,9 +40,10 @@
               </div>
 
               <!-- Images -->
-              <div v-if="comment.imageList && comment.imageList.length" class="flex flex-wrap gap-2 mb-3">
-                <img v-for="(image, imageIndex) in comment.imageList" :key="imageIndex" :src="image.url"
-                  class="w-24 h-24 object-cover rounded-lg border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer">
+              <div v-if="comment.images && comment.images.length" class="flex flex-wrap gap-2 mb-3">
+                <img v-for="(image, imageIndex) in comment.images" :key="imageIndex" :src="image.preview || image.url"
+                  class="w-24 h-24 object-cover rounded-lg border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer"
+                  @click="openImageViewer(comment.images, imageIndex)">
               </div>
 
               <!-- Actions -->
@@ -88,6 +89,8 @@
         </div>
       </TransitionGroup>
     </LoadMoreAsync>
+
+    <ImageViewer v-model="showImageViewer" :images="previewImages" v-model:index="previewIndex" />
   </div>
 </template>
 
@@ -111,11 +114,21 @@ const myReply = reactive({
   commentId: 0,
   input: {
     content: '',
-    imageList: [],
+    images: [],
   },
 })
 
 const replyTo = ref<CommentUser | null>(null)
+
+const previewImages = ref<any[]>([])
+const previewIndex = ref(0)
+const showImageViewer = ref(false)
+
+const openImageViewer = (images: any[], index: number) => {
+  previewImages.value = images
+  previewIndex.value = index
+  showImageViewer.value = true
+}
 
 const commentsCursor = api.getTopicComments(props.topicSlug)
 
@@ -168,7 +181,7 @@ const switchShowReply = (comment: Comment) => {
 const hideReply = () => {
   myReply.commentId = 0
   myReply.input.content = ''
-  myReply.input.imageList = []
+  myReply.input.images = []
   replyTo.value = null
 }
 
@@ -177,7 +190,7 @@ const submitReply = async (parent: Comment) => {
   try {
     const ret = await api.addCommentReply(parent.id, {
       content: myReply.input.content || '',
-      imageList: myReply.input.imageList,
+      images: myReply.input.images,
     })
     hideReply()
     prependReply(parent, ret)
