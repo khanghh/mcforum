@@ -1,6 +1,6 @@
 <template>
   <div class="gaming-card rounded-xl p-4 gaming-title">
-    <h3 class="text-lg font-bold text-gray-400 mb-4">FORUM STATS</h3>
+    <div class="text-lg font-bold text-gray-400 mb-4">FORUM STATS</div>
     <div class="space-y-2 text-sm">
       <div class="flex justify-between">
         <span class="text-gray-400">Threads</span>

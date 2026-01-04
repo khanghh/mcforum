@@ -1,8 +1,8 @@
 <template>
   <div class="gaming-card rounded-xl p-4">
-    <h3 class="text-lg font-bold text-amber-400 gaming-title mb-4 flex items-center">
+    <div class="text-lg font-bold text-amber-400 gaming-title mb-4 flex items-center">
       <Icon name="TablerMedal2" class="mr-2" /> {{ $t('widgets.top_contributors') }}
-    </h3>
+    </div>
     <div class="space-y-3">
       <div v-for="(user, idx) in contributors" :key="user.id" class="flex items-center gap-3">
         <span class="text-2xl">{{ getMedalEmoji(idx) }}</span>

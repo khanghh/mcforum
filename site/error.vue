@@ -15,7 +15,7 @@
               alt="Logo" />
           </div>
           <h1
-            class="text-3xl font-bold tracking-wider text-white drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">
+            class="server-title text-3xl font-bold tracking-wider text-white drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">
             MineViet Network
           </h1>
         </div>

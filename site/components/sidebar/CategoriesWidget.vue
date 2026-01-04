@@ -1,8 +1,8 @@
 <template>
   <div class="gaming-card rounded-xl p-4">
-    <h3 class="text-lg font-bold text-purple-300 mb-4 flex items-center gaming-title">
+    <div class="text-lg font-bold text-purple-300 mb-4 flex items-center gaming-title">
       <Icon name="IcRoundViewList" class="mr-2" />{{ $t('widgets.categories') }}
-    </h3>
+    </div>
     <nav class="space-y-1">
       <nuxt-link v-for="item in itemMenus" :key="item.urlPath" :to="item.urlPath"
         class="category-item block px-3 py-2 rounded text-md font-semibold transition-all hover:bg-purple-500/10 gaming-title flex items-center"

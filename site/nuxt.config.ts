@@ -24,6 +24,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      title: 'Minecraft Việt Nam - Diễn đàn MineViet Network',
       link: [
         { rel: 'icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },

@@ -8,10 +8,10 @@
           <div class="flex items-center space-x-2">
             <Icon name="TablerDeviceGamepad2" class=" text-3xl text-purple-400" />
             <div>
-              <h3
+              <div
                 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title">
                 MineViet Forum
-              </h3>
+              </div>
             </div>
           </div>
           <p class="text-gray-400 text-sm">
@@ -40,26 +40,40 @@
 
         <!-- Quick Links -->
         <div>
-          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</h4>
+          <div class="text-lg font-bold text-purple-300 gaming-title mb-4">QUICK LINKS</div>
           <ul class="space-y-2 text-sm">
             <li>
-              <a href="https://mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">Home</a>
+              <a href="https://mineviet.com"
+                class="text-gray-400 hover:text-purple-400 transition-colors"
+                title="Trang chủ MineViet">
+                Home
+              </a>
             </li>
             <li>
-              <a href="https://skin.mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">
+              <a href="https://skin.mineviet.com"
+                class="text-gray-400 hover:text-purple-400 transition-colors"
+                title="Đổi skin Minecraft trên MineViet">
                 Đổi skin
               </a>
             </li>
             <li>
-              <a href="/staffs" class="text-gray-400 hover:text-purple-400 transition-colors">Staff Team</a>
+              <a href="/staffs"
+                class="text-gray-400 hover:text-purple-400 transition-colors"
+                title="Xem danh sách Staff MineViet">
+                Staff Team
+              </a>
             </li>
             <li>
-              <a href="https://play.mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">
+              <a href="https://play.mineviet.com"
+                class="text-gray-400 hover:text-purple-400 transition-colors"
+                title="Xem trạng thái và tham gia máy chủ MineViet">
                 Server Status
               </a>
             </li>
             <li>
-              <a href="https://ban.mineviet.com" class="text-gray-400 hover:text-purple-400 transition-colors">
+              <a href="https://ban.mineviet.com"
+                class="text-gray-400 hover:text-purple-400 transition-colors"
+                title="Xem danh sách vi phạm">
                 Danh sách vi phạm
               </a>
             </li>
@@ -68,7 +82,7 @@
 
         <!-- Resources -->
         <div>
-          <h4 class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</h4>
+          <div class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</div>
           <ul class="space-y-2 text-sm">
             <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
             <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>

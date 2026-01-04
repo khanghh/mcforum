@@ -107,6 +107,7 @@
                 href="https://auth.mineviet.com/profile"
                 target="_blank"
                 rel="noopener"
+                title="Đi tới trang đăng nhập"
                 class="ml-4 text-xs text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1">
                 <Icon name="Fa7SolidExternalLinkAlt" />
                 <span>{{ $t('form.help.change_in_account') }}</span>

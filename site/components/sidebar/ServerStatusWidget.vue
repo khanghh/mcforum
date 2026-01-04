@@ -1,8 +1,8 @@
 <template>
   <div class="gaming-card rounded-xl p-4">
-    <h3 class="text-lg font-bold text-green-400 mb-4 flex items-center gaming-title">
+    <div class="text-lg font-bold text-green-400 mb-4 flex items-center gaming-title">
       <Icon name="TablerServer" class="mr-2" /> {{ $t('widgets.server_status') }}
-    </h3>
+    </div>
     <div class="space-y-3">
       <div class="flex justify-between items-center p-2 rounded bg-yellow-500/10">
         <span class="text-sm text-gray-400">Server IP</span>
@@ -24,6 +24,7 @@
       </div>
     </div>
     <a href="https://play.mineviet.com"
+      title="Xem trạng thái và tham gia máy chủ MineViet"
       class="w-full mt-4 px-4 py-3
              bg-gradient-to-r from-green-600 to-emerald-600
              text-white rounded-lg font-bold gaming-title

@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', {
     },
     async signout() {
       this.user = null
-      await useHttpGet('/api/auth/logout')
+      await useHttpPost('/api/auth/logout')
     },
   },
 })

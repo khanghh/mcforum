@@ -34,6 +34,7 @@ import type { CursorResult } from '@/composables/api'
 import type { Topic } from '~/types'
 
 const route = useRoute()
+const userStore = useUserStore()
 const i18n = useI18n()
 const api = useApi()
 
@@ -46,8 +47,15 @@ interface FeedInfo {
   description: string
 }
 
+
 const feedType: FeedType = route.params.feed as FeedType
-const allowFeeds = ['recommended', 'followed', 'whats-new']
+
+const { user } = storeToRefs(userStore)
+if (feedType === FeedType.Followed && !user.value) {
+  navigateTo('/')
+}
+
+const allowFeeds = [FeedType.WhatsNew, FeedType.Recommended, FeedType.Followed]
 if (!feedType || !allowFeeds.includes(feedType)) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
 }

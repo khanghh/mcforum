@@ -37,7 +37,4 @@ definePageMeta({
 
 const newTopicsCursor = api.getTopicFeeds(FeedType.WhatsNew)
 
-useHead({
-  title: useSiteTitle(i18n.t('feed.whats_new')),
-})
 </script>
