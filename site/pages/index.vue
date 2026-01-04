@@ -39,8 +39,5 @@ const newTopicsCursor = api.getTopicFeeds(FeedType.WhatsNew)
 
 useHead({
   title: useSiteTitle(i18n.t('feed.whats_new')),
-  bodyAttrs: {
-    class: 'bg-[#0f0f23]',
-  },
 })
 </script>

@@ -1,10 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // ssr: false,
-  modules: [// https://color-mode.nuxtjs.org/#configuration
+  modules: [
+    '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
     '@pinia/nuxt',
-    '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     '@nuxtjs/i18n',
     '@nuxt/eslint',
@@ -30,7 +30,9 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
       ],
-      htmlAttrs: { class: 'theme-light has-navbar-fixed-top' },
+      htmlAttrs: {
+        lang: 'vi',
+      },
       script: [],
     },
   },
@@ -41,8 +43,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      loginUrl: 'https://auth.mineviet.com/login?service=test',
-      // BASE_URL: 'http://localhost:3001',
+      loginUrl: `https://auth.mineviet.com/login?service=forum`,
     },
   },
   devServer: {
@@ -58,7 +59,15 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    vueI18n: './i18n.config.ts',
+    locales: [
+      { code: 'vi', file: 'vi-VN.ts', iso: 'vi-VN', name: 'Tiếng Việt' },
+    ],
+    defaultLocale: 'vi',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    },
   },
 
   icon: {
@@ -71,5 +80,4 @@ export default defineNuxtConfig({
     exposeConfig: true,
     viewer: true,
   },
-
 })

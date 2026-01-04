@@ -71,9 +71,5 @@ const forumCursor = api.getForumTopics(slug)
 
 useHead({
   title: useSiteTitle(forumInfo.name),
-  bodyAttrs: {
-    class: 'bg-[#0f0f23]',
-  },
-  meta: [],
 })
 </script>

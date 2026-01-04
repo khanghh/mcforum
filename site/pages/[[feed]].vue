@@ -77,8 +77,5 @@ const feedCursor: CursorResult<Topic[]> = api.getTopicFeeds(feedType)
 
 useHead({
   title: useSiteTitle(feedInfo.value.title),
-  bodyAttrs: {
-    class: 'bg-[#0f0f23]',
-  },
 })
 </script>

@@ -7,7 +7,7 @@
         : 'shadow-[0_0_0_1px_rgb(139,92,246,0.2)]'
     ]">
     <div class="flex-1 min-w-0">
-      <h2 class="font-bold mb-2 flex items-center gap-4">
+      <h1 class="font-bold mb-2 flex items-center gap-4">
         <nuxt-link :to="`/topics/${topic?.slug}`"
           class="text-white text-lg md:text-xl hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
           {{ topic.title }}
@@ -17,7 +17,7 @@
           <Icon name="TablerPinnedFilled" class="w-3.5 h-3.5" />
           <span class="tracking-wide">{{ $t('feed.pinned') }}</span>
         </div>
-      </h2>
+      </h1>
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <!-- Avatar + user/info -->
         <div v-if="author" class="flex items-center gap-3">

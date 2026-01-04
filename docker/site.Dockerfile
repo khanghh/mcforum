@@ -15,7 +15,7 @@ FROM node:20-alpine
 
 ENV NODE_ENV=production
 ENV PORT=8080
-ENV BACKEND_URL=http://localhost:3000/api/
+ENV BBSGO_BACKEND_URL=http://localhost:3000/api/
 
 WORKDIR /app
 

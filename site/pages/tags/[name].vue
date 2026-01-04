@@ -50,14 +50,6 @@ const tagTitle = computed(() => name)
 
 useHead({
   title: useSiteTitle(tagTitle.value),
-  bodyAttrs: { class: 'bg-[#0f0f23]' },
-  meta: [
-    { name: 'description', content: useSiteDescription() },
-    { name: 'keywords', content: useSiteKeywords() },
-  ],
 })
 
-function navigateTo(url: string) {
-  router.push(url)
-}
 </script>
