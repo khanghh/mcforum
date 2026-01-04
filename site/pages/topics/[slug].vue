@@ -157,9 +157,6 @@ const canManage = computed(() => {
 
 useHead({
   title: topic.value ? useTopicSiteTitle(topic.value) : i18n.t('page.not_found'),
-  bodyAttrs: {
-    class: 'bg-[#0f0f23]',
-  },
 })
 
 async function toggleLike() {

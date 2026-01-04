@@ -4,7 +4,9 @@
       {{ topic.title }}
     </h1>
 
-    <div class="prose prose-invert max-w-none " v-html="topic.content"></div>
+    <div
+      class="prose prose-invert max-w-none topic-content"
+      v-html="topic.content"></div>
 
     <HiddenContent :topic="topic" />
 
@@ -24,3 +26,13 @@ const props = defineProps({
   },
 })
 </script>
+
+<style scoped lang="scss">
+.topic-content :deep(a) {
+  color: theme('colors.blue.400');
+
+  :hover {
+    color: theme('colors.blue.300');
+  }
+}
+</style>
