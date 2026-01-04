@@ -33,7 +33,8 @@
         <!-- Images -->
         <div v-if="reply.images && reply.images.length" class="flex flex-wrap gap-2 mb-2">
           <img v-for="(image, imageIndex) in reply.images" :key="imageIndex" :src="image.url"
-            class="w-16 h-16 object-cover rounded border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer">
+            class="w-16 h-16 object-cover rounded border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer"
+            alt="Comment image">
         </div>
 
         <!-- Quoted Content -->

@@ -5,7 +5,7 @@
       class="h-48 sm:h-64 bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 rounded-2xl overflow-hidden relative group">
       <img
         :src="coverImageSrc || 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80'"
-        class="w-full h-full object-cover opacity-80">
+        class="w-full h-full object-cover opacity-80" alt="Cover photo">
       <!-- Animated overlay -->
       <div class="absolute inset-0 bg-gradient-to-t from-purple-900/60 via-transparent to-transparent"></div>
       <!-- Upload button (visible on hover for profile owner) -->

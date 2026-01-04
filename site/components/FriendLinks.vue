@@ -8,8 +8,8 @@
       <ul class="links">
         <li v-for="link in links" :key="link.linkId" class="link">
           <div class="link-logo">
-            <img v-if="link.logo" :src="link.logo">
-            <img v-if="!link.logo" src="/images/net.png">
+            <img v-if="link.logo" :src="link.logo" :alt="link.title" />
+            <img v-if="!link.logo" src="/images/net.png" alt="Default logo" />
           </div>
           <div class="link-content">
             <a :href="link.url" :title="link.title" class="link-title" target="_blank">{{ link.title }}</a>

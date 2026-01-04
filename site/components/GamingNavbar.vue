@@ -3,7 +3,7 @@
     class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <img src="/images/logo.png" class="w-12 h-12" />
+        <img src="/images/logo.png" class="w-12 h-12" alt="MineViet Logo" />
         <nuxt-link href="/">
           <div
             class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 server-title ">

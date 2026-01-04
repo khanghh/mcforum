@@ -14,7 +14,7 @@
       class="animated-border avatar-frame w-24 h-24 sm:w-32 sm:h-32 rounded-xl relative z-10 shadow-2xl flex items-center justify-center">
       <div class="avatar-inner w-full h-full bg-white rounded-lg overflow-hidden flex items-center justify-center">
         <slot name="default">
-          <img src="/images/avatars/steve.png" class="w-full h-full object-cover" />
+          <img src="/images/avatars/steve.png" class="w-full h-full object-cover" alt="Avatar" />
         </slot>
       </div>
     </div>

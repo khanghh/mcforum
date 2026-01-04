@@ -43,7 +43,7 @@
               <div v-if="comment.images && comment.images.length" class="flex flex-wrap gap-2 mb-3">
                 <img v-for="(image, imageIndex) in comment.images" :key="imageIndex" :src="image.preview || image.url"
                   class="w-24 h-24 object-cover rounded-lg border border-purple-500/30 hover:scale-105 transition-transform cursor-pointer"
-                  @click="openImageViewer(comment.images, imageIndex)">
+                  @click="openImageViewer(comment.images, imageIndex)" alt="Comment image" />
               </div>
 
               <!-- Actions -->
