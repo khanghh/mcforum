@@ -7,6 +7,8 @@
 
 
 <script setup lang="ts">
+const { gtagId } = useRuntimeConfig().public
+
 useSeoMeta({
   title: 'MineViet Network - Server Minecraft Việt Nam Hàng Đầu',
   ogTitle: 'MineViet Minecraft Server - Chơi SkyBlock, Factions, Survival và Mini Game',
@@ -17,4 +19,15 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
+useHead({
+  script: [
+    {
+      innerHTML: `window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${gtagId}');`,
+      type: 'text/javascript',
+    },
+  ]
+})
 </script>
