@@ -48,7 +48,7 @@ func NewServer() {
 	apiRoute := NewMVCApplication(mvc.New(app.Party("/api")), kebabCasePathWordFunc)
 	apiRoute.HandleError(middleware.ErrorHandler)
 	apiRoute.Configure(func(m *mvc.Application) {
-		apiRoute.Party("/login").Handle(new(api.LoginController))
+		// apiRoute.Party("/login").Handle(new(api.LoginController))
 		apiRoute.Party("/users/me").Handle(new(api.MeController))
 		apiRoute.Party("/users").Handle(new(api.UsersController))
 		apiRoute.Party("/topics").Handle(new(api.TopicsController))

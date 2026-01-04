@@ -70,6 +70,8 @@ func (s *userTokenService) Signout(ctx iris.Context) error {
 	if err != nil {
 		return err
 	}
+	cache.UserTokenCache.Invalidate(token)
+	cache.UserCache.Invalidate(userToken.UserID)
 	ctx.RemoveCookie(constants.CookieTokenKey)
 	return nil
 }

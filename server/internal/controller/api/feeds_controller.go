@@ -3,6 +3,7 @@ package api
 import (
 	"bbs-go/common/arrays"
 	"bbs-go/internal/controller/payload"
+	"bbs-go/internal/errs"
 	"bbs-go/internal/model"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/web"
@@ -62,10 +63,11 @@ func (c *FeedsController) GetRecommended() *web.JsonResult {
 }
 
 func (c *FeedsController) GetFollowed() *web.JsonResult {
-	var (
-		cursor = params.FormValueInt64Default(c.Ctx, "cursor", 0)
-		user   = service.UserTokenService.GetCurrent(c.Ctx)
-	)
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user == nil {
+		return web.JsonError(errs.ErrUnauthorized)
+	}
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
 	topics, cursor, hasMore := service.TopicService.GetFollowedTopics(user.ID, cursor)
 	return web.JsonCursorData(payload.BuildSimpleTopics(topics, user), cursor, hasMore)
 }
