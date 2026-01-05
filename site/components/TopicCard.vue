@@ -15,7 +15,7 @@
 
       <h2 class="font-bold mb-2 flex items-center gap-4">
         <nuxt-link :to="`/topics/${topic?.slug}`"
-          class="text-white text-lg md:text-xl hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
+          class="text-purple-300 text-lg md:text-xl hover:text-purple-400 transition-all duration-300 gaming-title max-w-full truncate inline-block">
           {{ topic.title }}
         </nuxt-link>
         <div v-if="showPinned && topic.pinned"
