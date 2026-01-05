@@ -16,7 +16,7 @@ func GetSmallCoverURL(url string) string {
 }
 
 func GetPreviewURL(url string) string {
-	return getThumbnailURL(url, 200, 200)
+	return getThumbnailURL(url, 600, 200)
 }
 
 func getThumbnailURL(rawURL string, width, height int) string {

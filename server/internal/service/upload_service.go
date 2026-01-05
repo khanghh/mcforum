@@ -15,8 +15,6 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"regexp"
-	"strings"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -196,20 +194,15 @@ func (s *uploadService) RecordUpload(upload *model.Upload) error {
 	return repository.UploadRepository.Create(sqls.DB(), upload)
 }
 
-func (s *uploadService) ExtractImageURLs(content string) []string {
-	re := regexp.MustCompile(`!\[.*?\]\(\s*([^\s\)]+)`)
-	matches := re.FindAllStringSubmatch(content, -1)
-	baseURL := config.Instance().Uploader.SUpload.BaseURL
-	if baseURL == "" {
-		return []string{}
+func (s *uploadService) FilterUploadURLs(urls []string) ([]string, error) {
+	var records []model.Upload
+	ret := sqls.DB().Model(&model.Upload{}).Where("url IN ?", urls).Find(&records)
+	if ret.Error != nil {
+		return []string{}, ret.Error
 	}
-
-	imageURLs := []string{}
-	for _, m := range matches {
-		url := m[1]
-		if strings.HasPrefix(url, baseURL) {
-			imageURLs = append(imageURLs, url)
-		}
+	existingURLs := make([]string, 0, len(records))
+	for _, item := range records {
+		existingURLs = append(existingURLs, item.URL)
 	}
-	return imageURLs
+	return existingURLs, nil
 }

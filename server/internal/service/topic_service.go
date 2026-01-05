@@ -127,14 +127,19 @@ func (s *topicService) extractImageURLs(content string) []model.ImageDTO {
 	for _, m := range matches {
 		imageURLs = append(imageURLs, m[1])
 	}
-	var records []model.Upload
-	ret := sqls.DB().Model(&model.Upload{}).Where("url IN ?", imageURLs).Find(&records)
-	if ret.Error != nil {
+
+	htmlRe := regexp.MustCompile(`<img[^>]+src=["']([^"']+)["']`)
+	for _, m := range htmlRe.FindAllStringSubmatch(content, -1) {
+		imageURLs = append(imageURLs, m[1])
+	}
+
+	existingURLs, err := UploadService.FilterUploadURLs(imageURLs)
+	if err != nil {
 		return []model.ImageDTO{}
 	}
-	images := make([]model.ImageDTO, 0, len(records))
-	for _, item := range records {
-		images = append(images, model.ImageDTO{URL: item.URL})
+	var images []model.ImageDTO
+	for _, url := range existingURLs {
+		images = append(images, model.ImageDTO{URL: url})
 	}
 	return images
 }
@@ -559,11 +564,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		return nil, err
 	}
 
-	imageURLs := UploadService.ExtractImageURLs(args.Content)
-	images := make([]model.ImageDTO, 0, len(imageURLs))
-	for _, imgURL := range imageURLs {
-		images = append(images, model.ImageDTO{URL: imgURL})
-	}
+	images := s.extractImageURLs(args.Content)
 
 	now := dates.NowTimestamp()
 	topic := &model.Topic{

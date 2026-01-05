@@ -7,6 +7,12 @@
         : 'shadow-[0_0_0_1px_rgb(139,92,246,0.2)]'
     ]">
     <div class="flex-1 min-w-0">
+      <!-- Featured Image -->
+      <div v-if="featuredImage"
+        class="mb-4 w-full aspect-[3/1] overflow-hidden rounded-lg border border-purple-500/20">
+        <img :src="featuredImage.preview" alt="Featured image" class="w-full h-full object-cover" />
+      </div>
+
       <h2 class="font-bold mb-2 flex items-center gap-4">
         <nuxt-link :to="`/topics/${topic?.slug}`"
           class="text-white text-lg md:text-xl hover:text-purple-400 transition-colors gaming-title max-w-full truncate inline-block">
@@ -21,7 +27,7 @@
       <div class="flex items-center gap-2 mb-2 flex-wrap">
         <!-- Avatar + user/info -->
         <div v-if="author" class="flex items-center gap-3">
-          <Avatar :src="author.avatar" :username="author.username" size="40"
+          <Avatar :src="author.avatar" :username="author.username" size="30"
             class="rounded border border-purple-300 flex-shrink-0" />
           <div class="flex flex-col min-w-0">
             <nuxt-link :to="`/users/${author.username}`"
@@ -33,7 +39,7 @@
         </div>
       </div>
 
-      <p class="text-gray-300 text-sm mb-3 line-clamp-2">
+      <p class="text-gray-300 text-sm mb-3 line-clamp-3">
         {{ topic.summary || topic.content }}
       </p>
 
@@ -103,6 +109,13 @@ function slugHash(str: string): number {
   }
   return h >>> 0
 }
+
+const featuredImage = computed(() => {
+  if (topic.images && topic.images.length > 0) {
+    return topic.images[0]
+  }
+  return null
+})
 
 const labelColors = [
   'from-red-600/20 to-pink-600/20 text-red-300 border-red-500/30',
