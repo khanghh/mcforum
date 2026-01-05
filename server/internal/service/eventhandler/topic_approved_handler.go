@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/search"
@@ -49,7 +48,7 @@ func handleTopicApprovedEvent(i interface{}) {
 				FromId:    topic.UserID,
 				ToId:      fansId,
 				Type:      msg.TypeFollowingUserCreateTopic,
-				Title:     locale.T("message.title.posted_a_topic"),
+				Title:     topic.Title,
 				DetailUrl: bbsurls.TopicUrl(topic.Slug, topic.ID),
 				ExtraData: &msg.TopicEventExtraData{
 					TopicId: topic.ID,
@@ -65,7 +64,7 @@ func sendTopicApprovedNotification(e *event.TopicApprovedEvent, topic *model.Top
 		FromId:    e.UserID,
 		ToId:      topic.UserID,
 		Type:      msg.TypeTopicApproved,
-		Title:     locale.T("message.title.approved_your_topic"),
+		Title:     topic.Title,
 		DetailUrl: bbsurls.TopicUrl(topic.Slug, topic.ID),
 		ExtraData: &msg.TopicEventExtraData{
 			TopicId: topic.ID,

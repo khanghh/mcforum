@@ -24,6 +24,8 @@
     "sass": "1.97.1"
   },
   "dependencies": {
+    "@nuxtjs/seo": "3.3.0",
+    "@nuxtjs/sitemap": "7.5.0",
     "@pinia/nuxt": "0.11.3",
     "animate.css": "4.1.1",
     "md-editor-v3": "6.2.1",

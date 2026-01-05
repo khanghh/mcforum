@@ -602,6 +602,15 @@ func (s *userService) IncrScore(userId int64, score int, sourceType, sourceId, d
 	return s.addScore(userId, score, sourceType, sourceId, description)
 }
 
+func (s *userService) IncrActivityCount(userId int64) error {
+	if err := repository.UserRepository.UpdateColumn(sqls.DB(), userId, "activity_count", gorm.Expr("activity_count + 1")); err != nil {
+		slog.Error(err.Error(), slog.Any("err", err))
+		return err
+	}
+	cache.UserCache.Invalidate(userId)
+	return nil
+}
+
 // DecrScore decrease score
 func (s *userService) DecrScore(userId int64, score int, sourceType, sourceId, description string) error {
 	if score <= 0 {

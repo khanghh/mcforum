@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/msg"
 	"reflect"
@@ -38,6 +37,6 @@ func sendUserFollowNotification(e *event.FollowEvent) {
 		FromId: e.UserID,
 		ToId:   e.OtherID,
 		Type:   msg.TypeUserFollow,
-		Title:  locale.T("message.title.started_following_you"),
+		// Title:  locale.T("message.title.started_following_you"),
 	})
 }

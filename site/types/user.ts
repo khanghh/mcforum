@@ -22,6 +22,7 @@ export interface UserDetail extends UserInfo {
   commentCount: number
   followersCount: number
   followingCount: number
+  activityCount: number
   backgroundImage: string
   smallBackgroundImage: string
   location?: string

@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/bbsurls"
 	"bbs-go/pkg/msg"
@@ -23,10 +22,11 @@ func handleTopicRecommend(i interface{}) {
 		return
 	}
 
+	service.UserService.IncrActivityCount(e.UserID)
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       e.UserID,
 		ToId:         e.Topic.UserID,
-		Title:        locale.T("message.title.topic_recommended"),
+		Title:        e.Topic.Title,
 		QuoteContent: e.Topic.GetTitle(),
 		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 		Type:         msg.TypeTopicRecommend,

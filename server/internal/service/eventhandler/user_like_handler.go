@@ -3,7 +3,6 @@ package eventhandler
 import (
 	"bbs-go/common/utils"
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/bbsurls"
@@ -24,6 +23,7 @@ func handleUserLike(i interface{}) {
 	} else if e.EntityType == constants.EntityComment {
 		sendCommentLikedNotification(e.EntityID, e.UserID)
 	}
+	service.UserService.IncrActivityCount(e.UserID)
 }
 
 // func handleUserUnLike(i interface{}) {
@@ -45,7 +45,7 @@ func sendTopicLikedNotification(topicId, likeUserId int64) {
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       likeUserId,
 		ToId:         topic.UserID,
-		Title:        locale.T("message.title.liked_your_topic"),
+		Title:        topic.Title,
 		QuoteContent: topic.GetTitle(),
 		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.ID),
 		Type:         msg.TypeTopicLike,
@@ -74,7 +74,7 @@ func sendCommentLikedNotification(commentId, likedUserId int64) {
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       likedUserId,
 		ToId:         comment.UserID,
-		Title:        locale.T("message.title.liked_your_comment"),
+		Title:        topic.Title,
 		QuoteContent: utils.GetSummaryHtml(comment.Content, constants.SummaryLen),
 		DetailUrl:    bbsurls.TopicUrl(topic.Slug, topic.ID),
 		Type:         msg.TypeCommentLike,

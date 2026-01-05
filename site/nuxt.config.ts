@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxtjs/i18n',
     '@nuxt/eslint',
+    '@nuxtjs/seo',
+    '@nuxtjs/sitemap',
   ],
 
   plugins: [
@@ -58,7 +60,9 @@ export default defineNuxtConfig({
       stylistic: true,
     },
   },
-
+  unhead: {
+    legacy: true,
+  },
   i18n: {
     locales: [
       { code: 'vi', file: 'vi-VN.ts', iso: 'vi-VN', name: 'Tiếng Việt' },
@@ -81,4 +85,8 @@ export default defineNuxtConfig({
     exposeConfig: true,
     viewer: true,
   },
+  site: {
+    name: 'MineViet Network',
+    url: 'https://mineviet.com',
+  }
 })

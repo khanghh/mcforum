@@ -227,3 +227,13 @@ func (c *UsersController) DeleteByFollow(username string) *web.JsonResult {
 	}
 	return web.JsonSuccess()
 }
+
+func (c *UsersController) GetByActivities(username string) *web.JsonResult {
+	user := cache.UserCache.GetByUsername(username)
+	if user == nil || !user.IsActive {
+		return web.JsonError(errs.ErrUserNotFound)
+	}
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
+	messages, cursor, hasMore := service.MessageService.GetUserActivities(user.ID, cursor)
+	return web.JsonCursorData(payload.BuildActivities(messages), cursor, hasMore)
+}

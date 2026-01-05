@@ -33,6 +33,7 @@ func handleTopicCreatedEvent(i interface{}) {
 	// Points
 	search.UpdateTopicIndex(e.Topic)
 	service.UserService.IncrScoreForPostTopic(e.Topic)
+	service.UserService.IncrActivityCount(e.Topic.UserID)
 	service.UserFollowService.ScanFollowers(e.Topic.UserID, func(fansId int64) {
 		slog.With(slog.Any("topicId", e.Topic.ID), slog.Any("userId", e.Topic.UserID), slog.Any("fansId", fansId)).Info("Notify new topic created to followers")
 		if err := service.UserFeedService.Create(&model.UserFeed{
@@ -50,7 +51,7 @@ func handleTopicCreatedEvent(i interface{}) {
 				FromId:    e.Topic.UserID,
 				ToId:      fansId,
 				Type:      msg.TypeFollowingUserCreateTopic,
-				Title:     "message.title.posted_a_topic",
+				Title:     e.Topic.Title,
 				DetailUrl: bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 				ExtraData: &msg.TopicEventExtraData{
 					TopicId: e.Topic.ID,

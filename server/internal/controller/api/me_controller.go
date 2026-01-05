@@ -291,30 +291,12 @@ func (c *MeController) GetMessages() *web.JsonResult {
 	if err != nil {
 		return web.JsonError(errs.ErrUnauthorized)
 	}
-	var (
-		limit     = 20
-		cursor, _ = params.GetInt64(c.Ctx, "cursor")
-	)
-
-	cnd := sqls.NewCnd().Eq("user_id", user.ID).Limit(limit).Desc("id")
-	if cursor > 0 {
-		cnd.Lt("id", cursor)
-	}
-	list := service.MessageService.Find(cnd)
-
-	var (
-		nextCursor = cursor
-		hasMore    = false
-	)
-	if len(list) > 0 {
-		nextCursor = list[len(list)-1].ID
-		hasMore = len(list) == limit
-	}
+	cursor := params.FormValueInt64Default(c.Ctx, "cursor", 0)
+	messages, nextCursor, hasMore := service.MessageService.GetUserMessages(user.ID, cursor)
 
 	// Mark all as read
 	service.MessageService.MarkRead(user.ID)
-
-	return web.JsonCursorData(payload.BuildMessages(list), nextCursor, hasMore)
+	return web.JsonCursorData(payload.BuildMessages(messages), nextCursor, hasMore)
 }
 
 func (c *MeController) PutStatus() *web.JsonResult {

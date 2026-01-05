@@ -41,6 +41,7 @@ type UserDetail struct {
 	CommentCount         int        `json:"commentCount"`                   // Number of comments made
 	FollowersCount       int        `json:"followersCount"`                 // Number of fans
 	FollowingCount       int        `json:"followingCount"`                 // Number of users followed
+	ActivityCount        int        `json:"activityCount"`                  // Number of activities
 	BackgroundImage      string     `json:"backgroundImage,omitempty"`      // Background image URL
 	SmallBackgroundImage string     `json:"smallBackgroundImage,omitempty"` // Small background image URL
 	Location             string     `json:"location,omitempty"`             // User location
@@ -122,6 +123,7 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		CommentCount:         user.CommentCount,
 		FollowersCount:       user.FollowersCount,
 		FollowingCount:       user.FollowingCount,
+		ActivityCount:        user.ActivityCount,
 		BackgroundImage:      user.BackgroundImage,
 		SmallBackgroundImage: GetSmallCoverURL(user.BackgroundImage),
 	}

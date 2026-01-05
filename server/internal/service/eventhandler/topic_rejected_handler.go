@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/bbsurls"
@@ -32,7 +31,7 @@ func sendTopicRejectedNotification(e *event.TopicRejectedEvent, topic *model.Top
 		FromId:    e.UserID,
 		ToId:      topic.UserID,
 		Type:      msg.TypeTopicRejected,
-		Title:     locale.T("message.title.rejected_your_topic"),
+		Title:     topic.Title,
 		DetailUrl: bbsurls.TopicUrl(topic.Slug, topic.ID),
 		ExtraData: &msg.TopicEventExtraData{
 			TopicId: topic.ID,

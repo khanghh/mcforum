@@ -11,7 +11,7 @@
         <TabsNavigation :user="user" :activeTab="activeTab" />
         <div class="p-6">
           <UserTopics v-show="activeTab === 'topics'" :user="user" />
-          <UserActivity v-show="activeTab === 'activity'" :user="user" />
+          <UserActivities v-show="activeTab === 'activities'" :user="user" />
           <UserFollowing v-show="activeTab === 'following'" :user="user" />
           <UserFollowers v-show="activeTab === 'followers'" :user="user" />
         </div>
@@ -25,7 +25,7 @@ import ProfileHeader from '~/components/profile/ProfileHeader.vue'
 import ProfileSidebar from '~/components/profile/ProfileSidebar.vue'
 import TabsNavigation from '~/components/users/TabsNavigation.vue'
 import UserTopics from '~/components/users/UserTopics.vue'
-import UserActivity from '~/components/users/UserActivity.vue'
+import UserActivities from '~/components/users/UserActivities.vue'
 import UserFollowing from '~/components/users/UserFollowing.vue'
 import UserFollowers from '~/components/users/UserFollowers.vue'
 import type { UserProfile } from '@/types/user'
@@ -45,7 +45,7 @@ const userData: UserProfile = await api.getUser(username).catch(() => {
 })
 const user = ref(userData)
 
-const allowedTabs = ['topics', 'activity', 'followers', 'following']
+const allowedTabs = ['topics', 'activities', 'followers', 'following']
 const tabParam: string = route.params.tab as string
 if (tabParam && !allowedTabs.includes(tabParam)) {
   throw createError({ statusCode: 404, statusMessage: 'Tab not found', fatal: true })

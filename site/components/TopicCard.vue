@@ -10,7 +10,7 @@
       <!-- Featured Image -->
       <div v-if="featuredImage"
         class="mb-4 w-full aspect-[3/1] overflow-hidden rounded-lg border border-purple-500/20">
-        <img :src="featuredImage.preview" alt="Featured image" class="w-full h-full object-cover" />
+        <img :src="featuredImage.preview" :alt="`${topic.title} - Featured image`" class="w-full h-full object-cover" />
       </div>
 
       <h2 class="font-bold mb-2 flex items-center gap-4">

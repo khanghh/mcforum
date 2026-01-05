@@ -86,6 +86,28 @@ func (s *messageService) GetUnReadCount(userId int64) (count int64) {
 	return
 }
 
+// GetForumTopics Forum topics (newest, recommended, node)
+func (s *messageService) GetUserMessages(userID, cursor int64) ([]model.Message, int64, bool) {
+	const limit = 20
+
+	cnd := sqls.NewCnd().Eq("user_id", userID).Limit(limit).Desc("create_time")
+	if cursor > 0 {
+		cnd.Lt("create_time", cursor)
+	}
+	messages := s.Find(cnd)
+
+	var (
+		nextCursor = cursor
+		hashMore   = false
+	)
+	if len(messages) > 0 {
+		nextCursor = messages[len(messages)-1].CreateTime
+		hashMore = len(messages) == limit
+	}
+
+	return messages, nextCursor, hashMore
+}
+
 // MarkRead Mark all messages as read
 func (s *messageService) MarkRead(userId int64) error {
 	return repository.MessageRepository.UpdateByUserID(sqls.DB(), userId, "status", msg.StatusHaveRead)
@@ -155,4 +177,33 @@ func (s *messageService) SendEmailNotice(t *model.Message) {
 	if err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	}
+}
+
+func (s *messageService) GetUserActivities(fromID int64, cursor int64) ([]model.Message, int64, bool) {
+	const limit = 20
+
+	activityTypes := []int{
+		int(msg.TypeTopicComment),
+		int(msg.TypeCommentReply),
+		int(msg.TypeTopicLike),
+		int(msg.TypeTopicFavorite),
+		int(msg.TypeTopicRecommend),
+		int(msg.TypeTopicPinned),
+		int(msg.TypeCommentLike),
+	}
+	cnd := sqls.NewCnd().Eq("from_id", fromID).In("type", activityTypes).Limit(limit).Desc("create_time")
+	if cursor > 0 {
+		cnd.Lt("create_time", cursor)
+	}
+	messages := s.Find(cnd)
+	var (
+		nextCursor = cursor
+		hashMore   = false
+	)
+	if len(messages) > 0 {
+		nextCursor = messages[len(messages)-1].CreateTime
+		hashMore = len(messages) == limit
+	}
+
+	return messages, nextCursor, hashMore
 }

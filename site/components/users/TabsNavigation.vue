@@ -6,28 +6,28 @@
         :class="activeTab === 'topics' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('topics')">
         <Icon name="Fa7SolidComments" class="mr-2" />
-        POSTS ({{ user.topicCount }})
+        POSTS ({{ user.topicCount || 0 }})
       </button>
       <button
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
-        :class="activeTab === 'activity' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
-        @click="changeTab('activity')">
+        :class="activeTab === 'activities' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
+        @click="changeTab('activities')">
         <Icon name="RiFireLine" class="mr-2" />
-        ACTIVITIES (0)
+        ACTIVITIES ({{ user.activityCount || 0 }})
       </button>
       <button
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
         :class="activeTab === 'followers' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('followers')">
         <Icon name="TablerStar" class="mr-2" />
-        FOLLOWERS ({{ user.followersCount }})
+        FOLLOWERS ({{ user.followersCount || 0 }})
       </button>
       <button
         class="tab-btn flex-1 flex items-center justify-center px-6 py-4 border-b-2 font-bold whitespace-nowrap gaming-title transition-colors"
         :class="activeTab === 'following' ? 'border-purple-500 text-purple-400' : 'border-transparent text-gray-400 hover:text-gray-200'"
         @click="changeTab('following')">
         <Icon name="PhUsersThreeFill" class="mr-2" />
-        FOLLOWING ({{ user.followingCount }})
+        FOLLOWING ({{ user.followingCount || 0 }})
       </button>
     </div>
   </div>

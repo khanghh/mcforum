@@ -16,11 +16,11 @@ useSeoMeta({
   ogSiteName: 'MineViet Network',
   ogImage: "https://mineviet.com/images/banner_1200x630.png",
   description: 'MineViet Network - Máy chủ Minecraft Việt Nam với nhiều chế độ chơi: SkyBlock, Factions, Prison, BedWars, SkyWars và nhiều mini game. Tham gia ngay hôm nay!',
-  ogDescription: 'Tham gia MineViet Network — máy chủ Minecraft Việt Nam với SkyBlock, Factions, Survival và Mini game, cộng đồng năng động và sự kiện thường xuyên.',
+  ogDescription: 'MineViet Network - Máy chủ Minecraft Việt Nam với nhiều chế độ chơi: SkyBlock, Factions, Prison, BedWars, SkyWars và nhiều mini game. Tham gia ngay hôm nay!',
   twitterCard: 'summary_large_image',
   twitterSite: '@minevietnetwork',
   twitterTitle: 'MineViet Minecraft Server - Chơi SkyBlock, Factions, Survival và Mini Game',
-  twitterDescription: 'Tham gia MineViet Network — máy chủ Minecraft Việt Nam với SkyBlock, Factions, Survival và Mini game, cộng đồng năng động và sự kiện thường xuyên.',
+  twitterDescription: 'MineViet Network - Máy chủ Minecraft Việt Nam với nhiều chế độ chơi: SkyBlock, Factions, Prison, BedWars, SkyWars và nhiều mini game. Tham gia ngay hôm nay!',
   twitterImage: "https://mineviet.com/images/banner_1200x630.png",
 })
 

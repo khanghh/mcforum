@@ -361,15 +361,6 @@ func (s *topicService) onComment(tx *gorm.DB, comment *model.Comment) error {
 			"last_comment_time":    comment.CreateTime,
 			"last_comment_user_id": comment.UserID,
 		}).Error
-
-	// repository.TopicTagRepository.up
-	// .UpdateLastCommentInfo(tx, comment.TopicID, comment.CreateTime, comment.UserID)
-
-	// if err := tx.Exec("update t_topic_tag set last_comment_time = ?, last_comment_user_id = ? where topic_id = ?",
-	// 	comment.CreateTime, comment.UserID, comment.TopicID).Error; err != nil {
-	// 	return err
-	// }
-	// return nil
 }
 
 func (s *topicService) ScanByUser(userId int64, callback func(topics []model.Topic)) {

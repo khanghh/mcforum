@@ -3,7 +3,6 @@ package eventhandler
 import (
 	"bbs-go/common/utils"
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/bbsurls"
@@ -21,6 +20,7 @@ func handleCommentCreate(i interface{}) {
 	sendCommentTopicNotification(&e)
 	sendReplyCommentNotification(&e)
 	sendQuoteCommentNofitication(&e)
+	service.UserService.IncrActivityCount(e.Comment.UserID)
 	service.UserService.IncreaseCommentCount(e.Comment.UserID)
 	service.UserService.IncrScoreForPostComment(e.Comment)
 }
@@ -44,7 +44,7 @@ func sendCommentTopicNotification(e *event.CommentCreatedEvent) {
 		FromId:       from,
 		ToId:         to,
 		Type:         msg.TypeTopicComment,
-		Title:        locale.T("message.title.commented_your_topic"),
+		Title:        e.Topic.Title,
 		QuoteContent: utils.GetSummaryHtml(e.Comment.Content, constants.CommentSummaryLen),
 		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
 		ExtraData: msg.CommentExtraData{
@@ -70,7 +70,7 @@ func sendReplyCommentNotification(e *event.CommentCreatedEvent) {
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       e.Comment.UserID,
 		ToId:         parentComment.UserID,
-		Title:        locale.T("message.title.replied_your_comment"),
+		Title:        e.Topic.Title,
 		Type:         msg.TypeCommentReply,
 		QuoteContent: utils.GetSummaryHtml(e.Comment.Content, constants.CommentSummaryLen),
 		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),
@@ -99,7 +99,7 @@ func sendQuoteCommentNofitication(e *event.CommentCreatedEvent) {
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       e.Comment.UserID,
 		ToId:         quoteComment.UserID,
-		Title:        locale.T("message.title.replied_your_comment"),
+		Title:        e.Topic.Title,
 		Type:         msg.TypeCommentReply,
 		QuoteContent: utils.GetSummaryHtml(e.Comment.Content, constants.CommentSummaryLen),
 		DetailUrl:    bbsurls.TopicUrl(e.Topic.Slug, e.Topic.ID),

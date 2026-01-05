@@ -2,7 +2,6 @@ package eventhandler
 
 import (
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/service"
 	"bbs-go/pkg/msg"
@@ -16,6 +15,7 @@ func init() {
 func handleUserFavorite(i interface{}) {
 	e := i.(event.UserFavoriteEvent)
 	sendTopicFavoriteMsg(e.EntityID, e.UserID)
+	service.UserService.IncrActivityCount(e.UserID)
 }
 
 // sendTopicFavoriteMsg topic favorited
@@ -30,7 +30,7 @@ func sendTopicFavoriteMsg(topicId, favoriteUserId int64) {
 	service.MessageService.SendMsg(service.SendMessageArgs{
 		FromId:       favoriteUserId,
 		ToId:         topic.UserID,
-		Title:        locale.T("message.title.topic_favorited"),
+		Title:        topic.Title,
 		QuoteContent: topic.GetTitle(),
 		Type:         msg.TypeTopicFavorite,
 		ExtraData: &msg.TopicEventExtraData{

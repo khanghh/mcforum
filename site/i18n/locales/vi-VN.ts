@@ -337,4 +337,12 @@ export default {
   "publish.posting_guide3": 'Đặt tiêu đề rõ ràng, phản ánh đúng nội dung bài viết',
   "publish.posting_guide4": 'Chọn đúng chuyên mục khi đăng bài',
   "publish.posting_guide5": 'Không spam, quảng cáo trái phép hoặc đăng nội dung nhạy cảm',
+  "activity.created_a_topic": "đã đăng một chủ đề mới.",
+  "activity.commentd_on_a_topic": "đã bình luận về một chủ đề.",
+  "activity.replied_a_comment": "đã trả lời một bình luận.",
+  "activity.liked_a_topic": "đã thích một chủ đề.",
+  "activity.liked_a_comment": "đã thích một bình luận.",
+  "activity.favorited_a_topic": "đã yêu thích một chủ đề.",
+  "activity.recommended_a_topic": "đã đề xuất một chủ đề.",
+  "activity.pinned_a_topic": "đã ghim một chủ đề.",
 }

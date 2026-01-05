@@ -191,6 +191,10 @@ export const useApi = () => {
     return new CursorResult<Topic[]>(`/api/users/${username}/topics`)
   }
 
+  const getUserActivities = (username: string): CursorResult<Message[]> => {
+    return new CursorResult<Message[]>(`/api/users/${username}/activities`)
+  }
+
   // forums api endpoints
   const getTopicFeeds = (feedType: FeedType): CursorResult<Topic[]> => {
     return new CursorResult<Topic[]>(`/api/feeds/${feedType}`)
@@ -341,6 +345,7 @@ export const useApi = () => {
     getUserFollowers,
     getUserFollowing,
     getUserTopics,
+    getUserActivities,
 
     // forums api endpoints
     getTopicFeeds,
