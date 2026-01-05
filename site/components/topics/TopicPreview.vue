@@ -36,7 +36,7 @@
         <!-- Preview Content -->
         <div class="prose prose-invert max-w-none">
           <div v-if="previewHTML" class="text-gray-200" v-html="previewHTML"></div>
-          <div v-else class="text-gray-500 italic">No content to preview</div>
+          <div v-else class="text-gray-500 italic">{{ $t('publish.no_content_to_preview') }}</div>
         </div>
 
         <!-- Preview Hidden Content -->
@@ -67,7 +67,7 @@
           class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center"
           @click="$emit('onBackToEdit')">
           <Icon name="Fa7SolidArrowLeft" class="mr-2" />
-          Back to Edit
+          {{ $t('actions.back_to_edit') }}
         </button>
       </div>
     </div>

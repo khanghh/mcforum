@@ -8,9 +8,10 @@ type ForumResponse struct {
 	Slug        string `json:"slug"`
 	Logo        string `json:"logo,omitempty"`
 	Description string `json:"description,omitempty"`
+	CanWrite    bool   `json:"canWrite,omitempty"`
 }
 
-func BuildForum(forum *model.Forum) *ForumResponse {
+func BuildForum(forum *model.Forum, rank int) *ForumResponse {
 	if forum == nil {
 		return nil
 	}
@@ -20,16 +21,17 @@ func BuildForum(forum *model.Forum) *ForumResponse {
 		Slug:        forum.Slug,
 		Logo:        forum.Logo,
 		Description: forum.Description,
+		CanWrite:    rank >= forum.WriteRank,
 	}
 }
 
-func BuildForumList(forums []model.Forum) []ForumResponse {
+func BuildForumList(forums []model.Forum, rank int) []ForumResponse {
 	if len(forums) == 0 {
 		return nil
 	}
 	var ret []ForumResponse
 	for _, forum := range forums {
-		ret = append(ret, *BuildForum(&forum))
+		ret = append(ret, *BuildForum(&forum, rank))
 	}
 	return ret
 }

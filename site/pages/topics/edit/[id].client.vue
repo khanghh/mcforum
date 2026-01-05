@@ -8,13 +8,13 @@
         </div>
         <h1
           class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 gaming-title">
-          Edit Topic
+          {{ $t('actions.update_topic') }}
         </h1>
       </div>
       <nuxt-link to="/"
         class="flex items-center text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50">
         <Icon name="Fa7SolidArrowLeft" class="mr-2" />
-        <span>Back to Forum</span>
+        <span>{{ $t('actions.back_to_home') }}</span>
       </nuxt-link>
     </div>
 
@@ -28,7 +28,7 @@
             : 'text-gray-400 hover:text-gray-300',
         ]" @click="activeTab = 'form'">
           <Icon name="Fa7SolidEdit" class="mr-2" />
-          Edit
+          {{ $t('actions.edit') }}
         </button>
         <button :class="[
           'px-6 py-3 font-medium transition-all duration-200',
@@ -37,7 +37,7 @@
             : 'text-gray-400 hover:text-gray-300',
         ]" @click="activeTab = 'preview'">
           <Icon name="Fa7SolidEye" class="mr-2" />
-          Preview
+          {{ $t('actions.preview') }}
         </button>
       </div>
     </div>
@@ -73,27 +73,27 @@
           <Icon name="Fa7SolidScroll" class="text-purple-400" />
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-white">Posting Guidelines</h3>
+          <h3 class="text-sm font-medium text-white">{{ $t('publish.posting_guidelines') }}</h3>
           <ul class="text-xs text-gray-300 mt-1 space-y-1">
             <li>
               <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
-              Do not post content that violates laws or forum rules
+              {{ $t('publish.posting_guide1') }}
             </li>
             <li>
               <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
-              Use proper Vietnamese with diacritics, avoid excessive abbreviations
+              {{ $t('publish.posting_guide2') }}
             </li>
             <li>
               <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
-              Use clear titles that accurately reflect the content
+              {{ $t('publish.posting_guide3') }}
             </li>
             <li>
               <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
-              Choose the correct category for your post
+              {{ $t('publish.posting_guide4') }}
             </li>
             <li>
               <Icon name="Fa7SolidCheckCircle" class="text-green-400 mr-1" />
-              No spam, unauthorized advertising, or sensitive content
+              {{ $t('publish.posting_guide5') }}
             </li>
           </ul>
         </div>

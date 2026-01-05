@@ -85,17 +85,14 @@ func BuildUserInfo(user *model.User) *UserInfo {
 	if user == nil {
 		return nil
 	}
-	roleName := ""
-	if user.Role != nil {
-		roleName = user.Role.Name
-	}
+
 	ret := &UserInfo{
 		Id:            user.ID,
 		Type:          user.Type,
 		Username:      user.Username.String,
 		Nickname:      user.Nickname,
 		Avatar:        user.Avatar,
-		Role:          roleName,
+		Role:          user.Role.Name,
 		Bio:           user.Bio,
 		Score:         user.Score,
 		StatusMessage: user.StatusMessage,

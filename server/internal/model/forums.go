@@ -74,13 +74,16 @@ type Favorite struct {
 // Forum topic node
 type Forum struct {
 	Model
-	Name        string `gorm:"size:32;unique" json:"name" form:"name"`                     // Name
-	Slug        string `gorm:"size:32;unique" json:"slug" form:"slug"`                     // Slug
-	Description string `gorm:"size:1024" json:"description" form:"description"`            // Description
-	Logo        string `gorm:"size:1024" json:"logo" form:"logo"`                          // Logo
-	SortNo      int    `gorm:"type:int(11);index:idx_sort_no" json:"sortNo" form:"sortNo"` // Sort number
-	Status      int    `gorm:"type:int(11);not null" json:"status" form:"status"`          // Status
-	CreateTime  int64  `json:"createTime" form:"createTime"`                               // Create time
+	Name           string `gorm:"size:32;unique" json:"name" form:"name"`                                      // Name
+	Slug           string `gorm:"size:32;unique" json:"slug" form:"slug"`                                      // Slug
+	Description    string `gorm:"size:1024" json:"description" form:"description"`                             // Description
+	Logo           string `gorm:"size:1024" json:"logo" form:"logo"`                                           // Logo
+	ReadRank       int    `gorm:"type:int(11);not null;default:0" json:"readRank" form:"readRank"`             // Minimum rank to view posts
+	WriteRank      int    `gorm:"type:int(11);not null;default:0" json:"writeRank" form:"writeRank"`           // Minimum rank to create posts
+	SkipReviewRank int    `gorm:"type:int(11);not null;default:0" json:"skipReviewRank" form:"skipReviewRank"` // Minimum rank to bypass review
+	SortNo         int    `gorm:"type:int(11);index:idx_sort_no" json:"sortNo" form:"sortNo"`                  // Sort number
+	Status         int    `gorm:"type:int(11);not null" json:"status" form:"status"`                           // Status
+	CreateTime     int64  `json:"createTime" form:"createTime"`                                                // Create time
 }
 
 // Topic

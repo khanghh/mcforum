@@ -55,10 +55,6 @@ type UploadResponse struct {
 func (s *uploadService) getUploadToken(user *model.User) string {
 	secret := config.Instance().Uploader.SUpload.Secret
 	now := time.Now()
-	roleName := ""
-	if user.Role != nil {
-		roleName = user.Role.Name
-	}
 	claims := &UploadClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -66,7 +62,7 @@ func (s *uploadService) getUploadToken(user *model.User) string {
 			ExpiresAt: jwt.NewNumericDate(now.Add(1 * time.Minute)),
 		},
 		User: user.Username.String,
-		Role: roleName,
+		Role: user.Role.Name,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString([]byte(secret))

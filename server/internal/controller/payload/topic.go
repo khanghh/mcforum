@@ -158,7 +158,7 @@ func _buildTopic(topic *model.Topic, isBriefContent bool) *TopicResponse {
 	rsp.Images = BuildImageList(topic.Images)
 	if topic.ForumId > 0 {
 		node := service.ForumService.Get(topic.ForumId)
-		rsp.Forum = BuildForum(node)
+		rsp.Forum = BuildForum(node, 0)
 	}
 
 	rsp.Tags = service.TopicService.GetTopicTags(topic.ID)
@@ -189,7 +189,7 @@ func BuildTopicEdit(topic *model.Topic) *TopicEditResponse {
 
 	if topic.ForumId > 0 {
 		node := service.ForumService.Get(topic.ForumId)
-		rsp.Forum = BuildForum(node)
+		rsp.Forum = BuildForum(node, 0)
 	}
 
 	rsp.Tags = service.TopicService.GetTopicTags(topic.ID)

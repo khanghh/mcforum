@@ -57,7 +57,7 @@ if (feedType === FeedType.Followed && !user.value) {
 
 const allowFeeds = [FeedType.WhatsNew, FeedType.Recommended, FeedType.Followed]
 if (!feedType || !allowFeeds.includes(feedType)) {
-  throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: i18n.t('page.not_found'), fatal: true })
 }
 
 const feedInfo = computed<FeedInfo>(() => {

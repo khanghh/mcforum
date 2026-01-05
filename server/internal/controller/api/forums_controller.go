@@ -29,8 +29,13 @@ type ForumsController struct {
 
 // Get list of forums
 func (c *ForumsController) Get() *web.JsonResult {
-	nodes := payload.BuildForumList(service.ForumService.GetAll())
-	return web.JsonData(nodes)
+	currentRank := 0
+	user := service.UserTokenService.GetCurrent(c.Ctx)
+	if user != nil {
+		currentRank = user.Role.Rank
+	}
+	forums := payload.BuildForumList(service.ForumService.GetAll(), currentRank)
+	return web.JsonData(forums)
 }
 
 // Get topics by forum slug
@@ -65,7 +70,7 @@ func (c *ForumsController) GetByInfo(slug string) *web.JsonResult {
 	if forum == nil {
 		return web.JsonError(errs.ErrForumNotFound)
 	}
-	return web.JsonData(payload.BuildForum(forum))
+	return web.JsonData(payload.BuildForum(forum, 0))
 }
 
 func (c *ForumsController) GetStats() *web.JsonResult {

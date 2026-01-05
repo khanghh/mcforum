@@ -34,7 +34,7 @@ func BuildSearchTopic(doc search.TopicDocument) SearchTopicResponse {
 
 	if doc.ForumId > 0 {
 		node := service.ForumService.Get(doc.ForumId)
-		rsp.Forum = BuildForum(node)
+		rsp.Forum = BuildForum(node, 0)
 	}
 
 	rsp.Tags = service.TopicService.GetTopicTags(doc.Id)

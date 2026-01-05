@@ -523,7 +523,7 @@ type PublishTopicArgs struct {
 	Content       string
 	HiddenContent string
 	Tags          []string
-	IsPending     bool
+	NeedReview    bool
 	UserAgent     string
 	IPAddress     string
 }
@@ -583,7 +583,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		CreateTime:      now,
 	}
 
-	if args.IsPending || s.isNeedReview(&args) {
+	if args.NeedReview {
 		topic.Status = constants.StatusReview
 	}
 
@@ -606,15 +606,22 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 }
 
 // IsNeedReview Determine whether review is required
-func (s *topicService) isNeedReview(args *PublishTopicArgs) bool {
-	if hits := ForbiddenWordService.Check(args.Title); len(hits) > 0 {
+func (s *topicService) CheckForbiddenWord(title, content, hiddenContent string) bool {
+	if hits := ForbiddenWordService.Check(title); len(hits) > 0 {
 		slog.Info(locale.T("topic.prohibited_word_in_title"), slog.String("hits", strings.Join(hits, ",")))
 		return true
 	}
 
-	if hits := ForbiddenWordService.Check(args.Content); len(hits) > 0 {
+	if hits := ForbiddenWordService.Check(content); len(hits) > 0 {
 		slog.Info(locale.T("topic.prohibited_word_in_content"), slog.String("hits", strings.Join(hits, ",")))
 		return true
+	}
+
+	if hiddenContent != "" {
+		if hits := ForbiddenWordService.Check(hiddenContent); len(hits) > 0 {
+			slog.Info(locale.T("topic.prohibited_word_in_content"), slog.String("hits", strings.Join(hits, ",")))
+			return true
+		}
 	}
 
 	return false

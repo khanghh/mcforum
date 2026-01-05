@@ -1,0 +1,42 @@
+Port: 3001 # 端口
+BaseUrl: http://172.17.0.3:3000 # 网站域名
+IpDataPath: # IP数据文件，默认读取当前目录下ip2region.xdb文件，最新数据文件请从这里下载：https://github.com/lionsoul2014/ip2region/tree/master/data
+Language: vi
+AllowedOrigins:
+  - "*"
+Auth:
+  ValidateUrl: https://auth.mineviet.com/p3/serviceValidate
+  ServiceUrl: http://172.17.0.3:3000/auth/callback
+  ClientId: 8d5684a6-44b9-4e6e-b968-b941b3330d05
+  ClientSecret: TytvPPrE6jmpUJHaGshFrhWQvwLEoAFJ
+
+Logger:
+  Filename: /tmp/bbsgo/bbs-go.log # 日志文件的位置
+  MaxSize: 100 # 文件最大尺寸（以MB为单位）
+  MaxAge: 10 # 保留旧文件的最大天数
+  MaxBackups: 10 # 保留的最大旧文件数量
+
+DB:
+  Url: dev:123456@tcp(mariadb-galera:3306)/bbsgo?charset=utf8mb4&parseTime=True&loc=Local
+  MaxIdleConns: 50
+  MaxOpenConns: 200
+
+Uploader:
+  Enable: supload
+  Local:
+    BaseUrl: "/upload" # 上传文件域名
+    RootDir: /tmp/bbsgo/upload # 上传目录
+  Supload:
+    BaseUrl: https://files.mineviet.com
+    Secret: 0kmuzkC8JIAG7lnC
+
+Smtp:
+  Host:
+  Port:
+  Username:
+  Password:
+  SSL: true
+
+# search
+Search:
+  IndexPath: # 索引路径

@@ -22,6 +22,7 @@ export interface Forum {
   slug: string
   logo?: string
   description?: string
+  canWrite: boolean
 }
 
 export interface Topic {

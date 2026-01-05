@@ -270,14 +270,16 @@
 
 <script setup lang="ts">
 
-// import { MdEditor } from 'md-editor-v3'
 import TagInput from '@/components/topics/TagInput.vue'
 import type { TopicPollPayload, CreateTopicPayload } from '@/composables/api'
+
+const api = useApi()
 
 type Forum = {
   id: number
   name: string
   slug: string
+  canWrite: boolean
 }
 
 const props = defineProps({
@@ -301,7 +303,11 @@ const publishing = ref(false)
 const postForm = props.modelValue
 const forums = ref<Forum[]>([])
 
-forums.value = await useApi().getForumList().catch(() => [])
+const allForums = await api.getForumList().catch(() => [])
+if (allForums && allForums.length > 0) {
+  forums.value = allForums.filter(forum => forum.canWrite)
+  postForm.forumId = forums.value[0]!.id
+}
 
 const emits = defineEmits([
   'update:modelValue',

@@ -83,6 +83,24 @@ func (c *TopicsController) Post() *web.JsonResult {
 		return web.JsonErrorMsg(locale.T("topic.forum_required"))
 	}
 
+	forum := service.ForumService.Get(form.ForumID)
+	if forum == nil {
+		return web.JsonError(errs.ErrForumNotFound)
+	}
+
+	if user.Role.Rank < forum.WriteRank {
+		return web.JsonError(errs.ForbiddenError)
+	}
+
+	var needReview bool
+	if !user.IsManagerRole() {
+		if user.Role.Rank < forum.SkipReviewRank {
+			needReview = true
+		} else {
+			needReview = service.TopicService.CheckForbiddenWord(form.Title, form.Content, form.HiddenContent)
+		}
+	}
+
 	topic, err := service.TopicService.Publish(service.PublishTopicArgs{
 		UserID:        user.ID,
 		Title:         form.Title,
@@ -90,7 +108,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 		Content:       form.Content,
 		HiddenContent: form.HiddenContent,
 		Tags:          form.Tags,
-		IsPending:     !user.IsManagerRole(),
+		NeedReview:    needReview,
 		UserAgent:     utils.GetUserAgent(c.Ctx.Request()),
 		IPAddress:     utils.GetRequestIP(c.Ctx.Request()),
 	})

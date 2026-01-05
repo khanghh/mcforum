@@ -3,7 +3,7 @@
     <!-- Breadcrumb -->
     <div class="mb-6">
       <nav class="flex text-sm text-gray-400">
-        <nuxt-link to="/forums" class="hover:text-purple-400 transition-colors">Forums</nuxt-link>
+        <nuxt-link to="/" class="hover:text-purple-400 transition-colors">Forums</nuxt-link>
         <span class="mx-2">›</span>
         <nuxt-link v-if="topic.forum" :to="`/forums/${topic.forum.slug}`"
           class="hover:text-purple-400 transition-colors">

@@ -97,7 +97,7 @@ type User struct {
 	FollowersCount  int            `gorm:"type:int(11);not null;default:0" json:"followersCount" form:"followersCount"`    // Followers count
 	FollowingCount  int            `gorm:"type:int(11);not null;default:0" json:"followingCount" form:"followingCount"`    // Following count
 	RoleID          sql.NullInt64  `gorm:"default:null;index:idx_user_role_id" json:"roleId" form:"roleId"`                // Role ID
-	Role            *Role          `gorm:"foreignKey:RoleID;constraint:constraint:OnDelete:SET 0;"`
+	Role            Role           `gorm:"foreignKey:RoleID;constraint:constraint:OnDelete:SET 0;"`
 
 	ForbiddenEndTime int64 `gorm:"not null;default:0" json:"forbiddenEndTime" form:"forbiddenEndTime"` // Forbidden end time
 	CreateTime       int64 `json:"createTime" form:"createTime"`                                       // Create time
@@ -120,7 +120,7 @@ func (u *User) IsForbidden() bool {
 
 // HasRole whether has specified role
 func (u *User) HasRole(roleName string) bool {
-	if u.Role != nil && u.Role.Name == roleName {
+	if u.Role.Name == roleName {
 		return true
 	}
 	return false
