@@ -2,11 +2,15 @@
   <div class="mb-6">
     <nav class="flex text-sm text-gray-400">
       <template v-for="(item, index) in items" :key="index">
-        <component :is="item.to ? 'nuxt-link' : 'span'"
+        <NuxtLink
+          v-if="item.to"
           :to="item.to"
-          :class="item.to ? 'hover:text-purple-400 transition-colors' : 'text-purple-400 truncate max-w-md'">
+          class="hover:text-purple-400 transition-colors whitespace-nowrap">
           {{ item.label }}
-        </component>
+        </NuxtLink>
+        <span v-else class="text-purple-400 truncate max-w-md whitespace-nowrap">
+          {{ item.label }}
+        </span>
         <span v-if="index < items.length - 1" class="mx-2">›</span>
       </template>
     </nav>
