@@ -48,8 +48,6 @@
 
 <script setup lang="ts">
 import { CursorResult } from '@/composables/api'
-import { ref, computed } from 'vue'
-
 
 type Props = {
   cursor: CursorResult<any[]>

@@ -3,14 +3,11 @@ FROM node:20-alpine AS site-builder
 
 WORKDIR /workdir
 
-RUN corepack enable
-
-COPY site/package.json site/pnpm-lock.yaml ./
-
-RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install --frozen-lockfile
-
 COPY ./site ./
+# RUN npm install -g pnpm --registry=https://registry.npmmirror.com
+# RUN pnpm install --registry=https://registry.npmmirror.com
+RUN npm install -g pnpm
+RUN pnpm install
 RUN pnpm build:docker
 
 # ---- Final site image ----

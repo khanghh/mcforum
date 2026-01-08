@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-16">
+  <footer class="bg-gradient-to-b from-transparent to-purple-900/30 border-t border-purple-500/20 mt-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <!-- Main Footer Content -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
@@ -104,7 +104,7 @@
           <p class="text-gray-400 text-sm gaming-title">
             © 2025 MineViet Network. All rights reserved.
           </p>
-          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+          <div class="flex flex-wrap justify-center gap-4 text-gray-400 text-sm gaming-title">
             <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
             <span class="text-gray-600">•</span>
             <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>

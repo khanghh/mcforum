@@ -53,7 +53,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { useToast, type Toast } from '@/composables/useToast';
 
 const props = defineProps<{

@@ -1,4 +1,4 @@
-import { useConfigStore } from '@/stores/config'
+import { useConfigStore } from '~/stores/config'
 
 export function useSiteTitle(...subTitles) {
   const configStore = useConfigStore()

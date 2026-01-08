@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import type { UserProfile } from '~/types'
 import { onClickOutside } from '@vueuse/core'
 import { useUserStore } from '~/stores/user'

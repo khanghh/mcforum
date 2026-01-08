@@ -9,8 +9,6 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
-
 const props = defineProps({
   username: {
     type: String,

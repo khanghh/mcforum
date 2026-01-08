@@ -103,7 +103,6 @@
 <script setup>
 import AvatarDecorated from '../AvatarDecorated.vue'
 import { useMsgError } from '@/composables/useMsg'
-import { nextTick, ref } from 'vue'
 
 const userStore = useUserStore()
 const dialog = useConfirmDialog()

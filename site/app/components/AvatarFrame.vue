@@ -18,7 +18,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import Avatar from './Avatar.vue'
 
 const props = defineProps({

@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import Avatar from '@/components/Avatar.vue'
 import { useMsgSuccess, useMsgError } from '@/composables/useMsg'
 import type { UserProfile } from '@/types'

@@ -1,18 +1,7 @@
 <template>
   <div itemscope itemtype="http://schema.org/BlogPosting">
     <!-- Breadcrumb -->
-    <div class="mb-6">
-      <nav class="flex text-sm text-gray-400">
-        <nuxt-link to="/" class="hover:text-purple-400 transition-colors">Forums</nuxt-link>
-        <span class="mx-2">›</span>
-        <nuxt-link v-if="topic.forum" :to="`/forums/${topic.forum.slug}`"
-          class="hover:text-purple-400 transition-colors">
-          {{ topic.forum.name }}
-        </nuxt-link>
-        <span class="mx-2">›</span>
-        <span class="text-purple-400 truncate max-w-md">{{ topic.title }}</span>
-      </nav>
-    </div>
+    <BreadCrumb :items="breadcrumbItems" />
 
     <!-- Notification for pending posts -->
     <div v-if="topic.status == TopicStatus.PendingReview"
@@ -130,6 +119,7 @@
 
 <script setup>
 import TopicContent from '~/components/topics/TopicContent.vue'
+import BreadCrumb from '~/components/ui/BreadCrumb.vue'
 import { TopicStatus } from '~/types'
 
 const i18n = useI18n()
@@ -153,6 +143,17 @@ const user = computed(() => userStore.user)
 const canManage = computed(() => {
   if (!user.value) return false
   return userIsManager(user.value) || (topic.value && topic.value.user.id === user.value.id)
+})
+
+const breadcrumbItems = computed(() => {
+  const items = [
+    { label: 'Forums', to: '/' }
+  ]
+  if (topic.value.forum) {
+    items.push({ label: topic.value.forum.name, to: `/forums/${topic.value.forum.slug}` })
+  }
+  items.push({ label: topic.value.title })
+  return items
 })
 
 useHead({

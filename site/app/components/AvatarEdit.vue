@@ -31,7 +31,6 @@
 </template>
 
 <script setup>
-import { ref, onUnmounted } from 'vue'
 import Avatar from './Avatar.vue'
 
 const api = useApi()

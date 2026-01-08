@@ -46,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 
 const dialog = useConfirmDialog()
