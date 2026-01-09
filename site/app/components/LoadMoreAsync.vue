@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div v-if="empty" class="text-center pt-8">
+    <div v-if="empty" class="text-center py-4">
       <slot name="empty" :items="pageItems">
         <div class="text-gray-500 text-sm font-medium">
           {{ $t('message.no_data_available') }}
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="text-center pt-8">
+      <div class="text-center py-4">
         <button
           v-if="hasMore"
           class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold font-['Saira Semi Condensed'] tracking-wider shadow-[0_0_10px_rgba(139,92,246,0.5),0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 mx-auto min-w-[200px]"

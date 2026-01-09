@@ -40,15 +40,15 @@
           <div class="flex items-center gap-2 mt-1 justify-center sm:justify-start w-full">
             <div
               class="gaming-card min-w-0 w-full sm:w-auto px-3 py-1 rounded-lg backdrop-blur-sm flex flex-wrap items-center group relative md:inline-flex md:flex-nowrap break-all"
-              :class="{ invisible: !user.statusMessage && !isSelf }">
+              :class="{ invisible: !statusMessageText && !isSelf }">
               <span v-if="!isEditing"
-                :class="['text-sm text-purple-200 font-medium pr-4 min-w-0 w-full md:w-auto break-words break-all whitespace-normal md:line-clamp-1', user.statusMessage ? '' : 'italic']">
+                :class="['text-sm text-purple-200 font-medium pr-4 min-w-0 w-full md:w-auto break-words break-all whitespace-normal md:line-clamp-1', statusMessageText ? '' : 'italic']">
                 <Icon name="Fa7SolidQuoteLeft" class="text-purple-400 text-sm mr-1" />
-                {{ user.statusMessage || 'Say something...' }}
+                {{ statusMessageText || 'Say something...' }}
               </span>
 
               <div v-if="isEditing" class="relative inline-block">
-                <input ref="statusInput" v-model="editingStatus"
+                <input ref="statusInput"
                   class="bg-transparent text-sm text-purple-200 font-medium outline-none min-w-0"
                   placeholder="Say something..."
                   maxlength="80"
@@ -118,13 +118,25 @@ const props = defineProps({
 })
 
 const isEditing = ref(false)
-const editingStatus = ref('')
 const statusInput = ref()
 const measureSpan = ref()
 const { user: currentUser } = storeToRefs(userStore)
 const isSelf = computed(() => currentUser?.value && currentUser?.value?.id === props.user.id)
 const isFollowing = ref(false)
 const coverImageSrc = ref(props.user.backgroundImage)
+
+const statusMessageText = computed(() => {
+  const val = props.user?.statusMessage
+  if (val === null || val === undefined) return ''
+  return String(val)
+})
+
+function getStatusInputValue() {
+  const input = statusInput.value
+  if (!input) return ''
+  return String(input.value ?? '')
+}
+
 const updateUser = (patch) => {
   emit('update:user', { ...props.user, ...patch })
 }
@@ -162,13 +174,17 @@ const handleUnfollow = async () => {
 
 function startStatusMsgEditing() {
   isEditing.value = true
-  editingStatus.value = props.user.statusMessage || ''
-  updateWidth()
+  nextTick(() => {
+    const input = statusInput.value
+    if (input) input.value = statusMessageText.value
+    updateWidth()
+  })
 }
 
 function cancelStatusMsgEditing() {
   isEditing.value = false
-  editingStatus.value = ''
+  const input = statusInput.value
+  if (input) input.value = ''
 }
 
 function updateWidth() {
@@ -176,7 +192,8 @@ function updateWidth() {
     const span = measureSpan.value
     const input = statusInput.value
     if (!span || !input) return
-    span.textContent = editingStatus.value || input.placeholder || ''
+    const v = getStatusInputValue()
+    span.textContent = v || input.placeholder || ''
     const width = span.offsetWidth
     input.style.width = `${Math.max(60, width + 16)}px`
   })
@@ -189,26 +206,25 @@ watch(isEditing, async (val) => {
     const input = statusInput.value
     if (input) {
       input.focus()
-      const len = (editingStatus.value || '').length
+      const len = getStatusInputValue().length
       try { input.setSelectionRange(len, len) } catch (e) { }
     }
   }
 })
 
-watch(editingStatus, () => updateWidth())
-
 async function saveStatus() {
-  if (editingStatus.value === props.user.statusMessage) {
+  const nextValue = getStatusInputValue()
+  if (nextValue === statusMessageText.value) {
     isEditing.value = false
     return
   }
   try {
-    await api.setStatusMessage(editingStatus.value)
-    updateUser({ statusMessage: editingStatus.value })
+    await api.setStatusMessage(nextValue)
+    updateUser({ statusMessage: nextValue })
     isEditing.value = false
   } catch (e) {
     const errMsg = e?.response?.data?.error?.message || e.message || 'Unknown error'
-    useMsgError('Status update failed')
+    useMsgError('Status update failed', errMsg)
     return
   }
 }
