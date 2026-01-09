@@ -45,7 +45,10 @@ func BuildFavorites(favorites []model.Favorite) []FavoriteResponse {
 	}
 	var responses []FavoriteResponse
 	for _, favorite := range favorites {
-		responses = append(responses, *BuildFavorite(&favorite))
+		favoriteItem := BuildFavorite(&favorite)
+		if !favoriteItem.Deleted {
+			responses = append(responses, *favoriteItem)
+		}
 	}
 	return responses
 }
