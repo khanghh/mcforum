@@ -13,7 +13,7 @@
 
       <div>
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="Fa7SolidCircleInfo" class="mr-2" /> {{ $t('profile.info.basic_info') }}
+          <Icon name="Fa7SolidCircleInfo" class="mr-2" />{{ $t('profile.info.basic_info') }}
         </h3>
         <div class="mt-3 space-y-2">
           <div class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
@@ -77,7 +77,7 @@
 
       <div>
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="TablerDeviceGamepad2" class=" mr-2" /> Main Games
+          <Icon name="TablerDeviceGamepad2" class=" mr-2" /> {{ $t('profile.info.main_games') }}
         </h3>
         <div class="flex flex-wrap gap-2 mt-3">
           <span class="text-gray-500 text-sm italic">No game info provided</span>
@@ -86,7 +86,7 @@
 
       <div>
         <h3 class="text-lg font-bold text-purple-300 gaming-title flex items-center">
-          <Icon name="MaterialSymbolsTrophy" class="mr-2" /> Achievements
+          <Icon name="MaterialSymbolsTrophy" class="mr-2" /> {{ $t('profile.info.achievements') }}
         </h3>
         <div class="mt-3 grid grid-cols-3 gap-2">
           <span v-if="achievements.length === 0"

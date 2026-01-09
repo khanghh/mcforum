@@ -5,22 +5,22 @@
     </div>
     <div class="space-y-3">
       <div class="flex justify-between items-center p-2 rounded bg-yellow-500/10">
-        <span class="text-sm text-gray-400">Server IP</span>
+        <span class="text-sm text-gray-400">{{ $t('mcserver.serverip') }}</span>
         <span class="font-bold text-amber-400 gaming-title">play.mineviet.com</span>
       </div>
       <div class="flex justify-between items-center p-2 rounded bg-blue-500/10">
-        <span class="text-sm text-gray-400">Status</span>
+        <span class="text-sm text-gray-400">{{ $t('mcserver.status') }}</span>
         <span class="px-2 py-1 text-white text-xs font-bold rounded gaming-title"
           :class="mcStatus.status === 'online' ? 'bg-green-500' : 'bg-red-500'">
           {{ mcStatus.status.toUpperCase() }}
         </span>
       </div>
       <div class="flex justify-between items-center p-2 rounded bg-blue-500/10">
-        <span class="text-sm text-gray-400">Players</span>
+        <span class="text-sm text-gray-400">{{ $t('mcserver.online') }}</span>
         <span class="font-bold text-green-400 gaming-title">{{ mcStatus.playersOnline }}</span>
       </div>
       <div class="flex justify-between items-center p-2 rounded bg-purple-500/10">
-        <span class="text-sm text-gray-400">Version</span>
+        <span class="text-sm text-gray-400">{{ $t('mcserver.version') }}</span>
         <span class="font-bold text-purple-400 gaming-title">{{ mcStatus.version }}</span>
       </div>
     </div>
