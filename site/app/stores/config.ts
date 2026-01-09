@@ -31,6 +31,14 @@ export interface MenuItem {
   logoUrl: string
 }
 
+export interface SocialLinks {
+  discord: string
+  facebook: string
+  twitter: string
+  youtube: string
+  email: string
+}
+
 export interface SysConfig {
   siteTitle: string
   siteDescription: string
@@ -52,7 +60,7 @@ export interface SysConfig {
   enableHiddenContent: boolean
   menuItems: MenuItem[]
   modules: ModulesConfig
-  emailWhitelist: string[]
+  socialLinks: SocialLinks
 }
 
 export const useConfigStore = defineStore('config', {

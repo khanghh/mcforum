@@ -27,6 +27,7 @@ type UserInfo struct {
 	Score         int    `json:"score"`                   // User score
 	StatusMessage string `json:"statusMessage,omitempty"` // Status message
 	JoinTime      int64  `json:"joinTime"`                // Account creation timestamp
+	PlaytimeSec   int64  `json:"playtimeSec,omitempty"`   // Total play time in seconds
 
 	IsForbidden bool `json:"isForbidden,omitempty"` // Whether the user is banned
 	IsFollowing bool `json:"isFollowing,omitempty"` // Whether the current user is following this user
@@ -35,16 +36,15 @@ type UserInfo struct {
 // UserDetail is detailed user info public based on user settings
 type UserDetail struct {
 	UserInfo
-	Gender               string     `json:"gender,omitempty"`               // User gender
-	Birthday             *time.Time `json:"birthday,omitempty"`             // User birthday
-	TopicCount           int        `json:"topicCount"`                     // Number of topics created
-	CommentCount         int        `json:"commentCount"`                   // Number of comments made
-	FollowersCount       int        `json:"followersCount"`                 // Number of fans
-	FollowingCount       int        `json:"followingCount"`                 // Number of users followed
-	ActivityCount        int        `json:"activityCount"`                  // Number of activities
-	BackgroundImage      string     `json:"backgroundImage,omitempty"`      // Background image URL
-	SmallBackgroundImage string     `json:"smallBackgroundImage,omitempty"` // Small background image URL
-	Location             string     `json:"location,omitempty"`             // User location
+	Gender          string     `json:"gender,omitempty"`          // User gender
+	Birthday        *time.Time `json:"birthday,omitempty"`        // User birthday
+	TopicCount      int        `json:"topicCount"`                // Number of topics created
+	CommentCount    int        `json:"commentCount"`              // Number of comments made
+	FollowersCount  int        `json:"followersCount"`            // Number of fans
+	FollowingCount  int        `json:"followingCount"`            // Number of users followed
+	ActivityCount   int        `json:"activityCount"`             // Number of activities
+	BackgroundImage string     `json:"backgroundImage,omitempty"` // Background image URL
+	Location        string     `json:"location,omitempty"`        // User location
 }
 
 // UserProfile is private user profile only visible to themselves
@@ -98,6 +98,7 @@ func BuildUserInfo(user *model.User) *UserInfo {
 		Score:         user.Score,
 		StatusMessage: user.StatusMessage,
 		JoinTime:      user.CreateTime,
+		PlaytimeSec:   user.PlaytimeSec,
 		IsForbidden:   user.IsForbidden(),
 	}
 	if strs.IsNotBlank(user.Avatar) {
@@ -116,16 +117,15 @@ func BuildUserDetail(user *model.User) *UserDetail {
 		return nil
 	}
 	ret := &UserDetail{
-		UserInfo:             *BuildUserInfo(user),
-		Gender:               user.Gender,
-		Birthday:             user.Birthday,
-		TopicCount:           user.TopicCount,
-		CommentCount:         user.CommentCount,
-		FollowersCount:       user.FollowersCount,
-		FollowingCount:       user.FollowingCount,
-		ActivityCount:        user.ActivityCount,
-		BackgroundImage:      user.BackgroundImage,
-		SmallBackgroundImage: GetSmallCoverURL(user.BackgroundImage),
+		UserInfo:        *BuildUserInfo(user),
+		Gender:          user.Gender,
+		Birthday:        user.Birthday,
+		TopicCount:      user.TopicCount,
+		CommentCount:    user.CommentCount,
+		FollowersCount:  user.FollowersCount,
+		FollowingCount:  user.FollowingCount,
+		ActivityCount:   user.ActivityCount,
+		BackgroundImage: user.BackgroundImage,
 	}
 	if user.ShowLocation {
 		ret.Location = user.Location

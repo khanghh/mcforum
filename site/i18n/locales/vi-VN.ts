@@ -1,6 +1,7 @@
 // Flattened vi-VN messages (generated)
 export default {
   'common.hours': 'giờ',
+  'common.minutes': 'phút',
   'common.days': 'ngày',
   'common.topic': 'chủ đề',
   'common.comment': 'bình luận',

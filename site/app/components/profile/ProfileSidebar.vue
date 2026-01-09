@@ -28,7 +28,9 @@
               <Icon name="TablerClockHour4" class="text-blue-400 text-sm" />
               <span class="text-sm font-bold text-gray-400">{{ $t('profile.info.play_time') }}</span>
             </div>
-            <span class="text-sm font-bold gaming-title">{{ `${user.playTime || 0} ${i18n.t('common.hours')}` }}</span>
+            <span class="text-sm font-bold gaming-title">
+              {{ `${prettyPlayTime(user.playtimeSec)}` }}
+            </span>
           </div>
           <div v-if="user.location"
             class="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors">
@@ -137,7 +139,20 @@ const daysStreak = computed(() => {
 })
 
 function prettyPlayTime(seconds) {
-  const hours = seconds / 3600
-  return `${hours.toFixed(2)} ${i18n.t('common.hours')}`
+  const safeSeconds = Math.max(0, Number(seconds) || 0)
+  const hoursFloat = safeSeconds / 3600
+
+  if (hoursFloat < 1) {
+    const minutes = safeSeconds > 0 ? Math.ceil(safeSeconds / 60) : 0
+    return `${minutes} ${i18n.t('common.minutes')}`
+  }
+
+  const locale = (i18n.locale && 'value' in i18n.locale) ? i18n.locale.value : undefined
+  const hoursText = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(hoursFloat)
+
+  return `${hoursText} ${i18n.t('common.hours')}`
 }
 </script>

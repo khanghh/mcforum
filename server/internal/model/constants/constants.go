@@ -38,6 +38,7 @@ const (
 	SysConfigCreateArticleEmailVerified = "createArticleEmailVerified" // Create article requires email verification
 	SysConfigCreateCommentEmailVerified = "createCommentEmailVerified" // Create comment requires email verification
 	SysConfigModules                    = "modules"                    // Modules
+	SysConfigSocialLinks                = "socialLinks"                // Social links
 	SysConfigEmailWhitelist             = "emailWhitelist"             // Email whitelist
 	SysConfigMenuItems                  = "menuItems"                  // Menu config
 	SysConfigMCServerIP                 = "mcServerIP"                 // Minecraft Server IP

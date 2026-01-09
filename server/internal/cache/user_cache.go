@@ -18,23 +18,13 @@ type userCache struct {
 	idCache          cache.Cache
 	scoreRankCache   cache.LoadingCache
 	checkInRankCache cache.LoadingCache
+	onLoadUser       func(user *model.User)
 }
 
 var UserCache = newUserCache()
 
 func newUserCache() *userCache {
-	return &userCache{
-		cache: cache.NewLoadingCache(
-			func(key cache.Key) (cache.Value, error) {
-				val := repository.UserRepository.Get(sqls.DB(), key2Int64(key))
-				if val != nil {
-					return val, nil
-				}
-				return nil, errors.New("not found")
-			},
-			cache.WithMaximumSize(1000),
-			cache.WithExpireAfterAccess(30*time.Minute),
-		),
+	c := &userCache{
 		idCache: cache.New(
 			cache.WithMaximumSize(1000),
 			cache.WithExpireAfterAccess(30*time.Minute),
@@ -66,6 +56,21 @@ func newUserCache() *userCache {
 			cache.WithExpireAfterAccess(1*time.Hour),
 		),
 	}
+	c.cache = cache.NewLoadingCache(
+		func(key cache.Key) (cache.Value, error) {
+			val := repository.UserRepository.Get(sqls.DB(), key2Int64(key))
+			if val != nil {
+				if c.onLoadUser != nil {
+					c.onLoadUser(val)
+				}
+				return val, nil
+			}
+			return nil, errors.New("not found")
+		},
+		cache.WithMaximumSize(1000),
+		cache.WithExpireAfterAccess(30*time.Minute),
+	)
+	return c
 }
 
 func (c *userCache) Get(userId int64) *model.User {
@@ -115,4 +120,8 @@ func (c *userCache) GetCheckInRank() []model.CheckIn {
 
 func (c *userCache) RefreshCheckInRank() {
 	c.checkInRankCache.Refresh(dates.GetDay(time.Now()))
+}
+
+func (c *userCache) OnLoadUser(loader func(user *model.User)) {
+	c.onLoadUser = loader
 }

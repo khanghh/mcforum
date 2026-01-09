@@ -11,6 +11,7 @@ export interface UserInfo {
   score: number
   statusMessage: string
   joinTime: number
+  playtimeSec: number
   isForbidden: boolean
   isFollowing: boolean
 }
@@ -24,7 +25,6 @@ export interface UserDetail extends UserInfo {
   followingCount: number
   activityCount: number
   backgroundImage: string
-  smallBackgroundImage: string
   location?: string
 }
 

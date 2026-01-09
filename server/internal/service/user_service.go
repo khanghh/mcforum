@@ -660,3 +660,9 @@ func (s *userService) GetUsersByRole(roles ...string) []model.User {
 	}
 	return users
 }
+
+func (s *userService) UpdatePlaytime(userID, playtimeSec int64) error {
+	return sqls.DB().Model(&model.User{}).
+		Where("id = ?", userID).
+		Update("playtime_sec", playtimeSec).Error
+}

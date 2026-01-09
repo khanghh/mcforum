@@ -46,14 +46,15 @@ func init() {
 }
 
 type Config struct {
-	Env            string   // Environment
-	BaseUrl        string   // base url
-	Port           string   // Port
-	IpDataPath     string   // IP data file
-	AllowedOrigins []string // CORS whitelist
-	Language       string
-	TablePrefix    string
-	Auth           struct {
+	Env               string   // Environment
+	BaseUrl           string   // base url
+	Port              string   // Port
+	IpDataPath        string   // IP data file
+	AllowedOrigins    []string // CORS whitelist
+	Language          string
+	TablePrefix       string
+	PlayerStatsAPIURL string
+	Auth              struct {
 		ValidateURL  string
 		ServiceURL   string
 		ClientID     string

@@ -9,6 +9,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.0
 	github.com/blevesearch/bleve/v2 v2.4.2
 	github.com/dchest/captcha v1.0.0
+	github.com/disintegration/imaging v1.6.2
 	github.com/emirpasic/gods v1.18.1
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/goburrow/cache v0.1.4
@@ -20,6 +21,7 @@ require (
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/kataras/iris/v12 v12.2.11
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20240510055607-89e20ab7b6c6
+	github.com/mcstatus-io/mcutil/v4 v4.0.1
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/panjf2000/ants/v2 v2.10.0
@@ -68,7 +70,6 @@ require (
 	github.com/blevesearch/zapx/v14 v14.3.10 // indirect
 	github.com/blevesearch/zapx/v15 v15.3.13 // indirect
 	github.com/blevesearch/zapx/v16 v16.1.5 // indirect
-	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
@@ -104,7 +105,6 @@ require (
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailgun/raymond/v2 v2.0.48 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mcstatus-io/mcutil/v4 v4.0.1 // indirect
 	github.com/mediocregopher/radix/v3 v3.8.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

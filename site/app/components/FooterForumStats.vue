@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4 class="text-lg font-bold text-amber-400 gaming-title mb-4">FORUM STATS</h4>
+    <div class="text-lg font-bold text-amber-400 gaming-title mb-4">FORUM STATS</div>
     <div class="gaming-card rounded-xl p-4 gaming-title">
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">

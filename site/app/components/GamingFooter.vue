@@ -19,19 +19,19 @@
             Xây dựng, phiêu lưu và chiến đấu cùng bạn bè!
           </p>
           <div class="flex space-x-3">
-            <a href="#"
+            <a v-if="socialLinks.discord" :href="socialLinks.discord" target="_blank" rel="noopener"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
               <Icon name="TablerBrandDiscordFilled" />
             </a>
-            <a href="#"
+            <a v-if="socialLinks.facebook" :href="socialLinks.facebook" target="_blank" rel="noopener"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
               <Icon name="TablerBrandFacebookFilled" />
             </a>
-            <a href="#"
+            <a v-if="socialLinks.twitter" :href="socialLinks.twitter" target="_blank" rel="noopener"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
               <Icon name="TablerBrandTwitterFilled" />
             </a>
-            <a href="#"
+            <a v-if="socialLinks.youtube" :href="socialLinks.youtube" target="_blank" rel="noopener"
               class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-500/30 transition-colors">
               <Icon name="TablerBrandYoutubeFilled" />
             </a>
@@ -46,7 +46,7 @@
               <a href="https://mineviet.com"
                 class="text-gray-400 hover:text-purple-400 transition-colors"
                 title="Trang chủ MineViet">
-                Home
+                Trang chủ
               </a>
             </li>
             <li>
@@ -67,7 +67,7 @@
               <a href="https://play.mineviet.com"
                 class="text-gray-400 hover:text-purple-400 transition-colors"
                 title="Xem trạng thái và tham gia máy chủ MineViet">
-                Server Status
+                Danh sách máy chủ
               </a>
             </li>
             <li>
@@ -84,11 +84,27 @@
         <div>
           <div class="text-lg font-bold text-purple-300 gaming-title mb-4">RESOURCES</div>
           <ul class="space-y-2 text-sm">
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Wiki</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Tutorials</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Download Packs</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Rules & Guidelines</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Help Center</a></li>
+            <li>
+              <nuxt-link href="/forums/guides" class="text-gray-400 hover:text-purple-400 transition-colors">
+                Hướng dẫn
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link href="/forums/discussion" class="text-gray-400 hover:text-purple-400 transition-colors">
+                Thảo luận
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link href="/topics/luat-cong-dong-may-chu-mineviet.HNFJFc"
+                class="text-gray-400 hover:text-purple-400 transition-colors">
+                Luật máy chủ
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link href="/forums/recruitment" class="text-gray-400 hover:text-purple-400 transition-colors">
+                Tuyển dụng
+              </nuxt-link>
+            </li>
           </ul>
         </div>
 
@@ -105,16 +121,31 @@
             © 2025 MineViet Network. All rights reserved.
           </p>
           <div class="flex flex-wrap justify-center gap-4 text-gray-400 text-sm gaming-title">
-            <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+            <nuxt-link to="/legal/privacy-policy" class="hover:text-purple-400 transition-colors">
+              Privacy Policy
+            </nuxt-link>
             <span class="text-gray-600">•</span>
-            <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+            <nuxt-link to="/legal/terms-of-service" class="hover:text-purple-400 transition-colors">
+              Terms of Service
+            </nuxt-link>
             <span class="text-gray-600">•</span>
-            <a href="#" class="hover:text-purple-400 transition-colors">Cookie Policy</a>
-            <span class="text-gray-600">•</span>
-            <a href="#" class="hover:text-purple-400 transition-colors">Contact Us</a>
+            <nuxt-link to="/legal/cookie-policy" class="hover:text-purple-400 transition-colors">
+              Cookie Policy
+            </nuxt-link>
           </div>
         </div>
       </div>
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useConfigStore } from '~/stores/config'
+
+const configStore = useConfigStore()
+const socialLinks = computed(() => {
+  return configStore.config?.socialLinks || { discord: '', facebook: '', twitter: '', youtube: '', email: '' }
+})
+
+</script>

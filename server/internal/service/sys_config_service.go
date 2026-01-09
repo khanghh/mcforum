@@ -264,6 +264,18 @@ func (s *sysConfigService) GetModules() model.ModulesConfig {
 }
 
 // GetEmailWhitelist Email whitelist
+func (s *sysConfigService) GetSocialLinks() map[string]string {
+	str := cache.SysConfigCache.GetValue(constants.SysConfigSocialLinks)
+	var socialLinks map[string]string
+	if strs.IsNotBlank(str) {
+		if err := jsons.Parse(str, &socialLinks); err != nil {
+			slog.Error("Failed to get system config", "key", constants.SysConfigSocialLinks, "error", err)
+		}
+	}
+	return socialLinks
+}
+
+// GetEmailWhitelist Email whitelist
 func (s *sysConfigService) GetEmailWhitelist() []string {
 	str := cache.SysConfigCache.GetValue(constants.SysConfigEmailWhitelist)
 	var emailWhitelist []string

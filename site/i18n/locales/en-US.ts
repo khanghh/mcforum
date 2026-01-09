@@ -1,4 +1,8 @@
 export default {
+  common: {
+    minutes: 'minutes',
+    hours: 'hours',
+  },
   feed: {
     like_count: 'Likes',
     comment_count: 'Comments',

@@ -32,6 +32,7 @@ type SysConfigResponse struct {
 	CreateCommentEmailVerified bool                `json:"createCommentEmailVerified,omitempty"`
 	EnableHiddenContent        bool                `json:"enableHiddenContent,omitempty"`
 	Modules                    model.ModulesConfig `json:"modules,omitempty"`
+	SocialLinks                map[string]string   `json:"socialLinks,omitempty"`
 	EmailWhitelist             []string            `json:"emailWhitelist,omitempty"` // Email whitelist
 }
 
@@ -57,6 +58,7 @@ func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 		// articlePending             = service.SysConfigService.IsArticlePending()
 		tokenExpireDays = service.SysConfigService.GetTokenExpireDays()
 		modules         = service.SysConfigService.GetModules()
+		socialLinks     = service.SysConfigService.GetSocialLinks()
 		// emailWhiteList             = service.SysConfigService.GetEmailWhitelist()
 	)
 
@@ -76,5 +78,6 @@ func BuildSysConfigResponse(sysConfigs []model.SysConfig) *SysConfigResponse {
 		UserObserveSeconds: userObserveSeconds,
 		TokenExpireDays:    tokenExpireDays,
 		Modules:            modules,
+		SocialLinks:        socialLinks,
 	}
 }

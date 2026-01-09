@@ -97,6 +97,7 @@ type User struct {
 	FollowersCount  int            `gorm:"type:int(11);not null;default:0" json:"followersCount" form:"followersCount"`    // Followers count
 	FollowingCount  int            `gorm:"type:int(11);not null;default:0" json:"followingCount" form:"followingCount"`    // Following count
 	ActivityCount   int            `gorm:"type:int(11);not null;default:0" json:"activityCount" form:"activityCount"`      // Activity count
+	PlaytimeSec     int64          `gorm:"type:bigint(20);not null;default:0" json:"playtimeSec" form:"playtimeSec"`       // Total play time in seconds
 	RoleID          sql.NullInt64  `gorm:"default:null;index:idx_user_role_id" json:"roleId" form:"roleId"`                // Role ID
 	Role            Role           `gorm:"foreignKey:RoleID;constraint:constraint:OnDelete:SET 0;"`
 

@@ -1,10 +1,12 @@
 package server
 
 import (
+	"bbs-go/internal/cache"
 	"bbs-go/internal/config"
 	"bbs-go/internal/model"
 	"bbs-go/internal/scheduler"
 	"bbs-go/internal/search"
+	"bbs-go/internal/service"
 	"bbs-go/pkg/iplocator"
 	"log/slog"
 	"time"
@@ -24,7 +26,17 @@ func Init() {
 	initCron()
 	initIpLocator()
 	initSearch()
+	initCaches()
+}
 
+func initCaches() {
+	cache.UserCache.OnLoadUser(func(user *model.User) {
+		playTimeSec, err := service.PlayerStatsService.GetTotalPlayTimeSec(user.Username.String)
+		if err == nil {
+			user.PlaytimeSec = playTimeSec
+			_ = service.UserService.UpdatePlaytime(user.ID, playTimeSec)
+		}
+	})
 }
 
 func initDB() {
