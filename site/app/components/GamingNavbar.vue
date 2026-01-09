@@ -36,10 +36,17 @@
 
         <li class="flex-shrink-0">
           <AvatarMenu v-if="user" class="flex-shrink-0" :user="user" />
-          <a v-else :href="loginUrl || '#'"
-            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
-            {{ $t('page.signin') }}
-          </a>
+          <template v-else>
+            <a :href="loginUrl || '#'"
+              class="sm:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-purple-500/20 text-gray-300 hover:text-purple-400 transition-colors"
+              :aria-label="$t('page.signin')">
+              <Icon name="Fa7SolidUserLarge" size="20" />
+            </a>
+            <a :href="loginUrl || '#'"
+              class="hidden sm:inline-flex bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
+              {{ $t('page.signin') }}
+            </a>
+          </template>
         </li>
       </ul>
     </div>

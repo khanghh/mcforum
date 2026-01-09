@@ -3,9 +3,9 @@
     <!-- Header -->
     <div v-if="commentCount > 0" class="flex items-center justify-between">
       <h3 class="text-lg font-bold text-gray-300">{{ commentCount }} {{ $t('feed.comment_count') }}</h3>
-      <div class="text-sm text-gray-500">
+      <!-- <div class="text-sm text-gray-500">
         Sort by: <span class="text-purple-400 font-semibold cursor-pointer">Newest</span>
-      </div>
+      </div> -->
     </div>
 
     <!-- Login Prompt or Input -->

@@ -6,7 +6,7 @@
       :aria-label="$t('publish.manage')"
       @click="open = !open">
       <Icon name="Fa7SolidGear" class="mr-2" />
-      <span class="whitespace-nowrap">{{ $t('publish.manage') }}</span>
+      <span class="hidden sm:inline">{{ $t('publish.manage') }}</span>
     </button>
 
     <transition name="fade">

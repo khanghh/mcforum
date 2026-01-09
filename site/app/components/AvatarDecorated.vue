@@ -1,17 +1,15 @@
 <template>
   <div class="relative items-center p-1">
-    <!-- Frame Decorations -->
-    <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-      <div v-if="roleName"
-        :class="`bg-gradient-to-r ${roleColor} px-2 py-0.5 border-2 border-gray-900 flex items-center gap-1`">
-        <Icon v-if="roleIcon" :name="roleIcon" class="text-white text-xs" />
-        <span class="text-white text-xs font-bold gaming-title capitalize">{{ roleName }}</span>
-      </div>
-    </div>
-
-    <!-- Square animated gradient frame -->
     <div
       class="animated-border avatar-frame w-24 h-24 sm:w-32 sm:h-32 rounded-xl relative z-10 shadow-2xl flex items-center justify-center">
+      <div
+        class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full z-10 pointer-events-none">
+        <div v-if="roleName"
+          :class="`bg-gradient-to-r ${roleColor} px-2 py-0.5 border-2 border-gray-900 flex items-center gap-1`">
+          <Icon v-if="roleIcon" :name="roleIcon" class="text-white text-xs" />
+          <span class="text-white text-xs font-bold gaming-title capitalize">{{ roleName }}</span>
+        </div>
+      </div>
       <div class="avatar-inner w-full h-full bg-white rounded-lg overflow-hidden flex items-center justify-center">
         <slot name="default">
           <img src="/images/avatars/steve.png" class="w-full h-full object-cover" alt="Avatar" />

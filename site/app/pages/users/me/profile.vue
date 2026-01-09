@@ -34,7 +34,7 @@
             <Icon name="Fa7SolidImage" class="mr-2" />
             {{ $t('form.label.avatar') }}
           </label>
-          <div>
+          <div class="flex flex-col items-center sm:items-start">
             <AvatarDecorated :user="user">
               <AvatarEdit v-model="avatarUrl" :username="user.username" class="w-full h-full object-cover"
                 size="120" />

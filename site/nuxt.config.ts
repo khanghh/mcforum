@@ -47,7 +47,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      loginUrl: `https://auth.mineviet.com/login?service=forum-test`,
+      loginUrl: `https://auth.mineviet.com/login?service=forum`,
     },
   },
   devServer: {

@@ -77,21 +77,25 @@
 
             <div class="flex items-center gap-1 text-gray-400">
               <Icon name="IcRoundRemoveRedEye" />
-              <span>{{ topic.viewCount }} {{ $t('feed.view_count') }}</span>
+              <span>{{ topic.viewCount }}</span>
+              <span class="hidden sm:inline">{{ $t('feed.view_count') }}</span>
             </div>
 
             <div class="flex items-center gap-1 text-gray-400">
               <Icon name="TablerMessageCircle" />
-              <span>{{ topic.commentCount }} {{ $t('feed.comment_count') }}</span>
+              <span>{{ topic.commentCount }}</span>
+              <span class="hidden sm:inline">{{ $t('feed.comment_count') }}</span>
             </div>
 
-            <FavoriteButton v-if="user" :favorited="topic.favorited" @click="toggleFavorite" />
+            <FavoriteButton v-if="user" :favorited="topic.favorited" @click="toggleFavorite">
+              <span>{{ $t('actions.favorite') }}</span>
+            </FavoriteButton>
           </div>
 
           <div class="flex items-center gap-2">
-            <button class="text-gray-400 hover:text-purple-400 transition-colors">
+            <!-- <button class="text-gray-400 hover:text-purple-400 transition-colors">
               <Icon name="Fa7SolidShare" />
-            </button>
+            </button> -->
             <button class="text-gray-400 hover:text-red-400 transition-colors">
               <Icon name="Fa7SolidFlag" />
             </button>
@@ -103,7 +107,7 @@
     <!-- Comments Section -->
     <div
       class="gaming-card rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
-      <h2 class="text-2xl font-bold mb-6 flex items-center text-white">
+      <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center text-white">
         <Icon name="Fa7SolidComments" class="mr-3 text-blue-400" />
         {{ $t('feed.comments') }}
       </h2>

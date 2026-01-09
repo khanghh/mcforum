@@ -49,7 +49,7 @@
           :disabled="imageUploading"
           @click="doSubmit">
           <span v-if="imageUploading" class="flex items-center gap-2">
-            <Icon name="TablerLoader2" /> {{ $t('file.uploading') }}
+            <Icon name="TablerLoader2" /> {{ $t('common.file_uploading') }}
           </span>
           <span v-else>{{ $t('form.button.send') }}</span>
         </button>
