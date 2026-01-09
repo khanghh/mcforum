@@ -1,9 +1,9 @@
 <template>
   <div
     :class="[
-      'relative hover:bg-white/5 rounded-lg p-5 transition-all duration-200 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] shadow-[0_0_0_1px_rgb(139,92,246,0.2)]',
+      'relative hover:bg-white/10 rounded-lg p-5 transition-all duration-200 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] shadow-[0_0_0_1px_rgb(139,92,246,0.2)]',
       topic.pinned
-        ? `border-l-4 ${borderColors[colorIndex]} hover:shadow-md hover:shadow-purple-500/20 hover:-translate-y-0.5`
+        ? `border-l-4 ${borderColors[colorIndex]} hover:shadow-md hover:shadow-purple-500/20`
         : 'shadow-[0_0_0_1px_rgb(139,92,246,0.2)]'
     ]">
     <div class="flex-1 min-w-0">
