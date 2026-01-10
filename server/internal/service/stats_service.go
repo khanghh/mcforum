@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	forumStatsCacheDuration = 5 * time.Second
+	forumStatsCacheDuration = 30 * time.Second
 )
 
 var StatsService = newStatsService()
@@ -49,17 +49,21 @@ func (c *statsService) GetForumStats() (model.ForumStats, error) {
 						"newest_member":  newWestMember.Username,
 					}),
 				},
-				clause.Returning{},
 			).Create(&stats).Error
-			if err == nil {
-				c.statsCache = stats
-				c.lastCache = time.Now()
-				c.visitCounter = 0
+			if err != nil {
+				return model.ForumStats{}, err
 			}
+			if err := sqls.DB().First(&stats).Error; err != nil {
+				return model.ForumStats{}, err
+			}
+			c.statsCache = stats
+			c.lastCache = time.Now()
+			c.visitCounter = 0
+			return stats, err
+
 		default:
 		}
 	}
-
 	c.visitCounter++
 	c.statsCache.TotalVisits++
 	return c.statsCache, nil
