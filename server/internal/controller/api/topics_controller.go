@@ -108,6 +108,7 @@ func (c *TopicsController) Post() *web.JsonResult {
 		Content:       form.Content,
 		HiddenContent: form.HiddenContent,
 		Tags:          form.Tags,
+		Images:        form.Images,
 		NeedReview:    needReview,
 		UserAgent:     utils.GetUserAgent(c.Ctx.Request()),
 		IPAddress:     utils.GetRequestIP(c.Ctx.Request()),
@@ -196,6 +197,7 @@ func (c *TopicsController) PutEditBy(base62Id string) *web.JsonResult {
 		form.Title,
 		form.Content,
 		form.HiddenContent,
+		form.Images,
 	)
 	if err != nil {
 		return web.JsonError(err)

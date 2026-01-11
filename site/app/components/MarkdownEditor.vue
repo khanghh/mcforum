@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { MdEditor } from 'md-editor-v3'
+import { MdEditor, config as configureMdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 const dialog = useConfirmDialog()
 const api = useApi()
@@ -42,7 +42,12 @@ const props = defineProps({
   },
 })
 
-const editorRef = ref(null)
+configureMdEditor({
+  codeMirrorExtensions: (exts) => {
+    return exts.filter(item => item.type !== 'linkShortener')
+  }
+})
+
 const contentLength = 10000
 
 const emits = defineEmits([
@@ -91,6 +96,10 @@ function change(v) {
 
 function handleHtmlChange(html) {
   emits('htmlChanged', html);
+}
+
+function transformImgUrl(url) {
+  return url
 }
 
 async function uploadImg(files, callback) {

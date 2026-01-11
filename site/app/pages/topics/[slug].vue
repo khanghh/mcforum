@@ -160,9 +160,6 @@ const breadcrumbItems = computed(() => {
   return items
 })
 
-useHead({
-  title: topic.value ? useTopicSiteTitle(topic.value) : i18n.t('page.not_found'),
-})
 
 async function toggleLike() {
   if (topic.value.status !== TopicStatus.Active) return
@@ -197,4 +194,13 @@ async function toggleFavorite() {
 function commentCreated() {
   topic.value.commentCount++
 }
+
+useSeoMeta({
+  title: `${topic.value.title} – MineViet Network`,
+  ogTitle: `${topic.value.title} – MineViet Network`,
+  description: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
+  ogDescription: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
+  twitterTitle: `${topic.value.title} – MineViet Network`,
+  twitterDescription: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
+})
 </script>

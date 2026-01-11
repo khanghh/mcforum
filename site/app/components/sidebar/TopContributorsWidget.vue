@@ -47,7 +47,7 @@ function getMedalEmoji(index: number): string {
     case 2:
       return '🥉'
     default:
-      return ' '
+      return '🎖️'
   }
 }
 

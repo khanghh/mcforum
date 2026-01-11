@@ -246,6 +246,16 @@
       </div>
     </div>
 
+    <!-- Images Section - Full Width at End -->
+    <div class="full-width-section space-y-2">
+      <label class="text-sm font-medium text-gray-300 flex items-center">
+        <Icon name="Fa7SolidImage" class="mr-2" />
+        {{ $t('publish.add_image') }}
+      </label>
+      <ImageUpload v-model="postForm.images" />
+      <p class="text-xs text-gray-400">{{ $t('message.image_upload_limit', { limit: 9 }) }}</p>
+    </div>
+
     <!-- Divider -->
     <div class="full-width-section border-t border-gray-700/50"></div>
 
@@ -271,6 +281,7 @@
 <script setup lang="ts">
 
 import TagInput from '@/components/topics/TagInput.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
 import type { TopicPollPayload, CreateTopicPayload } from '@/composables/api'
 
 const api = useApi()
@@ -302,6 +313,10 @@ const enableHiddenContent = ref(!!props.modelValue.hiddenContent)
 const publishing = ref(false)
 const postForm = props.modelValue
 const forums = ref<Forum[]>([])
+
+if (!postForm.images) {
+  postForm.images = []
+}
 
 const allForums = await api.getForumList().catch(() => [])
 if (allForums && allForums.length > 0) {

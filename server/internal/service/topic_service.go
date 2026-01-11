@@ -144,8 +144,20 @@ func (s *topicService) extractImageURLs(content string) []model.ImageDTO {
 	return images
 }
 
+func (s *topicService) getValidImages(imageURLs []string) ([]model.ImageDTO, error) {
+	validImageUrls, err := UploadService.FilterUploadURLs(imageURLs)
+	if err != nil {
+		return []model.ImageDTO{}, nil
+	}
+	var imageDTOs []model.ImageDTO
+	for _, url := range validImageUrls {
+		imageDTOs = append(imageDTOs, model.ImageDTO{URL: url})
+	}
+	return imageDTOs, nil
+}
+
 // Update
-func (s *topicService) Edit(topicId, forumId int64, tags []string, title, content, hiddenContent string) error {
+func (s *topicService) Edit(topicId, forumId int64, tags []string, title, content, hiddenContent string, imageURLs []string) error {
 	if title == "" {
 		return errors.New(locale.T("topic.edit.title_required"))
 	}
@@ -159,10 +171,13 @@ func (s *topicService) Edit(topicId, forumId int64, tags []string, title, conten
 		return errors.New(locale.T("forum.not_found"))
 	}
 
-	images := s.extractImageURLs(content)
-	imagesJSON, _ := json.Marshal(images)
+	imageDTOs, err := s.getValidImages(imageURLs)
+	if err != nil {
+		return errors.New(locale.T("topic.invalid_image_url"))
+	}
+	imagesJSON, _ := json.Marshal(imageDTOs)
 
-	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+	err = sqls.DB().Transaction(func(tx *gorm.DB) error {
 		var err error
 		if err = repository.TopicRepository.Updates(sqls.DB(), topicId, map[string]interface{}{
 			"forum_id":       forumId,
@@ -519,6 +534,7 @@ type PublishTopicArgs struct {
 	Content       string
 	HiddenContent string
 	Tags          []string
+	Images        []string
 	NeedReview    bool
 	UserAgent     string
 	IPAddress     string
@@ -555,7 +571,10 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		return nil, err
 	}
 
-	images := s.extractImageURLs(args.Content)
+	images, err := s.getValidImages(args.Images)
+	if err != nil {
+		return nil, errs.NewBadRequestError(locale.T("topic.invalid_image_url"))
+	}
 
 	now := dates.NowTimestamp()
 	topic := &model.Topic{
@@ -579,7 +598,7 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		topic.Status = constants.StatusReview
 	}
 
-	err := sqls.DB().Transaction(func(tx *gorm.DB) error {
+	err = sqls.DB().Transaction(func(tx *gorm.DB) error {
 		if err := repository.TopicRepository.Create(tx, topic); err != nil {
 			return err
 		}

@@ -1,6 +1,5 @@
 <script setup>
 import { useToast } from '@/composables/useToast'
-import { useConfirmDialog } from '@/composables/useConfirmDialog'
 
 const i18n = useI18n()
 const toast = useToast()
@@ -32,11 +31,23 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['update:modelValue', 'uploading'])
-const fileList = ref(props.modelValue)
+const fileList = ref(Array.isArray(props.modelValue) ? [...props.modelValue] : [])
 const previewFiles = ref([])
 const currentInput = ref(null)
 const loading = ref(false)
 const hoveredIndex = ref(null)
+
+if (fileList.value.length) {
+  previewFiles.value = fileList.value.map((url) => {
+    return {
+      name: String(url).split('/').pop() || String(url),
+      url,
+      progress: 100,
+      deleted: false,
+      size: 0,
+    }
+  })
+}
 
 function onClick() {
   if (currentInput.value) {

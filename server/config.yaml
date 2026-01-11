@@ -1,12 +1,14 @@
 Port: 3001
-BaseUrl: http://172.17.0.3:3000
+BaseUrl: http://172.17.0.5:3000
 IpDataPath:
 Language: vi
 AllowedOrigins:
   - "*"
+PlayerStatsApiUrl: http://mcgateway.mc.svc.cluster.local:8080/api
+
 Auth:
   ValidateUrl: https://auth.mineviet.com/p3/serviceValidate
-  ServiceUrl: http://172.17.0.3:3000/auth/callback
+  ServiceUrl: http://172.17.0.5:3000/auth/callback
   ClientId: 02cbaf04-db5f-4ce7-80dc-9ade97d48569
   ClientSecret: MW8IbkWkLclPDajDNVorJRDWg2kpAt3z
 
@@ -17,7 +19,7 @@ Logger:
   MaxBackups: 10
 
 DB:
-  Url: dev:123456@tcp(mariadb-galera:3306)/bbsgo?charset=utf8mb4&parseTime=True&loc=Local
+  Url: bbsgo:titLpxEwuTvbqsf1z0tBm5pUie8ULj59@tcp(10.43.204.148:3306)/bbsgo?charset=utf8mb4&parseTime=True&loc=Local
   MaxIdleConns: 50
   MaxOpenConns: 200
 
@@ -27,7 +29,7 @@ Uploader:
     BaseUrl: "/upload"
     RootDir: /tmp/bbsgo/upload
   Supload:
-    BaseUrl: https://files.mineviet.com
+    BaseUrl: http://supload.web.svc.cluster.local:8080
     Secret: 0kmuzkC8JIAG7lnC
 
 Smtp:
