@@ -195,12 +195,19 @@ function commentCreated() {
   topic.value.commentCount++
 }
 
+let featuredImageUrl = null
+if (topic.value.images && topic.value.images.length > 0) {
+  featuredImageUrl = topic.value.images[0].url
+}
+
 useSeoMeta({
   title: `${topic.value.title} – MineViet Network`,
   ogTitle: `${topic.value.title} – MineViet Network`,
+  ogImage: featuredImageUrl || "https://mineviet.com/images/mineviet.png",
   description: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
   ogDescription: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
   twitterTitle: `${topic.value.title} – MineViet Network`,
   twitterDescription: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
+  twitterImage: featuredImageUrl || "https://mineviet.com/images/mineviet.png",
 })
 </script>

@@ -90,11 +90,17 @@ func (c *ForumsController) GetStats() *web.JsonResult {
 
 func (c *ForumsController) GetTopContributors() *web.JsonResult {
 	users := cache.UserCache.GetScoreRank()
-	respData := make([]payload.UserInfo, 0, len(users))
-	respData = respData[:min(len(respData), 3)]
-	for _, user := range users {
-		item := payload.BuildUserInfo(&user)
+
+	limit := 5
+	if len(users) < limit {
+		limit = len(users)
+	}
+
+	respData := make([]payload.UserInfo, 0, limit)
+	for i := 0; i < limit; i++ {
+		item := payload.BuildUserInfo(&users[i])
 		respData = append(respData, *item)
 	}
+
 	return web.JsonData(respData)
 }
