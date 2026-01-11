@@ -88,7 +88,7 @@
     </div>
 
     <!-- Poll/Voting Section -->
-    <div class="space-y-4">
+    <div v-if="false" class="space-y-4">
       <div class="flex items-center gap-4">
         <label class="relative inline-flex items-center cursor-pointer">
           <input v-model="enablePoll" type="checkbox" class="sr-only peer"

@@ -13,6 +13,7 @@ const (
 	StatusMessageMaxLength       = 100
 	ForumTitleMaxLength          = 50
 	TopicTitleMaxLength          = 128
+	TopicMaxImageCount           = 9
 	LocationMaxLength            = 100
 	MaxPendingReviewTopics       = 3 // Maximum number of pending review topics per user
 )

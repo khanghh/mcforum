@@ -46,8 +46,11 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
+    app: {
+      backendUrl: 'http://localhost:3001/api/',
+    },
     public: {
-      loginUrl: `https://auth.mineviet.com/login?service=forum-test`,
+      loginUrl: `https://auth.mineviet.com/login?service=forum`,
     },
   },
   devServer: {

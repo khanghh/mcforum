@@ -2,6 +2,7 @@ package errs
 
 import (
 	"bbs-go/internal/locale"
+	"bbs-go/internal/model/constants"
 	"errors"
 
 	"github.com/kataras/iris/v12"
@@ -11,6 +12,10 @@ import (
 type ResponseError struct {
 	code    int
 	message string
+}
+
+func (e ResponseError) Code() int {
+	return e.code
 }
 
 func (e ResponseError) Error() string {
@@ -59,6 +64,14 @@ var (
 
 var (
 	ErrAlreadyFollowing = &ResponseError{iris.StatusBadRequest, locale.T("follow.already_following")}
+)
+
+var (
+	ErrTopicExceedMaxImages        = &ResponseError{iris.StatusBadRequest, locale.T("topic.exceed_max_images", constants.TopicMaxImageCount)}
+	ErrTopicInvalidImageURL        = &ResponseError{iris.StatusBadRequest, locale.T("topic.invalid_image_url")}
+	ErrTopicTitleRequired          = &ResponseError{iris.StatusBadRequest, locale.T("topic.title_required")}
+	ErrTopicTitleMaxLengthExceeded = &ResponseError{iris.StatusBadRequest, locale.T("topic.title_max_length_exceeded", constants.TopicTitleMaxLength)}
+	ErrTopicContentRequired        = &ResponseError{iris.StatusBadRequest, locale.T("topic.content_required")}
 )
 
 func IsDatabaseError(err error) bool {

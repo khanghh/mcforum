@@ -32,6 +32,7 @@ RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
 
 ENV GOPATH=/home/node/go
 ENV PATH="/usr/local/go/bin:${GOPATH}/bin:${PATH}"
+ENV NUXT_PUBLIC_LOGIN_URL="http://localhost:8081/login?service=forum-test"
 
 USER node
 

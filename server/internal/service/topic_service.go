@@ -4,11 +4,9 @@ import (
 	"bbs-go/internal/cache"
 	"bbs-go/internal/errs"
 	"bbs-go/internal/event"
-	"bbs-go/internal/locale"
 	"bbs-go/internal/model/constants"
 	"bbs-go/internal/search"
 	"encoding/json"
-	"errors"
 	"log/slog"
 	"math"
 	"net/http"
@@ -159,21 +157,24 @@ func (s *topicService) getValidImages(imageURLs []string) ([]model.ImageDTO, err
 // Update
 func (s *topicService) Edit(topicId, forumId int64, tags []string, title, content, hiddenContent string, imageURLs []string) error {
 	if title == "" {
-		return errors.New(locale.T("topic.edit.title_required"))
+		return errs.ErrTopicTitleRequired
 	}
 
 	if strs.RuneLen(title) > 128 {
-		return errors.New(locale.T("topic.edit.title_max_length_exceeded"))
+		return errs.ErrTopicTitleMaxLengthExceeded
 	}
 
 	node := repository.ForumRepository.Get(sqls.DB(), forumId)
 	if node == nil || node.Status != constants.StatusActive {
-		return errors.New(locale.T("forum.not_found"))
+		return errs.ErrForumNotFound
 	}
 
+	if len(imageURLs) > constants.TopicMaxImageCount {
+		return errs.ErrTopicExceedMaxImages
+	}
 	imageDTOs, err := s.getValidImages(imageURLs)
 	if err != nil {
-		return errors.New(locale.T("topic.invalid_image_url"))
+		return errs.ErrTopicInvalidImageURL
 	}
 	imagesJSON, _ := json.Marshal(imageDTOs)
 
@@ -542,15 +543,15 @@ type PublishTopicArgs struct {
 
 func (s *topicService) checkArgs(args PublishTopicArgs) (err error) {
 	if strs.IsBlank(args.Title) {
-		return errs.NewBadRequestError(locale.T("topic.title_required"))
+		return errs.ErrTopicTitleRequired
 	}
 
 	if strs.RuneLen(args.Title) > constants.TopicTitleMaxLength {
-		return errs.NewBadRequestError(locale.T("topic.title_max_length_exceeded"))
+		return errs.ErrTopicTitleMaxLengthExceeded
 	}
 
 	if strs.IsBlank(args.Content) {
-		return errs.NewBadRequestError(locale.T("topic.content_required"))
+		return errs.ErrTopicContentRequired
 	}
 
 	if args.ForumID <= 0 {
@@ -559,7 +560,7 @@ func (s *topicService) checkArgs(args PublishTopicArgs) (err error) {
 
 	forum := repository.ForumRepository.Get(sqls.DB(), args.ForumID)
 	if forum == nil || forum.Status != constants.StatusActive {
-		return errs.NewBadRequestError(locale.T("topic.forum_not_exists"))
+		return errs.ErrForumNotFound
 	}
 
 	return nil
@@ -571,9 +572,12 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 		return nil, err
 	}
 
+	if len(args.Images) > constants.TopicMaxImageCount {
+		return nil, errs.ErrTopicExceedMaxImages
+	}
 	images, err := s.getValidImages(args.Images)
 	if err != nil {
-		return nil, errs.NewBadRequestError(locale.T("topic.invalid_image_url"))
+		return nil, errs.ErrTopicInvalidImageURL
 	}
 
 	now := dates.NowTimestamp()
@@ -619,18 +623,18 @@ func (s *topicService) Publish(args PublishTopicArgs) (*model.Topic, error) {
 // IsNeedReview Determine whether review is required
 func (s *topicService) CheckForbiddenWord(title, content, hiddenContent string) bool {
 	if hits := ForbiddenWordService.Check(title); len(hits) > 0 {
-		slog.Info(locale.T("topic.prohibited_word_in_title"), slog.String("hits", strings.Join(hits, ",")))
+		slog.Info("Topic title contains forbidden words", slog.String("hits", strings.Join(hits, ",")))
 		return true
 	}
 
 	if hits := ForbiddenWordService.Check(content); len(hits) > 0 {
-		slog.Info(locale.T("topic.prohibited_word_in_content"), slog.String("hits", strings.Join(hits, ",")))
+		slog.Info("Topic content contains forbidden words", slog.String("hits", strings.Join(hits, ",")))
 		return true
 	}
 
 	if hiddenContent != "" {
 		if hits := ForbiddenWordService.Check(hiddenContent); len(hits) > 0 {
-			slog.Info(locale.T("topic.prohibited_word_in_content"), slog.String("hits", strings.Join(hits, ",")))
+			slog.Info("Topic hidden content contains forbidden words", slog.String("hits", strings.Join(hits, ",")))
 			return true
 		}
 	}
