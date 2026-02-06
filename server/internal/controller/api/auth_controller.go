@@ -21,7 +21,7 @@ type AuthController struct {
 }
 
 type userInfoResponse struct {
-	UserID   string `json:"userId"`
+	ID       string `json:"id"`
 	Username string `json:"username"`
 	FullName string `json:"fullName"`
 	Email    string `json:"email"`
@@ -98,7 +98,7 @@ func (c *AuthController) PostLogin() *web.JsonResult {
 
 	if authResp.Data.Success != nil && authResp.Data.Success.User != nil {
 		userInfo := authResp.Data.Success.User
-		userID, err := strconv.ParseInt(userInfo.UserID, 10, 64)
+		userID, err := strconv.ParseInt(userInfo.ID, 10, 64)
 		if err != nil {
 			slog.Error("Invalid user ID format", slog.Any("err", err))
 			return web.JsonError(errs.ErrInternalServer)

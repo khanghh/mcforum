@@ -98,11 +98,7 @@ func (s *uploadService) UploadStream(user *model.User, stream io.Reader, fileNam
 		}
 	}()
 
-	proxiedReq, err := http.NewRequest(
-		http.MethodPost,
-		uploadURL,
-		pr,
-	)
+	proxiedReq, err := http.NewRequest(http.MethodPost, uploadURL, pr)
 	if err != nil {
 		return nil, errs.ErrInternalServer
 	}
@@ -132,10 +128,7 @@ func (s *uploadService) UploadStream(user *model.User, stream io.Reader, fileNam
 	}
 	defer resp.Body.Close()
 
-	var buf bytes.Buffer
-	tee := io.TeeReader(resp.Body, &buf)
-
-	data, err := io.ReadAll(tee)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, errs.ErrInternalServer
 	}
