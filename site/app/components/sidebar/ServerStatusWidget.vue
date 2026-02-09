@@ -8,6 +8,10 @@
         <span class="text-sm text-gray-400">{{ $t('mcserver.serverip') }}</span>
         <span class="font-bold text-amber-400 gaming-title">play.mineviet.com</span>
       </div>
+      <div class="flex justify-between items-center p-2 rounded bg-purple-500/10">
+        <span class="text-sm text-gray-400">{{ $t('mcserver.version') }}</span>
+        <span class="font-bold text-purple-400 gaming-title">{{ mcStatus.version }}</span>
+      </div>
       <div class="flex justify-between items-center p-2 rounded bg-blue-500/10">
         <span class="text-sm text-gray-400">{{ $t('mcserver.status') }}</span>
         <span class="px-2 py-1 text-white text-xs font-bold rounded gaming-title"
@@ -18,10 +22,6 @@
       <div class="flex justify-between items-center p-2 rounded bg-blue-500/10">
         <span class="text-sm text-gray-400">{{ $t('mcserver.online') }}</span>
         <span class="font-bold text-green-400 gaming-title">{{ mcStatus.playersOnline }}</span>
-      </div>
-      <div class="flex justify-between items-center p-2 rounded bg-purple-500/10">
-        <span class="text-sm text-gray-400">{{ $t('mcserver.version') }}</span>
-        <span class="font-bold text-purple-400 gaming-title">{{ mcStatus.version }}</span>
       </div>
     </div>
     <a href="https://play.mineviet.com"

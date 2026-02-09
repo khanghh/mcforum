@@ -50,7 +50,7 @@ export default defineNuxtConfig({
       backendUrl: 'http://localhost:3001/api/',
     },
     public: {
-      loginUrl: `https://auth.mineviet.com/login?service=forum`,
+      loginUrl: `https://accounts.mineviet.com/login?service=forum`,
     },
   },
   devServer: {

@@ -1,6 +1,6 @@
 <template>
   <article class="mb-6 text-gray-300">
-    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-white gaming-title" itemprop="headline">
+    <h1 class="text-xl sm:text-3xl font-bold mb-6 text-white gaming-title" itemprop="headline">
       {{ topic.title }}
     </h1>
 

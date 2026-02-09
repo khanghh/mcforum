@@ -21,7 +21,7 @@
         </div>
 
         <!-- Text -->
-        <h2 class="text-2xl sm:text-3xl font-bold mb-3 text-white">
+        <h2 class="text-xl sm:text-3xl font-bold mb-3 text-white">
           {{ $t('message.redirecting_message') }}
         </h2>
 

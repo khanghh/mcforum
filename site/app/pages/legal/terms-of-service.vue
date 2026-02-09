@@ -1,8 +1,8 @@
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
     <div
-      class="gaming-card rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
-      <h1 class="text-2xl sm:text-3xl font-bold text-white gaming-title">
+      class="gaming-card sm:rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
+      <h1 class="text-xl sm:text-3xl font-bold text-white gaming-title">
         ĐIỀU KHOẢN DỊCH VỤ
       </h1>
       <p class="mt-2 text-sm text-gray-400">

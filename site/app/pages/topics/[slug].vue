@@ -15,7 +15,7 @@
 
     <!-- Original Post -->
     <div
-      class="gaming-card rounded-xl p-6 mb-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] relative overflow-hidden">
+      class="gaming-card sm:rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))] relative overflow-hidden mb-6">
       <!-- Animated border overlay -->
       <!-- <div
         class="absolute inset-0 bg-[linear-gradient(45deg,#8b5cf6,#ec4899,#06b6d4,#8b5cf6)] bg-[length:300%_300%] opacity-10 pointer-events-none">
@@ -106,7 +106,7 @@
 
     <!-- Comments Section -->
     <div
-      class="gaming-card rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
+      class="gaming-card sm:rounded-xl p-6 border border-purple-500/20 bg-[linear-gradient(145deg,rgba(30,30,60,0.8),rgba(20,20,40,0.9))]">
       <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center text-white">
         <Icon name="Fa7SolidComments" class="mr-3 text-blue-400" />
         {{ $t('feed.comments') }}
@@ -200,13 +200,18 @@ if (topic.value.images && topic.value.images.length > 0) {
   featuredImageUrl = topic.value.images[0].url
 }
 
+let pageTitle = topic.value.title
+if (topic.value.forum) {
+  pageTitle += ` | ${topic.value.forum.name}`
+}
+
 useSeoMeta({
-  title: `${topic.value.title} – MineViet Network`,
-  ogTitle: `${topic.value.title} – MineViet Network`,
+  title: `${pageTitle} – MineViet Network`,
+  ogTitle: `${pageTitle} – MineViet Network`,
   ogImage: featuredImageUrl || "https://mineviet.com/images/mineviet.png",
   description: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
   ogDescription: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
-  twitterTitle: `${topic.value.title} – MineViet Network`,
+  twitterTitle: ` ${pageTitle} – MineViet Network`,
   twitterDescription: 'Tham gia thảo luận về chủ đề này trên diễn đàn MineViet!',
   twitterImage: featuredImageUrl || "https://mineviet.com/images/mineviet.png",
 })

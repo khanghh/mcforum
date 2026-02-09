@@ -3,7 +3,7 @@
     <GamingSidebar />
     <!-- Middle Content Area -->
     <div class="flex-1 min-w-0">
-      <div class="gaming-card rounded-xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+      <div class="gaming-card sm:rounded-xl p-6 sm:p-8 mb-6 relative overflow-hidden">
         <div class="absolute inset-0 animated-border opacity-10"></div>
         <div class="relative z-10">
           <h1

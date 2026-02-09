@@ -104,7 +104,7 @@
               class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-400 flex items-center justify-between ">
               <span class="truncate text-gray-500">{{ user.email }}</span>
               <a
-                href="https://auth.mineviet.com/profile"
+                href="https://accounts.mineviet.com"
                 target="_blank"
                 rel="noopener"
                 title="Đi tới trang đăng nhập"

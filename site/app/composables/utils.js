@@ -43,7 +43,7 @@ export function usePrettyDate(timestamp) {
   } else if (diffValue / day <= 30) {
     return i18n.t('feed.time_ago.days_ago', { time: Math.floor(diffValue / day) })
   }
-  return useFormatDate(timestamp, 'yyyy-MM-dd HH:mm')
+  return useFormatDate(timestamp, 'yyyy-MM-dd')
 }
 
 export function usePrettyNumber(num) {

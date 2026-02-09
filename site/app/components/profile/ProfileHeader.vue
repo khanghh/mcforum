@@ -33,7 +33,7 @@
         <div class="pb-2 w-full sm:w-auto text-center sm:text-left">
           <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
             <h1
-              class="text-2xl sm:text-3xl font-bold text-white gaming-title drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]">
+              class="text-xl sm:text-3xl font-bold text-white gaming-title drop-shadow-[0_0_15px_rgba(139,92,246,0.8)]">
               {{ user.username }}
             </h1>
           </div>
