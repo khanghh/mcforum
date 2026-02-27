@@ -464,15 +464,13 @@ func TestInitializeDatabase(t *testing.T) {
 	if err := db.AutoMigrate(model.Models...); nil != err {
 		panic(err)
 	}
-	fmt.Println("aaa")
-
-	// TestCreateRoles(t)
-	// TestCreateUser(t)
-	// TestCreateUserRole(t)
-	// TestCreateForums(t)
-	// TestCreateSysConfigs(t)
-	// TestCreateMenu(t)
-	// TestCreateRoleMenu(t)
+	TestCreateRoles(t)
+	TestCreateUser(t)
+	TestCreateUserRole(t)
+	TestCreateForums(t)
+	TestCreateSysConfigs(t)
+	TestCreateMenu(t)
+	TestCreateRoleMenu(t)
 }
 
 func TestAddUser(t *testing.T) {
